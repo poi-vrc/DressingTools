@@ -155,6 +155,15 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
+            EditorGUILayout.LabelField("Problems detected:", EditorStyles.boldLabel);
+
+            if (dressReport.infos == 0 && dressReport.warnings == 0 && dressReport.errors == 0)
+            {
+                EditorGUILayout.Separator();
+                EditorGUILayout.LabelField("No problems found.");
+                return;
+            }
+
             // Errors
 
             if ((dressReport.errors & DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR) == DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR)
@@ -215,7 +224,6 @@ namespace Chocopoi.DressingTools
             {
                 EditorGUILayout.HelpBox("Info: All matching dynamic bones are ignored. It may cause unexpected behaviour.", MessageType.Info);
             }
-
         }
 
         private DressSettings MakeDressSettings()
@@ -231,12 +239,44 @@ namespace Chocopoi.DressingTools
             };
         }
 
-        private void DrawToolContentGUI()
+        private void DrawSimpleGUI()
         {
-            selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { "Simple Mode", "Advanced Mode" });
+            GUILayout.Label(t._("label_setup"), EditorStyles.boldLabel);
 
-            DrawHorizontalLine();
+            if (activeAvatar == null)
+            {
+                activeAvatar = FindObjectOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
+            }
+            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Active Avatar", activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
 
+            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("label_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+
+            // simple mode defaults to use generated prefix
+
+            useDefaultGeneratedPrefixSuffix = true;
+
+            if (clothesToDress != null)
+            {
+                prefixToBeAdded = "";
+                suffixToBeAdded = " (" + clothesToDress.name + ")";
+            }
+
+            EditorGUILayout.Separator();
+
+            if (clothesToDress != null)
+            {
+                EditorGUILayout.LabelField("Your clothes bone will be named like this: Hips (" + clothesToDress.name + ")");
+            }
+
+            // simple mode defaults to handle dynamic bones automatically
+
+            dynamicBoneOption = 0;
+
+            EditorGUILayout.LabelField("Dynamic bones are automatically handled.");
+        }
+
+        private void DrawAdvancedGUI()
+        {
             GUILayout.Label(t._("label_select_avatar"), EditorStyles.boldLabel);
 
             if (activeAvatar == null)
@@ -249,11 +289,11 @@ namespace Chocopoi.DressingTools
 
             GUILayout.Label(t._("label_select_clothes_to_dress"), EditorStyles.boldLabel);
 
-            clothesToDress = (GameObject) EditorGUILayout.ObjectField(t._("label_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("label_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
             EditorGUILayout.Separator();
 
-            GUILayout.Label(t._("label_setup_prefix_suffix"), EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_prefix_suffix"), EditorStyles.boldLabel);
 
             EditorGUILayout.HelpBox(t._("label_helpbox_prefix_suffix"), MessageType.Info);
 
@@ -290,13 +330,28 @@ namespace Chocopoi.DressingTools
             dynamicBoneOption = GUILayout.SelectionGrid(dynamicBoneOption, new string[] {
                 " Remove and use parent constraints pointing to avatar for all (Preferred)",
                 " Keep clothes dynamic bones and use parent constraints if necessary",
-                " Create and use GameObject child on avatar (Legacy)",
+                " Create GameObject child and exclude it from DynamicBone (Legacy)",
                 " Ignore all"
             }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(150));
+        }
 
-            EditorGUILayout.Separator();
+        private void DrawToolContentGUI()
+        {
+            selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { "Simple Mode", "Advanced Mode" });
 
-            GUILayout.Label(t._("label_perform_checks_and_dress"), EditorStyles.boldLabel);
+            DrawHorizontalLine();
+
+            if (selectedInterface == 0)
+            {
+                DrawSimpleGUI();
+            } else
+            {
+                DrawAdvancedGUI();
+            }
+
+            DrawHorizontalLine();
+
+            GUILayout.Label(t._("label_check_and_dress"), EditorStyles.boldLabel);
 
             GUIStyle checkBtnStyle = new GUIStyle(GUI.skin.button)
             {
@@ -317,7 +372,7 @@ namespace Chocopoi.DressingTools
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-
+                EditorUtility.DisplayDialog("Dressing Tools", "Not implemented yet.", "OK");
             }
             EditorGUILayout.EndHorizontal();
             dressNowConfirm = GUILayout.Toggle(dressNowConfirm, "I have confirmed that the avatar fits well with no problems.");
@@ -329,8 +384,22 @@ namespace Chocopoi.DressingTools
             {
                 dressReport = DressReport.Execute(MakeDressSettings(), true);
                 Debug.Log("Executed with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
+
+                if (dressReport.result >= 0)
+                {
+                    EditorUtility.DisplayDialog("Dressing Tools", "Completed!", "OK");
+
+                    // reset
+                    clothesToDress = null;
+                    dressReport = null;
+                } else
+                {
+                    EditorUtility.DisplayDialog("Dressing Tools", "Dressing could not be completed with result: " + dressReport.result, "OK");
+                }
             }
             EditorGUI.EndDisabledGroup();
+
+            EditorGUILayout.Separator();
 
             DrawDressReportDetails();
         }

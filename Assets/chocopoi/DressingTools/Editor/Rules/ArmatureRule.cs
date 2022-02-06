@@ -74,21 +74,34 @@ namespace Chocopoi.DressingTools
                         }
                         else if (settings.dynamicBoneOption == 2) //use legacy child gameobject
                         {
-                            string name = avatarTrans.name + "_Child";
-                            GameObject dynBoneChild = avatarTrans.Find(name)?.gameObject;
-
-                            if (dynBoneChild == null)
+                            if (avatarDynBone != null)
                             {
-                                dynBoneChild = new GameObject(name);
-                                dynBoneChild.transform.SetParent(avatarTrans);
-                            }
+                                string name = avatarTrans.name + "_DBExcluded";
+                                GameObject dynBoneChild = avatarTrans.Find(name)?.gameObject;
 
-                            if (childDynBone != null)
-                            {
-                                Object.DestroyImmediate(childDynBone);
-                            }
+                                if (dynBoneChild == null)
+                                {
+                                    dynBoneChild = new GameObject(name);
+                                    dynBoneChild.transform.SetParent(avatarTrans);
+                                }
 
-                            child.SetParent(dynBoneChild.transform);
+                                //verify if it is excluded
+
+                                if (!avatarDynBone.m_Exclusions.Contains(dynBoneChild.transform))
+                                {
+                                    avatarDynBone.m_Exclusions.Add(dynBoneChild.transform);
+                                }
+
+                                // destroy the child dyn bone component
+
+                                if (childDynBone != null)
+                                {
+                                    Object.DestroyImmediate(childDynBone);
+                                }
+
+                                child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
+                                child.SetParent(dynBoneChild.transform);
+                            }
                         }
                         else if (settings.dynamicBoneOption == 3) //ignore all
                         {
