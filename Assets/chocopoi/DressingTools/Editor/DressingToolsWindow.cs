@@ -41,7 +41,7 @@ namespace Chocopoi.DressingTools
         public static void Init()
         {
             DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
-            window.titleContent = new GUIContent("Dressing Tools");
+            window.titleContent = new GUIContent(t._("label_tool_name"));
             window.Show();
         }
 
@@ -125,7 +125,7 @@ namespace Chocopoi.DressingTools
         {
             if (dressReport == null)
             {
-                EditorGUILayout.HelpBox("No dress report has been generated yet. Press the \"Check now\" button to perform checks.", MessageType.Warning);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
                 return;
             }
 
@@ -134,16 +134,16 @@ namespace Chocopoi.DressingTools
             switch (dressReport.result)
             {
                 case DressCheckResult.INVALID_SETTINGS:
-                    EditorGUILayout.HelpBox("Check Result: Invalid settings detected, please check your settings before continuing.", MessageType.Error);
+                    EditorGUILayout.HelpBox(t._("helpbox_error_check_result_invalid_settings"), MessageType.Error);
                     break;
-                case DressCheckResult.IMCOMPATIBLE:
-                    EditorGUILayout.HelpBox("Check Result: Imcompatible, this tool cannot dress it automatically.", MessageType.Error);
+                case DressCheckResult.INCOMPATIBLE:
+                    EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
                     break;
                 case DressCheckResult.OK:
-                    EditorGUILayout.HelpBox("Check Result: OK, it seems to perfectly fit your active avatar.", MessageType.Info);
+                    EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
                     break;
                 case DressCheckResult.COMPATIBLE:
-                    EditorGUILayout.HelpBox("Check Result: Compatible, but your clothes might not fully fit your active avatar.", MessageType.Warning);
+                    EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
                     break;
             }
         }
@@ -155,12 +155,12 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            EditorGUILayout.LabelField("Problems detected:", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(t._("label_problems_detected"), EditorStyles.boldLabel);
 
             if (dressReport.infos == 0 && dressReport.warnings == 0 && dressReport.errors == 0)
             {
                 EditorGUILayout.Separator();
-                EditorGUILayout.LabelField("No problems found.");
+                EditorGUILayout.LabelField(t._("label_no_problems_found"));
                 return;
             }
 
@@ -168,61 +168,81 @@ namespace Chocopoi.DressingTools
 
             if ((dressReport.errors & DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR) == DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR)
             {
-                EditorGUILayout.HelpBox("Error: No Armature in avatar", MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_error_no_armature_in_avatar"), MessageType.Error);
             }
 
             if ((dressReport.errors & DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES) == DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES)
             {
-                EditorGUILayout.HelpBox("Error: No Armature in clothes", MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_error_no_armature_in_clothes"), MessageType.Error);
             }
 
             if ((dressReport.errors & DressCheckCodeMask.Error.NULL_ACTIVE_AVATAR_OR_CLOTHES) == DressCheckCodeMask.Error.NULL_ACTIVE_AVATAR_OR_CLOTHES)
             {
-                EditorGUILayout.HelpBox("Error: No active avatar or clothes", MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_error_null_avatar_or_clothes"), MessageType.Error);
             }
 
             if ((dressReport.errors & DressCheckCodeMask.Error.NO_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Error.NO_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL)
             {
-                EditorGUILayout.HelpBox("Error: No bones are detected in the first level of avatar armature.", MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_error_no_bones_in_avatar_armature_first_level"), MessageType.Error);
             }
 
             if ((dressReport.errors & DressCheckCodeMask.Error.NO_BONES_IN_CLOTHES_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Error.NO_BONES_IN_CLOTHES_ARMATURE_FIRST_LEVEL)
             {
-                EditorGUILayout.HelpBox("Error: No bones are detected in the first level of clothes armature.", MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_error_no_bones_in_clothes_armature_first_level"), MessageType.Error);
             }
 
             if ((dressReport.errors & DressCheckCodeMask.Error.CLOTHES_IS_A_PREFAB) == DressCheckCodeMask.Error.CLOTHES_IS_A_PREFAB)
             {
-                EditorGUILayout.HelpBox("Error: Clothes cannot be a Prefab. Please \"Unpack it completely\" to turn it to be a normal GameObject.", MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_error_clothes_is_prefab"), MessageType.Error);
             }
 
             // Warnings
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL)
             {
-                EditorGUILayout.HelpBox("Warning: Multiple bones detected in the first level of avatar armature.", MessageType.Warning);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_multiple_bones_in_avatar_armature_first_level"), MessageType.Warning);
             }
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_CLOTHES_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_CLOTHES_ARMATURE_FIRST_LEVEL)
             {
-                EditorGUILayout.HelpBox("Warning: Multiple bones detected in the first level of clothes armature.", MessageType.Warning);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_multiple_bones_in_clothes_armature_first_level"), MessageType.Warning);
             }
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.BONES_NOT_MATCHING_IN_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.BONES_NOT_MATCHING_IN_ARMATURE_FIRST_LEVEL)
             {
-                EditorGUILayout.HelpBox("Warning: Some bones are not matching in the first level of armature. They will not be moved.", MessageType.Warning);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_bones_not_matching_in_armature_first_level"), MessageType.Warning);
             }
 
             // Infos
 
             if ((dressReport.infos & DressCheckCodeMask.Info.NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED) == DressCheckCodeMask.Info.NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED)
             {
-                EditorGUILayout.HelpBox("Info: Non-matching clothes bone will be kept untouched in their original parent.", MessageType.Info);
+                EditorGUILayout.HelpBox(t._("helpbox_info_non_matching_clothes_bones_kept_untouched"), MessageType.Info);
             }
 
             if ((dressReport.infos & DressCheckCodeMask.Info.DYNAMIC_BONE_ALL_IGNORED) == DressCheckCodeMask.Info.DYNAMIC_BONE_ALL_IGNORED)
             {
-                EditorGUILayout.HelpBox("Info: All matching dynamic bones are ignored. It may cause unexpected behaviour.", MessageType.Info);
+                EditorGUILayout.HelpBox(, MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_AND_REMOVED) == DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_AND_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_existing_prefix_detected_and_removed"), MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_NOT_REMOVED) == DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_NOT_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_existing_prefix_detected_not_removed"), MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.EXISTING_SUFFIX_DETECTED_AND_REMOVED) == DressCheckCodeMask.Info.EXISTING_SUFFIX_DETECTED_AND_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_existing_suffix_detected_and_removed"), MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.EXISTING_SUFFIX_DETECTED_NOT_REMOVED) == DressCheckCodeMask.Info.EXISTING_SUFFIX_DETECTED_NOT_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_existing_suffix_detected_not_removed"), MessageType.Info);
             }
         }
 
@@ -249,7 +269,7 @@ namespace Chocopoi.DressingTools
             }
             activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Active Avatar", activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
 
-            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("label_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
             // simple mode defaults to use generated prefix
 
@@ -265,14 +285,14 @@ namespace Chocopoi.DressingTools
 
             if (clothesToDress != null)
             {
-                EditorGUILayout.LabelField("Your clothes bone will be named like this: Hips (" + clothesToDress.name + ")");
+                EditorGUILayout.LabelField(t._("label_new_bone_name_preview", clothesToDress.name));
             }
 
             // simple mode defaults to handle dynamic bones automatically
 
             dynamicBoneOption = 0;
 
-            EditorGUILayout.LabelField("Dynamic bones are automatically handled.");
+            EditorGUILayout.LabelField(t._("label_dynamic_bone_auto_handled"));
         }
 
         private void DrawAdvancedGUI()
@@ -283,19 +303,19 @@ namespace Chocopoi.DressingTools
             {
                 activeAvatar = FindObjectOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
             }
-            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Active Avatar", activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
 
             EditorGUILayout.Separator();
 
             GUILayout.Label(t._("label_select_clothes_to_dress"), EditorStyles.boldLabel);
 
-            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("label_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
-            EditorGUILayout.Separator();
+            DrawHorizontalLine();
 
             GUILayout.Label(t._("label_prefix_suffix"), EditorStyles.boldLabel);
 
-            EditorGUILayout.HelpBox(t._("label_helpbox_prefix_suffix"), MessageType.Info);
+            EditorGUILayout.HelpBox(t._("helpbox_info_prefix_suffix"), MessageType.Info);
 
             useDefaultGeneratedPrefixSuffix = GUILayout.Toggle(useDefaultGeneratedPrefixSuffix, t._("toggle_use_default_generated_prefix_suffix"));
 
@@ -307,20 +327,22 @@ namespace Chocopoi.DressingTools
 
             EditorGUI.BeginDisabledGroup(useDefaultGeneratedPrefixSuffix);
             EditorGUI.indentLevel = 1;
-            prefixToBeAdded = EditorGUILayout.TextField(t._("label_prefix_to_be_added"), prefixToBeAdded);
-            suffixToBeAdded = EditorGUILayout.TextField(t._("label_suffix_to_be_added"), suffixToBeAdded);
+            prefixToBeAdded = EditorGUILayout.TextField(t._("text_prefix_to_be_added"), prefixToBeAdded);
+            suffixToBeAdded = EditorGUILayout.TextField(t._("text_suffix_to_be_added"), suffixToBeAdded);
             EditorGUI.indentLevel = 0;
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Separator();
 
-            detectAndRemoveExistingSuffix = GUILayout.Toggle(detectAndRemoveExistingSuffix, t._("toggle_detect_and_remove_existing_suffix"));
+            detectAndRemoveExistingSuffix = GUILayout.Toggle(detectAndRemoveExistingSuffix, t._("toggle_remove_existing_suffix_in_clothes_bone"));
+
+            DrawHorizontalLine();
+
+            GUILayout.Label(t._("label_dynamic_bone"), EditorStyles.boldLabel);
 
             EditorGUILayout.Separator();
 
-            GUILayout.Label(t._("label_dynamic_bones"), EditorStyles.boldLabel);
-
-            GUILayout.Label(t._("In cases of dynamic bones of same avatar bone in clothes:"));
+            GUILayout.Label(t._("label_dynamic_bone_if_in_avatar_bone"));
 
             GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton)
             {
@@ -328,16 +350,16 @@ namespace Chocopoi.DressingTools
             };
 
             dynamicBoneOption = GUILayout.SelectionGrid(dynamicBoneOption, new string[] {
-                " Remove and use parent constraints pointing to avatar for all (Preferred)",
-                " Keep clothes dynamic bones and use parent constraints if necessary",
-                " Create GameObject child and exclude it from DynamicBone (Legacy)",
-                " Ignore all"
+                " " + t._("radio_db_remove_and_parent_const"),
+                " " + t._("radio_db_keep_clothes_and_parent_const_if_need"),
+                " " + t._("radio_db_create_child_and_exclude"),
+                " " + t._("radio_db_ignore_all")
             }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(150));
         }
 
         private void DrawToolContentGUI()
         {
-            selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { "Simple Mode", "Advanced Mode" });
+            selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { t._("tab_simple_mode"), t._("tab_advanced_mode") });
 
             DrawHorizontalLine();
 
@@ -362,7 +384,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button(t._("button_check_now"), checkBtnStyle, GUILayout.Height(40)))
+            if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
                 dressReport = DressReport.GenerateReport(MakeDressSettings());
                 dressNowConfirm = false;
@@ -372,29 +394,29 @@ namespace Chocopoi.DressingTools
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-                EditorUtility.DisplayDialog("Dressing Tools", "Not implemented yet.", "OK");
+                EditorUtility.DisplayDialog(t._("label_tool_name"), "Not implemented yet.", "OK");
             }
             EditorGUILayout.EndHorizontal();
-            dressNowConfirm = GUILayout.Toggle(dressNowConfirm, "I have confirmed that the avatar fits well with no problems.");
+            dressNowConfirm = GUILayout.Toggle(dressNowConfirm, t._("toggle_dress_declaration"));
             EditorGUI.EndDisabledGroup();
 
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0 || !dressNowConfirm);
             if (GUILayout.Button(t._("button_dress_now"), checkBtnStyle, GUILayout.Height(40)) &&
-                EditorUtility.DisplayDialog("Dressing Tools", "Are you sure to proceed? This cannot be undone.", "Yes", "No"))
+                EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_confirmation_content"), t._("dialog_button_yes"), t._("dialog_button_no")))
             {
                 dressReport = DressReport.Execute(MakeDressSettings(), true);
                 Debug.Log("Executed with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
 
                 if (dressReport.result >= 0)
                 {
-                    EditorUtility.DisplayDialog("Dressing Tools", "Completed!", "OK");
+                    EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_completed_content"), t._("dialog_button_ok"));
 
                     // reset
                     clothesToDress = null;
                     dressReport = null;
                 } else
                 {
-                    EditorUtility.DisplayDialog("Dressing Tools", "Dressing could not be completed with result: " + dressReport.result, "OK");
+                    EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_failed_content", dressReport.result), t._("dialog_button_ok"));
                 }
             }
             EditorGUI.EndDisabledGroup();

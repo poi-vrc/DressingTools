@@ -9,6 +9,7 @@ namespace Chocopoi.DressingTools
         private static readonly IDressCheckRule[] rules = new IDressCheckRule[]
         {
             new NotAPrefabRule(),
+            new ExistingPrefixSuffixRule(),
             new ArmatureRule(),
             new MeshDataRule()
         };
@@ -80,7 +81,7 @@ namespace Chocopoi.DressingTools
 
             if (report.errors > 0)
             {
-                report.result = DressCheckResult.IMCOMPATIBLE;
+                report.result = DressCheckResult.INCOMPATIBLE;
             } else if (report.warnings > 0)
             {
                 report.result = DressCheckResult.COMPATIBLE;

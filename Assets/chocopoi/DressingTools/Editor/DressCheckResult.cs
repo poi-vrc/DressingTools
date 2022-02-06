@@ -7,7 +7,7 @@ namespace Chocopoi.DressingTools
     public enum DressCheckResult
     {
         INVALID_SETTINGS = -2,
-        IMCOMPATIBLE = -1,
+        INCOMPATIBLE = -1,
         OK = 0,
         COMPATIBLE = 1
     }

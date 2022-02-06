@@ -7,9 +7,75 @@ namespace Chocopoi.DressingTools
     [System.Serializable]
     public class TranslationKeys
     {
+        public string label_tool_name;
         public string label_header_tool_description;
         public string label_footer_version;
 
-        public string label_step_1_select_avatar;
+        public string tab_simple_mode;
+        public string tab_advanced_mode;
+
+        //Simple Mode
+        public string label_setup;
+        public string label_new_bone_name_preview;
+        public string label_dynamic_bone_auto_handled;
+
+        //Advanced Mode
+        public string label_select_avatar;
+        public string object_active_avatar;
+
+        public string label_select_clothes_to_dress;
+        public string object_clothes_to_dress;
+
+        public string label_prefix_suffix;
+        public string helpbox_info_prefix_suffix;
+
+        public string toggle_use_default_generated_prefix_suffix;
+        public string text_prefix_to_be_added;
+        public string text_suffix_to_be_added;
+        public string toggle_remove_existing_suffix_in_clothes_bone;
+
+        public string label_dynamic_bone;
+        public string label_dynamic_bone_if_in_avatar_bone;
+        public string radio_db_remove_and_parent_const;
+        public string radio_db_keep_clothes_and_parent_const_if_need;
+        public string radio_db_create_child_and_exclude;
+        public string radio_db_ignore_all;
+
+        public string label_check_and_dress;
+        public string button_check_and_preview;
+        public string button_test_now;
+        public string toggle_dress_declaration;
+        public string button_dress_now;
+
+        public string dialog_dress_confirmation_content;
+        public string dialog_dress_completed_content;
+        public string dialog_dress_failed_content;
+        public string dialog_button_yes;
+        public string dialog_button_no;
+        public string dialog_button_ok;
+
+        //Check report
+        public string helpbox_warn_no_check_report;
+        public string helpbox_error_check_result_invalid_settings;
+        public string helpbox_error_check_result_incompatible;
+        public string helpbox_info_check_result_ok;
+        public string helpbox_warn_check_result_compatible;
+
+        public string label_problems_detected;
+        public string label_no_problems_found;
+        public string helpbox_error_no_armature_in_avatar;
+        public string helpbox_error_no_armature_in_clothes;
+        public string helpbox_error_null_avatar_or_clothes;
+        public string helpbox_error_no_bones_in_avatar_armature_first_level;
+        public string helpbox_error_no_bones_in_clothes_armature_first_level;
+        public string helpbox_error_clothes_is_prefab;
+        public string helpbox_warn_multiple_bones_in_avatar_armature_first_level;
+        public string helpbox_warn_multiple_bones_in_clothes_armature_first_level;
+        public string helpbox_warn_bones_not_matching_in_armature_first_level;
+        public string helpbox_info_non_matching_clothes_bones_kept_untouched;
+        public string helpbox_info_existing_prefix_detected_and_removed;
+        public string helpbox_info_existing_prefix_detected_not_removed;
+        public string helpbox_info_existing_suffix_detected_and_removed;
+        public string helpbox_info_existing_suffix_detected_not_removed;
     }
 }

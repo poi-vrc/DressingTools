@@ -9,6 +9,10 @@ namespace Chocopoi.DressingTools.DressCheckCodeMask
         //Info
         NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED = 0x01,
         DYNAMIC_BONE_ALL_IGNORED = 0x02,
+        EXISTING_PREFIX_DETECTED_NOT_REMOVED = 0x04,
+        EXISTING_PREFIX_DETECTED_AND_REMOVED = 0x08,
+        EXISTING_SUFFIX_DETECTED_NOT_REMOVED = 0x10,
+        EXISTING_SUFFIX_DETECTED_AND_REMOVED = 0x20,
     }
 
     public enum Warn
