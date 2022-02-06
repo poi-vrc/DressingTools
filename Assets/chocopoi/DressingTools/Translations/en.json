@@ -11,7 +11,7 @@
 
         "label_checking_for_updates": "Checking for updates...",
         "label_could_not_check_update": "Could not check for updates!",
-        "label_update_available": "Update avaiable to {0}! Download new version from GitHub website below!",
+        "label_update_available": "Update avaiable to {0}! Download new version from the GitHub website below!",
         "label_up_to_date": "Your tool is up-to-date.",
 
         "tab_simple_mode": "Simple Mode",

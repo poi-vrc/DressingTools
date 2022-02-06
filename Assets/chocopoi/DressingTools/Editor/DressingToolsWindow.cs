@@ -177,7 +177,7 @@ namespace Chocopoi.DressingTools
             {
                 if (TOOL_VERSION != ONLINE_VERSION)
                 {
-                    GUILayout.Label(t._("label_update_avaiable", ONLINE_VERSION));
+                    GUILayout.Label(t._("label_update_available", ONLINE_VERSION));
                 } else
                 {
                     GUILayout.Label(t._("label_up_to_date"));
