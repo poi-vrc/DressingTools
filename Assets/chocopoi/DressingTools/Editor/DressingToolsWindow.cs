@@ -1,8 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Chocopoi.DressingTools
 {
@@ -10,7 +15,11 @@ namespace Chocopoi.DressingTools
     {
         private static I18n t = I18n.GetInstance();
 
+        private static string ONLINE_VERSION = null;
+
         private static readonly string TOOL_VERSION = GetToolVersion();
+
+        private static int CHECK_UPDATE_STATUS = 0;
 
         private int selectedLang = 0;
 
@@ -55,6 +64,40 @@ namespace Chocopoi.DressingTools
             string str = reader.ReadToEnd();
             reader.Close();
             return str;
+        }
+
+        private static void FetchOnlineVersion()
+        {
+            string url = "https://raw.githubusercontent.com/poi-vrc/DressingTools/master/Assets/chocopoi/DressingTools/version.txt";
+
+            try
+            {
+                WebRequest request = WebRequest.Create(url);
+
+                WebResponse response = request.GetResponse();
+
+                StreamReader reader = new StreamReader(response.GetResponseStream());
+
+                string responseText = reader.ReadToEnd();
+
+                Debug.Log("[DressingTools] Check Update Received: " + responseText);
+
+                Regex regex = new Regex("\\d+\\.\\d+\\.\\d+");
+                if (regex.IsMatch(responseText))
+                {
+                    ONLINE_VERSION = responseText;
+                    CHECK_UPDATE_STATUS = 2;
+                }
+                else
+                {
+                    Debug.Log("[DressingTools] Check update response is in an invalid format.");
+                    CHECK_UPDATE_STATUS = 3;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[DressingTools] Check Update Failed: " + e.Message);
+            }
         }
 
         /// <summary>
@@ -118,6 +161,32 @@ namespace Chocopoi.DressingTools
             DrawHorizontalLine();
 
             GUILayout.Label(t._("label_footer_version", TOOL_VERSION));
+            
+            if (CHECK_UPDATE_STATUS == 0)
+            {
+                CHECK_UPDATE_STATUS = 1;
+                //TODO: async
+                //new Thread(FetchOnlineVersion).Start();
+                FetchOnlineVersion();
+            }
+            else if (CHECK_UPDATE_STATUS == 1)
+            {
+                GUILayout.Label(t._("label_checking_for_update"));
+            }
+            else if (CHECK_UPDATE_STATUS == 2)
+            {
+                if (TOOL_VERSION != ONLINE_VERSION)
+                {
+                    GUILayout.Label(t._("label_update_avaiable", ONLINE_VERSION));
+                } else
+                {
+                    GUILayout.Label(t._("label_up_to_date"));
+                }
+            }
+            else if (CHECK_UPDATE_STATUS == 3)
+            {
+                GUILayout.Label(t._("label_could_not_check_update"));
+            }
             EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools");
         }
 
@@ -222,7 +291,7 @@ namespace Chocopoi.DressingTools
 
             if ((dressReport.infos & DressCheckCodeMask.Info.DYNAMIC_BONE_ALL_IGNORED) == DressCheckCodeMask.Info.DYNAMIC_BONE_ALL_IGNORED)
             {
-                EditorGUILayout.HelpBox(, MessageType.Info);
+                EditorGUILayout.HelpBox(t._("helpbox_info_dynamic_bone_all_ignored"), MessageType.Info);
             }
 
             if ((dressReport.infos & DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_AND_REMOVED) == DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_AND_REMOVED)
@@ -388,7 +457,7 @@ namespace Chocopoi.DressingTools
             {
                 dressReport = DressReport.GenerateReport(MakeDressSettings());
                 dressNowConfirm = false;
-                Debug.Log("Dress report generated with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
+                Debug.Log("[DressingTools] Dress report generated with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
             }
 
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
@@ -405,7 +474,7 @@ namespace Chocopoi.DressingTools
                 EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_confirmation_content"), t._("dialog_button_yes"), t._("dialog_button_no")))
             {
                 dressReport = DressReport.Execute(MakeDressSettings(), true);
-                Debug.Log("Executed with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
+                Debug.Log("[DressingTools] Executed with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
 
                 if (dressReport.result >= 0)
                 {

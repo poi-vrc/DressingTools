@@ -11,6 +11,11 @@ namespace Chocopoi.DressingTools
         public string label_header_tool_description;
         public string label_footer_version;
 
+        public string label_checking_for_update;
+        public string label_up_to_date;
+        public string label_update_available;
+        public string label_could_not_check_update;
+
         public string tab_simple_mode;
         public string tab_advanced_mode;
 
@@ -73,6 +78,7 @@ namespace Chocopoi.DressingTools
         public string helpbox_warn_multiple_bones_in_clothes_armature_first_level;
         public string helpbox_warn_bones_not_matching_in_armature_first_level;
         public string helpbox_info_non_matching_clothes_bones_kept_untouched;
+        public string helpbox_info_dynamic_bone_all_ignored;
         public string helpbox_info_existing_prefix_detected_and_removed;
         public string helpbox_info_existing_prefix_detected_not_removed;
         public string helpbox_info_existing_suffix_detected_and_removed;
