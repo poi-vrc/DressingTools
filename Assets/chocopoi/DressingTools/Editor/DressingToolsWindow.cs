@@ -30,6 +30,8 @@ namespace Chocopoi.DressingTools
 
         private bool dressNowConfirm = false;
 
+        private int selectedInterface = 0;
+
         private DressReport dressReport = null;
 
         /// <summary>
@@ -180,6 +182,11 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox("Error: No bones are detected in the first level of clothes armature.", MessageType.Error);
             }
 
+            if ((dressReport.errors & DressCheckCodeMask.Error.CLOTHES_IS_A_PREFAB) == DressCheckCodeMask.Error.CLOTHES_IS_A_PREFAB)
+            {
+                EditorGUILayout.HelpBox("Error: Clothes cannot be a Prefab. Please \"Unpack it completely\" to turn it to be a normal GameObject.", MessageType.Error);
+            }
+
             // Warnings
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL)
@@ -211,9 +218,26 @@ namespace Chocopoi.DressingTools
 
         }
 
+        private DressSettings MakeDressSettings()
+        {
+            return new DressSettings
+            {
+                activeAvatar = activeAvatar,
+                clothesToDress = clothesToDress,
+                prefixToBeAdded = prefixToBeAdded,
+                suffixToBeAdded = suffixToBeAdded,
+                detectAndRemoveExistingSuffix = detectAndRemoveExistingSuffix,
+                dynamicBoneOption = dynamicBoneOption
+            };
+        }
+
         private void DrawToolContentGUI()
         {
-            GUILayout.Label(t._("label_step_1_select_avatar"), EditorStyles.boldLabel);
+            selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { "Simple Mode", "Advanced Mode" });
+
+            DrawHorizontalLine();
+
+            GUILayout.Label(t._("label_select_avatar"), EditorStyles.boldLabel);
 
             if (activeAvatar == null)
             {
@@ -223,13 +247,13 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            GUILayout.Label(t._("label_step_2_select_clothes_to_dress"), EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_select_clothes_to_dress"), EditorStyles.boldLabel);
 
             clothesToDress = (GameObject) EditorGUILayout.ObjectField(t._("label_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
             EditorGUILayout.Separator();
 
-            GUILayout.Label(t._("label_step_3_setup_prefix_suffix"), EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_setup_prefix_suffix"), EditorStyles.boldLabel);
 
             EditorGUILayout.HelpBox(t._("label_helpbox_prefix_suffix"), MessageType.Info);
 
@@ -254,7 +278,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            GUILayout.Label(t._("label_step_4_dynamic_bones"), EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_dynamic_bones"), EditorStyles.boldLabel);
 
             GUILayout.Label(t._("In cases of dynamic bones of same avatar bone in clothes:"));
 
@@ -264,15 +288,15 @@ namespace Chocopoi.DressingTools
             };
 
             dynamicBoneOption = GUILayout.SelectionGrid(dynamicBoneOption, new string[] {
-                " Keep clothes dynamic bones and use parent constraints if necessary (Preferred)",
-                " Remove and use parent constraints pointing to avatar for all",
+                " Remove and use parent constraints pointing to avatar for all (Preferred)",
+                " Keep clothes dynamic bones and use parent constraints if necessary",
                 " Create and use GameObject child on avatar (Legacy)",
                 " Ignore all"
             }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(150));
 
             EditorGUILayout.Separator();
 
-            GUILayout.Label(t._("label_step_5_perform_checks_and_dress"), EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_perform_checks_and_dress"), EditorStyles.boldLabel);
 
             GUIStyle checkBtnStyle = new GUIStyle(GUI.skin.button)
             {
@@ -285,16 +309,7 @@ namespace Chocopoi.DressingTools
 
             if (GUILayout.Button(t._("button_check_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-                DressSettings dressSettings = new DressSettings
-                {
-                    activeAvatar = activeAvatar,
-                    clothesToDress = clothesToDress,
-                    prefixToBeAdded = prefixToBeAdded,
-                    suffixToBeAdded = suffixToBeAdded,
-                    detectAndRemoveExistingSuffix = detectAndRemoveExistingSuffix,
-                    dynamicBoneOption = dynamicBoneOption
-                };
-                dressReport = DressReport.GenerateReport(dressSettings);
+                dressReport = DressReport.GenerateReport(MakeDressSettings());
                 dressNowConfirm = false;
                 Debug.Log("Dress report generated with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
             }
@@ -309,9 +324,11 @@ namespace Chocopoi.DressingTools
             EditorGUI.EndDisabledGroup();
 
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0 || !dressNowConfirm);
-            if (GUILayout.Button(t._("button_dress_now"), checkBtnStyle, GUILayout.Height(40)))
+            if (GUILayout.Button(t._("button_dress_now"), checkBtnStyle, GUILayout.Height(40)) &&
+                EditorUtility.DisplayDialog("Dressing Tools", "Are you sure to proceed? This cannot be undone.", "Yes", "No"))
             {
-                
+                dressReport = DressReport.Execute(MakeDressSettings(), true);
+                Debug.Log("Executed with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
             }
             EditorGUI.EndDisabledGroup();
 

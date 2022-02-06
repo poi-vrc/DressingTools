@@ -27,5 +27,6 @@ namespace Chocopoi.DressingTools.DressCheckCodeMask
         NULL_ACTIVE_AVATAR_OR_CLOTHES = 0x04,
         NO_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL = 0x08,
         NO_BONES_IN_CLOTHES_ARMATURE_FIRST_LEVEL = 0x10,
+        CLOTHES_IS_A_PREFAB = 0x20,
     }
 }

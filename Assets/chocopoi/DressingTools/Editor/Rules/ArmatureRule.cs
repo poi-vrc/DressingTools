@@ -40,11 +40,13 @@ namespace Chocopoi.DressingTools
 
                     if (avatarDynBone != null || childDynBone != null)
                     {
-                        if (settings.dynamicBoneOption == 0) //keep dynbone and use parentconstraint if necessary
+                        if (settings.dynamicBoneOption == 0) //remove and use parent constraints
                         {
-                            if (childDynBone == null)
+                            if (avatarDynBone != null)
                             {
-                                ParentConstraint comp = childDynBone.gameObject.AddComponent<ParentConstraint>();
+                                Object.DestroyImmediate(childDynBone);
+
+                                ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
                                 comp.constraintActive = true;
 
                                 ConstraintSource source = new ConstraintSource
@@ -55,13 +57,11 @@ namespace Chocopoi.DressingTools
                                 comp.AddSource(source);
                             }
                         }
-                        else if (settings.dynamicBoneOption == 1) //remove and use parent constraints
+                        else if (settings.dynamicBoneOption == 1) //keep dynbone and use parentconstraint if necessary
                         {
-                            if (avatarDynBone != null)
+                            if (childDynBone == null)
                             {
-                                Object.DestroyImmediate(childDynBone);
-
-                                ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
+                                ParentConstraint comp = childDynBone.gameObject.AddComponent<ParentConstraint>();
                                 comp.constraintActive = true;
 
                                 ConstraintSource source = new ConstraintSource

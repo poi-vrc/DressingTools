@@ -8,6 +8,7 @@ namespace Chocopoi.DressingTools
     {
         private static readonly IDressCheckRule[] rules = new IDressCheckRule[]
         {
+            new NotAPrefabRule(),
             new ArmatureRule(),
             new MeshDataRule()
         };
