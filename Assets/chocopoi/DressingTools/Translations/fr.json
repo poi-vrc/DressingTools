@@ -12,7 +12,7 @@
         "label_checking_for_updates": "Recherche de MàJ...",
         "label_could_not_check_update": "Impossible de trouver une MàJ!",
         "label_update_available": "MàJ disponible: {0}! Téléchargez la MàJ depuis le GitHub ci-dessous!",
-        "label_up_to_date": "Your tool is up-to-date.",
+        "label_up_to_date": "Dressing Tools est à jour.",
 
         "tab_simple_mode": "Mode Simple",
         "tab_advanced_mode": "Mode Avancé",
