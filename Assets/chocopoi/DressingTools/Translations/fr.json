@@ -1,0 +1,85 @@
+{
+    "info": {
+        "name": "French",
+        "locale": "fr",
+        "author": "poi-vrc, traduit par EasyMochi"
+    },
+    "keys": {
+        "label_tool_name": "Dressing Tools",
+        "label_header_tool_description": "Dressing Tools vous permet d'habiller vos avatars en un clic!",
+        "label_footer_version": "Version de l'outil: {0}",
+
+        "label_checking_for_updates": "Recherche de MàJ...",
+        "label_could_not_check_update": "Impossible de trouver une MàJ!",
+        "label_update_available": "MàJ disponible: {0}! Téléchargez la MàJ depuis le GitHub ci-dessous!",
+        "label_up_to_date": "Your tool is up-to-date.",
+
+        "tab_simple_mode": "Mode Simple",
+        "tab_advanced_mode": "Mode Avancé",
+
+        "label_setup": "Options",
+        "label_new_bone_name_preview": "L'armature de votre costume sera renommée comme ceci: Hips ({0})",
+        "label_dynamic_bone_auto_handled": "Les Dynamic Bones seront gérés automatiquement.",
+
+        "label_select_avatar": "Selectionnez votre avatar actuel",
+        "object_active_avatar": "Avatar à modifier",
+
+        "label_select_clothes_to_dress": "Selectionnez votre costume",
+        "object_clothes_to_dress": "Costume à utiliser",
+
+        "label_prefix_suffix": "Configuration du préfixe et suffixe",
+        "helpbox_info_prefix_suffix": "Le préfixe et suffixe vous permet d'identifier les os du costume dans l'armature et de les modifier facilement.",
+
+        "toggle_use_default_generated_prefix_suffix": "Préfixe et suffixe par défaut",
+        "text_prefix_to_be_added": "Préfixe à ajouter",
+        "text_suffix_to_be_added": "Suffixe à ajouter",
+        "toggle_remove_existing_prefix_suffix_in_clothes_bone": "Supprimer les suffixes existants dans l'armature du costume",
+
+        "label_dynamic_bone": "Configuration Dynamic Bones",
+        "label_dynamic_bone_if_in_avatar_bone": "Si un os en commun avec l'avatar contient des Dynamic Bones, alors:",
+        "radio_db_remove_and_parent_const": "Supprimer et utiliser des contraintes pointant vers l'armature de l'avatar (Recommandé)",
+        "radio_db_keep_clothes_and_parent_const_if_need": "Conserver les Dynamic Bones et utiliser des contraintes si nécéssaire",
+        "radio_db_create_child_and_exclude": "Créer un enfant GameObject et l'exclure du Dynamic Bone (Legacy)",
+        "radio_db_ignore_all": "Tout ignorer",
+
+        "label_check_and_dress": "Vérifier et habiller",
+        "button_check_and_preview": "Vérifier et prévisualiser",
+        "button_test_now": "Tester",
+        "toggle_dress_declaration": "Je confirme que tout me semble correct.",
+        "button_dress_now": "Habiller",
+        "dialog_dress_confirmation_content": "Êtes-vous certain(e) de vouloir continuer? Il vous sera impossible de revenir en arrière.",
+        "dialog_dress_completed_content": "Succès!",
+        "dialog_dress_failed_content": "L'habillage n'a pas pu aboutir: {0}",
+        "dialog_button_yes": "Oui",
+        "dialog_button_no": "Non",
+        "dialog_button_ok": "OK",
+
+        "helpbox_warn_no_check_report": "Aucun test d'habillage n'a été fait. Cliquez sur \"Tester\" pour effectuer un test.",
+        "helpbox_error_check_result_invalid_settings": "Résultats du test: Paramètres invalides, Vérifiez vos paramètres avant de continuer.",
+        "helpbox_error_check_result_incompatible": "Résultats du test: Incompatible, cet outil ne peut pas habiller l'avatar automatiquement.",
+        "helpbox_info_check_result_ok": "Résultats du test: OK, le costume semble être parfaitement compatible avec votre avatar.",
+        "helpbox_warn_check_result_compatible": "Résultats du test: Compatible, mais le costume peut ne pas aller avec votre avatar parfaitement.",
+
+        "label_problems_detected": "Problèmes détectés:",
+        "label_no_problems_found": "Aucun problème.",
+        "helpbox_error_no_armature_in_avatar": "Erreur: Pas d'armature dans l'avatar",
+        "helpbox_error_no_armature_in_clothes": "Erreur: Pas d'armature dans le costume",
+        "helpbox_error_null_avatar_or_clothes": "Erreur: Pas d'avatar ou de costume",
+        "helpbox_error_no_bones_in_avatar_armature_first_level": "Erreur: Pas d'os détecté dans l'armature de l'avatar.",
+        "helpbox_error_no_bones_in_clothes_armature_first_level": "Erreur: Pas d'os détecté dans l'armature du costume.",
+        "helpbox_error_clothes_is_prefab": "Erreur: Le costume ne peut pas être un Prefab. Cliquez sur \"Unpack it completely\" pour le changer en GameObject.",
+        "helpbox_warn_multiple_bones_in_avatar_armature_first_level": "Attention: Plusieurs os détectés à la racine de l'armature de l'avatar.",
+        "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "Attention: Plusieurs os détectés à la racine de l'armature du costume.",
+        "helpbox_warn_bones_not_matching_in_armature_first_level": "Attention: Des os à la racine de l'armature sont différents, ils ne seront pas déplacés.",
+        "helpbox_info_non_matching_clothes_bones_kept_untouched": "Info: Les os qui sont différents de ceux de l'avatar seront conservés sans modifications.",
+        "helpbox_info_dynamic_bone_all_ignored": "Info: Les compenents Dynamic Bone sont ignorés. Les résultats peuvent varier.",
+        "helpbox_info_existing_prefix_detected_and_removed": "Info: Un ou des préfixe ont été trouvés et seront supprimés. Essayez de désactiver cette option si vous rencontrez des problèmes.",
+        "helpbox_info_existing_prefix_detected_not_removed": "Info: Un ou des préfixe ont été trouvés et ne seront pas supprimés. Essayez d'activer cette option si vous rencontrez des problèmes.",
+        "helpbox_info_existing_suffix_detected_and_removed": "Info: Un ou des suffixes ont été trouvés et supprimés. Essayez de désactiver cette option si vous rencontrez des problèmes.",
+        "helpbox_info_existing_suffix_detected_not_removed": "Info: Un ou des suffixes ont été trouvés et ne seront pas supprimés. Essayez d'activer cette option si vous rencontrez des problèmes.",
+
+        "helpbox_info_move_clothes_into_place": "Déplacez votre costume au bon endroit avant de continuer! Cet outil peut combiner mais pas encore déplacer.",
+        "helpbox_warn_exit_play_mode": "Veuillez fermer le Play Mode avant de continuer!",
+        "dialog_test_mode_not_implemented": "Le mode test n'est pas encore implémenté. Veuillez tester manuellement en déplaçant les os de DressingToolsPreview en Play Mode."
+    }
+}

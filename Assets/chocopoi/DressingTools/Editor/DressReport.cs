@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools
@@ -63,8 +64,16 @@ namespace Chocopoi.DressingTools
                 targetAvatar = Object.Instantiate(settings.activeAvatar.gameObject);
                 targetAvatar.name = avatarNewName;
 
+                Vector3 newAvatarPosition = targetAvatar.transform.position;
+                newAvatarPosition.x -= 20;
+                targetAvatar.transform.position = newAvatarPosition;
+
                 targetClothes = Object.Instantiate(settings.clothesToDress);
                 targetClothes.name = clothesNewName;
+
+                Vector3 newClothesPosition = targetClothes.transform.position;
+                newClothesPosition.x -= 20;
+                targetClothes.transform.position = newClothesPosition;
             } else
             {
                 targetAvatar = settings.activeAvatar.gameObject;
@@ -90,6 +99,10 @@ namespace Chocopoi.DressingTools
                 report.result = DressCheckResult.OK;
             }
 
+#if UNITY_EDITOR
+            Selection.activeGameObject = targetAvatar;
+            SceneView.FrameLastActiveSceneView();
+#endif
             return report;
         }
     }

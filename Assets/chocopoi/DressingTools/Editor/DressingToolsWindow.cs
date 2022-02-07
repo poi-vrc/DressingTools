@@ -35,7 +35,7 @@ namespace Chocopoi.DressingTools
 
         private string suffixToBeAdded;
 
-        private bool detectAndRemoveExistingSuffix = true;
+        private bool removeExistingPrefixSuffix = true;
 
         private bool dressNowConfirm = false;
 
@@ -46,12 +46,18 @@ namespace Chocopoi.DressingTools
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
-        [MenuItem("chocopoi/Dressing Tools")]
+        [MenuItem("Tools/chocopoi/Dressing Tools", false, 0)]
         public static void Init()
         {
             DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
             window.titleContent = new GUIContent(t._("label_tool_name"));
             window.Show();
+        }
+
+        [MenuItem("Tools/chocopoi/Translations/Reload Dressing Tools Translations", false, 1)]
+        public static void ReloadTranslations()
+        {
+            t.LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
         }
 
         /// <summary>
@@ -116,14 +122,10 @@ namespace Chocopoi.DressingTools
 
         private void DrawLanguageSelectorGUI()
         {
-            if (GUILayout.Button("Reload translations"))
-            {
-                t.LoadTranslations(new string[] { "en", "zh", "jp" });
-            }
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             GUILayout.Label("Language 語言 言語:");
-            selectedLang = GUILayout.Toolbar(selectedLang, new string[] { "EN", "中", "JP" });
+            selectedLang = GUILayout.Toolbar(selectedLang, new string[] { "English", "中文", "日本語", "한국어", "Français" });
 
             if (selectedLang == 0)
             {
@@ -137,6 +139,14 @@ namespace Chocopoi.DressingTools
             {
                 t.SetLocale("jp");
             }
+            else if (selectedLang == 3)
+            {
+                t.SetLocale("kr");
+            }
+            else if (selectedLang == 4)
+            {
+                t.SetLocale("fr");
+            }
             GUILayout.EndHorizontal();
         }
 
@@ -147,7 +157,7 @@ namespace Chocopoi.DressingTools
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 24
             };
-            EditorGUILayout.LabelField("Dressing Tools", titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(30));
+            EditorGUILayout.LabelField(t._("label_tool_name"), titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(30));
 
             EditorGUILayout.Separator();
 
@@ -161,24 +171,21 @@ namespace Chocopoi.DressingTools
             DrawHorizontalLine();
 
             GUILayout.Label(t._("label_footer_version", TOOL_VERSION));
-            
+
+            // i know this way of checking is so dumb
+
             if (CHECK_UPDATE_STATUS == 0)
             {
-                CHECK_UPDATE_STATUS = 1;
-                //TODO: async
-                //new Thread(FetchOnlineVersion).Start();
                 FetchOnlineVersion();
             }
-            else if (CHECK_UPDATE_STATUS == 1)
-            {
-                GUILayout.Label(t._("label_checking_for_update"));
-            }
-            else if (CHECK_UPDATE_STATUS == 2)
+
+            if (CHECK_UPDATE_STATUS == 2)
             {
                 if (TOOL_VERSION != ONLINE_VERSION)
                 {
                     GUILayout.Label(t._("label_update_available", ONLINE_VERSION));
-                } else
+                }
+                else
                 {
                     GUILayout.Label(t._("label_up_to_date"));
                 }
@@ -187,6 +194,7 @@ namespace Chocopoi.DressingTools
             {
                 GUILayout.Label(t._("label_could_not_check_update"));
             }
+
             EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools");
         }
 
@@ -323,7 +331,7 @@ namespace Chocopoi.DressingTools
                 clothesToDress = clothesToDress,
                 prefixToBeAdded = prefixToBeAdded,
                 suffixToBeAdded = suffixToBeAdded,
-                detectAndRemoveExistingSuffix = detectAndRemoveExistingSuffix,
+                removeExistingPrefixSuffix = removeExistingPrefixSuffix,
                 dynamicBoneOption = dynamicBoneOption
             };
         }
@@ -332,11 +340,20 @@ namespace Chocopoi.DressingTools
         {
             GUILayout.Label(t._("label_setup"), EditorStyles.boldLabel);
 
+            EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
+
             if (activeAvatar == null)
             {
-                activeAvatar = FindObjectOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
+                VRC.SDKBase.VRC_AvatarDescriptor[] avatars = FindObjectsOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
+                foreach (VRC.SDKBase.VRC_AvatarDescriptor avatar in avatars)
+                {
+                    if (!avatar.name.StartsWith("DressingToolsPreview_"))
+                    {
+                        activeAvatar = avatar;
+                    }
+                }
             }
-            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField("Active Avatar", activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
@@ -378,6 +395,8 @@ namespace Chocopoi.DressingTools
 
             GUILayout.Label(t._("label_select_clothes_to_dress"), EditorStyles.boldLabel);
 
+            EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
+
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
             DrawHorizontalLine();
@@ -403,7 +422,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            detectAndRemoveExistingSuffix = GUILayout.Toggle(detectAndRemoveExistingSuffix, t._("toggle_remove_existing_suffix_in_clothes_bone"));
+            removeExistingPrefixSuffix = GUILayout.Toggle(removeExistingPrefixSuffix, t._("toggle_remove_existing_prefix_suffix_in_clothes_bone"));
 
             DrawHorizontalLine();
 
@@ -463,7 +482,8 @@ namespace Chocopoi.DressingTools
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-                EditorUtility.DisplayDialog(t._("label_tool_name"), "Not implemented yet.", "OK");
+                EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_test_mode_not_implemented", activeAvatar?.name), "OK");
+                EditorApplication.EnterPlaymode();
             }
             EditorGUILayout.EndHorizontal();
             dressNowConfirm = GUILayout.Toggle(dressNowConfirm, t._("toggle_dress_declaration"));
@@ -502,7 +522,15 @@ namespace Chocopoi.DressingTools
         {
             DrawLanguageSelectorGUI();
             DrawToolHeaderGUI();
-            DrawToolContentGUI();
+
+            if (Application.isPlaying)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_warn_exit_play_mode"), MessageType.Warning);
+            } else
+            {
+                DrawToolContentGUI();
+            }
+
             DrawToolFooterGUI();
         }
     }

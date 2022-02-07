@@ -22,7 +22,7 @@ namespace Chocopoi.DressingTools
 
         private I18n()
         {
-            LoadTranslations(new string[] { "en", "zh", "jp" });
+            LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
         }
 
         public void LoadTranslations(string[] locales)

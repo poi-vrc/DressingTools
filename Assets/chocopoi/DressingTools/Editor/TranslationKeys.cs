@@ -37,7 +37,7 @@ namespace Chocopoi.DressingTools
         public string toggle_use_default_generated_prefix_suffix;
         public string text_prefix_to_be_added;
         public string text_suffix_to_be_added;
-        public string toggle_remove_existing_suffix_in_clothes_bone;
+        public string toggle_remove_existing_prefix_suffix_in_clothes_bone;
 
         public string label_dynamic_bone;
         public string label_dynamic_bone_if_in_avatar_bone;
@@ -83,5 +83,9 @@ namespace Chocopoi.DressingTools
         public string helpbox_info_existing_prefix_detected_not_removed;
         public string helpbox_info_existing_suffix_detected_and_removed;
         public string helpbox_info_existing_suffix_detected_not_removed;
+
+        public string helpbox_info_move_clothes_into_place;
+        public string helpbox_warn_exit_play_mode;
+        public string dialog_test_mode_not_implemented;
     }
 }

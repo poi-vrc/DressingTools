@@ -19,7 +19,7 @@ namespace Chocopoi.DressingTools
                     int prefixBracketEnd = child.name.IndexOf(")");
                     if (prefixBracketEnd != -1 && prefixBracketEnd != child.name.Length - 1) //remove it if there is
                     {
-                        if (settings.detectAndRemoveExistingSuffix)
+                        if (settings.removeExistingPrefixSuffix)
                         {
                             child.name = child.name.Substring(prefixBracketEnd + 1).Trim();
                             report.infos |= DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_AND_REMOVED;
@@ -37,7 +37,7 @@ namespace Chocopoi.DressingTools
                     int suffixBracketStart = child.name.LastIndexOf("(");
                     if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
                     {
-                        if (settings.detectAndRemoveExistingSuffix)
+                        if (settings.removeExistingPrefixSuffix)
                         {
                             child.name = child.name.Substring(0, suffixBracketStart).Trim();
                             report.infos |= DressCheckCodeMask.Info.EXISTING_SUFFIX_DETECTED_AND_REMOVED;

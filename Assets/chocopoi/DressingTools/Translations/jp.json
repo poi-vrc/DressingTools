@@ -1,0 +1,85 @@
+{
+    "info": {
+        "name": "日本語",
+        "locale": "jp",
+        "author": "poi-vrc"
+    },
+    "keys": {
+        "label_tool_name": "ドレッシングツール",
+        "label_header_tool_description": "このツールを使えば、好きなアバターにワンクリックでどんな服でも着られます!",
+        "label_footer_version": "ツールバージョン: {0}",
+
+        "label_checking_for_updates": "アップデートを確認中...",
+        "label_could_not_check_update": "アップデートを確認できません!",
+        "label_update_available": "アップデート {0} が見つかりました! 下のGitHubサイトで新しいバージョンをダウンロードしてください!",
+        "label_up_to_date": "ツールは最新バージョンです。",
+
+        "tab_simple_mode": "簡易モード",
+        "tab_advanced_mode": "アドバンスド",
+
+        "label_setup": "設定",
+        "label_new_bone_name_preview": "服の骨はこのように命名されます： Hips ({0})",
+        "label_dynamic_bone_auto_handled": "骨のダイナミックボーン(DynamicBone)を自動的に処理する",
+
+        "label_select_avatar": "アバターを選んでください",
+        "object_active_avatar": "アバター",
+
+        "label_select_clothes_to_dress": "着る服を選んでください",
+        "object_clothes_to_dress": "服",
+
+        "label_prefix_suffix": "服の骨の命名プレフィックスとサフィックスの設定",
+        "helpbox_info_prefix_suffix": "骨の名前のプレフィックスとサフィックスを設定すると、様々な服の骨を識別することができ、管理や削除が容易になります。",
+
+        "toggle_use_default_generated_prefix_suffix": "自動的に生成されたプレフィックスとサフィックスを使用する (プリセット)",
+        "text_prefix_to_be_added": "プレフィックス",
+        "text_suffix_to_be_added": "サフィックス",
+        "toggle_remove_existing_prefix_suffix_in_clothes_bone": "服の骨から既存のプレフィックスとサフィックスを自動的に削除する",
+
+        "label_dynamic_bone": "ダイナミックボーン(DynamicBone)設定",
+        "label_dynamic_bone_if_in_avatar_bone": "アバターの骨と服の骨の両方にDynamicBoneがあるなら:",
+        "radio_db_remove_and_parent_const": "服の骨DynamicBoneを削除してParentConstraintを使用してアバターの骨を指し示す(おすすめ)",
+        "radio_db_keep_clothes_and_parent_const_if_need": "服の骨のDynamicBoneを維持し、必要に応じてParentConstraintを使用",
+        "radio_db_create_child_and_exclude": "新しいアバターの骨を作成し、アバターのDynamicBoneから除外する (古い方法)",
+        "radio_db_ignore_all": "全てを無視する",
+
+        "label_check_and_dress": "チェックと服を着せる",
+        "button_check_and_preview": "チェックとプレビュー",
+        "button_test_now": "テスト",
+        "toggle_dress_declaration": "アバターと衣装がよく合っていることを確認しました。",
+        "button_dress_now": "着る",
+        "dialog_dress_confirmation_content": "続行しますか? 元の状態に戻ることはできません。",
+        "dialog_dress_completed_content": "完了！",
+        "dialog_dress_failed_content": "失敗: {0}",
+        "dialog_button_yes": "はい",
+        "dialog_button_no": "いいえ",
+        "dialog_button_ok": "わかった",
+
+        "helpbox_warn_no_check_report": "チェックの報告がない, 「チェックとプレビュー」をクリックしてチェックを実行します。",
+        "helpbox_error_check_result_invalid_settings": "検査結果: 設定エラー、続行する前に設定を確認してください。",
+        "helpbox_error_check_result_incompatible": "検査結果: 互換性がない，自動的に服を着ることはできない。",
+        "helpbox_info_check_result_ok": "検査結果: OK! 服はぴったり合っているようです。",
+        "helpbox_warn_check_result_compatible": "検査結果: 互換性はありますが、服は完全に適合していない可能性があります。",
+
+        "label_problems_detected": "発見された問題:",
+        "label_no_problems_found": "問題は見つからなかった。",
+        "helpbox_error_no_armature_in_avatar": "エラー: アバターにArmatureがない",
+        "helpbox_error_no_armature_in_clothes": "エラー: 服にArmatureがない",
+        "helpbox_error_null_avatar_or_clothes": "エラー: アバターや服がありません",
+        "helpbox_error_no_bones_in_avatar_armature_first_level": "エラー: アバターのArmatureに骨がない",
+        "helpbox_error_no_bones_in_clothes_armature_first_level": "エラー: 服のArmatureに骨がない",
+        "helpbox_error_clothes_is_prefab": "エラー: 衣服はPrefabであってはなりません。 「Unpack it completely」を使って、普通のGameObjectの服にしてください",
+        "helpbox_warn_multiple_bones_in_avatar_armature_first_level": "警告: アバターのArmatureの第1段階で複数の骨が見つかりました",
+        "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告: 服のArmatureの第1段階で複数の骨が見つかりました",
+        "helpbox_warn_bones_not_matching_in_armature_first_level": "警告: 一部の第1段階の骨に一致するアバターの骨がないため、アバターの中に移動しません",
+        "helpbox_info_non_matching_clothes_bones_kept_untouched": "お知らせ: 一致する服の骨がなければ、元の骨に残ります",
+        "helpbox_info_dynamic_bone_all_ignored": "お知らせ： すべてのDynamicBoneは無視されます, 問題が生じる可能性がある",
+        "helpbox_info_existing_prefix_detected_and_removed": "お知らせ: 一部の服の骨から既存のプレフィックスが発見されて削除されました、もし服の骨が一致する問題が発生したら、その設定を消してみてください。",
+        "helpbox_info_existing_prefix_detected_not_removed": "お知らせ: いくつかの服の骨から既存のプレフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
+        "helpbox_info_existing_suffix_detected_and_removed": "お知らせ: いくつかの服の骨から既存のサフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
+        "helpbox_info_existing_suffix_detected_not_removed": "お知らせ: いくつかの服の骨から既存のサフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
+
+        "helpbox_info_move_clothes_into_place": "着る前に自分の服をよく置きなさい、このツールはアバターと服を自動的に合わせるだけで、服の位置を自動的に調整することはできません。",
+        "helpbox_warn_exit_play_mode": "Play Modeを終了して続行してください!",
+        "dialog_test_mode_not_implemented": "現在はテストモードがありません、PlayModeでDressingToolsPreview_{0}のアバターの骨を動かして手動で服をテストしてください。"
+    }
+}

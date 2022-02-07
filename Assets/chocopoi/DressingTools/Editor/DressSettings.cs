@@ -14,7 +14,7 @@ namespace Chocopoi.DressingTools
 
         public string suffixToBeAdded;
 
-        public bool detectAndRemoveExistingSuffix;
+        public bool removeExistingPrefixSuffix;
 
         public int dynamicBoneOption;
     }

@@ -11,7 +11,7 @@
 
         "label_checking_for_updates": "Checking for updates...",
         "label_could_not_check_update": "Could not check for updates!",
-        "label_update_available": "Update avaiable to {0}! Download new version from the GitHub website below!",
+        "label_update_available": "Update available to {0}! Download new version from the GitHub website below!",
         "label_up_to_date": "Your tool is up-to-date.",
 
         "tab_simple_mode": "Simple Mode",
@@ -33,7 +33,7 @@
         "toggle_use_default_generated_prefix_suffix": "Use default generated prefix and suffix",
         "text_prefix_to_be_added": "Prefix to be added",
         "text_suffix_to_be_added": "Suffix to be added",
-        "toggle_remove_existing_suffix_in_clothes_bone": "Remove existing suffix in clothes bone automatically",
+        "toggle_remove_existing_prefix_suffix_in_clothes_bone": "Remove existing suffix in clothes bone automatically",
 
         "label_dynamic_bone": "DynamicBone configuration",
         "label_dynamic_bone_if_in_avatar_bone": "If the matching avatar bone has DynamicBone, I should:",
@@ -76,6 +76,10 @@
         "helpbox_info_existing_prefix_detected_and_removed": "Info: Existing prefix is detected and removed in some bones. Try disabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_prefix_detected_not_removed": "Info: Existing prefix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_suffix_detected_and_removed": "Info: Existing suffix is detected and removed in some bones. Try disabling the setting if you experience bone mismatch problems.",
-        "helpbox_info_existing_suffix_detected_not_removed": "Info: Existing suffix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems."
+        "helpbox_info_existing_suffix_detected_not_removed": "Info: Existing suffix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
+
+        "helpbox_info_move_clothes_into_place": "Remember to move your clothes into place before dressing up! This tool only combines but cannot put it into place currently.",
+        "helpbox_warn_exit_play_mode": "Please exit play mode to continue!",
+        "dialog_test_mode_not_implemented": "Testing is currently not implemented. Please test it manually by moving the bones of DressingToolsPreview in Play Mode."
     }
 }
