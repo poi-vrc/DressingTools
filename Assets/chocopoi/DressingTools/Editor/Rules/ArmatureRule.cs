@@ -36,7 +36,7 @@ namespace Chocopoi.DressingTools
                     // Find whether there is a DynamicBone component in the bone
 
                     DynamicBone avatarDynBone = avatarTrans?.GetComponent<DynamicBone>();
-                    DynamicBone childDynBone = child?.GetComponent<DynamicBone>();
+                    DynamicBone childDynBone = child.GetComponent<DynamicBone>();
 
                     if (avatarDynBone != null || childDynBone != null)
                     {
@@ -44,7 +44,10 @@ namespace Chocopoi.DressingTools
                         {
                             if (avatarDynBone != null)
                             {
-                                Object.DestroyImmediate(childDynBone);
+                                if (childDynBone != null)
+                                {
+                                    Object.DestroyImmediate(childDynBone);
+                                }
 
                                 ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
                                 comp.constraintActive = true;
@@ -103,7 +106,24 @@ namespace Chocopoi.DressingTools
                                 child.SetParent(dynBoneChild.transform);
                             }
                         }
-                        else if (settings.dynamicBoneOption == 3) //ignore all
+                        else if (settings.dynamicBoneOption == 3) //copy dyn bone to clothes bone
+                        {
+#if UNITY_EDITOR
+                            if (avatarDynBone != null)
+                            {
+                                //destroy the existing dyn bone
+                                if (childDynBone != null)
+                                {
+                                    Object.DestroyImmediate(childDynBone);
+                                }
+
+                                //copy component using unityeditor internal method (easiest way)
+                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone);
+                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+                            }
+#endif
+                        }
+                        else if (settings.dynamicBoneOption == 4) //ignore all
                         {
                             report.infos |= DressCheckCodeMask.Info.DYNAMIC_BONE_ALL_IGNORED;
                             child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
@@ -116,7 +136,7 @@ namespace Chocopoi.DressingTools
                     }
 
                     if (!ProcessBone(report, settings, level + 1, avatarTrans, child))
-                    {
+                    {       
                         return false;
                     }
                 }

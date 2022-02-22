@@ -446,6 +446,7 @@ namespace Chocopoi.DressingTools
                 " " + t._("radio_db_remove_and_parent_const"),
                 " " + t._("radio_db_keep_clothes_and_parent_const_if_need"),
                 " " + t._("radio_db_create_child_and_exclude"),
+                " " + t._("radio_db_copy_dyn_bone_to_clothes"),
                 " " + t._("radio_db_ignore_all")
             }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(200));
         }
