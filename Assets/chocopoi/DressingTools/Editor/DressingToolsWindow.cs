@@ -161,6 +161,11 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
+            if (CHECK_UPDATE_STATUS == 2 && TOOL_VERSION != ONLINE_VERSION)
+            {
+                EditorGUILayout.HelpBox(t._("label_update_available", ONLINE_VERSION), MessageType.Warning);
+            }
+
             EditorGUILayout.HelpBox(t._("label_header_tool_description"), MessageType.Info);
 
             DrawHorizontalLine();
