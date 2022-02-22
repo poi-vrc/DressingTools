@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools
                         {
                             if (childDynBone == null)
                             {
-                                ParentConstraint comp = childDynBone.gameObject.AddComponent<ParentConstraint>();
+                                ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
                                 comp.constraintActive = true;
 
                                 ConstraintSource source = new ConstraintSource
