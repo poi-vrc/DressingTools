@@ -39,7 +39,8 @@
         "label_dynamic_bone_if_in_avatar_bone": "アバターの骨と服の骨の両方にDynamicBoneがあるなら:",
         "radio_db_remove_and_parent_const": "服の骨DynamicBoneを削除してParentConstraintを使用してアバターの骨を指し示す(おすすめ)",
         "radio_db_keep_clothes_and_parent_const_if_need": "服の骨のDynamicBoneを維持し、必要に応じてParentConstraintを使用",
-        "radio_db_create_child_and_exclude": "新しいアバターの骨を作成し、アバターのDynamicBoneから除外する (古い方法)",
+        "radio_db_create_child_and_exclude": "新しいアバターの骨を作成し、アバターのDynamicBoneから除外する (旧方法)",
+        "radio_db_copy_dyn_bone_to_clothes": "アバターのDynamicBoneを衣服にコピーする (旧方法)",
         "radio_db_ignore_all": "全てを無視する",
 
         "label_check_and_dress": "チェックと服を着せる",
@@ -77,7 +78,10 @@
         "helpbox_info_existing_prefix_detected_not_removed": "お知らせ: いくつかの服の骨から既存のプレフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
         "helpbox_info_existing_suffix_detected_and_removed": "お知らせ: いくつかの服の骨から既存のサフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
         "helpbox_info_existing_suffix_detected_not_removed": "お知らせ: いくつかの服の骨から既存のサフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
+        "helpbox_info_armature_object_guessed": "お知らせ: 服のArmatureは推測です。 正しくない場合は、正しいArmatureの名前を \"Armature\" に変更してください。",
+        "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "お知らせ： アバターのArmatureの第1段階で複数の骨が見つかりました",
 
+        "helpbox_info_dyn_bone_config_details": "DynamicBoneの設定の詳細:",
         "helpbox_info_move_clothes_into_place": "着る前に自分の服をよく置きなさい、このツールはアバターと服を自動的に合わせるだけで、服の位置を自動的に調整することはできません。",
         "helpbox_warn_exit_play_mode": "Play Modeを終了して続行してください!",
         "dialog_test_mode_not_implemented": "現在はテストモードがありません、PlayModeでDressingToolsPreview_{0}のアバターの骨を動かして手動で服をテストしてください。"

@@ -40,6 +40,7 @@
         "radio_db_remove_and_parent_const": "Supprimer et utiliser des contraintes pointant vers l'armature de l'avatar (Recommandé)",
         "radio_db_keep_clothes_and_parent_const_if_need": "Conserver les Dynamic Bones et utiliser des contraintes si nécéssaire",
         "radio_db_create_child_and_exclude": "Créer un enfant GameObject et l'exclure du Dynamic Bone (Legacy)",
+        "_radio_db_copy_dyn_bone_to_clothes": null,
         "radio_db_ignore_all": "Tout ignorer",
 
         "label_check_and_dress": "Vérifier et habiller",
@@ -77,7 +78,10 @@
         "helpbox_info_existing_prefix_detected_not_removed": "Info: Un ou des préfixe ont été trouvés et ne seront pas supprimés. Essayez d'activer cette option si vous rencontrez des problèmes.",
         "helpbox_info_existing_suffix_detected_and_removed": "Info: Un ou des suffixes ont été trouvés et supprimés. Essayez de désactiver cette option si vous rencontrez des problèmes.",
         "helpbox_info_existing_suffix_detected_not_removed": "Info: Un ou des suffixes ont été trouvés et ne seront pas supprimés. Essayez d'activer cette option si vous rencontrez des problèmes.",
+        "_helpbox_info_armature_object_guessed": null,
+        "_helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": null,
 
+        "_helpbox_info_dyn_bone_config_details": null,
         "helpbox_info_move_clothes_into_place": "Déplacez votre costume au bon endroit avant de continuer! Cet outil peut combiner mais pas encore déplacer.",
         "helpbox_warn_exit_play_mode": "Veuillez fermer le Play Mode avant de continuer!",
         "dialog_test_mode_not_implemented": "Le mode test n'est pas encore implémenté. Veuillez tester manuellement en déplaçant les os de DressingToolsPreview en Play Mode."
