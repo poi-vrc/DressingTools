@@ -40,6 +40,7 @@
         "radio_db_remove_and_parent_const": "刪除衣服骨頭DynamicBone並使用ParentConstraint指向角色骨頭 （推薦）",
         "radio_db_keep_clothes_and_parent_const_if_need": "保持衣服骨頭DynamicBone並有需要時使用ParentConstraint",
         "radio_db_create_child_and_exclude": "創建角色骨頭子GameObject並將其從角色骨頭DynamicBone中排除掉 (舊方法)",
+        "radio_db_copy_dyn_bone_to_clothes": "複製角色 DynamicBone 到衣服上 (舊方法)",
         "radio_db_ignore_all": "忽略所有",
 
         "label_check_and_dress": "檢查和打扮",
@@ -77,7 +78,10 @@
         "helpbox_info_existing_prefix_detected_not_removed": "通知： 有些衣服骨頭中發現到現有的前綴但沒有被刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試打開那個設定",
         "helpbox_info_existing_suffix_detected_and_removed": "通知： 有些衣服骨頭中發現到現有的後綴並已刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試關掉那個設定",
         "helpbox_info_existing_suffix_detected_not_removed": "通知： 有些衣服骨頭中發現到現有的後綴但沒有被刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試打開那個設定",
+        "helpbox_info_armature_object_guessed": "通知： 衣服骨架是猜出來的。 如果猜出來的骨架不正確，請自已把正確的骨架重命名為 \"Armature\"",
+        "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "通知： 在角色骨架的第一級中發現到多個骨頭",
 
+        "helpbox_info_dyn_bone_config_details": "有關 DynamicBone 設定的詳細：",
         "helpbox_info_move_clothes_into_place": "記得在穿着之前把你的衣服放好, 目前這個工具只能自動合拼角色和衣服，但不能自動調整衣服位置。",
         "helpbox_warn_exit_play_mode": "請退出Play Mode以繼續！",
         "dialog_test_mode_not_implemented": "暫時未有測試模式。 請用Play Mode移動 DressingToolsPreview_{0} 的角色骨頭來手動測試衣服。"

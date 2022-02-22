@@ -44,6 +44,7 @@ namespace Chocopoi.DressingTools
         public string radio_db_remove_and_parent_const;
         public string radio_db_keep_clothes_and_parent_const_if_need;
         public string radio_db_create_child_and_exclude;
+        public string radio_db_copy_dyn_bone_to_clothes;
         public string radio_db_ignore_all;
 
         public string label_check_and_dress;
@@ -83,7 +84,10 @@ namespace Chocopoi.DressingTools
         public string helpbox_info_existing_prefix_detected_not_removed;
         public string helpbox_info_existing_suffix_detected_and_removed;
         public string helpbox_info_existing_suffix_detected_not_removed;
+        public string helpbox_info_armature_object_guessed;
+        public string helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed;
 
+        public string helpbox_info_dyn_bone_config_details;
         public string helpbox_info_move_clothes_into_place;
         public string helpbox_warn_exit_play_mode;
         public string dialog_test_mode_not_implemented;

@@ -53,14 +53,47 @@ namespace Chocopoi.DressingTools
             }
         }
 
+        public Transform GuessArmature(GameObject targetClothes)
+        {
+            List<Transform> transforms = new List<Transform>();
+
+            for (int i = 0; i < targetClothes.transform.childCount; i++)
+            {
+                Transform child = targetClothes.transform.GetChild(i);
+
+                if (child.name.Contains("Armature"))
+                {
+                    transforms.Add(child);
+                }
+            }
+
+            if (transforms.Count == 1)
+            {
+                transforms[0].name = "Armature";
+                return transforms[0];
+            } else
+            {
+                return null;
+            }
+        }
+
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
             Transform clothesArmature = targetClothes.transform.Find("Armature");
 
             if (!clothesArmature)
             {
-                report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
-                return false;
+                //guess the armature object by finding if the object name contains "Armature" and rename it
+                clothesArmature = GuessArmature(targetClothes);
+
+                if (clothesArmature)
+                {
+                    report.infos |= DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED;
+                } else
+                {
+                    report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
+                    return false;
+                }
             }
 
             ProcessBone(report, settings, clothesArmature);

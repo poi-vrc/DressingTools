@@ -38,7 +38,8 @@
         "label_dynamic_bone_if_in_avatar_bone": "아바타 뼈와 옷 뼈 모두에 다이나믹본이 있다면:",
         "radio_db_remove_and_parent_const": "옷bone Dynamic Bone을 삭제하고 Parent Constraint를 사용하여 아바타 bone을 가리킴 (권장)",
         "radio_db_keep_clothes_and_parent_const_if_need": "옷 bone의 Dynamic Bone 유지 및 필요시 Parent Constraint 사용",
-        "radio_db_create_child_and_exclude": "새로운 아바타 bone을 생성하여 아바타의 Dynamic Bone에서 제외 (오래된 방법)",
+        "radio_db_create_child_and_exclude": "새로운 아바타 bone을 생성하여 아바타의 Dynamic Bone에서 제외 (구방법)",
+        "radio_db_copy_dyn_bone_to_clothes": "아바타의 DynamicBone을 복사하기 (구방법)",
         "radio_db_ignore_all": "모두 무시",
 
         "label_check_and_dress": "확인 및 옷입히기",
@@ -76,7 +77,10 @@
         "helpbox_info_existing_prefix_detected_not_removed": "정보: 몇 개의 clothes의 bone에서 기존의 prefix가 발견되었지만, 삭제되지 않았어요. 만약 clothes의 bone이 일치하는 문제가 발생하면, 그 설정을 시도해 보세요.",
         "helpbox_info_existing_suffix_detected_and_removed": "정보: 몇 개의 clothes의 bone에서 기존의 surfix가 발견되어 삭제되었어요. 만약 clothes의 bone가 일치하는 문제가 발생하면, 그 설정을 지워 보세요",
         "helpbox_info_existing_suffix_detected_not_removed": "정보: 몇 개의 clothes의 bone에서 기존의 surfix가 발견되었지만, 삭제되지 않았어요. 만약 clothes의 bone이 일치하는 문제가 발생하면, 그 설정을 시도해 보세요.",
+        "helpbox_info_armature_object_guessed": "경고: 옷의 Armature는 확실하지 않아요. 올바르지 않으면 올바르게 Armature로 변경하세요",
+        "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "정보: 아바타의 Armature 밑에서 여러 개의 bone이 발견되었어요.",
 
+        "helpbox_info_dyn_bone_config_details": "DynamicBone 설정 세부 사항: ",
         "helpbox_info_move_clothes_into_place": "입히기 전에 자신의 옷을 잘 맞춰주세요, 이 도구는 아바타와 옷을 자동적으로 맞추는 것만으로 옷의 위치를 자동으로 조정할 수 없어요",
         "helpbox_warn_exit_play_mode": "계속하려면 play mode를 종료해주세요",
         "dialog_test_mode_not_implemented": "테스트가 현재 구현되지 않았습니다. 위에 재생을 누르고 DressingToolsPreview의 아바타 bone을 이동하여 수동으로 테스트하십시오."

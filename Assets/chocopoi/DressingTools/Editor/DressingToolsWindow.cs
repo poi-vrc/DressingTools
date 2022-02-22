@@ -161,6 +161,11 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
+            if (CHECK_UPDATE_STATUS == 2 && TOOL_VERSION != ONLINE_VERSION)
+            {
+                EditorGUILayout.HelpBox(t._("label_update_available", ONLINE_VERSION), MessageType.Warning);
+            }
+
             EditorGUILayout.HelpBox(t._("label_header_tool_description"), MessageType.Info);
 
             DrawHorizontalLine();
@@ -321,6 +326,16 @@ namespace Chocopoi.DressingTools
             {
                 EditorGUILayout.HelpBox(t._("helpbox_info_existing_suffix_detected_not_removed"), MessageType.Info);
             }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_armature_object_guessed"), MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED) == DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed"), MessageType.Info);
+            }
         }
 
         private DressSettings MakeDressSettings()
@@ -441,8 +456,12 @@ namespace Chocopoi.DressingTools
                 " " + t._("radio_db_remove_and_parent_const"),
                 " " + t._("radio_db_keep_clothes_and_parent_const_if_need"),
                 " " + t._("radio_db_create_child_and_exclude"),
+                " " + t._("radio_db_copy_dyn_bone_to_clothes"),
                 " " + t._("radio_db_ignore_all")
-            }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(150));
+            }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(200));
+
+            GUILayout.Label(t._("helpbox_info_dyn_bone_config_details"));
+            EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools/wiki/DynamicBone-Configuration");
         }
 
         private void DrawToolContentGUI()

@@ -13,6 +13,8 @@ namespace Chocopoi.DressingTools.DressCheckCodeMask
         EXISTING_PREFIX_DETECTED_AND_REMOVED = 0x08,
         EXISTING_SUFFIX_DETECTED_NOT_REMOVED = 0x10,
         EXISTING_SUFFIX_DETECTED_AND_REMOVED = 0x20,
+        ARMATURE_OBJECT_GUESSED = 0x40,
+        MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED = 0x80 //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
     }
 
     public enum Warn
@@ -31,6 +33,6 @@ namespace Chocopoi.DressingTools.DressCheckCodeMask
         NULL_ACTIVE_AVATAR_OR_CLOTHES = 0x04,
         NO_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL = 0x08,
         NO_BONES_IN_CLOTHES_ARMATURE_FIRST_LEVEL = 0x10,
-        CLOTHES_IS_A_PREFAB = 0x20,
+        CLOTHES_IS_A_PREFAB = 0x20
     }
 }
