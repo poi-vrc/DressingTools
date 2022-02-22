@@ -459,6 +459,9 @@ namespace Chocopoi.DressingTools
                 " " + t._("radio_db_copy_dyn_bone_to_clothes"),
                 " " + t._("radio_db_ignore_all")
             }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(200));
+
+            GUILayout.Label(t._("helpbox_info_dyn_bone_config_details"));
+            EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools/wiki/DynamicBone-Configuration");
         }
 
         private void DrawToolContentGUI()

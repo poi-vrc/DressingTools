@@ -40,6 +40,7 @@
         "radio_db_remove_and_parent_const": "Remove and use parent constraints pointing to avatar for all clothes bones (Preferred)",
         "radio_db_keep_clothes_and_parent_const_if_need": "Keep clothes dynamic bones and use parent constraints if necessary",
         "radio_db_create_child_and_exclude": "Create GameObject child and exclude it from DynamicBone (Legacy)",
+        "radio_db_copy_dyn_bone_to_clothes": "Copy DynamicBones to clothes (Legacy)",
         "radio_db_ignore_all": "Ignore all",
 
         "label_check_and_dress": "Check and Dress up",
@@ -77,7 +78,10 @@
         "helpbox_info_existing_prefix_detected_not_removed": "Info: Existing prefix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_suffix_detected_and_removed": "Info: Existing suffix is detected and removed in some bones. Try disabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_suffix_detected_not_removed": "Info: Existing suffix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
+        "helpbox_info_armature_object_guessed": "Info: The clothes armature was guessed. If the guessed armature is incorrect, please rename the correct armature with the name \"Armature\".",
+        "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "Info: Multiple bones detected in the first level of avatar armature.",
 
+        "helpbox_info_dyn_bone_config_details": "For details what the configuration actually means:",
         "helpbox_info_move_clothes_into_place": "Remember to move your clothes into place before dressing up! This tool only combines but cannot put it into place currently.",
         "helpbox_warn_exit_play_mode": "Please exit play mode to continue!",
         "dialog_test_mode_not_implemented": "Testing is currently not implemented. Please test it manually by moving the bones of DressingToolsPreview in Play Mode."
