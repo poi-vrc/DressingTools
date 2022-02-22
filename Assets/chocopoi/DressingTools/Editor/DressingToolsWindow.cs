@@ -331,6 +331,11 @@ namespace Chocopoi.DressingTools
             {
                 EditorGUILayout.HelpBox(t._("helpbox_info_armature_object_guessed"), MessageType.Info);
             }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED) == DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed"), MessageType.Info);
+            }
         }
 
         private DressSettings MakeDressSettings()

@@ -145,6 +145,19 @@ namespace Chocopoi.DressingTools
             return true;
         }
 
+        public bool IsOnlyOneEnabledChildBone(Transform armature)
+        {
+            int count = 0;
+            for (int i = 0; i < armature.childCount; i++)
+            {
+                if (armature.GetChild(i).gameObject.activeSelf)
+                {
+                    count++;
+                }
+            }
+            return count == 1;
+        }
+
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
             Transform avatarArmature = targetAvatar.transform.Find("Armature");
@@ -176,7 +189,15 @@ namespace Chocopoi.DressingTools
 
             if (avatarArmature.childCount > 1)
             {
-                report.warnings |= DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL;
+                //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
+                //otherwise the UI will always just say Compatible but not OK
+                if (IsOnlyOneEnabledChildBone(avatarArmature))
+                {
+                    report.infos |= DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED;
+                } else
+                {
+                    report.warnings |= DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL;
+                }
             }
 
             if (clothesArmature.childCount > 1)
