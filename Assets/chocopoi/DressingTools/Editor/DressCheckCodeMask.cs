@@ -13,6 +13,7 @@ namespace Chocopoi.DressingTools.DressCheckCodeMask
         EXISTING_PREFIX_DETECTED_AND_REMOVED = 0x08,
         EXISTING_SUFFIX_DETECTED_NOT_REMOVED = 0x10,
         EXISTING_SUFFIX_DETECTED_AND_REMOVED = 0x20,
+        ARMATURE_OBJECT_GUESSED = 0x40
     }
 
     public enum Warn

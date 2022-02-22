@@ -321,6 +321,11 @@ namespace Chocopoi.DressingTools
             {
                 EditorGUILayout.HelpBox(t._("helpbox_info_existing_suffix_detected_not_removed"), MessageType.Info);
             }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_armature_object_guessed"), MessageType.Info);
+            }
         }
 
         private DressSettings MakeDressSettings()
@@ -442,7 +447,7 @@ namespace Chocopoi.DressingTools
                 " " + t._("radio_db_keep_clothes_and_parent_const_if_need"),
                 " " + t._("radio_db_create_child_and_exclude"),
                 " " + t._("radio_db_ignore_all")
-            }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(150));
+            }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(200));
         }
 
         private void DrawToolContentGUI()
