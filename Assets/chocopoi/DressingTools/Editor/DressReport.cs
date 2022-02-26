@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools
@@ -12,9 +13,10 @@ namespace Chocopoi.DressingTools
             new NotAPrefabRule(),
             new ExistingPrefixSuffixRule(),
             new ArmatureRule(),
-            new MeshDataRule(),
-            new TestModeRule()
+            new MeshDataRule()
         };
+
+        private static AnimatorController testModeAnimationController;
 
         public DressCheckResult result;
 
@@ -26,7 +28,12 @@ namespace Chocopoi.DressingTools
 
         private DressReport()
         {
+            testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/chocopoi/DressingTools/Animations/TestModeAnimationController.controller");
 
+            if (testModeAnimationController == null)
+            {
+                Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
+            }
         }
 
         private static void CleanUp()
@@ -80,6 +87,17 @@ namespace Chocopoi.DressingTools
                 Vector3 newClothesPosition = targetClothes.transform.position;
                 newClothesPosition.x -= 20;
                 targetClothes.transform.position = newClothesPosition;
+
+                Animator animator = targetAvatar.GetComponent<Animator>();
+
+                //add animation controller
+                if (animator != null)
+                {
+                    animator.runtimeAnimatorController = testModeAnimationController;
+                }
+
+                //add dummy focus sceneview script
+                targetAvatar.AddComponent<DummyFocusSceneViewScript>();
             } else
             {
                 targetAvatar = settings.activeAvatar.gameObject;
