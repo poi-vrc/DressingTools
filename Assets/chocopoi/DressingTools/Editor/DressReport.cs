@@ -12,7 +12,8 @@ namespace Chocopoi.DressingTools
             new NotAPrefabRule(),
             new ExistingPrefixSuffixRule(),
             new ArmatureRule(),
-            new MeshDataRule()
+            new MeshDataRule(),
+            new AddTestModeAnimationControllerRule()
         };
 
         public DressCheckResult result;
@@ -28,22 +29,8 @@ namespace Chocopoi.DressingTools
 
         }
 
-        public static DressReport GenerateReport(DressSettings settings)
+        private static void CleanUp()
         {
-            return Execute(settings, false);
-        }
-
-        public static DressReport Execute(DressSettings settings, bool write)
-        {
-            DressReport report = new DressReport();
-
-            if (settings.activeAvatar == null || settings.clothesToDress == null)
-            {
-                report.result = DressCheckResult.INVALID_SETTINGS;
-                report.errors |= DressCheckCodeMask.Error.NULL_ACTIVE_AVATAR_OR_CLOTHES;
-                return report;
-            }
-
             GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
             foreach (GameObject obj in allObjects)
             {
@@ -51,6 +38,25 @@ namespace Chocopoi.DressingTools
                 {
                     Object.DestroyImmediate(obj);
                 }
+            }
+        }
+
+        public static DressReport GenerateReport(DressSettings settings)
+        {
+            return Execute(settings, false);
+        }
+
+        public static DressReport Execute(DressSettings settings, bool write)
+        {
+            CleanUp();
+
+            DressReport report = new DressReport();
+
+            if (settings.activeAvatar == null || settings.clothesToDress == null)
+            {
+                report.result = DressCheckResult.INVALID_SETTINGS;
+                report.errors |= DressCheckCodeMask.Error.NULL_ACTIVE_AVATAR_OR_CLOTHES;
+                return report;
             }
 
             string avatarNewName = "DressingToolsPreview_" + settings.activeAvatar.gameObject.name;

@@ -501,7 +501,7 @@ namespace Chocopoi.DressingTools
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-                EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_test_mode_not_implemented", activeAvatar?.name), "OK");
+                //EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_test_mode_not_implemented", activeAvatar?.name), "OK");
                 EditorApplication.EnterPlaymode();
             }
             EditorGUILayout.EndHorizontal();
