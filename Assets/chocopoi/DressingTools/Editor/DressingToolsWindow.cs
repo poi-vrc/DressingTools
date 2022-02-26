@@ -157,13 +157,17 @@ namespace Chocopoi.DressingTools
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 24
             };
-            EditorGUILayout.LabelField(t._("label_tool_name"), titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(30));
+            EditorGUILayout.LabelField(t._("label_tool_name") + " ❤️", titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(30));
 
             EditorGUILayout.Separator();
 
             if (CHECK_UPDATE_STATUS == 2 && TOOL_VERSION != ONLINE_VERSION)
             {
                 EditorGUILayout.HelpBox(t._("label_update_available", ONLINE_VERSION), MessageType.Warning);
+                if (GUILayout.Button(t._("label_download")))
+                {
+                    Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                }
             }
 
             EditorGUILayout.HelpBox(t._("label_header_tool_description"), MessageType.Info);
@@ -189,6 +193,10 @@ namespace Chocopoi.DressingTools
                 if (TOOL_VERSION != ONLINE_VERSION)
                 {
                     GUILayout.Label(t._("label_update_available", ONLINE_VERSION));
+                    if (GUILayout.Button(t._("label_download")))
+                    {
+                        Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                    }
                 }
                 else
                 {
@@ -501,7 +509,7 @@ namespace Chocopoi.DressingTools
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-                EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_test_mode_not_implemented", activeAvatar?.name), "OK");
+                //EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_test_mode_not_implemented", activeAvatar?.name), "OK");
                 EditorApplication.EnterPlaymode();
             }
             EditorGUILayout.EndHorizontal();

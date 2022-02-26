@@ -83,6 +83,8 @@
         "helpbox_info_dyn_bone_config_details": "DynamicBone 설정 세부 사항: ",
         "helpbox_info_move_clothes_into_place": "입히기 전에 자신의 옷을 잘 맞춰주세요, 이 도구는 아바타와 옷을 자동적으로 맞추는 것만으로 옷의 위치를 자동으로 조정할 수 없어요",
         "helpbox_warn_exit_play_mode": "계속하려면 play mode를 종료해주세요",
-        "dialog_test_mode_not_implemented": "테스트가 현재 구현되지 않았습니다. 위에 재생을 누르고 DressingToolsPreview의 아바타 bone을 이동하여 수동으로 테스트하십시오."
+        "dialog_test_mode_not_implemented": "테스트가 현재 구현되지 않았습니다. 위에 재생을 누르고 DressingToolsPreview의 아바타 bone을 이동하여 수동으로 테스트하십시오.",
+        
+        "label_download": "다운로드"
     }
 }

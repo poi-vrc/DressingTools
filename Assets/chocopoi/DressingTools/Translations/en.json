@@ -84,6 +84,8 @@
         "helpbox_info_dyn_bone_config_details": "For details what the configuration actually means:",
         "helpbox_info_move_clothes_into_place": "Remember to move your clothes into place before dressing up! This tool only combines but cannot put it into place currently.",
         "helpbox_warn_exit_play_mode": "Please exit play mode to continue!",
-        "dialog_test_mode_not_implemented": "Testing is currently not implemented. Please test it manually by moving the bones of DressingToolsPreview in Play Mode."
+        "dialog_test_mode_not_implemented": "Testing is currently not implemented. Please test it manually by moving the bones of DressingToolsPreview in Play Mode.",
+        
+        "label_download": "Download"
     }
 }
