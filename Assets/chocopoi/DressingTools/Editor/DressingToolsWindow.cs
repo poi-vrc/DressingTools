@@ -41,7 +41,7 @@ namespace Chocopoi.DressingTools
 
         private int selectedInterface = 0;
 
-        private DressReport dressReport = null;
+        private static DressReport dressReport = null;
 
         /// <summary>
         /// Initialize the Dressing Tool window
@@ -164,6 +164,10 @@ namespace Chocopoi.DressingTools
             if (CHECK_UPDATE_STATUS == 2 && TOOL_VERSION != ONLINE_VERSION)
             {
                 EditorGUILayout.HelpBox(t._("label_update_available", ONLINE_VERSION), MessageType.Warning);
+                if (GUILayout.Button(t._("label_download")))
+                {
+                    Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                }
             }
 
             EditorGUILayout.HelpBox(t._("label_header_tool_description"), MessageType.Info);
@@ -189,6 +193,10 @@ namespace Chocopoi.DressingTools
                 if (TOOL_VERSION != ONLINE_VERSION)
                 {
                     GUILayout.Label(t._("label_update_available", ONLINE_VERSION));
+                    if (GUILayout.Button(t._("label_download")))
+                    {
+                        Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                    }
                 }
                 else
                 {

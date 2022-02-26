@@ -84,6 +84,8 @@
         "helpbox_info_dyn_bone_config_details": "DynamicBoneの設定の詳細:",
         "helpbox_info_move_clothes_into_place": "着る前に自分の服をよく置きなさい、このツールはアバターと服を自動的に合わせるだけで、服の位置を自動的に調整することはできません。",
         "helpbox_warn_exit_play_mode": "Play Modeを終了して続行してください!",
-        "dialog_test_mode_not_implemented": "現在はテストモードがありません、PlayModeでDressingToolsPreview_{0}のアバターの骨を動かして手動で服をテストしてください。"
+        "dialog_test_mode_not_implemented": "現在はテストモードがありません、PlayModeでDressingToolsPreview_{0}のアバターの骨を動かして手動で服をテストしてください。",
+        
+        "label_download": "ダウンロード"
     }
 }

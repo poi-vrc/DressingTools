@@ -91,5 +91,7 @@ namespace Chocopoi.DressingTools
         public string helpbox_info_move_clothes_into_place;
         public string helpbox_warn_exit_play_mode;
         public string dialog_test_mode_not_implemented;
+
+        public string label_download;
     }
 }
