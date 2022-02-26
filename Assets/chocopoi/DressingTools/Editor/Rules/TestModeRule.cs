@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class AddTestModeAnimationControllerRule : IDressCheckRule
+    public class TestModeRule : IDressCheckRule
     {
         private static AnimatorController testModeAnimationController;
 
-        public AddTestModeAnimationControllerRule()
+        public TestModeRule()
         {
             testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/chocopoi/DressingTools/Animations/TestModeAnimationController.controller");
 
@@ -24,10 +24,14 @@ namespace Chocopoi.DressingTools
         {
             Animator animator = targetAvatar.GetComponent<Animator>();
 
+            //add animation controller
             if (animator != null)
             {
                 animator.runtimeAnimatorController = testModeAnimationController;
             }
+
+            //add dummy focus sceneview script
+            targetAvatar.AddComponent<DummyFocusSceneViewScript>();
 
             return true;
         }

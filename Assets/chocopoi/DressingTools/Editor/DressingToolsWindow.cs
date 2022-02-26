@@ -41,7 +41,7 @@ namespace Chocopoi.DressingTools
 
         private int selectedInterface = 0;
 
-        private static DressReport dressReport = null;
+        private DressReport dressReport = null;
 
         /// <summary>
         /// Initialize the Dressing Tool window
@@ -157,7 +157,7 @@ namespace Chocopoi.DressingTools
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 24
             };
-            EditorGUILayout.LabelField(t._("label_tool_name"), titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(30));
+            EditorGUILayout.LabelField(t._("label_tool_name") + " ❤️", titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(30));
 
             EditorGUILayout.Separator();
 

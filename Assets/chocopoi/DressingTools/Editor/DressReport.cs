@@ -13,7 +13,7 @@ namespace Chocopoi.DressingTools
             new ExistingPrefixSuffixRule(),
             new ArmatureRule(),
             new MeshDataRule(),
-            new AddTestModeAnimationControllerRule()
+            new TestModeRule()
         };
 
         public DressCheckResult result;
