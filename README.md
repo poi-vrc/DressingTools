@@ -12,7 +12,7 @@ Dressing your own avatar is really that easy. 自分のアバターを着るの�
 
     VRCSDKとDynamicBoneをインポートしてください
 
-2. Download DressingTools from [here]https://github.com/poi-vrc/DressingTools/releases/latest).
+2. Download DressingTools from [here](https://github.com/poi-vrc/DressingTools/releases/latest).
 
     [こちら](https://github.com/poi-vrc/DressingTools/releases/latest)からDressingToolsをダウンロードしてください
 
