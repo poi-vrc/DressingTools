@@ -12,15 +12,19 @@ Dressing your own avatar is really that easy. 自分のアバターを着るの�
 
     VRCSDKとDynamicBoneをインポートしてください
 
-2. Import your avatar and clothes
+2. Download DressingTools from [here]https://github.com/poi-vrc/DressingTools/releases/latest).
+
+    [こちら](https://github.com/poi-vrc/DressingTools/releases/latest)からDressingToolsをダウンロードしてください
+
+3.. Import your avatar and clothes
 
     アバターと服をインポートしてください
 
-3. Duplicate (Select and `CTRL+D`) your avatar in your scene for backup
+4. Duplicate (Select and `CTRL+D`) your avatar in your scene for backup
 
     シーン内でアバターを複製 （選択してCtrl+D） してバックアップしてください
 
-4. Dress up within 1 minute!
+5. Dress up within 1 minute!
 
     1分以内に着ることができます!
 
