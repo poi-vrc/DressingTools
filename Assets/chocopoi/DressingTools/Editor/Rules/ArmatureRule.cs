@@ -97,9 +97,14 @@ namespace Chocopoi.DressingTools
 
                             //verify if it is excluded
 
-                            if (!avatarDynBone.m_Exclusions.Contains(dynBoneChild.transform))
+                            if (avatarDynBone != null && !avatarDynBone.m_Exclusions.Contains(dynBoneChild.transform))
                             {
                                 avatarDynBone.m_Exclusions.Add(dynBoneChild.transform);
+                            }
+
+                            if (avatarPhysBone != null && !avatarPhysBone.ignoreTransforms.Contains(dynBoneChild.transform))
+                            {
+                                avatarPhysBone.ignoreTransforms.Add(dynBoneChild.transform);
                             }
 
                             // destroy the child dynbone / physbone component
