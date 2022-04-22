@@ -85,7 +85,19 @@
         "helpbox_info_move_clothes_into_place": "Remember to move your clothes into place before dressing up! This tool only combines but cannot put it into place currently.",
         "helpbox_warn_exit_play_mode": "Please exit play mode to continue!",
         "dialog_test_mode_not_implemented": "Testing is currently not implemented. Please test it manually by moving the bones of DressingToolsPreview in Play Mode.",
-        
-        "label_download": "Download"
+
+        "label_download": "Download",
+
+        "text_new_clothes_name": "New Clothes Name",
+        "button_rename_clothes_name": "Rename",
+        "helpbox_error_clothes_name_illegal_characters_detected": "Error: Illegal characters detected in the name of the clothes. Click \"Rename\" below to fix it.",
+
+        "foldout_dressing_statistics": "Statistics",
+        "label_statistics_total_avatar_dynbones": "Total Avatar DynamicBones: {0}",
+        "label_statistics_total_avatar_physbones": "Total Avatar DynamicBones: {0}",
+        "label_statistics_total_clothes_dynbones": "Total Clothes DynamicBones: {0} ({1})",
+        "label_statistics_total_clothes_physbones": "Total Clothes DynamicBones: {0} ({1})",
+        "label_statistics_total_clothes_objects": "Total Clothes Objects: {0}",
+        "label_statistics_total_clothes_mesh_data": "Total Clothes Mesh Data: {0}"
     }
 }

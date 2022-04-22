@@ -15,7 +15,7 @@ namespace Chocopoi.DressingTools
     {
         private static I18n t = I18n.GetInstance();
 
-        private static Regex nonAlphanumericRegex = new Regex("[^a-zA-Z0-9_-]");
+        private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 
         private static string ONLINE_VERSION = null;
 
@@ -253,21 +253,21 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            showStatisticsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showStatisticsFoldout, showStatisticsFoldout ? "Statistics" : "Statistics (Click here to show statistics)");
+            showStatisticsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showStatisticsFoldout, t._("foldout_dressing_statistics"));
 
             if (showStatisticsFoldout)
             {
-                GUILayout.Label("Total Avatar DynamicBones: " + dressReport.avatarDynBones.Count);
+                GUILayout.Label(t._("label_statistics_total_avatar_dynbones", dressReport.avatarDynBones.Count));
 
-                GUILayout.Label("Total Avatar PhysBones: " + dressReport.avatarPhysBones.Count);    
+                GUILayout.Label(t._("label_statistics_total_avatar_physbones", dressReport.avatarPhysBones.Count));    
 
-                GUILayout.Label(string.Format("Total Clothes DynamicBones: {0} ({1})", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
+                GUILayout.Label(t._("label_statistics_total_clothes_dynbones", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
 
-                GUILayout.Label(string.Format("Total Clothes PhysBones: {0} ({1})", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
+                GUILayout.Label(t._("label_statistics_total_clothes_physbones", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
 
-                GUILayout.Label("Total Clothes Objects: " + dressReport.clothesAllObjects.Count);
+                GUILayout.Label(t._("label_statistics_total_clothes_objects", dressReport.clothesAllObjects.Count));
 
-                GUILayout.Label("Total Clothes Mesh Data: " + dressReport.clothesMeshDataObjects.Count);
+                GUILayout.Label(t._("label_statistics_total_clothes_mesh_data", dressReport.clothesMeshDataObjects.Count));
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
 
@@ -387,6 +387,31 @@ namespace Chocopoi.DressingTools
             };
         }
 
+        private void DrawNewClothesNameGUI()
+        {
+            if (clothesToDress != null && illegalCharactersRegex.IsMatch(clothesToDress.name))
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_clothes_name_illegal_characters_detected"), MessageType.Error);
+                newClothesName = illegalCharactersRegex.Replace(newClothesName, "");
+            }
+
+            if (newClothesName == null || lastClothesToDress != clothesToDress)
+            {
+                newClothesName = clothesToDress?.name;
+            }
+            lastClothesToDress = clothesToDress;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(clothesToDress == null);
+            newClothesName = EditorGUILayout.TextField(t._("text_new_clothes_name"), newClothesName);
+            if (GUILayout.Button(t._("button_rename_clothes_name"), GUILayout.ExpandWidth(false)))
+            {
+                clothesToDress.name = newClothesName;
+            }
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+        }
+
         private void DrawSimpleGUI()
         {
             GUILayout.Label(t._("label_setup"), EditorStyles.boldLabel);
@@ -408,26 +433,7 @@ namespace Chocopoi.DressingTools
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
-            if (clothesToDress != null && nonAlphanumericRegex.IsMatch(clothesToDress.name))
-            {
-                EditorGUILayout.HelpBox("the name of the clothes contains non-alphanumeric characters", MessageType.Error);
-            }
-
-            if (newClothesName == null || lastClothesToDress != clothesToDress)
-            {
-                newClothesName = clothesToDress?.name;
-            }
-            lastClothesToDress = clothesToDress;
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(clothesToDress == null);
-            newClothesName = EditorGUILayout.TextField("new clothes name", newClothesName);
-            if (GUILayout.Button("Rename", GUILayout.ExpandWidth(false)))
-            {
-                clothesToDress.name = newClothesName;
-            }
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndHorizontal();
+            DrawNewClothesNameGUI();
 
             // simple mode defaults to use generated prefix
 
@@ -470,6 +476,8 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+
+            DrawNewClothesNameGUI();
 
             DrawHorizontalLine();
 
@@ -548,12 +556,14 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.BeginHorizontal();
 
+            EditorGUI.BeginDisabledGroup(clothesToDress == null || illegalCharactersRegex.IsMatch(clothesToDress.name));
             if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
                 dressReport = DressReport.GenerateReport(MakeDressSettings());
                 dressNowConfirm = false;
                 Debug.Log("[DressingTools] Dress report generated with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
             }
+            EditorGUI.EndDisabledGroup();
 
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
