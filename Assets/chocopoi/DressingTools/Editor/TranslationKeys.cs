@@ -93,5 +93,16 @@ namespace Chocopoi.DressingTools
         public string dialog_test_mode_not_implemented;
 
         public string label_download;
+
+        public string text_new_clothes_name;
+        public string button_rename_clothes_name;
+        public string helpbox_error_clothes_name_illegal_characters_detected;
+        public string foldout_dressing_statistics;
+        public string label_statistics_total_avatar_dynbones;
+        public string label_statistics_total_avatar_physbones;
+        public string label_statistics_total_clothes_dynbones;
+        public string label_statistics_total_clothes_physbones;
+        public string label_statistics_total_clothes_objects;
+        public string label_statistics_total_clothes_mesh_data;
     }
 }

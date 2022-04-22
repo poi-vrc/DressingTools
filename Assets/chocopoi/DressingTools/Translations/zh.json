@@ -19,7 +19,7 @@
 
         "label_setup": "設定",
         "label_new_bone_name_preview": "你的衣服骨頭會這樣命名： Hips ({0})",
-        "label_dynamic_bone_auto_handled": "工具會自動處理衣服骨頭的 DynamicBone。",
+        "label_dynamic_bone_auto_handled": "工具會自動處理衣服骨頭的 DynamicBone 和 PhysBones (測試中)。",
 
         "label_select_avatar": "選擇你的角色",
         "object_active_avatar": "角色",
@@ -35,12 +35,12 @@
         "text_suffix_to_be_added": "要添加的後綴",
         "toggle_remove_existing_prefix_suffix_in_clothes_bone": "自動刪除衣服骨頭中的現有前綴和後綴",
 
-        "label_dynamic_bone": "DynamicBone 設定",
-        "label_dynamic_bone_if_in_avatar_bone": "如果角色骨頭和衣服骨頭同時有 DynamicBone，我應該：",
-        "radio_db_remove_and_parent_const": "刪除衣服骨頭DynamicBone並使用ParentConstraint指向角色骨頭 （推薦）",
-        "radio_db_keep_clothes_and_parent_const_if_need": "保持衣服骨頭DynamicBone並有需要時使用ParentConstraint",
-        "radio_db_create_child_and_exclude": "創建角色骨頭子GameObject並將其從角色骨頭DynamicBone中排除掉 (舊方法)",
-        "radio_db_copy_dyn_bone_to_clothes": "複製角色 DynamicBone 到衣服上 (舊方法)",
+        "label_dynamic_bone": "DynamicBones/PhysBones 設定",
+        "label_dynamic_bone_if_in_avatar_bone": "如果角色骨頭和衣服骨頭同時有 DynamicBones/PhysBones，我應該：",
+        "radio_db_remove_and_parent_const": "刪除衣服骨頭 DynamicBones/PhysBones 並使用ParentConstraint指向角色骨頭 （推薦）",
+        "radio_db_keep_clothes_and_parent_const_if_need": "保持衣服骨頭 DynamicBones/PhysBones 並有需要時使用ParentConstraint",
+        "radio_db_create_child_and_exclude": "創建角色骨頭子GameObject並將其從角色骨頭 DynamicBones/PhysBones 中排除掉 (舊方法)",
+        "radio_db_copy_dyn_bone_to_clothes": "複製角色 DynamicBones/PhysBones 到衣服上 (舊方法)",
         "radio_db_ignore_all": "忽略所有",
 
         "label_check_and_dress": "檢查和打扮",
@@ -73,7 +73,7 @@
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告： 在衣服骨架的第一級中發現到多個骨頭",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "警告： 有些衣服骨頭在第一級骨架中沒有匹配的角色骨頭, 他們不會被移動到角色中",
         "helpbox_info_non_matching_clothes_bones_kept_untouched": "通知： 沒有匹配的衣服骨頭會繼續留在原來的骨頭保持不變。",
-        "helpbox_info_dynamic_bone_all_ignored": "通知： 所有DynamicBone會被忽略, 可能會出現問題",
+        "helpbox_info_dynamic_bone_all_ignored": "通知： 所有 DynamicBone/PhysBone 會被忽略, 可能會出現問題",
         "helpbox_info_existing_prefix_detected_and_removed": "通知： 有些衣服骨頭中發現到現有的前綴並已刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試關掉那個設定",
         "helpbox_info_existing_prefix_detected_not_removed": "通知： 有些衣服骨頭中發現到現有的前綴但沒有被刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試打開那個設定",
         "helpbox_info_existing_suffix_detected_and_removed": "通知： 有些衣服骨頭中發現到現有的後綴並已刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試關掉那個設定",
@@ -81,11 +81,23 @@
         "helpbox_info_armature_object_guessed": "通知： 衣服骨架是猜出來的。 如果猜出來的骨架不正確，請自已把正確的骨架重命名為 \"Armature\"",
         "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "通知： 在角色骨架的第一級中發現到多個骨頭",
 
-        "helpbox_info_dyn_bone_config_details": "有關 DynamicBone 設定的詳細：",
+        "helpbox_info_dyn_bone_config_details": "有關 DynamicBone/PhysBone 設定的詳細：",
         "helpbox_info_move_clothes_into_place": "記得在穿着之前把你的衣服放好, 目前這個工具只能自動合拼角色和衣服，但不能自動調整衣服位置。",
         "helpbox_warn_exit_play_mode": "請退出Play Mode以繼續！",
         "dialog_test_mode_not_implemented": "暫時未有測試模式。 請用Play Mode移動 DressingToolsPreview_{0} 的角色骨頭來手動測試衣服。",
-        
-        "label_download": "下載"
+
+        "label_download": "下載",
+
+        "text_new_clothes_name": "新衣服名稱",
+        "button_rename_clothes_name": "重新命名",
+        "helpbox_error_clothes_name_illegal_characters_detected": "錯誤: 在新衣服名稱中發現有不適合的符號, 按下面的\"重新命名\"以修復問題",
+
+        "foldout_dressing_statistics": "角色和衣服數據",
+        "label_statistics_total_avatar_dynbones": "合共角色 DynamicBones: {0}",
+        "label_statistics_total_avatar_physbones": "合共角色 PhysBones: {0}",
+        "label_statistics_total_clothes_dynbones": "合共衣服 DynamicBones: {0} ({1})",
+        "label_statistics_total_clothes_physbones": "合共衣服 PhysBones: {0} ({1})",
+        "label_statistics_total_clothes_objects": "合共衣服物件: {0}",
+        "label_statistics_total_clothes_mesh_data": "合共衣服 Mesh 數據: {0}"
     }
 }

@@ -35,12 +35,12 @@
         "text_suffix_to_be_added": "Suffixe à ajouter",
         "toggle_remove_existing_prefix_suffix_in_clothes_bone": "Supprimer les suffixes existants dans l'armature du costume",
 
-        "label_dynamic_bone": "Configuration Dynamic Bones",
-        "label_dynamic_bone_if_in_avatar_bone": "Si un os en commun avec l'avatar contient des Dynamic Bones, alors:",
+        "label_dynamic_bone": "Configuration DynamicBones/PhysBones",
+        "label_dynamic_bone_if_in_avatar_bone": "Si un os en commun avec l'avatar contient des DynamicBone/PhysBone, alors:",
         "radio_db_remove_and_parent_const": "Supprimer et utiliser des contraintes pointant vers l'armature de l'avatar (Recommandé)",
-        "radio_db_keep_clothes_and_parent_const_if_need": "Conserver les Dynamic Bones et utiliser des contraintes si nécéssaire",
-        "radio_db_create_child_and_exclude": "Créer un enfant GameObject et l'exclure du Dynamic Bone (Legacy)",
-        "radio_db_copy_dyn_bone_to_clothes": "Copier DynamicBones aux vêtements (Legacy)",
+        "radio_db_keep_clothes_and_parent_const_if_need": "Conserver les DynamicBone/PhysBone et utiliser des contraintes si nécéssaire",
+        "radio_db_create_child_and_exclude": "Créer un enfant GameObject et l'exclure du DynamicBone/PhysBone (Legacy)",
+        "radio_db_copy_dyn_bone_to_clothes": "Copier DynamicBone/PhysBone aux vêtements (Legacy)",
         "radio_db_ignore_all": "Tout ignorer",
 
         "label_check_and_dress": "Vérifier et habiller",
@@ -73,7 +73,7 @@
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "Attention: Plusieurs os détectés à la racine de l'armature du costume.",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "Attention: Des os à la racine de l'armature sont différents, ils ne seront pas déplacés.",
         "helpbox_info_non_matching_clothes_bones_kept_untouched": "Info: Les os qui sont différents de ceux de l'avatar seront conservés sans modifications.",
-        "helpbox_info_dynamic_bone_all_ignored": "Info: Les compenents Dynamic Bone sont ignorés. Les résultats peuvent varier.",
+        "helpbox_info_dynamic_bone_all_ignored": "Info: Les compenents DynamicBone/PhysBone sont ignorés. Les résultats peuvent varier.",
         "helpbox_info_existing_prefix_detected_and_removed": "Info: Un ou des préfixe ont été trouvés et seront supprimés. Essayez de désactiver cette option si vous rencontrez des problèmes.",
         "helpbox_info_existing_prefix_detected_not_removed": "Info: Un ou des préfixe ont été trouvés et ne seront pas supprimés. Essayez d'activer cette option si vous rencontrez des problèmes.",
         "helpbox_info_existing_suffix_detected_and_removed": "Info: Un ou des suffixes ont été trouvés et supprimés. Essayez de désactiver cette option si vous rencontrez des problèmes.",
@@ -85,7 +85,19 @@
         "helpbox_info_move_clothes_into_place": "Déplacez votre costume au bon endroit avant de continuer! Cet outil peut combiner mais pas encore déplacer.",
         "helpbox_warn_exit_play_mode": "Veuillez fermer le Play Mode avant de continuer!",
         "dialog_test_mode_not_implemented": "Le mode test n'est pas encore implémenté. Veuillez tester manuellement en déplaçant les os de DressingToolsPreview en Play Mode.",
-        
-        "label_download": "Télécharger"
+
+        "label_download": "Télécharger",
+
+        "text_new_clothes_name": "Nom du nouveau costume",
+        "button_rename_clothes_name": "Renommer",
+        "helpbox_error_clothes_name_illegal_characters_detected": "Erreur : caractères illégaux détectés dans le nom du costume. Cliquez sur \"Renommer\" ci-dessous pour le corriger.",
+
+        "foldout_dressing_statistics": "Statistiques",
+        "label_statistics_total_avatar_dynbones": "Avatar DynamicBones Totaux: {0}",
+        "label_statistics_total_avatar_physbones": "Avatar PhysBones Totaux: {0}",
+        "label_statistics_total_clothes_dynbones": "Costume DynamicBones Totaux: {0} ({1})",
+        "label_statistics_total_clothes_physbones": "Costume PhysBones Totaux: {0} ({1})",
+        "label_statistics_total_clothes_objects": "Costume Objets Totaux: {0}",
+        "label_statistics_total_clothes_mesh_data": "Costume Mesh Totaux: {0}"
     }
 }

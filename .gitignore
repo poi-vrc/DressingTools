@@ -81,3 +81,17 @@ crashlytics-build.properties
 # Ignore DynamicBone files
 /[Aa]ssets/DynamicBone/
 /[Aa]ssets/DynamicBone.meta
+
+# Ignore test files
+/[Aa]ssets/Toon/
+/[Aa]ssets/Toon.meta
+/[Aa]ssets/lilToon/
+/[Aa]ssets/lilToon.meta
+/[Aa]ssets/lilToonSetting/
+/[Aa]ssets/lilToonSetting.meta
+/[Aa]ssets/Maya/
+/[Aa]ssets/Maya.meta
+/[Aa]ssets/Kikyo/
+/[Aa]ssets/Kikyo.meta
+/[Aa]ssets/csc.rsp
+/[Aa]ssets/csc.rsp.meta

@@ -19,7 +19,7 @@
 
         "label_setup": "設定",
         "label_new_bone_name_preview": "服の骨はこのように命名されます： Hips ({0})",
-        "label_dynamic_bone_auto_handled": "骨のダイナミックボーン(DynamicBone)を自動的に処理する",
+        "label_dynamic_bone_auto_handled": "骨の DynamicBone/PhysBone (Beta) を自動的に処理する",
 
         "label_select_avatar": "アバターを選んでください",
         "object_active_avatar": "アバター",
@@ -35,12 +35,12 @@
         "text_suffix_to_be_added": "サフィックス",
         "toggle_remove_existing_prefix_suffix_in_clothes_bone": "服の骨から既存のプレフィックスとサフィックスを自動的に削除する",
 
-        "label_dynamic_bone": "ダイナミックボーン(DynamicBone)設定",
-        "label_dynamic_bone_if_in_avatar_bone": "アバターの骨と服の骨の両方にDynamicBoneがあるなら:",
-        "radio_db_remove_and_parent_const": "服の骨DynamicBoneを削除してParentConstraintを使用してアバターの骨を指し示す(おすすめ)",
-        "radio_db_keep_clothes_and_parent_const_if_need": "服の骨のDynamicBoneを維持し、必要に応じてParentConstraintを使用",
-        "radio_db_create_child_and_exclude": "新しいアバターの骨を作成し、アバターのDynamicBoneから除外する (旧方法)",
-        "radio_db_copy_dyn_bone_to_clothes": "アバターのDynamicBoneを衣服にコピーする (旧方法)",
+        "label_dynamic_bone": "DynamicBones/PhysBones 設定",
+        "label_dynamic_bone_if_in_avatar_bone": "アバターの骨と服の骨の両方に DynamicBone/PhysBone があるなら:",
+        "radio_db_remove_and_parent_const": "服の骨 DynamicBone/PhysBone を削除してParentConstraintを使用してアバターの骨を指し示す(おすすめ)",
+        "radio_db_keep_clothes_and_parent_const_if_need": "服の骨の DynamicBone/PhysBone を維持し、必要に応じてParentConstraintを使用",
+        "radio_db_create_child_and_exclude": "新しいアバターの骨を作成し、アバターの DynamicBone/PhysBone から除外する (旧方法)",
+        "radio_db_copy_dyn_bone_to_clothes": "アバターの DynamicBone/PhysBone を衣服にコピーする (旧方法)",
         "radio_db_ignore_all": "全てを無視する",
 
         "label_check_and_dress": "チェックと服を着せる",
@@ -73,7 +73,7 @@
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告: 服のArmatureの第1段階で複数の骨が見つかりました",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "警告: 一部の第1段階の骨に一致するアバターの骨がないため、アバターの中に移動しません",
         "helpbox_info_non_matching_clothes_bones_kept_untouched": "お知らせ: 一致する服の骨がなければ、元の骨に残ります",
-        "helpbox_info_dynamic_bone_all_ignored": "お知らせ： すべてのDynamicBoneは無視されます, 問題が生じる可能性がある",
+        "helpbox_info_dynamic_bone_all_ignored": "お知らせ： すべての DynamicBone/PhysBone は無視されます, 問題が生じる可能性がある",
         "helpbox_info_existing_prefix_detected_and_removed": "お知らせ: 一部の服の骨から既存のプレフィックスが発見されて削除されました、もし服の骨が一致する問題が発生したら、その設定を消してみてください。",
         "helpbox_info_existing_prefix_detected_not_removed": "お知らせ: いくつかの服の骨から既存のプレフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
         "helpbox_info_existing_suffix_detected_and_removed": "お知らせ: いくつかの服の骨から既存のサフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
@@ -81,11 +81,23 @@
         "helpbox_info_armature_object_guessed": "お知らせ: 服のArmatureは推測です。 正しくない場合は、正しいArmatureの名前を \"Armature\" に変更してください。",
         "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "お知らせ： アバターのArmatureの第1段階で複数の骨が見つかりました",
 
-        "helpbox_info_dyn_bone_config_details": "DynamicBoneの設定の詳細:",
+        "helpbox_info_dyn_bone_config_details": "DynamicBone/PhysBone の設定の詳細:",
         "helpbox_info_move_clothes_into_place": "着る前に自分の服をよく置きなさい、このツールはアバターと服を自動的に合わせるだけで、服の位置を自動的に調整することはできません。",
         "helpbox_warn_exit_play_mode": "Play Modeを終了して続行してください!",
         "dialog_test_mode_not_implemented": "現在はテストモードがありません、PlayModeでDressingToolsPreview_{0}のアバターの骨を動かして手動で服をテストしてください。",
-        
-        "label_download": "ダウンロード"
+
+        "label_download": "ダウンロード",
+
+        "text_new_clothes_name": "服の名前",
+        "button_rename_clothes_name": "変更する",
+        "helpbox_error_clothes_name_illegal_characters_detected": "エラー：名前に不適切な記号が見つかりました, 問題を解決するには、下の [変更する] を押してください",
+
+        "foldout_dressing_statistics": "アバターと服のデータ",
+        "label_statistics_total_avatar_dynbones": "アバターの DynamicBone 数: {0}",
+        "label_statistics_total_avatar_physbones": "アバターの PhysBone 数: {0}",
+        "label_statistics_total_clothes_dynbones": "服の DynamicBone 数: {0} ({1})",
+        "label_statistics_total_clothes_physbones": "服の PhysBone 数: {0} ({1})",
+        "label_statistics_total_clothes_objects": "服の Object 数: {0}",
+        "label_statistics_total_clothes_mesh_data": "服の Mesh データ数: {0}"
     }
 }

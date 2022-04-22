@@ -15,6 +15,8 @@ namespace Chocopoi.DressingTools
     {
         private static I18n t = I18n.GetInstance();
 
+        private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
+
         private static string ONLINE_VERSION = null;
 
         private static readonly string TOOL_VERSION = GetToolVersion();
@@ -29,6 +31,10 @@ namespace Chocopoi.DressingTools
 
         private GameObject clothesToDress;
 
+        private GameObject lastClothesToDress;
+
+        private string newClothesName;
+
         private bool useDefaultGeneratedPrefixSuffix = true;
 
         private string prefixToBeAdded;
@@ -42,6 +48,10 @@ namespace Chocopoi.DressingTools
         private int selectedInterface = 0;
 
         private DressReport dressReport = null;
+
+        private bool showStatisticsFoldout = false;
+
+        private Vector2 scrollPos;
 
         /// <summary>
         /// Initialize the Dressing Tool window
@@ -245,6 +255,26 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
+            showStatisticsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showStatisticsFoldout, t._("foldout_dressing_statistics"));
+
+            if (showStatisticsFoldout)
+            {
+                GUILayout.Label(t._("label_statistics_total_avatar_dynbones", dressReport.avatarDynBones.Count));
+
+                GUILayout.Label(t._("label_statistics_total_avatar_physbones", dressReport.avatarPhysBones.Count));    
+
+                GUILayout.Label(t._("label_statistics_total_clothes_dynbones", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
+
+                GUILayout.Label(t._("label_statistics_total_clothes_physbones", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
+
+                GUILayout.Label(t._("label_statistics_total_clothes_objects", dressReport.clothesAllObjects.Count));
+
+                GUILayout.Label(t._("label_statistics_total_clothes_mesh_data", dressReport.clothesMeshDataObjects.Count));
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+
+            EditorGUILayout.Separator();
+
             EditorGUILayout.LabelField(t._("label_problems_detected"), EditorStyles.boldLabel);
 
             if (dressReport.infos == 0 && dressReport.warnings == 0 && dressReport.errors == 0)
@@ -359,6 +389,35 @@ namespace Chocopoi.DressingTools
             };
         }
 
+        private void DrawNewClothesNameGUI()
+        {
+            if (clothesToDress != null && (clothesToDress.name == "" || illegalCharactersRegex.IsMatch(clothesToDress.name)))
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_clothes_name_illegal_characters_detected"), MessageType.Error);
+                if (newClothesName == "")
+                {
+                    newClothesName = "NewClothes_" + new System.Random().Next();
+                }
+                newClothesName = illegalCharactersRegex.Replace(newClothesName, "");
+            }
+
+            if (newClothesName == null || lastClothesToDress != clothesToDress)
+            {
+                newClothesName = clothesToDress?.name;
+            }
+            lastClothesToDress = clothesToDress;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(clothesToDress == null);
+            newClothesName = EditorGUILayout.TextField(t._("text_new_clothes_name"), newClothesName);
+            if (GUILayout.Button(t._("button_rename_clothes_name"), GUILayout.ExpandWidth(false)))
+            {
+                clothesToDress.name = newClothesName;
+            }
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+        }
+
         private void DrawSimpleGUI()
         {
             GUILayout.Label(t._("label_setup"), EditorStyles.boldLabel);
@@ -379,6 +438,8 @@ namespace Chocopoi.DressingTools
             activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+
+            DrawNewClothesNameGUI();
 
             // simple mode defaults to use generated prefix
 
@@ -421,6 +482,8 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+
+            DrawNewClothesNameGUI();
 
             DrawHorizontalLine();
 
@@ -478,6 +541,8 @@ namespace Chocopoi.DressingTools
 
             DrawHorizontalLine();
 
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
             if (selectedInterface == 0)
             {
                 DrawSimpleGUI();
@@ -499,12 +564,14 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.BeginHorizontal();
 
+            EditorGUI.BeginDisabledGroup(clothesToDress == null || clothesToDress.name == "" || illegalCharactersRegex.IsMatch(clothesToDress.name));
             if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
                 dressReport = DressReport.GenerateReport(MakeDressSettings());
                 dressNowConfirm = false;
                 Debug.Log("[DressingTools] Dress report generated with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
             }
+            EditorGUI.EndDisabledGroup();
 
             EditorGUI.BeginDisabledGroup(dressReport == null || dressReport.result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
@@ -540,6 +607,8 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.Separator();
 
             DrawDressReportDetails();
+
+            EditorGUILayout.EndScrollView();
         }
 
         /// <summary>

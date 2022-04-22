@@ -15,6 +15,8 @@ namespace Chocopoi.DressingTools
                 GameObject obj = targetClothes.transform.GetChild(i)?.gameObject;
                 if (obj.name != "Armature")
                 {
+                    report.clothesAllObjects.Add(obj);
+                    report.clothesMeshDataObjects.Add(obj);
                     toParent.Add(obj);
                 }
             }
