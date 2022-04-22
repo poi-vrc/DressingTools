@@ -2,7 +2,7 @@
     "info": {
         "name": "한국어",
         "locale": "kr",
-        "author": "kanayui"
+        "author": "poi-vrc, kanayui, angel"
     },
     "keys": {
         "label_tool_name": "Dressing Tools",
@@ -85,6 +85,18 @@
         "helpbox_warn_exit_play_mode": "계속하려면 play mode를 종료해주세요",
         "dialog_test_mode_not_implemented": "테스트가 현재 구현되지 않았습니다. 위에 재생을 누르고 DressingToolsPreview의 아바타 bone을 이동하여 수동으로 테스트하십시오.",
         
-        "label_download": "다운로드"
+        "label_download": "다운로드",
+        
+        "text_new_clothes_name": "새 옷의 이름",
+        "button_rename_clothes_name": "이름 바꾸기",
+        "helpbox_error_clothes_name_illegal_characters_detected": "오류: 옷에 잘못된 문자가 발견되었습니다. 아래의 \"이름 바꾸기\"을 눌러 해결할 수 있습니다.",
+
+        "foldout_dressing_statistics": "통계",
+        "label_statistics_total_avatar_dynbones": "전체 아바타 다이나믹본 (DynamicBone) 개수: {0}",
+        "label_statistics_total_avatar_physbones": "전체 아바타 피직스본 (PhysBone) 개수: {0}",
+        "label_statistics_total_clothes_dynbones": "전체 옷 다이나믹본 (DynamicBone) 개수: {0} ({1})",
+        "label_statistics_total_clothes_physbones": "전체 옷 피직스본 (PhysBone) 개수: {0} ({1})",
+        "label_statistics_total_clothes_objects": "전체 옷 오브젝트 개수: {0}",
+        "label_statistics_total_clothes_mesh_data": "전체 옷 메쉬 개수: {0}"
     }
 }
