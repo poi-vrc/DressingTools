@@ -12,8 +12,10 @@ namespace Chocopoi.DressingTools
         {
             new NotAPrefabRule(),
             new ExistingPrefixSuffixRule(),
+            new FindAvatarDynamicBonesRule(),
             new ArmatureRule(),
-            new MeshDataRule()
+            new MeshDataRule(),
+            new FindClothesDynamicBonesRule()
         };
 
         private static AnimatorController testModeAnimationController;
@@ -26,6 +28,16 @@ namespace Chocopoi.DressingTools
 
         public DressCheckCodeMask.Error errors;
 
+        // stores the gameobjects/dynamicbones detected during the check
+
+        public List<DynamicBone> avatarDynBones;
+
+        public List<GameObject> clothesAllObjects;
+
+        public List<DynamicBone> clothesDynBones;
+
+        public List<GameObject> clothesMeshDataObjects;
+
         private DressReport()
         {
             testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/chocopoi/DressingTools/Animations/TestModeAnimationController.controller");
@@ -34,9 +46,14 @@ namespace Chocopoi.DressingTools
             {
                 Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
             }
+
+            avatarDynBones = new List<DynamicBone>();
+            clothesDynBones = new List<DynamicBone>();
+            clothesAllObjects = new List<GameObject>();
+            clothesMeshDataObjects = new List<GameObject>();
         }
 
-        private static void CleanUp()
+        public static void CleanUp()
         {
             GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
             foreach (GameObject obj in allObjects)

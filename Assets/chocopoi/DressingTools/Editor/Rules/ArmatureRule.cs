@@ -18,6 +18,8 @@ namespace Chocopoi.DressingTools
 
             foreach (Transform child in childs)
             {
+                report.clothesAllObjects.Add(child.gameObject);
+
                 Transform avatarTrans = avatarBoneParent.Find(child.name);
 
                 if (avatarTrans == null)
