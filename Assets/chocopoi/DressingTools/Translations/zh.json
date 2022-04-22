@@ -81,7 +81,7 @@
         "helpbox_info_armature_object_guessed": "通知： 衣服骨架是猜出來的。 如果猜出來的骨架不正確，請自已把正確的骨架重命名為 \"Armature\"",
         "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "通知： 在角色骨架的第一級中發現到多個骨頭",
 
-        "helpbox_info_dyn_bone_config_details": "有關 DynamicBone 設定的詳細：",
+        "helpbox_info_dyn_bone_config_details": "有關 DynamicBone/PhysBone 設定的詳細：",
         "helpbox_info_move_clothes_into_place": "記得在穿着之前把你的衣服放好, 目前這個工具只能自動合拼角色和衣服，但不能自動調整衣服位置。",
         "helpbox_warn_exit_play_mode": "請退出Play Mode以繼續！",
         "dialog_test_mode_not_implemented": "暫時未有測試模式。 請用Play Mode移動 DressingToolsPreview_{0} 的角色骨頭來手動測試衣服。",
