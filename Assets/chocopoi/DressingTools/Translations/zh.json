@@ -73,7 +73,7 @@
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告： 在衣服骨架的第一級中發現到多個骨頭",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "警告： 有些衣服骨頭在第一級骨架中沒有匹配的角色骨頭, 他們不會被移動到角色中",
         "helpbox_info_non_matching_clothes_bones_kept_untouched": "通知： 沒有匹配的衣服骨頭會繼續留在原來的骨頭保持不變。",
-        "helpbox_info_dynamic_bone_all_ignored": "通知： 所有DynamicBone會被忽略, 可能會出現問題",
+        "helpbox_info_dynamic_bone_all_ignored": "通知： 所有 DynamicBone/PhysBone 會被忽略, 可能會出現問題",
         "helpbox_info_existing_prefix_detected_and_removed": "通知： 有些衣服骨頭中發現到現有的前綴並已刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試關掉那個設定",
         "helpbox_info_existing_prefix_detected_not_removed": "通知： 有些衣服骨頭中發現到現有的前綴但沒有被刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試打開那個設定",
         "helpbox_info_existing_suffix_detected_and_removed": "通知： 有些衣服骨頭中發現到現有的後綴並已刪除, 如果你遇到衣服骨頭匹配問題, 請嘗試關掉那個設定",

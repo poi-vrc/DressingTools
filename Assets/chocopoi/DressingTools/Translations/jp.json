@@ -73,7 +73,7 @@
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告: 服のArmatureの第1段階で複数の骨が見つかりました",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "警告: 一部の第1段階の骨に一致するアバターの骨がないため、アバターの中に移動しません",
         "helpbox_info_non_matching_clothes_bones_kept_untouched": "お知らせ: 一致する服の骨がなければ、元の骨に残ります",
-        "helpbox_info_dynamic_bone_all_ignored": "お知らせ： すべてのDynamicBoneは無視されます, 問題が生じる可能性がある",
+        "helpbox_info_dynamic_bone_all_ignored": "お知らせ： すべての DynamicBone/PhysBone は無視されます, 問題が生じる可能性がある",
         "helpbox_info_existing_prefix_detected_and_removed": "お知らせ: 一部の服の骨から既存のプレフィックスが発見されて削除されました、もし服の骨が一致する問題が発生したら、その設定を消してみてください。",
         "helpbox_info_existing_prefix_detected_not_removed": "お知らせ: いくつかの服の骨から既存のプレフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",
         "helpbox_info_existing_suffix_detected_and_removed": "お知らせ: いくつかの服の骨から既存のサフィックスが発見されたが、削除されなかった、もし服の骨が一致する問題が発生したら、その設定を試してみてください。",

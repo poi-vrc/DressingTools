@@ -73,7 +73,7 @@
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "Warning: Multiple bones detected in the first level of clothes armature.",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "Warning: Some bones are not matching in the first level of armature. They will not be moved.",
         "helpbox_info_non_matching_clothes_bones_kept_untouched": "Info: Non-matching clothes bone will be kept untouched in their original parent.",
-        "helpbox_info_dynamic_bone_all_ignored": "Info: DynamicBone components are all ignored. Unexpected behaviour might occur.",
+        "helpbox_info_dynamic_bone_all_ignored": "Info: DynamicBone/PhysBone components are all ignored. Unexpected behaviour might occur.",
         "helpbox_info_existing_prefix_detected_and_removed": "Info: Existing prefix is detected and removed in some bones. Try disabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_prefix_detected_not_removed": "Info: Existing prefix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_suffix_detected_and_removed": "Info: Existing suffix is detected and removed in some bones. Try disabling the setting if you experience bone mismatch problems.",
