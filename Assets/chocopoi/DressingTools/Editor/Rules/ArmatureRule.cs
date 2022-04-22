@@ -137,8 +137,18 @@ namespace Chocopoi.DressingTools
                             }
 
                             //copy component using unityeditor internal method (easiest way)
-                            UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone);
-                            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+
+                            if (avatarDynBone != null)
+                            {
+                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone);
+                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+                            }
+
+                            if (avatarPhysBone != null)
+                            {
+                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarPhysBone);
+                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+                            }
                         }
                         else if (settings.dynamicBoneOption == 4) //ignore all
                         {
