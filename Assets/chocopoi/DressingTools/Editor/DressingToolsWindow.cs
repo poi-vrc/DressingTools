@@ -43,6 +43,8 @@ namespace Chocopoi.DressingTools
 
         private DressReport dressReport = null;
 
+        private bool showStatisticsFoldout = false;
+
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
@@ -245,21 +247,23 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            EditorGUILayout.LabelField("Statistics", EditorStyles.boldLabel);
+            showStatisticsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showStatisticsFoldout, showStatisticsFoldout ? "Statistics" : "Statistics (Click here to show statistics)");
 
-            EditorGUILayout.Separator();
+            if (showStatisticsFoldout)
+            {
+                GUILayout.Label("Total Avatar DynamicBones: " + dressReport.avatarDynBones.Count);
 
-            GUILayout.Label("Total Avatar DynamicBones: " + dressReport.avatarDynBones.Count);
+                GUILayout.Label("Total Avatar PhysBones: " + dressReport.avatarPhysBones.Count);
 
-            GUILayout.Label("Total Avatar PhysBones: " + dressReport.avatarPhysBones.Count);
+                GUILayout.Label(string.Format("Total Clothes DynamicBones: {0} ({1})", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
 
-            GUILayout.Label(string.Format("Total Clothes DynamicBones: {0} ({1})", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
+                GUILayout.Label(string.Format("Total Clothes PhysBones: {0} ({1})", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
 
-            GUILayout.Label(string.Format("Total Clothes PhysBones: {0} ({1})", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
+                GUILayout.Label("Total Clothes Objects: " + dressReport.clothesAllObjects.Count);
 
-            GUILayout.Label("Total Clothes Objects: " + dressReport.clothesAllObjects.Count);
-
-            GUILayout.Label("Total Clothes Mesh Data: " + dressReport.clothesMeshDataObjects.Count);
+                GUILayout.Label("Total Clothes Mesh Data: " + dressReport.clothesMeshDataObjects.Count);
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
 
             EditorGUILayout.Separator();
 
