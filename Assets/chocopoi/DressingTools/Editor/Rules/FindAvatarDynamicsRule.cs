@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools
 {
-    public class FindAvatarDynamicBonesRule : IDressCheckRule
+    public class FindAvatarDynamicsRule : IDressCheckRule
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
@@ -22,7 +23,15 @@ namespace Chocopoi.DressingTools
             DynamicBone[] avatarDynBones = targetAvatar.GetComponentsInChildren<DynamicBone>();
             foreach (DynamicBone dynBone in avatarDynBones)
             {
-                report.avatarDynBones.Add(dynBone);
+                report.avatarDynBones.Add(dynBone.m_Root);
+            }
+
+            // scan avatar physbones
+
+            VRCPhysBone[] avatarPhysBones = targetAvatar.GetComponentsInChildren<VRCPhysBone>();
+            foreach (VRCPhysBone physBone in avatarPhysBones)
+            {
+                report.avatarPhysBones.Add(physBone.rootTransform);
             }
 
             return true;
