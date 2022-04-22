@@ -15,6 +15,8 @@ namespace Chocopoi.DressingTools
     {
         private static I18n t = I18n.GetInstance();
 
+        private static Regex nonAlphanumericRegex = new Regex("[^a-zA-Z0-9_-]");
+
         private static string ONLINE_VERSION = null;
 
         private static readonly string TOOL_VERSION = GetToolVersion();
@@ -28,6 +30,10 @@ namespace Chocopoi.DressingTools
         private VRC.SDKBase.VRC_AvatarDescriptor activeAvatar;
 
         private GameObject clothesToDress;
+
+        private GameObject lastClothesToDress;
+
+        private string newClothesName;
 
         private bool useDefaultGeneratedPrefixSuffix = true;
 
@@ -253,7 +259,7 @@ namespace Chocopoi.DressingTools
             {
                 GUILayout.Label("Total Avatar DynamicBones: " + dressReport.avatarDynBones.Count);
 
-                GUILayout.Label("Total Avatar PhysBones: " + dressReport.avatarPhysBones.Count);
+                GUILayout.Label("Total Avatar PhysBones: " + dressReport.avatarPhysBones.Count);    
 
                 GUILayout.Label(string.Format("Total Clothes DynamicBones: {0} ({1})", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
 
@@ -401,6 +407,27 @@ namespace Chocopoi.DressingTools
             activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+
+            if (clothesToDress != null && nonAlphanumericRegex.IsMatch(clothesToDress.name))
+            {
+                EditorGUILayout.HelpBox("the name of the clothes contains non-alphanumeric characters", MessageType.Error);
+            }
+
+            if (newClothesName == null || lastClothesToDress != clothesToDress)
+            {
+                newClothesName = clothesToDress?.name;
+            }
+            lastClothesToDress = clothesToDress;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(clothesToDress == null);
+            newClothesName = EditorGUILayout.TextField("new clothes name", newClothesName);
+            if (GUILayout.Button("Rename", GUILayout.ExpandWidth(false)))
+            {
+                clothesToDress.name = newClothesName;
+            }
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
 
             // simple mode defaults to use generated prefix
 
