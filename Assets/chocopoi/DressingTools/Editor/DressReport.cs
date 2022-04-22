@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools
 {
@@ -30,15 +31,19 @@ namespace Chocopoi.DressingTools
 
         // stores the gameobjects/dynamicbones detected during the check
 
-        public List<Transform> avatarDynBones;
+        public List<DynamicBone> avatarDynBones;
 
-        public List<Transform> avatarPhysBones;
+        public List<VRCPhysBone> avatarPhysBones;
 
         public List<GameObject> clothesAllObjects;
 
-        public List<Transform> clothesDynBones;
+        public List<DynamicBone> clothesOriginalDynBones;
 
-        public List<Transform> clothesPhysBones;
+        public List<DynamicBone> clothesDynBones;
+
+        public List<VRCPhysBone> clothesOriginalPhysBones;
+
+        public List<VRCPhysBone> clothesPhysBones;
 
         public List<GameObject> clothesMeshDataObjects;
 
@@ -51,10 +56,10 @@ namespace Chocopoi.DressingTools
                 Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
             }
 
-            avatarDynBones = new List<Transform>();
-            avatarPhysBones = new List<Transform>();
-            clothesDynBones = new List<Transform>();
-            clothesPhysBones = new List<Transform>();
+            avatarDynBones = new List<DynamicBone>();
+            avatarPhysBones = new List<VRCPhysBone>();
+            clothesDynBones = new List<DynamicBone>();
+            clothesPhysBones = new List<VRCPhysBone>();
             clothesAllObjects = new List<GameObject>();
             clothesMeshDataObjects = new List<GameObject>();
         }

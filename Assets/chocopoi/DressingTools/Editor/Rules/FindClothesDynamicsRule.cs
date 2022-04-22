@@ -8,18 +8,6 @@ namespace Chocopoi.DressingTools
 {
     public class FindClothesDynamicsRule : IDressCheckRule
     {
-        private static bool IsSameDynamicsExistsInAvatar(List<Transform> avatarDynamics, Transform dynamicsRoot)
-        {
-            foreach (Transform bone in avatarDynamics)
-            {
-                if (bone == dynamicsRoot)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
             Transform avatarArmature = targetAvatar.transform.Find("Armature");
@@ -35,9 +23,9 @@ namespace Chocopoi.DressingTools
             DynamicBone[] clothesDynBones = targetAvatar.GetComponentsInChildren<DynamicBone>();
             foreach (DynamicBone dynBone in clothesDynBones)
             {
-                if (!IsSameDynamicsExistsInAvatar(report.avatarDynBones, dynBone.m_Root))
+                if (!DressingUtils.IsDynBoneExists(report.avatarDynBones, dynBone.m_Root))
                 {
-                    report.clothesDynBones.Add(dynBone.m_Root);
+                    report.clothesDynBones.Add(dynBone);
                 }
             }
 
@@ -46,9 +34,9 @@ namespace Chocopoi.DressingTools
             VRCPhysBone[] clothesPhysBones = targetAvatar.GetComponentsInChildren<VRCPhysBone>();
             foreach (VRCPhysBone physBone in clothesPhysBones)
             {
-                if (!IsSameDynamicsExistsInAvatar(report.avatarPhysBones, physBone.rootTransform))
+                if (!DressingUtils.IsPhysBoneExists(report.avatarPhysBones, physBone.rootTransform))
                 {
-                    report.clothesPhysBones.Add(physBone.rootTransform);
+                    report.clothesPhysBones.Add(physBone);
                 }
             }
 

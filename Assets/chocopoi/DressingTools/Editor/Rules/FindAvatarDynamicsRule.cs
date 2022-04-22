@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools
             DynamicBone[] avatarDynBones = targetAvatar.GetComponentsInChildren<DynamicBone>();
             foreach (DynamicBone dynBone in avatarDynBones)
             {
-                report.avatarDynBones.Add(dynBone.m_Root);
+                report.avatarDynBones.Add(dynBone);
             }
 
             // scan avatar physbones
@@ -31,7 +31,23 @@ namespace Chocopoi.DressingTools
             VRCPhysBone[] avatarPhysBones = targetAvatar.GetComponentsInChildren<VRCPhysBone>();
             foreach (VRCPhysBone physBone in avatarPhysBones)
             {
-                report.avatarPhysBones.Add(physBone.rootTransform);
+                report.avatarPhysBones.Add(physBone);
+            }
+
+            // scan original clothes dynbones
+
+            DynamicBone[] clothesDynBones = targetClothes.GetComponentsInChildren<DynamicBone>();
+            foreach (DynamicBone dynBone in clothesDynBones)
+            {
+                report.clothesOriginalDynBones.Add(dynBone);
+            }
+
+            // scan original clothes physbones
+
+            VRCPhysBone[] clothesPhysBones = targetClothes.GetComponentsInChildren<VRCPhysBone>();
+            foreach (VRCPhysBone physBone in avatarPhysBones)
+            {
+                report.clothesOriginalPhysBones.Add(physBone);
             }
 
             return true;

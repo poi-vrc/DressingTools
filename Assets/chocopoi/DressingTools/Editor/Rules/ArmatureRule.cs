@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools
 {
@@ -36,18 +37,26 @@ namespace Chocopoi.DressingTools
                 }
                 else
                 {
-                    // Find whether there is a DynamicBone component in the bone
+                    // Find whether there is a DynamicBone/PhysBone component controlling the bone
+                    
+                    DynamicBone avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
+                    VRCPhysBone avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
 
-                    DynamicBone avatarDynBone = avatarTrans.GetComponent<DynamicBone>();
-                    DynamicBone childDynBone = child.GetComponent<DynamicBone>();
+                    DynamicBone clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
+                    VRCPhysBone clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
 
-                    if (avatarDynBone != null && avatarDynBone.m_Root.Equals(avatarTrans))
+                    if (avatarDynBone != null || avatarPhysBone != null)
                     {
                         if (settings.dynamicBoneOption == 0) //remove and use parent constraints
                         {
-                            if (childDynBone != null)
+                            if (clothesDynBone != null)
                             {
-                                Object.DestroyImmediate(childDynBone);
+                                Object.DestroyImmediate(clothesDynBone);
+                            }
+
+                            if (clothesPhysBone != null)
+                            {
+                                Object.DestroyImmediate(clothesPhysBone);
                             }
 
                             ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
@@ -62,7 +71,7 @@ namespace Chocopoi.DressingTools
                         }
                         else if (settings.dynamicBoneOption == 1) //keep dynbone and use parentconstraint if necessary
                         {
-                            if (childDynBone == null)
+                            if (clothesDynBone == null && clothesPhysBone == null)
                             {
                                 ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
                                 comp.constraintActive = true;
@@ -93,11 +102,16 @@ namespace Chocopoi.DressingTools
                                 avatarDynBone.m_Exclusions.Add(dynBoneChild.transform);
                             }
 
-                            // destroy the child dyn bone component
+                            // destroy the child dynbone / physbone component
 
-                            if (childDynBone != null)
+                            if (clothesDynBone != null)
                             {
-                                Object.DestroyImmediate(childDynBone);
+                                Object.DestroyImmediate(clothesDynBone);
+                            }
+
+                            if (clothesPhysBone != null)
+                            {
+                                Object.DestroyImmediate(clothesPhysBone);
                             }
 
                             child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
@@ -105,10 +119,16 @@ namespace Chocopoi.DressingTools
                         }
                         else if (settings.dynamicBoneOption == 3) //copy dyn bone to clothes bone
                         {
-                            //destroy the existing dyn bone
-                            if (childDynBone != null)
+                            //destroy the existing dynbone / physbone
+
+                            if (clothesDynBone != null)
                             {
-                                Object.DestroyImmediate(childDynBone);
+                                Object.DestroyImmediate(clothesDynBone);
+                            }
+
+                            if (clothesPhysBone != null)
+                            {
+                                Object.DestroyImmediate(clothesPhysBone);
                             }
 
                             //copy component using unityeditor internal method (easiest way)

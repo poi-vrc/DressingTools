@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools
             {
                 Transform child = targetClothes.transform.GetChild(i);
 
-                if (child.name.Contains("Armature"))
+                if (child.name.ToLower().Trim().Contains("armature"))
                 {
                     transforms.Add(child);
                 }
