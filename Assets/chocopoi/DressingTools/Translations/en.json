@@ -19,7 +19,7 @@
 
         "label_setup": "Setup",
         "label_new_bone_name_preview": "Your clothes bone will be named like this: Hips ({0})",
-        "label_dynamic_bone_auto_handled": "Dynamic bones are automatically handled.",
+        "label_dynamic_bone_auto_handled": "DynamicBones and PhysBones (Beta) are automatically handled.",
 
         "label_select_avatar": "Select your active avatar",
         "object_active_avatar": "Avatar to modify",
@@ -35,12 +35,12 @@
         "text_suffix_to_be_added": "Suffix to be added",
         "toggle_remove_existing_prefix_suffix_in_clothes_bone": "Remove existing suffix in clothes bone automatically",
 
-        "label_dynamic_bone": "DynamicBone configuration",
-        "label_dynamic_bone_if_in_avatar_bone": "If the matching avatar bone has DynamicBone, I should:",
+        "label_dynamic_bone": "DynamicBone/PhysBone configuration",
+        "label_dynamic_bone_if_in_avatar_bone": "If the matching avatar bone has DynamicBone/PhysBone, I should:",
         "radio_db_remove_and_parent_const": "Remove and use parent constraints pointing to avatar for all clothes bones (Preferred)",
-        "radio_db_keep_clothes_and_parent_const_if_need": "Keep clothes dynamic bones and use parent constraints if necessary",
-        "radio_db_create_child_and_exclude": "Create GameObject child and exclude it from DynamicBone (Legacy)",
-        "radio_db_copy_dyn_bone_to_clothes": "Copy DynamicBones to clothes (Legacy)",
+        "radio_db_keep_clothes_and_parent_const_if_need": "Keep clothes DynamicBones/PhysBones and use parent constraints if necessary",
+        "radio_db_create_child_and_exclude": "Create GameObject child and exclude it from DynamicBones/PhysBones (Legacy)",
+        "radio_db_copy_dyn_bone_to_clothes": "Copy DynamicBones/PhysBones to clothes (Legacy)",
         "radio_db_ignore_all": "Ignore all",
 
         "label_check_and_dress": "Check and Dress up",
@@ -94,9 +94,9 @@
 
         "foldout_dressing_statistics": "Statistics",
         "label_statistics_total_avatar_dynbones": "Total Avatar DynamicBones: {0}",
-        "label_statistics_total_avatar_physbones": "Total Avatar DynamicBones: {0}",
+        "label_statistics_total_avatar_physbones": "Total Avatar PhysBones: {0}",
         "label_statistics_total_clothes_dynbones": "Total Clothes DynamicBones: {0} ({1})",
-        "label_statistics_total_clothes_physbones": "Total Clothes DynamicBones: {0} ({1})",
+        "label_statistics_total_clothes_physbones": "Total Clothes PhysBones: {0} ({1})",
         "label_statistics_total_clothes_objects": "Total Clothes Objects: {0}",
         "label_statistics_total_clothes_mesh_data": "Total Clothes Mesh Data: {0}"
     }
