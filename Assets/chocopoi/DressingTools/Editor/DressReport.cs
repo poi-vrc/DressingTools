@@ -60,6 +60,8 @@ namespace Chocopoi.DressingTools
             avatarPhysBones = new List<VRCPhysBone>();
             clothesDynBones = new List<DynamicBone>();
             clothesPhysBones = new List<VRCPhysBone>();
+            clothesOriginalDynBones = new List<DynamicBone>();
+            clothesOriginalPhysBones = new List<VRCPhysBone>();
             clothesAllObjects = new List<GameObject>();
             clothesMeshDataObjects = new List<GameObject>();
         }

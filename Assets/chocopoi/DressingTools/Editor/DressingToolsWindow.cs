@@ -245,6 +245,24 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
+            EditorGUILayout.LabelField("Statistics", EditorStyles.boldLabel);
+
+            EditorGUILayout.Separator();
+
+            GUILayout.Label("Total Avatar DynamicBones: " + dressReport.avatarDynBones.Count);
+
+            GUILayout.Label("Total Avatar PhysBones: " + dressReport.avatarPhysBones.Count);
+
+            GUILayout.Label(string.Format("Total Clothes DynamicBones: {0} ({1})", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
+
+            GUILayout.Label(string.Format("Total Clothes PhysBones: {0} ({1})", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
+
+            GUILayout.Label("Total Clothes Objects: " + dressReport.clothesAllObjects.Count);
+
+            GUILayout.Label("Total Clothes Mesh Data: " + dressReport.clothesMeshDataObjects.Count);
+
+            EditorGUILayout.Separator();
+
             EditorGUILayout.LabelField(t._("label_problems_detected"), EditorStyles.boldLabel);
 
             if (dressReport.infos == 0 && dressReport.warnings == 0 && dressReport.errors == 0)
