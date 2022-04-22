@@ -51,6 +51,8 @@ namespace Chocopoi.DressingTools
 
         private bool showStatisticsFoldout = false;
 
+        private Vector2 scrollPos;
+
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
@@ -535,6 +537,8 @@ namespace Chocopoi.DressingTools
 
             DrawHorizontalLine();
 
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
             if (selectedInterface == 0)
             {
                 DrawSimpleGUI();
@@ -599,6 +603,8 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.Separator();
 
             DrawDressReportDetails();
+
+            EditorGUILayout.EndScrollView();
         }
 
         /// <summary>
