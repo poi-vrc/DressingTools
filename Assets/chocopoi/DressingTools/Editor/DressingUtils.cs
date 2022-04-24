@@ -22,7 +22,7 @@ namespace Chocopoi.DressingTools
         {
             foreach (VRCPhysBone bone in avatarPhysBones)
             {
-                if (bone.rootTransform == dynamicsRoot)
+                if (bone.rootTransform != null ? bone.rootTransform == dynamicsRoot : bone.transform == dynamicsRoot)
                 {
                     return bone;
                 }
