@@ -391,10 +391,10 @@ namespace Chocopoi.DressingTools
 
         private void DrawNewClothesNameGUI()
         {
-            if (clothesToDress != null && (clothesToDress.name == "" || illegalCharactersRegex.IsMatch(clothesToDress.name)))
+            if (clothesToDress != null && (clothesToDress.name == null || clothesToDress.name == "" || illegalCharactersRegex.IsMatch(clothesToDress.name)))
             {
                 EditorGUILayout.HelpBox(t._("helpbox_error_clothes_name_illegal_characters_detected"), MessageType.Error);
-                if (newClothesName == "")
+                if (newClothesName == null || newClothesName == "")
                 {
                     newClothesName = "NewClothes_" + new System.Random().Next();
                 }

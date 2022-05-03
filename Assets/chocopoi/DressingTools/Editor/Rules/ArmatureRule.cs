@@ -142,12 +142,18 @@ namespace Chocopoi.DressingTools
                             {
                                 UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone);
                                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+
+                                DynamicBone copiedDb = child.GetComponent<DynamicBone>();
+                                copiedDb.m_Root = child;
                             }
 
                             if (avatarPhysBone != null)
                             {
                                 UnityEditorInternal.ComponentUtility.CopyComponent(avatarPhysBone);
                                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+
+                                VRCPhysBone copiedPb = child.GetComponent<VRCPhysBone>();
+                                copiedPb.rootTransform = child;
                             }
                         }
                         else if (settings.dynamicBoneOption == 4) //ignore all
