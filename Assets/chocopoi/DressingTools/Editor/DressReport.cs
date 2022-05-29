@@ -15,8 +15,9 @@ namespace Chocopoi.DressingTools
             new ExistingPrefixSuffixRule(),
             new FindAvatarDynamicsRule(),
             new ArmatureRule(),
-            new MeshDataRule(),
-            new FindClothesDynamicsRule()
+            new RootObjectsRule(),
+            new FindClothesDynamicsRule(),
+            new GroupClothesDynamicsRule()
         };
 
         private static AnimatorController testModeAnimationController;

@@ -205,7 +205,26 @@ namespace Chocopoi.DressingTools
                     }
                     else
                     {
-                        child.transform.SetParent(avatarTrans);
+                        Transform clothesBoneContainerTrans = null;
+
+                        if (settings.groupClothesBones)
+                        {
+                            string name = avatarTrans.name + "_DTClothes";
+                            GameObject clothesBoneContainer = avatarTrans.Find(name)?.gameObject;
+
+                            if (clothesBoneContainer == null)
+                            {
+                                clothesBoneContainer = new GameObject(name);
+                                clothesBoneContainer.transform.SetParent(avatarTrans);
+                            }
+
+                            clothesBoneContainerTrans = clothesBoneContainer.transform;
+                        } else
+                        {
+                            clothesBoneContainerTrans = avatarTrans;
+                        }
+
+                        child.transform.SetParent(clothesBoneContainerTrans);
                         child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
 
                         if (!ProcessBone(report, settings, level + 1, avatarTrans, child))

@@ -316,6 +316,11 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox(t._("helpbox_error_clothes_is_prefab"), MessageType.Error);
             }
 
+            if ((dressReport.errors & DressCheckCodeMask.Error.EXISTING_CLOTHES_DETECTED) == DressCheckCodeMask.Error.EXISTING_CLOTHES_DETECTED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_existing_clothes_detected"), MessageType.Error);
+            }
+
             // Warnings
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL)
@@ -385,7 +390,10 @@ namespace Chocopoi.DressingTools
                 prefixToBeAdded = prefixToBeAdded,
                 suffixToBeAdded = suffixToBeAdded,
                 removeExistingPrefixSuffix = removeExistingPrefixSuffix,
-                dynamicBoneOption = dynamicBoneOption
+                dynamicBoneOption = dynamicBoneOption,
+                groupClothesBones = true, //TODO options
+                groupClothesRootObjects = true,
+                groupDynamics = true
             };
         }
 

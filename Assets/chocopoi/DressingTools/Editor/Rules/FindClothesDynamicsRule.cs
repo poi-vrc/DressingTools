@@ -34,7 +34,9 @@ namespace Chocopoi.DressingTools
             VRCPhysBone[] clothesPhysBones = targetAvatar.GetComponentsInChildren<VRCPhysBone>();
             foreach (VRCPhysBone physBone in clothesPhysBones)
             {
-                if (!DressingUtils.IsPhysBoneExists(report.avatarPhysBones, physBone.rootTransform))
+                Transform physBoneRoot = physBone.rootTransform == null ? physBone.transform : physBone.rootTransform;
+
+                if (!DressingUtils.IsPhysBoneExists(report.avatarPhysBones, physBoneRoot))
                 {
                     report.clothesPhysBones.Add(physBone);
                 }

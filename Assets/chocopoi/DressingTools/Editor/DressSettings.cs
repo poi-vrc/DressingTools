@@ -17,5 +17,11 @@ namespace Chocopoi.DressingTools
         public bool removeExistingPrefixSuffix;
 
         public int dynamicBoneOption;
+
+        public bool groupClothesBones;
+
+        public bool groupClothesRootObjects;
+
+        public bool groupDynamics;
     }
 }
