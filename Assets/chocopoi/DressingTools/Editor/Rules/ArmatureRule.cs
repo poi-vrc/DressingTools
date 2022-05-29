@@ -8,6 +8,84 @@ namespace Chocopoi.DressingTools
 {
     public class ArmatureRule : IDressCheckRule
     {
+        private void AddRecursiveDynamicsParentConstraints(Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
+        {
+            // add parent constraint
+
+            ParentConstraint comp = clothesDynamicsRoot.gameObject.AddComponent<ParentConstraint>();
+            comp.constraintActive = true;
+
+            ConstraintSource source = new ConstraintSource
+            {
+                sourceTransform = avatarDynamicsRoot,
+                weight = 1
+            };
+            comp.AddSource(source);
+
+            // scan for other child bones
+
+            List<Transform> childs = new List<Transform>();
+
+            for (int i = 0; i < clothesDynamicsRoot.childCount; i++)
+            {
+                childs.Add(clothesDynamicsRoot.GetChild(i));
+            }
+
+            foreach (Transform child in childs)
+            {
+                Transform avatarTrans = avatarDynamicsRoot.Find(child.name);
+                if (avatarTrans != null)
+                {
+                    AddRecursiveDynamicsParentConstraints(avatarTrans, child);
+                }
+            }
+        }
+
+        private void AddRecursiveIgnoreTransforms(DressSettings settings, DynamicBone avatarDynBone, VRCPhysBone avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
+        {
+            string name = avatarDynamicsRoot.name + "_DBExcluded";
+            GameObject dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
+
+            if (dynBoneChild == null)
+            {
+                dynBoneChild = new GameObject(name);
+                dynBoneChild.transform.SetParent(avatarDynamicsRoot);
+            }
+
+            //verify if it is excluded
+
+            if (avatarDynBone != null && !avatarDynBone.m_Exclusions.Contains(dynBoneChild.transform))
+            {
+                avatarDynBone.m_Exclusions.Add(dynBoneChild.transform);
+            }
+
+            if (avatarPhysBone != null && !avatarPhysBone.ignoreTransforms.Contains(dynBoneChild.transform))
+            {
+                avatarPhysBone.ignoreTransforms.Add(dynBoneChild.transform);
+            }
+
+            clothesDynamicsRoot.name = settings.prefixToBeAdded + clothesDynamicsRoot.name + settings.suffixToBeAdded;
+            clothesDynamicsRoot.SetParent(dynBoneChild.transform);
+
+            // scan for other child bones
+
+            List<Transform> childs = new List<Transform>();
+
+            for (int i = 0; i < clothesDynamicsRoot.childCount; i++)
+            {
+                childs.Add(clothesDynamicsRoot.GetChild(i));
+            }
+
+            foreach (Transform child in childs)
+            {
+                Transform avatarTrans = avatarDynamicsRoot.Find(child.name);
+                if (avatarTrans != null)
+                {
+                    AddRecursiveIgnoreTransforms(settings, avatarDynBone, avatarPhysBone, avatarTrans, child);
+                }
+            }
+        }
+
         private bool ProcessBone(DressReport report, DressSettings settings, int level, Transform avatarBoneParent, Transform clothesBoneParent)
         {
             List<Transform> childs = new List<Transform>();
@@ -59,54 +137,17 @@ namespace Chocopoi.DressingTools
                                 Object.DestroyImmediate(clothesPhysBone);
                             }
 
-                            ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
-                            comp.constraintActive = true;
-
-                            ConstraintSource source = new ConstraintSource
-                            {
-                                sourceTransform = avatarTrans,
-                                weight = 1
-                            };
-                            comp.AddSource(source);
+                            AddRecursiveDynamicsParentConstraints(avatarTrans, child);
                         }
                         else if (settings.dynamicBoneOption == 1) //keep dynbone and use parentconstraint if necessary
                         {
                             if (clothesDynBone == null && clothesPhysBone == null)
                             {
-                                ParentConstraint comp = child.gameObject.AddComponent<ParentConstraint>();
-                                comp.constraintActive = true;
-
-                                ConstraintSource source = new ConstraintSource
-                                {
-                                    sourceTransform = avatarTrans,
-                                    weight = 1
-                                };
-                                comp.AddSource(source);
+                                AddRecursiveDynamicsParentConstraints(avatarTrans, child);
                             }
                         }
                         else if (settings.dynamicBoneOption == 2) //use legacy child gameobject
                         {
-                            string name = avatarTrans.name + "_DBExcluded";
-                            GameObject dynBoneChild = avatarTrans.Find(name)?.gameObject;
-
-                            if (dynBoneChild == null)
-                            {
-                                dynBoneChild = new GameObject(name);
-                                dynBoneChild.transform.SetParent(avatarTrans);
-                            }
-
-                            //verify if it is excluded
-
-                            if (avatarDynBone != null && !avatarDynBone.m_Exclusions.Contains(dynBoneChild.transform))
-                            {
-                                avatarDynBone.m_Exclusions.Add(dynBoneChild.transform);
-                            }
-
-                            if (avatarPhysBone != null && !avatarPhysBone.ignoreTransforms.Contains(dynBoneChild.transform))
-                            {
-                                avatarPhysBone.ignoreTransforms.Add(dynBoneChild.transform);
-                            }
-
                             // destroy the child dynbone / physbone component
 
                             if (clothesDynBone != null)
@@ -119,8 +160,7 @@ namespace Chocopoi.DressingTools
                                 Object.DestroyImmediate(clothesPhysBone);
                             }
 
-                            child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
-                            child.SetParent(dynBoneChild.transform);
+                            AddRecursiveIgnoreTransforms(settings, avatarDynBone, avatarPhysBone, avatarTrans, child);
                         }
                         else if (settings.dynamicBoneOption == 3) //copy dyn bone to clothes bone
                         {
@@ -167,11 +207,11 @@ namespace Chocopoi.DressingTools
                     {
                         child.transform.SetParent(avatarTrans);
                         child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
-                    }
 
-                    if (!ProcessBone(report, settings, level + 1, avatarTrans, child))
-                    {
-                        return false;
+                        if (!ProcessBone(report, settings, level + 1, avatarTrans, child))
+                        {
+                            return false;
+                        }
                     }
                 }
             }
