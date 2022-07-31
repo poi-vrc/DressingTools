@@ -20,9 +20,9 @@ namespace Chocopoi.DressingTools
             // Find the clothes container (if applicable)
 
             GameObject clothesContainer = null;
-            if (settings.groupClothesRootObjects)
+            if (settings.groupRootObjects)
             {
-                string name = "DTClothes_" + settings.clothesToDress.name;
+                string name = "DT_" + settings.clothesToDress.name;
                 clothesContainer = targetAvatar.transform.Find(name)?.gameObject;
             }
             else

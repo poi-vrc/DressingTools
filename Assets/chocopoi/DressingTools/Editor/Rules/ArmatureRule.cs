@@ -207,9 +207,9 @@ namespace Chocopoi.DressingTools
                     {
                         Transform clothesBoneContainerTrans = null;
 
-                        if (settings.groupClothesBones)
+                        if (settings.groupBones)
                         {
-                            string name = avatarTrans.name + "_DTClothes";
+                            string name = avatarTrans.name + "_DT";
                             GameObject clothesBoneContainer = avatarTrans.Find(name)?.gameObject;
 
                             if (clothesBoneContainer == null)
@@ -253,8 +253,8 @@ namespace Chocopoi.DressingTools
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find("Armature");
-            Transform clothesArmature = targetClothes.transform.Find("Armature");
+            Transform avatarArmature = targetAvatar.transform.Find(settings.armatureObjectName);
+            Transform clothesArmature = targetClothes.transform.Find(settings.armatureObjectName);
 
             if (!avatarArmature)
             {

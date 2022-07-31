@@ -18,10 +18,12 @@ namespace Chocopoi.DressingTools
 
         public int dynamicBoneOption;
 
-        public bool groupClothesBones;
+        public bool groupBones;
 
-        public bool groupClothesRootObjects;
+        public bool groupRootObjects;
 
         public bool groupDynamics;
+
+        public string armatureObjectName = "Armature";
     }
 }

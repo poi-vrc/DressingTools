@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        public Transform GuessArmature(GameObject targetClothes)
+        public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName)
         {
             List<Transform> transforms = new List<Transform>();
 
@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools
             {
                 Transform child = targetClothes.transform.GetChild(i);
 
-                if (child.name.ToLower().Trim().Contains("armature"))
+                if (child.name.ToLower().Trim().Contains(armatureObjectName.ToLower()))
                 {
                     transforms.Add(child);
                 }
@@ -69,7 +69,7 @@ namespace Chocopoi.DressingTools
 
             if (transforms.Count == 1)
             {
-                transforms[0].name = "Armature";
+                transforms[0].name = armatureObjectName;
                 return transforms[0];
             } else
             {
@@ -79,12 +79,12 @@ namespace Chocopoi.DressingTools
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform clothesArmature = targetClothes.transform.Find("Armature");
+            Transform clothesArmature = targetClothes.transform.Find(settings.armatureObjectName);
 
             if (!clothesArmature)
             {
-                //guess the armature object by finding if the object name contains "Armature" and rename it
-                clothesArmature = GuessArmature(targetClothes);
+                //guess the armature object by finding if the object name contains settings.armatureObjectName and rename it
+                clothesArmature = GuessArmature(targetClothes, settings.armatureObjectName);
 
                 if (clothesArmature)
                 {

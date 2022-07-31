@@ -15,7 +15,7 @@ namespace Chocopoi.DressingTools
             new ExistingPrefixSuffixRule(),
             new FindAvatarDynamicsRule(),
             new ArmatureRule(),
-            new RootObjectsRule(),
+            new GroupRootObjectsRule(),
             new FindClothesDynamicsRule(),
             new GroupClothesDynamicsRule()
         };

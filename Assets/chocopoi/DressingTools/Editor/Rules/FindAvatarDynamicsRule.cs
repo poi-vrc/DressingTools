@@ -10,7 +10,7 @@ namespace Chocopoi.DressingTools
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find("Armature");
+            Transform avatarArmature = targetAvatar.transform.Find(settings.armatureObjectName);
 
             if (!avatarArmature)
             {

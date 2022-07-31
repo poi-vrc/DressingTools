@@ -43,6 +43,14 @@ namespace Chocopoi.DressingTools
 
         private bool removeExistingPrefixSuffix = true;
 
+        private bool groupClothesRootObjects = true;
+
+        private bool groupBones = true;
+
+        private bool groupRootObjects = true;
+
+        private bool groupDynamics = true;
+
         private bool dressNowConfirm = false;
 
         private int selectedInterface = 0;
@@ -391,9 +399,9 @@ namespace Chocopoi.DressingTools
                 suffixToBeAdded = suffixToBeAdded,
                 removeExistingPrefixSuffix = removeExistingPrefixSuffix,
                 dynamicBoneOption = dynamicBoneOption,
-                groupClothesBones = true, //TODO options
-                groupClothesRootObjects = true,
-                groupDynamics = true
+                groupBones = groupBones,
+                groupRootObjects = groupRootObjects,
+                groupDynamics = groupDynamics
             };
         }
 
@@ -449,6 +457,12 @@ namespace Chocopoi.DressingTools
 
             DrawNewClothesNameGUI();
 
+            groupBones = groupRootObjects = GUILayout.Toggle(groupBones, t._("toggle_group_bones_and_root_objects"));
+
+            // simple mode defaults to group dynamics
+
+            groupDynamics = true;
+
             // simple mode defaults to use generated prefix
 
             useDefaultGeneratedPrefixSuffix = true;
@@ -492,6 +506,18 @@ namespace Chocopoi.DressingTools
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
             DrawNewClothesNameGUI();
+
+            DrawHorizontalLine();
+
+            GUILayout.Label(t._("label_grouping_clothes_bones_dynamics"), EditorStyles.boldLabel);
+
+            EditorGUILayout.Separator();
+
+            groupBones = GUILayout.Toggle(groupBones, t._("toggle_group_bones"));
+
+            groupRootObjects = GUILayout.Toggle(groupBones, t._("toggle_group_root_objects"));
+
+            groupDynamics = GUILayout.Toggle(groupBones, t._("toggle_group_dynamics"));
 
             DrawHorizontalLine();
 

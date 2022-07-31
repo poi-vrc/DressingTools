@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class RootObjectsRule : IDressCheckRule
+    public class GroupRootObjectsRule : IDressCheckRule
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
@@ -13,7 +13,7 @@ namespace Chocopoi.DressingTools
             for (int i = 0; i < targetClothes.transform.childCount; i++)
             {
                 GameObject obj = targetClothes.transform.GetChild(i)?.gameObject;
-                if (obj.name != "Armature")
+                if (obj.name != settings.armatureObjectName)
                 {
                     report.clothesAllObjects.Add(obj);
                     report.clothesMeshDataObjects.Add(obj);
@@ -21,9 +21,9 @@ namespace Chocopoi.DressingTools
                 }
             }
 
-            if (settings.groupClothesRootObjects)
+            if (settings.groupRootObjects)
             {
-                string name = "DTClothes_" + settings.clothesToDress.name;
+                string name = "DT_" + settings.clothesToDress.name;
                 GameObject clothesContainer = targetAvatar.transform.Find(name)?.gameObject;
 
                 if (clothesContainer != null)
