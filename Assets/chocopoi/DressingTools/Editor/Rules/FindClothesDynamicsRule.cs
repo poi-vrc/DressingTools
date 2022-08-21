@@ -28,14 +28,22 @@ namespace Chocopoi.DressingTools
                 }
             }
 
+            // get the dynbone type
+            System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
+
             // scan clothes dynbones
 
-            DynamicBone[] clothesDynBones = targetAvatar.GetComponentsInChildren<DynamicBone>();
-            foreach (DynamicBone dynBone in clothesDynBones)
+            if (DynamicBoneType != null)
             {
-                if (!DressingUtils.IsDynBoneExists(report.avatarDynBones, dynBone.m_Root))
+                Component[] clothesDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
+                foreach (Component comp in clothesDynBones)
                 {
-                    report.clothesDynBones.Add(dynBone);
+                    DTDynamicBone dynBone = new DTDynamicBone(comp);
+
+                    if (!DressingUtils.IsDynBoneExists(report.avatarDynBones, dynBone.m_Root))
+                    {
+                        report.clothesDynBones.Add(dynBone);
+                    }
                 }
             }
 

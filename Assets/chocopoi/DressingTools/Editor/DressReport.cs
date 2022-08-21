@@ -12,6 +12,7 @@ namespace Chocopoi.DressingTools
         private static readonly IDressCheckRule[] rules = new IDressCheckRule[]
         {
             new NotAPrefabRule(),
+            new NoMissingScriptsRule(),
             new ExistingPrefixSuffixRule(),
             new FindAvatarDynamicsRule(),
             new ArmatureRule(),
@@ -32,15 +33,15 @@ namespace Chocopoi.DressingTools
 
         // stores the gameobjects/dynamicbones detected during the check
 
-        public List<DynamicBone> avatarDynBones;
+        public List<DTDynamicBone> avatarDynBones;
 
         public List<VRCPhysBone> avatarPhysBones;
 
         public List<GameObject> clothesAllObjects;
 
-        public List<DynamicBone> clothesOriginalDynBones;
+        public List<DTDynamicBone> clothesOriginalDynBones;
 
-        public List<DynamicBone> clothesDynBones;
+        public List<DTDynamicBone> clothesDynBones;
 
         public List<VRCPhysBone> clothesOriginalPhysBones;
 
@@ -57,11 +58,11 @@ namespace Chocopoi.DressingTools
                 Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
             }
 
-            avatarDynBones = new List<DynamicBone>();
+            avatarDynBones = new List<DTDynamicBone>();
             avatarPhysBones = new List<VRCPhysBone>();
-            clothesDynBones = new List<DynamicBone>();
+            clothesDynBones = new List<DTDynamicBone>();
             clothesPhysBones = new List<VRCPhysBone>();
-            clothesOriginalDynBones = new List<DynamicBone>();
+            clothesOriginalDynBones = new List<DTDynamicBone>();
             clothesOriginalPhysBones = new List<VRCPhysBone>();
             clothesAllObjects = new List<GameObject>();
             clothesMeshDataObjects = new List<GameObject>();

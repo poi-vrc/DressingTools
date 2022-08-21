@@ -115,5 +115,8 @@ namespace Chocopoi.DressingTools
         public string toggle_use_custom_armature_object_names;
         public string text_custom_avatar_armature_object_name;
         public string text_custom_clothes_armature_object_name;
+
+        public string helpbox_error_missing_scripts_detected_in_avatar;
+        public string helpbox_error_missing_scripts_detected_in_clothes;
     }
 }

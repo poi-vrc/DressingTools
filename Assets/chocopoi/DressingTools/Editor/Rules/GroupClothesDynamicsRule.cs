@@ -14,7 +14,7 @@ namespace Chocopoi.DressingTools
             {
                 return true;
             }
-
+            
             GameObject dynamicsContainer = new GameObject("DT_Dynamics");
 
             // Find the clothes container (if applicable)
@@ -35,7 +35,7 @@ namespace Chocopoi.DressingTools
 
             // move all the found dynamics
 
-            foreach (DynamicBone dynBone in report.clothesDynBones)
+            foreach (DTDynamicBone dynBone in report.clothesDynBones)
             {
                 // in case it does not have a root transform
                 if (dynBone.m_Root == null)
@@ -43,12 +43,12 @@ namespace Chocopoi.DressingTools
                     dynBone.m_Root = dynBone.gameObject.transform;
                 }
 
-                UnityEditorInternal.ComponentUtility.CopyComponent(dynBone);
+                UnityEditorInternal.ComponentUtility.CopyComponent(dynBone.component);
                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(dynamicsContainer);
 
                 // destroy the original one
 
-                Object.DestroyImmediate(dynBone);
+                Object.DestroyImmediate(dynBone.component);
             }
 
             foreach (VRCPhysBone physBone in report.clothesPhysBones)

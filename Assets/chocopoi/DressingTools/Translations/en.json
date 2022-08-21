@@ -109,6 +109,9 @@
         
         "toggle_use_custom_armature_object_names": "Use custom armature object names",
         "text_custom_avatar_armature_object_name": "Avatar Armature",
-        "text_custom_clothes_armature_object_name": "Clothes Armature"
+        "text_custom_clothes_armature_object_name": "Clothes Armature",
+        
+        "helpbox_error_missing_scripts_detected_in_avatar": "Error: Missing scripts detected in avatar. Make sure you have imported DynamicBone for DynamicBone-based avatar.",
+        "helpbox_error_missing_scripts_detected_in_clothes": "Error: Missing scripts detected in clothes. Make sure you have imported DynamicBone for DynamicBone-based clothes."
     }
 }

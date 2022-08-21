@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 
@@ -6,9 +7,11 @@ namespace Chocopoi.DressingTools
 {
     public class DressingUtils
     {
-        public static DynamicBone FindDynBoneWithRoot(List<DynamicBone> avatarDynBones, Transform dynamicsRoot)
+        private static Dictionary<string, System.Type> reflectionTypeCache = new Dictionary<string, System.Type>();
+
+        public static DTDynamicBone FindDynBoneWithRoot(List<DTDynamicBone> avatarDynBones, Transform dynamicsRoot)
         {
-            foreach (DynamicBone bone in avatarDynBones)
+            foreach (DTDynamicBone bone in avatarDynBones)
             {
                 if (bone.m_Root == dynamicsRoot)
                 {
@@ -30,7 +33,7 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static bool IsDynBoneExists(List<DynamicBone> avatarDynBones, Transform dynamicsRoot)
+        public static bool IsDynBoneExists(List<DTDynamicBone> avatarDynBones, Transform dynamicsRoot)
         {
             return FindDynBoneWithRoot(avatarDynBones, dynamicsRoot) != null;
         }
@@ -66,6 +69,31 @@ namespace Chocopoi.DressingTools
             {
                 return null;
             }
+        }
+
+        public static System.Type FindType(string typeName)
+        {
+            // try getting from cache to avoid scanning the assemblies again
+            if (reflectionTypeCache.ContainsKey(typeName))
+            {
+                return reflectionTypeCache[typeName];
+            }
+
+            // scan from assemblies and save to cache
+            Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (Assembly assembly in assemblies)
+            {
+                System.Type type = assembly.GetType(typeName);
+                if (type != null)
+                {
+                    reflectionTypeCache[typeName] = type;
+                    return type;
+                }
+            }
+
+            // no such type found
+            return null;
         }
     }
 }
