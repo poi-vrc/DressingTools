@@ -16,13 +16,9 @@ namespace Chocopoi.DressingTools
     {
         private static Translation.I18n t = Translation.I18n.GetInstance();
 
+        private static DTUpdater.ParsedVersion currentVersion = DTUpdater.GetCurrentVersion();
+
         private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
-
-        private static string ONLINE_VERSION = null;
-
-        private static readonly string TOOL_VERSION = GetToolVersion();
-
-        private static int CHECK_UPDATE_STATUS = 0;
 
         private int selectedLang = 0;
 
@@ -49,8 +45,6 @@ namespace Chocopoi.DressingTools
         private string clothesArmatureObjectName;
 
         private bool removeExistingPrefixSuffix = true;
-
-        private bool groupClothesRootObjects = true;
 
         private bool groupBones = true;
 
@@ -83,52 +77,6 @@ namespace Chocopoi.DressingTools
         public static void ReloadTranslations()
         {
             t.LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
-        }
-
-        /// <summary>
-        /// Fetch the tool version text from Assets
-        /// </summary> 
-        /// <returns></returns>
-        private static string GetToolVersion()
-        {
-            StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/version.txt");
-            string str = reader.ReadToEnd();
-            reader.Close();
-            return str;
-        }
-
-        private static void FetchOnlineVersion()
-        {
-            string url = "https://raw.githubusercontent.com/poi-vrc/DressingTools/master/Assets/chocopoi/DressingTools/version.txt";
-
-            try
-            {
-                WebRequest request = WebRequest.Create(url);
-
-                WebResponse response = request.GetResponse();
-
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-
-                string responseText = reader.ReadToEnd();
-
-                Debug.Log("[DressingTools] Check Update Received: " + responseText);
-
-                Regex regex = new Regex("\\d+\\.\\d+\\.\\d+");
-                if (regex.IsMatch(responseText))
-                {
-                    ONLINE_VERSION = responseText;
-                    CHECK_UPDATE_STATUS = 2;
-                }
-                else
-                {
-                    Debug.Log("[DressingTools] Check update response is in an invalid format.");
-                    CHECK_UPDATE_STATUS = 3;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("[DressingTools] Check Update Failed: " + e.Message);
-            }
         }
 
         /// <summary>
@@ -186,12 +134,18 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            if (CHECK_UPDATE_STATUS == 2 && TOOL_VERSION != ONLINE_VERSION)
+            if (DTUpdater.IsUpdateChecked() && !DTUpdater.IsLastUpdateCheckErrored() && DTUpdater.IsUpdateAvailable())
             {
-                EditorGUILayout.HelpBox(t._("label_update_available", ONLINE_VERSION), MessageType.Warning);
-                if (GUILayout.Button(t._("label_download")))
+                DTUpdater.ManifestBranch branch = DTUpdater.GetBranchLatestVersion(currentVersion?.branch);
+
+                EditorGUILayout.HelpBox(t._("label_update_available", branch?.version), MessageType.Warning);
+                if (GUILayout.Button(t._("label_download_from_booth")))
                 {
-                    Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                    Application.OpenURL(branch?.booth_url);
+                }
+                if (GUILayout.Button(t._("label_download_from_github")))
+                {
+                    Application.OpenURL(branch?.github_url);
                 }
             }
 
@@ -200,27 +154,36 @@ namespace Chocopoi.DressingTools
             DrawHorizontalLine();
         }
 
+        private void FinishFetchOnlineVersion(DTUpdater.Manifest manifest)
+        {
+            //force redraw
+            EditorUtility.ClearDirty(this);
+        }
+
         private void DrawToolFooterGUI()
         {
             DrawHorizontalLine();
 
-            GUILayout.Label(t._("label_footer_version", TOOL_VERSION));
-
-            // i know this way of checking is so dumb
-
-            if (CHECK_UPDATE_STATUS == 0)
+            GUILayout.Label(t._("label_footer_version", currentVersion?.version));
+            
+            if (DTUpdater.IsUpdateChecked())
             {
-                FetchOnlineVersion();
-            }
-
-            if (CHECK_UPDATE_STATUS == 2)
-            {
-                if (TOOL_VERSION != ONLINE_VERSION)
+                if (DTUpdater.IsLastUpdateCheckErrored())
                 {
-                    GUILayout.Label(t._("label_update_available", ONLINE_VERSION));
-                    if (GUILayout.Button(t._("label_download")))
+                    GUILayout.Label(t._("label_could_not_check_update"));
+                }
+                else if (DTUpdater.IsUpdateAvailable())
+                {
+                    DTUpdater.ManifestBranch branch = DTUpdater.GetBranchLatestVersion(currentVersion?.branch);
+
+                    GUILayout.Label(t._("label_update_available", branch?.version));
+                    if (GUILayout.Button(t._("label_download_from_booth")))
                     {
-                        Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                        Application.OpenURL(branch?.booth_url);
+                    }
+                    if (GUILayout.Button(t._("label_download_from_github")))
+                    {
+                        Application.OpenURL(branch?.github_url);
                     }
                 }
                 else
@@ -228,9 +191,9 @@ namespace Chocopoi.DressingTools
                     GUILayout.Label(t._("label_up_to_date"));
                 }
             }
-            else if (CHECK_UPDATE_STATUS == 3)
+            else
             {
-                GUILayout.Label(t._("label_could_not_check_update"));
+                DTUpdater.FetchOnlineVersion(FinishFetchOnlineVersion);
             }
 
             EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools");
