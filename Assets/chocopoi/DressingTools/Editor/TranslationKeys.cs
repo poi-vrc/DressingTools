@@ -84,8 +84,9 @@ namespace Chocopoi.DressingTools
         public string helpbox_info_existing_prefix_detected_not_removed;
         public string helpbox_info_existing_suffix_detected_and_removed;
         public string helpbox_info_existing_suffix_detected_not_removed;
-        public string helpbox_info_armature_object_guessed;
         public string helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed;
+        public string helpbox_info_avatar_armature_object_guessed;
+        public string helpbox_info_clothes_armature_object_guessed;
 
         public string helpbox_info_dyn_bone_config_details;
         public string helpbox_info_move_clothes_into_place;
@@ -104,5 +105,15 @@ namespace Chocopoi.DressingTools
         public string label_statistics_total_clothes_physbones;
         public string label_statistics_total_clothes_objects;
         public string label_statistics_total_clothes_mesh_data;
+
+        public string label_grouping_bones_root_objects_dynamics;
+        public string toggle_group_bones;
+        public string toggle_group_root_objects;
+        public string toggle_group_dynamics;
+        public string toggle_group_bones_and_root_objects;
+
+        public string toggle_use_custom_armature_object_names;
+        public string text_custom_avatar_armature_object_name;
+        public string text_custom_clothes_armature_object_name;
     }
 }

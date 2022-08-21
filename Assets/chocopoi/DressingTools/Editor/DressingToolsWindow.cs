@@ -544,7 +544,7 @@ namespace Chocopoi.DressingTools
 
             DrawHorizontalLine();
 
-            GUILayout.Label(t._("label_grouping_clothes_bones_dynamics"), EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_grouping_bones_root_objects_dynamics"), EditorStyles.boldLabel);
 
             EditorGUILayout.Separator();
 

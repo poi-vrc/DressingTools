@@ -19,7 +19,7 @@
 
         "label_setup": "Setup",
         "label_new_bone_name_preview": "Your clothes bone will be named like this: Hips ({0})",
-        "label_dynamic_bone_auto_handled": "DynamicBones and PhysBones (Beta) are automatically handled.",
+        "label_dynamic_bone_auto_handled": "Avatar dynamics are automatically handled and grouped for optimization.",
 
         "label_select_avatar": "Select your active avatar",
         "object_active_avatar": "Avatar to modify",
@@ -33,7 +33,7 @@
         "toggle_use_default_generated_prefix_suffix": "Use default generated prefix and suffix",
         "text_prefix_to_be_added": "Prefix to be added",
         "text_suffix_to_be_added": "Suffix to be added",
-        "toggle_remove_existing_prefix_suffix_in_clothes_bone": "Remove existing suffix in clothes bone automatically",
+        "toggle_remove_existing_prefix_suffix_in_clothes_bone": "Remove existing prefix and suffix in clothes bone automatically",
 
         "label_dynamic_bone": "DynamicBone/PhysBone configuration",
         "label_dynamic_bone_if_in_avatar_bone": "If the matching avatar bone has DynamicBone/PhysBone, I should:",
@@ -78,8 +78,9 @@
         "helpbox_info_existing_prefix_detected_not_removed": "Info: Existing prefix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_suffix_detected_and_removed": "Info: Existing suffix is detected and removed in some bones. Try disabling the setting if you experience bone mismatch problems.",
         "helpbox_info_existing_suffix_detected_not_removed": "Info: Existing suffix is detected but not removed in some bones. Try enabling the setting if you experience bone mismatch problems.",
-        "helpbox_info_armature_object_guessed": "Info: The clothes armature was guessed. If the guessed armature is incorrect, please rename the correct armature with the name \"Armature\".",
         "helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed": "Info: Multiple bones detected in the first level of avatar armature.",
+        "helpbox_info_avatar_armature_object_guessed": "Info: The avatar armature was guessed. If the guessed armature is incorrect, please rename the correct armature with the name \"Armature\" or specify a custom name.",
+        "helpbox_info_clothes_armature_object_guessed": "Info: The clothes armature was guessed. If the guessed armature is incorrect, please rename the correct armature with the name \"Armature\" or specify a custom name.",
 
         "helpbox_info_dyn_bone_config_details": "For details what the configuration actually means:",
         "helpbox_info_move_clothes_into_place": "Remember to move your clothes into place before dressing up! This tool only combines but cannot put it into place currently.",
@@ -98,6 +99,16 @@
         "label_statistics_total_clothes_dynbones": "Total Clothes DynamicBones: {0} ({1})",
         "label_statistics_total_clothes_physbones": "Total Clothes PhysBones: {0} ({1})",
         "label_statistics_total_clothes_objects": "Total Clothes Objects: {0}",
-        "label_statistics_total_clothes_mesh_data": "Total Clothes Mesh Data: {0}"
+        "label_statistics_total_clothes_mesh_data": "Total Clothes Mesh Data: {0}",
+        
+        "label_grouping_bones_root_objects_dynamics": "Grouping bones, root objects, dynamics",
+        "toggle_group_bones": "Group bones",
+        "toggle_group_root_objects": "Group root objects",
+        "toggle_group_dynamics": "Group dynamics (DynamicBones/PhysBones)",
+        "toggle_group_bones_and_root_objects": "Group bones and root objects",
+        
+        "toggle_use_custom_armature_object_names": "Use custom armature object names",
+        "text_custom_avatar_armature_object_name": "Avatar Armature",
+        "text_custom_clothes_armature_object_name": "Clothes Armature"
     }
 }
