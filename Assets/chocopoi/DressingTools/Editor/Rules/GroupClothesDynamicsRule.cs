@@ -15,7 +15,7 @@ namespace Chocopoi.DressingTools
                 return true;
             }
 
-            GameObject dynamicsContainer = new GameObject("DTAvatarDynamics");
+            GameObject dynamicsContainer = new GameObject("DT_Dynamics");
 
             // Find the clothes container (if applicable)
 

@@ -15,7 +15,7 @@ namespace Chocopoi.DressingTools
             if (!avatarArmature)
             {
                 //guess the armature object by finding if the object name contains settings.avatarArmatureObjectName, but don't rename it
-                avatarArmature = DressingUtils.GuessArmature(targetClothes, settings.avatarArmatureObjectName, false);
+                avatarArmature = DressingUtils.GuessArmature(targetAvatar, settings.avatarArmatureObjectName, false);
 
                 if (avatarArmature)
                 {

@@ -97,6 +97,12 @@ namespace Chocopoi.DressingTools
 
             foreach (Transform child in childs)
             {
+                // skip our container
+                if (child.name.EndsWith("_DT"))
+                {
+                    continue;
+                }
+
                 report.clothesAllObjects.Add(child.gameObject);
 
                 Transform avatarTrans = avatarBoneParent.Find(child.name);
@@ -259,7 +265,7 @@ namespace Chocopoi.DressingTools
             if (!avatarArmature)
             {
                 //guess the armature object by finding if the object name contains settings.avatarArmatureObjectName, but don't rename it
-                avatarArmature = DressingUtils.GuessArmature(targetClothes, settings.avatarArmatureObjectName, false);
+                avatarArmature = DressingUtils.GuessArmature(targetAvatar, settings.avatarArmatureObjectName, false);
 
                 if (avatarArmature)
                 {
@@ -275,7 +281,7 @@ namespace Chocopoi.DressingTools
             if (!clothesArmature)
             {
                 //guess the armature object by finding if the object name contains settings.clothesArmatureObjectName and rename it
-                clothesArmature = DressingUtils.GuessArmature(targetClothes, settings.clothesArmatureObjectName, false);
+                clothesArmature = DressingUtils.GuessArmature(targetClothes, settings.clothesArmatureObjectName, true);
 
                 if (clothesArmature)
                 {
