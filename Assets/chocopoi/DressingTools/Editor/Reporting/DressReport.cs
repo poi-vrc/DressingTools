@@ -5,21 +5,22 @@ using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.Rules;
 
 namespace Chocopoi.DressingTools.Reporting
 {
     public class DressReport
     {
-        private static readonly Rules.IDressCheckRule[] rules = new Rules.IDressCheckRule[]
+        private static readonly IDressCheckRule[] rules = new IDressCheckRule[]
         {
-            new Rules.NotAPrefabRule(),
-            new Rules.NoMissingScriptsRule(),
-            new Rules.ExistingPrefixSuffixRule(),
-            new Rules.FindAvatarDynamicsRule(),
-            new Rules.ArmatureRule(),
-            new Rules.GroupRootObjectsRule(),
-            new Rules.FindClothesDynamicsRule(),
-            new Rules.GroupClothesDynamicsRule()
+            new NotAPrefabRule(),
+            new NoMissingScriptsRule(),
+            new ExistingPrefixSuffixRule(),
+            new FindAvatarDynamicsRule(),
+            new ArmatureRule(),
+            new GroupRootObjectsRule(),
+            new FindClothesDynamicsRule(),
+            new GroupClothesDynamicsRule()
         };
 
         private static AnimatorController testModeAnimationController;
