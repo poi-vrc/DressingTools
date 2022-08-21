@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Chocopoi.DressingTools.Reporting;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Rules
 {
     public class GroupRootObjectsRule : IDressCheckRule
     {

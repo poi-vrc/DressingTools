@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Translation
 {
     [System.Serializable]
     public class TranslationInfo

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 using VRC.SDK3.Dynamics.PhysBone.Components;
+using Chocopoi.DressingTools.Reporting;
+using Chocopoi.DressingTools.Containers;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Rules
 {
     public class ArmatureRule : IDressCheckRule
     {

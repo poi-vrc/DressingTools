@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Chocopoi.DressingTools.Reporting;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Rules
 {
     public class NoMissingScriptsRule : IDressCheckRule
     {

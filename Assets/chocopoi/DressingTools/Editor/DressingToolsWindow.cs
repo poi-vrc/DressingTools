@@ -8,12 +8,13 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools
 {
     public class DressingToolsWindow : EditorWindow
     {
-        private static I18n t = I18n.GetInstance();
+        private static Translation.I18n t = Translation.I18n.GetInstance();
 
         private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 

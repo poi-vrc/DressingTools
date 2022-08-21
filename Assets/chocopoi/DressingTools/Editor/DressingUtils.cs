@@ -2,6 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
+using Chocopoi.DressingTools.Containers;
 
 namespace Chocopoi.DressingTools
 {
