@@ -12,7 +12,7 @@ using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools
 {
-    public class DressingToolsWindow : EditorWindow
+    public class DTWindow : EditorWindow
     {
         private static Translation.I18n t = Translation.I18n.GetInstance();
 
@@ -74,7 +74,7 @@ namespace Chocopoi.DressingTools
         [MenuItem("Tools/chocopoi/Dressing Tools", false, 0)]
         public static void Init()
         {
-            DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
+            DTWindow window = (DTWindow)GetWindow(typeof(DTWindow));
             window.titleContent = new GUIContent(t._("label_tool_name"));
             window.Show();
         }
