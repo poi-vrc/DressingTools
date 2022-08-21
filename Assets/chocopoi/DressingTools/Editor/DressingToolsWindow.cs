@@ -41,6 +41,12 @@ namespace Chocopoi.DressingTools
 
         private string suffixToBeAdded;
 
+        private bool useCustomArmatureObjectNames = false;
+
+        private string avatarArmatureObjectName;
+
+        private string clothesArmatureObjectName;
+
         private bool removeExistingPrefixSuffix = true;
 
         private bool groupClothesRootObjects = true;
@@ -378,9 +384,14 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox(t._("helpbox_info_existing_suffix_detected_not_removed"), MessageType.Info);
             }
 
-            if ((dressReport.infos & DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED)
+            if ((dressReport.infos & DressCheckCodeMask.Info.AVATAR_ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.AVATAR_ARMATURE_OBJECT_GUESSED)
             {
-                EditorGUILayout.HelpBox(t._("helpbox_info_armature_object_guessed"), MessageType.Info);
+                EditorGUILayout.HelpBox(t._("helpbox_info_avatar_armature_object_guessed"), MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_clothes_armature_object_guessed"), MessageType.Info);
             }
 
             if ((dressReport.infos & DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED) == DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED)
@@ -401,7 +412,9 @@ namespace Chocopoi.DressingTools
                 dynamicBoneOption = dynamicBoneOption,
                 groupBones = groupBones,
                 groupRootObjects = groupRootObjects,
-                groupDynamics = groupDynamics
+                groupDynamics = groupDynamics,
+                avatarArmatureObjectName = avatarArmatureObjectName,
+                clothesArmatureObjectName = clothesArmatureObjectName
             };
         }
 
@@ -434,6 +447,24 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.EndHorizontal();
         }
 
+        private void DrawCustomArmatureNameGUI()
+        {
+            useCustomArmatureObjectNames = GUILayout.Toggle(useCustomArmatureObjectNames, t._("toggle_use_custom_armature_object_names"));
+
+            if (!useCustomArmatureObjectNames)
+            {
+                avatarArmatureObjectName = "Armature";
+                clothesArmatureObjectName = "Armature";
+            }
+
+            EditorGUI.BeginDisabledGroup(!useCustomArmatureObjectNames);
+            EditorGUI.indentLevel = 1;
+            avatarArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_avatar_armature_object_name"), avatarArmatureObjectName);
+            clothesArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_clothes_armature_object_name"), clothesArmatureObjectName);
+            EditorGUI.indentLevel = 0;
+            EditorGUI.EndDisabledGroup();
+        }
+
         private void DrawSimpleGUI()
         {
             GUILayout.Label(t._("label_setup"), EditorStyles.boldLabel);
@@ -457,7 +488,9 @@ namespace Chocopoi.DressingTools
 
             DrawNewClothesNameGUI();
 
-            groupBones = groupRootObjects = GUILayout.Toggle(groupBones, t._("toggle_group_bones_and_root_objects"));
+            groupBones = groupRootObjects = GUILayout.Toggle(groupBones | groupRootObjects, t._("toggle_group_bones_and_root_objects"));
+
+            DrawCustomArmatureNameGUI();
 
             // simple mode defaults to group dynamics
 
@@ -507,6 +540,8 @@ namespace Chocopoi.DressingTools
 
             DrawNewClothesNameGUI();
 
+            DrawCustomArmatureNameGUI();
+
             DrawHorizontalLine();
 
             GUILayout.Label(t._("label_grouping_clothes_bones_dynamics"), EditorStyles.boldLabel);
@@ -515,9 +550,9 @@ namespace Chocopoi.DressingTools
 
             groupBones = GUILayout.Toggle(groupBones, t._("toggle_group_bones"));
 
-            groupRootObjects = GUILayout.Toggle(groupBones, t._("toggle_group_root_objects"));
+            groupRootObjects = GUILayout.Toggle(groupRootObjects, t._("toggle_group_root_objects"));
 
-            groupDynamics = GUILayout.Toggle(groupBones, t._("toggle_group_dynamics"));
+            groupDynamics = GUILayout.Toggle(groupDynamics, t._("toggle_group_dynamics"));
 
             DrawHorizontalLine();
 

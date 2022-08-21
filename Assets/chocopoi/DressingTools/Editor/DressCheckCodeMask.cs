@@ -7,14 +7,15 @@ namespace Chocopoi.DressingTools.DressCheckCodeMask
     public enum Info
     {
         //Info
-        NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED = 0x01,
+        NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED = 0x0001,
         DYNAMIC_BONE_ALL_IGNORED = 0x02,
-        EXISTING_PREFIX_DETECTED_NOT_REMOVED = 0x04,
-        EXISTING_PREFIX_DETECTED_AND_REMOVED = 0x08,
-        EXISTING_SUFFIX_DETECTED_NOT_REMOVED = 0x10,
-        EXISTING_SUFFIX_DETECTED_AND_REMOVED = 0x20,
-        ARMATURE_OBJECT_GUESSED = 0x40,
-        MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED = 0x80 //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
+        EXISTING_PREFIX_DETECTED_NOT_REMOVED = 0x0004,
+        EXISTING_PREFIX_DETECTED_AND_REMOVED = 0x0008,
+        EXISTING_SUFFIX_DETECTED_NOT_REMOVED = 0x0010,
+        EXISTING_SUFFIX_DETECTED_AND_REMOVED = 0x0020,
+        AVATAR_ARMATURE_OBJECT_GUESSED = 0x0040,
+        CLOTHES_ARMATURE_OBJECT_GUESSED = 0x0080,
+        MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED = 0x0100 //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
     }
 
     public enum Warn

@@ -13,7 +13,7 @@ namespace Chocopoi.DressingTools
             for (int i = 0; i < targetClothes.transform.childCount; i++)
             {
                 GameObject obj = targetClothes.transform.GetChild(i)?.gameObject;
-                if (obj.name != settings.armatureObjectName)
+                if (obj.name != settings.avatarArmatureObjectName)
                 {
                     report.clothesAllObjects.Add(obj);
                     report.clothesMeshDataObjects.Add(obj);

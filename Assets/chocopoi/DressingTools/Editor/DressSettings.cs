@@ -24,6 +24,8 @@ namespace Chocopoi.DressingTools
 
         public bool groupDynamics;
 
-        public string armatureObjectName = "Armature";
+        public string avatarArmatureObjectName;
+
+        public string clothesArmatureObjectName;
     }
 }

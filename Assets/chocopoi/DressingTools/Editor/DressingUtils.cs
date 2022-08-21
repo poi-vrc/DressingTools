@@ -39,5 +39,33 @@ namespace Chocopoi.DressingTools
         {
             return FindPhysBoneWithRoot(avatarPhysBones, dynamicsRoot) != null;
         }
+
+        public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName, bool rename = false)
+        {
+            List<Transform> transforms = new List<Transform>();
+
+            for (int i = 0; i < targetClothes.transform.childCount; i++)
+            {
+                Transform child = targetClothes.transform.GetChild(i);
+
+                if (child.name.ToLower().Trim().Contains(armatureObjectName.ToLower()))
+                {
+                    transforms.Add(child);
+                }
+            }
+
+            if (transforms.Count == 1)
+            {
+                if (rename)
+                {
+                    transforms[0].name = armatureObjectName;
+                }
+                return transforms[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

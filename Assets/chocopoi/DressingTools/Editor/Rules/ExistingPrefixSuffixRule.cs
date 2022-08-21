@@ -53,42 +53,18 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName)
-        {
-            List<Transform> transforms = new List<Transform>();
-
-            for (int i = 0; i < targetClothes.transform.childCount; i++)
-            {
-                Transform child = targetClothes.transform.GetChild(i);
-
-                if (child.name.ToLower().Trim().Contains(armatureObjectName.ToLower()))
-                {
-                    transforms.Add(child);
-                }
-            }
-
-            if (transforms.Count == 1)
-            {
-                transforms[0].name = armatureObjectName;
-                return transforms[0];
-            } else
-            {
-                return null;
-            }
-        }
-
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform clothesArmature = targetClothes.transform.Find(settings.armatureObjectName);
+            Transform clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
 
             if (!clothesArmature)
             {
-                //guess the armature object by finding if the object name contains settings.armatureObjectName and rename it
-                clothesArmature = GuessArmature(targetClothes, settings.armatureObjectName);
+                //guess the armature object by finding if the object name contains settings.clothesArmatureObjectName and rename it
+                clothesArmature = DressingUtils.GuessArmature(targetClothes, settings.clothesArmatureObjectName, true);
 
                 if (clothesArmature)
                 {
-                    report.infos |= DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED;
+                    report.infos |= DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED;
                 } else
                 {
                     report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;

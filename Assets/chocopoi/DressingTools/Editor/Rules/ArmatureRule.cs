@@ -253,19 +253,39 @@ namespace Chocopoi.DressingTools
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find(settings.armatureObjectName);
-            Transform clothesArmature = targetClothes.transform.Find(settings.armatureObjectName);
+            Transform avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
+            Transform clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
 
             if (!avatarArmature)
             {
-                report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR;
-                return false;
+                //guess the armature object by finding if the object name contains settings.avatarArmatureObjectName, but don't rename it
+                avatarArmature = DressingUtils.GuessArmature(targetClothes, settings.avatarArmatureObjectName, false);
+
+                if (avatarArmature)
+                {
+                    report.infos |= DressCheckCodeMask.Info.AVATAR_ARMATURE_OBJECT_GUESSED;
+                }
+                else
+                {
+                    report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR;
+                    return false;
+                }
             }
 
             if (!clothesArmature)
             {
-                report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
-                return false;
+                //guess the armature object by finding if the object name contains settings.clothesArmatureObjectName and rename it
+                clothesArmature = DressingUtils.GuessArmature(targetClothes, settings.clothesArmatureObjectName, false);
+
+                if (clothesArmature)
+                {
+                    report.infos |= DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED;
+                }
+                else
+                {
+                    report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
+                    return false;
+                }
             }
 
             // Checking precautions
