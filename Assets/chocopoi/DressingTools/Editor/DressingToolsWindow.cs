@@ -12,11 +12,11 @@ using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools
 {
-    public class DTWindow : EditorWindow
+    public class DressingToolsWindow : EditorWindow
     {
         private static Translation.I18n t = Translation.I18n.GetInstance();
 
-        private static DTUpdater.ParsedVersion currentVersion = DTUpdater.GetCurrentVersion();
+        private static DressingToolsUpdater.ParsedVersion currentVersion = DressingToolsUpdater.GetCurrentVersion();
 
         private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 
@@ -68,7 +68,7 @@ namespace Chocopoi.DressingTools
         [MenuItem("Tools/chocopoi/Dressing Tools", false, 0)]
         public static void Init()
         {
-            DTWindow window = (DTWindow)GetWindow(typeof(DTWindow));
+            DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
             window.titleContent = new GUIContent(t._("label_tool_name"));
             window.Show();
         }
@@ -134,9 +134,9 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            if (DTUpdater.IsUpdateChecked() && !DTUpdater.IsLastUpdateCheckErrored() && DTUpdater.IsUpdateAvailable())
+            if (DressingToolsUpdater.IsUpdateChecked() && !DressingToolsUpdater.IsLastUpdateCheckErrored() && DressingToolsUpdater.IsUpdateAvailable())
             {
-                DTUpdater.ManifestBranch branch = DTUpdater.GetBranchLatestVersion(currentVersion?.branch);
+                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(currentVersion?.branch);
 
                 EditorGUILayout.HelpBox(t._("label_update_available", branch?.version), MessageType.Warning);
                 if (GUILayout.Button(t._("label_download_from_booth")))
@@ -154,7 +154,7 @@ namespace Chocopoi.DressingTools
             DrawHorizontalLine();
         }
 
-        private void FinishFetchOnlineVersion(DTUpdater.Manifest manifest)
+        private void FinishFetchOnlineVersion(DressingToolsUpdater.Manifest manifest)
         {
             //force redraw
             EditorUtility.ClearDirty(this);
@@ -166,15 +166,15 @@ namespace Chocopoi.DressingTools
 
             GUILayout.Label(t._("label_footer_version", currentVersion?.version));
             
-            if (DTUpdater.IsUpdateChecked())
+            if (DressingToolsUpdater.IsUpdateChecked())
             {
-                if (DTUpdater.IsLastUpdateCheckErrored())
+                if (DressingToolsUpdater.IsLastUpdateCheckErrored())
                 {
                     GUILayout.Label(t._("label_could_not_check_update"));
                 }
-                else if (DTUpdater.IsUpdateAvailable())
+                else if (DressingToolsUpdater.IsUpdateAvailable())
                 {
-                    DTUpdater.ManifestBranch branch = DTUpdater.GetBranchLatestVersion(currentVersion?.branch);
+                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(currentVersion?.branch);
 
                     GUILayout.Label(t._("label_update_available", branch?.version));
                     if (GUILayout.Button(t._("label_download_from_booth")))
@@ -193,7 +193,7 @@ namespace Chocopoi.DressingTools
             }
             else
             {
-                DTUpdater.FetchOnlineVersion(FinishFetchOnlineVersion);
+                DressingToolsUpdater.FetchOnlineVersion(FinishFetchOnlineVersion);
             }
 
             EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools");

@@ -9,7 +9,7 @@ using UnityEditor;
 
 namespace Chocopoi.DressingTools
 {
-    public class DTUpdater
+    public class DressingToolsUpdater
     {
         public class ManifestInfo
         {
