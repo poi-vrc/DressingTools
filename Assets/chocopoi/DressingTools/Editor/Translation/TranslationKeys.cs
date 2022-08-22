@@ -11,7 +11,7 @@ namespace Chocopoi.DressingTools.Translation
         public string label_header_tool_description;
         public string label_footer_version;
 
-        public string label_checking_for_update;
+        public string label_checking_for_updates;
         public string label_up_to_date;
         public string label_update_available;
         public string label_could_not_check_update;

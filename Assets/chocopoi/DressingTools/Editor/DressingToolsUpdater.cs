@@ -11,12 +11,14 @@ namespace Chocopoi.DressingTools
 {
     public class DressingToolsUpdater
     {
+        [Serializable]
         public class ManifestInfo
         {
             public int version;
             public int compat_version;
         }
 
+        [Serializable]
         public class ManifestBranch
         {
             public string name;
@@ -26,13 +28,14 @@ namespace Chocopoi.DressingTools
             public string booth_url;
         }
 
+        [Serializable]
         public class Manifest
         {
             public ManifestInfo info;
             public string default_branch;
             public ManifestBranch[] branches;
         }
-
+        
         public class ParsedVersion
         {
             public string version;
@@ -53,6 +56,8 @@ namespace Chocopoi.DressingTools
         private static DateTime lastUpdateCheckTime = DateTime.MinValue;
 
         private static bool lastUpdateCheckErrored = false;
+
+        private static bool branchNotFoundWarningSent = false;
 
         public static ParsedVersion GetCurrentVersion()
         {
@@ -142,7 +147,12 @@ namespace Chocopoi.DressingTools
 
             if (branch == null)
             {
-                Debug.LogWarning("Branch \"" + currentVersion.branch + "\" not found in manifest. Using default branch \"" + manifest.default_branch + "\" instead");
+                if (!branchNotFoundWarningSent)
+                {
+                    branchNotFoundWarningSent = true;
+                    Debug.LogWarning("Branch \"" + currentVersion.branch + "\" not found in manifest. Using default branch \"" + manifest.default_branch + "\" instead");
+                }
+
                 branch = GetManifestBranch(manifest.default_branch);
 
                 if (branch == null)

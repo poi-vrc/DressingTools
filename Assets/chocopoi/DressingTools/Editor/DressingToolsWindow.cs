@@ -62,6 +62,8 @@ namespace Chocopoi.DressingTools
 
         private Vector2 scrollPos;
 
+        private bool needClearDirty = false;
+
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
@@ -154,10 +156,20 @@ namespace Chocopoi.DressingTools
             DrawHorizontalLine();
         }
 
+        private void Update()
+        {
+            // a dirty way to run repaint on main thread
+            if (needClearDirty)
+            {
+                needClearDirty = false;
+                Repaint();
+            }
+        }
+
         private void FinishFetchOnlineVersion(DressingToolsUpdater.Manifest manifest)
         {
             //force redraw
-            EditorUtility.ClearDirty(this);
+            needClearDirty = true;
         }
 
         private void DrawToolFooterGUI()
@@ -193,6 +205,7 @@ namespace Chocopoi.DressingTools
             }
             else
             {
+                GUILayout.Label(t._("label_checking_for_updates"));
                 DressingToolsUpdater.FetchOnlineVersion(FinishFetchOnlineVersion);
             }
 
