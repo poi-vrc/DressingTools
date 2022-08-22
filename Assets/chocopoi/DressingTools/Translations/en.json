@@ -87,8 +87,6 @@
         "helpbox_warn_exit_play_mode": "Please exit play mode to continue!",
         "dialog_test_mode_not_implemented": "Testing is currently not implemented. Please test it manually by moving the bones of DressingToolsPreview in Play Mode.",
 
-        "label_download": "Download",
-
         "text_new_clothes_name": "New Clothes Name",
         "button_rename_clothes_name": "Rename",
         "helpbox_error_clothes_name_illegal_characters_detected": "Error: Illegal characters detected in the name of the clothes. Click \"Rename\" below to fix it.",
@@ -112,6 +110,28 @@
         "text_custom_clothes_armature_object_name": "Clothes Armature",
         
         "helpbox_error_missing_scripts_detected_in_avatar": "Error: Missing scripts detected in avatar. Make sure you have imported DynamicBone for DynamicBone-based avatar.",
-        "helpbox_error_missing_scripts_detected_in_clothes": "Error: Missing scripts detected in clothes. Make sure you have imported DynamicBone for DynamicBone-based clothes."
+        "helpbox_error_missing_scripts_detected_in_clothes": "Error: Missing scripts detected in clothes. Make sure you have imported DynamicBone for DynamicBone-based clothes.",
+        
+        "button_download_from_booth": "Download from BOOTH",
+        "button_download_from_github": "Download from GitHub",
+
+        "label_settings_updater_checker": "Update Checker",
+        "label_settings_updater_default_branch": "Default branch: {0}",
+        "label_settings_updater_current_update_branch_cannot_be_found_switching_to_default": "The current branch \"{0}\" cannot be found.\nSwitching to default branch instead.",
+        "label_settings_updater_default_branch_cannot_be_found_switching_to_first_branch": "The default branch cannot be found.\nSwitching to first branch instead.",
+        "popup_settings_updater_current_branch": "Current branch:",
+        "label_settings_updater_current_version": "Current version: {0}",
+        "label_settings_updater_latest_version": "Latest version: {0}",
+        "label_settings_updater_status_update_available": "Status: Update Available",
+        "label_settings_updater_status_up_to_date": "Status: Up-to-date",
+        "label_settings_updater_last_update_check_errored": "Last update check errored.\nRetry in order to change branch:",
+        "label_settings_updater_manifest_not_downloaded": "Manifest not yet downloaded.\nCheck update in order to change branch:",
+        "button_settings_updater_check_update": "Check Update",
+        "button_settings_updater_reset_to_defaults": "Reset To Defaults",
+
+        "dialog_preferences_invalid_preferences_file": "Invalid preferences file detected.\nUsing default preferences instead.",
+        "dialog_preferences_incompatible_preferences_file": "Incompatible preferences file detected. It is at a newer version {0} > {1}.\nUsing default preferences instead.",
+        "dialog_preferences_unable_to_load_preferences_file": "Load preferences file failed. Using default preferences instead:\n{0}",
+        "dialog_preferences_unable_to_save_preferences_file": "Save preferences file failed. Using default preferences instead:\n{0}"
     }
 }

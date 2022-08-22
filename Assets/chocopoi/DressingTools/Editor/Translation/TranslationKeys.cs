@@ -93,8 +93,6 @@ namespace Chocopoi.DressingTools.Translation
         public string helpbox_warn_exit_play_mode;
         public string dialog_test_mode_not_implemented;
 
-        public string label_download;
-
         public string text_new_clothes_name;
         public string button_rename_clothes_name;
         public string helpbox_error_clothes_name_illegal_characters_detected;
@@ -118,5 +116,27 @@ namespace Chocopoi.DressingTools.Translation
 
         public string helpbox_error_missing_scripts_detected_in_avatar;
         public string helpbox_error_missing_scripts_detected_in_clothes;
+
+        public string button_download_from_booth;
+        public string button_download_from_github;
+
+        public string label_settings_updater_checker;
+        public string label_settings_updater_default_branch;
+        public string label_settings_updater_current_update_branch_cannot_be_found_switching_to_default;
+        public string label_settings_updater_default_branch_cannot_be_found_switching_to_first_branch;
+        public string popup_settings_updater_current_branch;
+        public string label_settings_updater_current_version;
+        public string label_settings_updater_latest_version;
+        public string label_settings_updater_status_update_available;
+        public string label_settings_updater_status_up_to_date;
+        public string label_settings_updater_last_update_check_errored;
+        public string label_settings_updater_manifest_not_downloaded;
+        public string button_settings_updater_check_update;
+        public string button_settings_updater_reset_to_defaults;
+
+        public string dialog_preferences_invalid_preferences_file;
+        public string dialog_preferences_incompatible_preferences_file;
+        public string dialog_preferences_unable_to_load_preferences_file;
+        public string dialog_preferences_unable_to_save_preferences_file;
     }
 }
