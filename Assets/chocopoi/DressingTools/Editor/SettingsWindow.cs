@@ -54,29 +54,29 @@ namespace Chocopoi.DressingTools
 
         private void DrawUpdateBranchSelectorGUI()
         {
-            GUILayout.Label("Update Checker", EditorStyles.boldLabel);
+            GUILayout.Label(t._("label_settings_updater_checker"), EditorStyles.boldLabel);
 
             EditorGUILayout.Separator();
 
             if (DressingToolsUpdater.IsUpdateChecked() && !DressingToolsUpdater.IsLastUpdateCheckErrored())
             {
-                EditorGUILayout.LabelField("Default branch: " + DressingToolsUpdater.GetDefaultBranchName());
+                EditorGUILayout.LabelField(t._("label_settings_updater_default_branch", DressingToolsUpdater.GetDefaultBranchName()));
 
                 // get the branches from manifest and display in GUI
                 string[] branches = DressingToolsUpdater.GetAvailableBranches();
                 int branchIndex = FindArrayItemIndex(branches, preferences.app.update_branch);
                 if (branchIndex == -1)
                 {
-                    GUILayout.Label("The current branch \"" + preferences.app.update_branch + "\" cannot be found.\nChanging to default branch instead.", EditorStyles.boldLabel);
+                    GUILayout.Label(t._("label_settings_updater_current_update_branch_cannot_be_found_switching_to_default", preferences.app.update_branch), EditorStyles.boldLabel);
 
                     branchIndex = FindArrayItemIndex(branches, DressingToolsUpdater.GetDefaultBranchName());
                     if (branchIndex == -1)
                     {
                         branchIndex = 0;
-                        GUILayout.Label("Default branch cannot be found.\nChanging to branch 0 instead.", EditorStyles.boldLabel);
+                        GUILayout.Label(t._("label_settings_updater_default_branch_cannot_be_found_switching_to_first_branch"), EditorStyles.boldLabel);
                     }
                 }
-                int selectedUpdateBranch = EditorGUILayout.Popup("Current branch:", branchIndex, branches);
+                int selectedUpdateBranch = EditorGUILayout.Popup(t._("popup_settings_updater_current_branch"), branchIndex, branches);
 
                 // detect changes and save to file
                 if (branchIndex != selectedUpdateBranch)
@@ -85,26 +85,32 @@ namespace Chocopoi.DressingTools
                     Preferences.SavePreferences();
                 }
 
-                EditorGUILayout.LabelField("Current version: " + DressingToolsUpdater.GetCurrentVersion().full_version_string);
+                EditorGUILayout.LabelField(t._("label_settings_updater_current_version", DressingToolsUpdater.GetCurrentVersion().full_version_string));
 
                 DressingToolsUpdater.ManifestBranch latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.update_branch);
-                EditorGUILayout.LabelField("Latest version: " + latestVersion.version);
+                EditorGUILayout.LabelField(t._("label_settings_updater_latest_version", latestVersion.version));
 
-                EditorGUILayout.LabelField("Status: " + (DressingToolsUpdater.IsUpdateAvailable() ? "Update Available" : "Up-to-date"));
+                if (DressingToolsUpdater.IsUpdateAvailable())
+                {
+                    EditorGUILayout.LabelField(t._("label_settings_updater_status_update_available"));
+                } else
+                {
+                    EditorGUILayout.LabelField(t._("label_settings_updater_status_up_to_date"));
+                }
             } else
             {
                 if (DressingToolsUpdater.IsLastUpdateCheckErrored())
                 {
-                    GUILayout.Label("The last manifest download has failed.\nPlease retry to change the update branch:");
+                    GUILayout.Label(t._("label_settings_updater_last_update_check_errored"));
                 } else
                 {
-                    GUILayout.Label("The manifest has not been downloaded.\nPlease check update to change the update branch:");
+                    GUILayout.Label(t._("label_settings_updater_manifest_not_downloaded"));
                 }
             }
 
             EditorGUILayout.Separator();
 
-            if (GUILayout.Button("Check Update"))
+            if (GUILayout.Button(t._("button_settings_updater_check_update")))
             {
                 DressingToolsUpdater.FetchOnlineVersion(FinishFetchOnlineVersion);
             }
@@ -167,7 +173,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.EndScrollView();
             
-            if (GUILayout.Button("Reset to defaults"))
+            if (GUILayout.Button(t._("button_settings_updater_reset_to_defaults")))
             {
                 Preferences.ResetToDefaults(preferences);
                 Preferences.SavePreferences();

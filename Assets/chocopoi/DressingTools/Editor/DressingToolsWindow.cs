@@ -95,11 +95,11 @@ namespace Chocopoi.DressingTools
                 DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
 
                 EditorGUILayout.HelpBox(t._("label_update_available", branch?.version), MessageType.Warning);
-                if (GUILayout.Button(t._("label_download_from_booth")))
+                if (GUILayout.Button(t._("button_download_from_booth")))
                 {
                     Application.OpenURL(branch?.booth_url);
                 }
-                if (GUILayout.Button(t._("label_download_from_github")))
+                if (GUILayout.Button(t._("button_download_from_github")))
                 {
                     Application.OpenURL(branch?.github_url);
                 }
@@ -143,11 +143,11 @@ namespace Chocopoi.DressingTools
                     DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
 
                     GUILayout.Label(t._("label_update_available", branch?.version));
-                    if (GUILayout.Button(t._("label_download_from_booth")))
+                    if (GUILayout.Button(t._("button_download_from_booth")))
                     {
                         Application.OpenURL(branch?.booth_url);
                     }
-                    if (GUILayout.Button(t._("label_download_from_github")))
+                    if (GUILayout.Button(t._("button_download_from_github")))
                     {
                         Application.OpenURL(branch?.github_url);
                     }
