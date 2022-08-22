@@ -20,8 +20,6 @@ namespace Chocopoi.DressingTools
 
         private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 
-        private int selectedLang = 0;
-
         private int dynamicBoneOption = 0;
 
         private VRC.SDKBase.VRC_AvatarDescriptor activeAvatar;
@@ -67,7 +65,7 @@ namespace Chocopoi.DressingTools
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
-        [MenuItem("Tools/chocopoi/Dressing Tools", false, 0)]
+        [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void Init()
         {
             DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
@@ -79,50 +77,6 @@ namespace Chocopoi.DressingTools
         public static void ReloadTranslations()
         {
             t.LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
-        }
-
-        /// <summary>
-        /// Draws a horizontal line
-        /// Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
-        /// </summary>
-        /// <param name="i_height">The line height</param>
-        void DrawHorizontalLine(int i_height = 1)
-        {
-            EditorGUILayout.Separator();
-            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
-            rect.height = i_height;
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
-            EditorGUILayout.Separator();
-        }
-
-        private void DrawLanguageSelectorGUI()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Label("Language 語言 言語:");
-            selectedLang = GUILayout.Toolbar(selectedLang, new string[] { "English", "中文", "日本語", "한국어", "Français" });
-
-            if (selectedLang == 0)
-            {
-                t.SetLocale("en");
-            }
-            else if (selectedLang == 1)
-            {
-                t.SetLocale("zh");
-            }
-            else if (selectedLang == 2)
-            {
-                t.SetLocale("jp");
-            }
-            else if (selectedLang == 3)
-            {
-                t.SetLocale("kr");
-            }
-            else if (selectedLang == 4)
-            {
-                t.SetLocale("fr");
-            }
-            GUILayout.EndHorizontal();
         }
 
         private void DrawToolHeaderGUI()
@@ -138,7 +92,7 @@ namespace Chocopoi.DressingTools
 
             if (DressingToolsUpdater.IsUpdateChecked() && !DressingToolsUpdater.IsLastUpdateCheckErrored() && DressingToolsUpdater.IsUpdateAvailable())
             {
-                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(currentVersion?.branch);
+                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
 
                 EditorGUILayout.HelpBox(t._("label_update_available", branch?.version), MessageType.Warning);
                 if (GUILayout.Button(t._("label_download_from_booth")))
@@ -153,7 +107,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.HelpBox(t._("label_header_tool_description"), MessageType.Info);
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
         }
 
         private void Update()
@@ -174,9 +128,9 @@ namespace Chocopoi.DressingTools
 
         private void DrawToolFooterGUI()
         {
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
-            GUILayout.Label(t._("label_footer_version", currentVersion?.version));
+            GUILayout.Label(t._("label_footer_version", currentVersion?.full_version_string));
             
             if (DressingToolsUpdater.IsUpdateChecked())
             {
@@ -186,7 +140,7 @@ namespace Chocopoi.DressingTools
                 }
                 else if (DressingToolsUpdater.IsUpdateAvailable())
                 {
-                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(currentVersion?.branch);
+                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
 
                     GUILayout.Label(t._("label_update_available", branch?.version));
                     if (GUILayout.Button(t._("label_download_from_booth")))
@@ -529,7 +483,7 @@ namespace Chocopoi.DressingTools
 
             DrawCustomArmatureNameGUI();
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_grouping_bones_root_objects_dynamics"), EditorStyles.boldLabel);
 
@@ -541,7 +495,7 @@ namespace Chocopoi.DressingTools
 
             groupDynamics = GUILayout.Toggle(groupDynamics, t._("toggle_group_dynamics"));
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_prefix_suffix"), EditorStyles.boldLabel);
 
@@ -566,7 +520,7 @@ namespace Chocopoi.DressingTools
 
             removeExistingPrefixSuffix = GUILayout.Toggle(removeExistingPrefixSuffix, t._("toggle_remove_existing_prefix_suffix_in_clothes_bone"));
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_dynamic_bone"), EditorStyles.boldLabel);
 
@@ -595,7 +549,7 @@ namespace Chocopoi.DressingTools
         {
             selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { t._("tab_simple_mode"), t._("tab_advanced_mode") });
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
@@ -607,7 +561,7 @@ namespace Chocopoi.DressingTools
                 DrawAdvancedGUI();
             }
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_check_and_dress"), EditorStyles.boldLabel);
 
@@ -667,12 +621,24 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.EndScrollView();
         }
 
-        /// <summary>
-        /// Renders the window
-        /// </summary>
+        void DrawHeaderButtonsGUI()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            
+            if (GUILayout.Button("Settings 設定"))
+            {
+                SettingsWindow window = (SettingsWindow)GetWindow(typeof(SettingsWindow));
+                window.titleContent = new GUIContent("DressingTools Settings 設定");
+                window.Show();
+            }
+
+            GUILayout.EndHorizontal();
+        }
+
         void OnGUI()
         {
-            DrawLanguageSelectorGUI();
+            DrawHeaderButtonsGUI();
             DrawToolHeaderGUI();
 
             if (Application.isPlaying)

@@ -38,6 +38,7 @@ namespace Chocopoi.DressingTools
         
         public class ParsedVersion
         {
+            public string full_version_string;
             public string version;
             public int[] versionNumbers;
             public string branch;
@@ -94,7 +95,7 @@ namespace Chocopoi.DressingTools
             {
                 try
                 {
-                    WebRequest request = WebRequest.Create(ManifestJsonUrl);
+                    WebRequest request = WebRequest.Create(ManifestJsonUrl + "?" + DateTimeOffset.Now.ToUnixTimeSeconds());
                     WebResponse response = request.GetResponse();
 
                     StreamReader reader = new StreamReader(response.GetResponseStream());
@@ -164,6 +165,32 @@ namespace Chocopoi.DressingTools
             return branch;
         }
 
+        public static string GetDefaultBranchName()
+        {
+            if (manifest == null)
+            {
+                throw new Exception("Online updater manifest has not been loaded.");
+            }
+
+            return manifest.default_branch;
+        }
+
+        public static string[] GetAvailableBranches()
+        {
+            if (manifest == null)
+            {
+                throw new Exception("Online updater manifest has not been loaded.");
+            }
+
+            string[] strs = new string[manifest.branches.Length];
+            for (int i = 0; i < strs.Length; i++)
+            {
+                strs[i] = manifest.branches[i].name;
+            }
+
+            return strs;
+        }
+
         public static bool IsUpdateAvailable()
         {
             if (currentVersion == null || manifest == null)
@@ -177,7 +204,9 @@ namespace Chocopoi.DressingTools
                 return true;
             }
 
-            ManifestBranch branch = GetBranchLatestVersion(currentVersion.branch);
+            Preferences.Json preferences = Preferences.GetPreferences();
+
+            ManifestBranch branch = GetBranchLatestVersion(preferences.app.update_branch);
             ParsedVersion remoteVersion = ParseVersionString(branch.version);
 
             if (remoteVersion == null)
@@ -185,12 +214,14 @@ namespace Chocopoi.DressingTools
                 throw new Exception("Error parsing remote version string \"" + branch.version + "\"!");
             }
 
-            return CompareVersions(remoteVersion, currentVersion) > 0;
+            return !currentVersion.branch.Equals(remoteVersion.branch) || CompareVersions(remoteVersion, currentVersion) > 0;
         }
 
         public static ParsedVersion ParseVersionString(string str)
         {
             ParsedVersion pv = new ParsedVersion();
+
+            pv.full_version_string = str;
 
             //find the first hyphen first
             int hyphenIndex = str.IndexOf('-');

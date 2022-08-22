@@ -3,6 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
 using Chocopoi.DressingTools.Containers;
+using UnityEditor;
 
 namespace Chocopoi.DressingTools
 {
@@ -95,6 +96,16 @@ namespace Chocopoi.DressingTools
 
             // no such type found
             return null;
+        }
+
+        //Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
+        public static void DrawHorizontalLine(int i_height = 1)
+        {
+            EditorGUILayout.Separator();
+            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
+            rect.height = i_height;
+            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
+            EditorGUILayout.Separator();
         }
     }
 }
