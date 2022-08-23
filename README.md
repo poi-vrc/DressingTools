@@ -40,24 +40,6 @@ Dressing your own avatar is really that easy. 自分のアバターを着るの�
 6. You can easily dress up in less than 1 minute!
 
    1分足らずで簡単に着せ替えができる!
-   
-## FAQ よくある質問
-
-### Q: I imported the package and nothing happens, where is the DressingTools window?
-
-A: It is located at the Unity top menubar: Tools -> chocopoi -> DressingTools
-
-### Q：パッケージをインポートしても何も起こりません。DressingToolsウィンドウはどこですか？
-
-A：Unityのトップメニューバーに：[ツール]-> [chocopoi]-> [DressingTools]
-
-### Q: When I import the package into Unity, there is no "Tools" tab. / There are errors in Unity after importing it.
-
-A: Make sure you have imported DynamicBones. Currently, it is still required for DressingTools to work properly. I will remove this requirement very soon in future versions.
-
-### Q: パッケージをUnityにインポートしたけど、[ツール]タブが表示されません。 /　インポート後のUnityにエラーがあります。
-
-A: DynamicBonesをインポートしたことを確認してください。 将来のバージョンでは、この要件を削除します。
 
 ## License ライセンス
 [tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) This project is licensed under the GPLv3 License. Please make sure your project is licensed under the GPLv3 and published open-source to the users. Copyright (c) 2022 poi-vrc.
