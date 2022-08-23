@@ -88,7 +88,7 @@
         "label_statistics_total_clothes_physbones": "服の PhysBone 数: {0} ({1})",
         "label_tool_name": "ドレッシングツール",
         "label_up_to_date": "ツールは最新バージョンです。",
-        "label_update_available": "アップデート {0} が見つかりました! 下のGitHubサイトで新しいバージョンをダウンロードしてください!",
+        "label_update_available": "アップデート {0} が見つかりました! 新しいバージョンをダウンロードしてください!",
         "object_active_avatar": "アバター",
         "object_clothes_to_dress": "服",
         "popup_settings_updater_current_branch": "現在のブランチ",
