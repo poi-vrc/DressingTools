@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Translation
 {
     public class I18n
     {

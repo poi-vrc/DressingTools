@@ -8,22 +8,17 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools
 {
     public class DressingToolsWindow : EditorWindow
     {
-        private static I18n t = I18n.GetInstance();
+        private static Translation.I18n t = Translation.I18n.GetInstance();
+
+        private static DressingToolsUpdater.ParsedVersion currentVersion = DressingToolsUpdater.GetCurrentVersion();
 
         private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
-
-        private static string ONLINE_VERSION = null;
-
-        private static readonly string TOOL_VERSION = GetToolVersion();
-
-        private static int CHECK_UPDATE_STATUS = 0;
-
-        private int selectedLang = 0;
 
         private int dynamicBoneOption = 0;
 
@@ -41,7 +36,19 @@ namespace Chocopoi.DressingTools
 
         private string suffixToBeAdded;
 
+        private bool useCustomArmatureObjectNames = false;
+
+        private string avatarArmatureObjectName;
+
+        private string clothesArmatureObjectName;
+
         private bool removeExistingPrefixSuffix = true;
+
+        private bool groupBones = true;
+
+        private bool groupRootObjects = true;
+
+        private bool groupDynamics = true;
 
         private bool dressNowConfirm = false;
 
@@ -53,10 +60,12 @@ namespace Chocopoi.DressingTools
 
         private Vector2 scrollPos;
 
+        private bool needClearDirty = false;
+
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
-        [MenuItem("Tools/chocopoi/Dressing Tools", false, 0)]
+        [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void Init()
         {
             DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
@@ -70,96 +79,6 @@ namespace Chocopoi.DressingTools
             t.LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
         }
 
-        /// <summary>
-        /// Fetch the tool version text from Assets
-        /// </summary> 
-        /// <returns></returns>
-        private static string GetToolVersion()
-        {
-            StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/version.txt");
-            string str = reader.ReadToEnd();
-            reader.Close();
-            return str;
-        }
-
-        private static void FetchOnlineVersion()
-        {
-            string url = "https://raw.githubusercontent.com/poi-vrc/DressingTools/master/Assets/chocopoi/DressingTools/version.txt";
-
-            try
-            {
-                WebRequest request = WebRequest.Create(url);
-
-                WebResponse response = request.GetResponse();
-
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-
-                string responseText = reader.ReadToEnd();
-
-                Debug.Log("[DressingTools] Check Update Received: " + responseText);
-
-                Regex regex = new Regex("\\d+\\.\\d+\\.\\d+");
-                if (regex.IsMatch(responseText))
-                {
-                    ONLINE_VERSION = responseText;
-                    CHECK_UPDATE_STATUS = 2;
-                }
-                else
-                {
-                    Debug.Log("[DressingTools] Check update response is in an invalid format.");
-                    CHECK_UPDATE_STATUS = 3;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("[DressingTools] Check Update Failed: " + e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Draws a horizontal line
-        /// Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
-        /// </summary>
-        /// <param name="i_height">The line height</param>
-        void DrawHorizontalLine(int i_height = 1)
-        {
-            EditorGUILayout.Separator();
-            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
-            rect.height = i_height;
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
-            EditorGUILayout.Separator();
-        }
-
-        private void DrawLanguageSelectorGUI()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Label("Language 語言 言語:");
-            selectedLang = GUILayout.Toolbar(selectedLang, new string[] { "English", "中文", "日本語", "한국어", "Français" });
-
-            if (selectedLang == 0)
-            {
-                t.SetLocale("en");
-            }
-            else if (selectedLang == 1)
-            {
-                t.SetLocale("zh");
-            }
-            else if (selectedLang == 2)
-            {
-                t.SetLocale("jp");
-            }
-            else if (selectedLang == 3)
-            {
-                t.SetLocale("kr");
-            }
-            else if (selectedLang == 4)
-            {
-                t.SetLocale("fr");
-            }
-            GUILayout.EndHorizontal();
-        }
-
         private void DrawToolHeaderGUI()
         {
             GUIStyle titleLabelStyle = new GUIStyle(GUI.skin.label)
@@ -171,41 +90,66 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            if (CHECK_UPDATE_STATUS == 2 && TOOL_VERSION != ONLINE_VERSION)
+            if (DressingToolsUpdater.IsUpdateChecked() && !DressingToolsUpdater.IsLastUpdateCheckErrored() && DressingToolsUpdater.IsUpdateAvailable())
             {
-                EditorGUILayout.HelpBox(t._("label_update_available", ONLINE_VERSION), MessageType.Warning);
-                if (GUILayout.Button(t._("label_download")))
+                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
+
+                EditorGUILayout.HelpBox(t._("label_update_available", branch?.version), MessageType.Warning);
+                if (GUILayout.Button(t._("button_download_from_booth")))
                 {
-                    Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                    Application.OpenURL(branch?.booth_url);
+                }
+                if (GUILayout.Button(t._("button_download_from_github")))
+                {
+                    Application.OpenURL(branch?.github_url);
                 }
             }
 
             EditorGUILayout.HelpBox(t._("label_header_tool_description"), MessageType.Info);
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
+        }
+
+        private void Update()
+        {
+            // a dirty way to run repaint on main thread
+            if (needClearDirty)
+            {
+                needClearDirty = false;
+                Repaint();
+            }
+        }
+
+        private void FinishFetchOnlineVersion(DressingToolsUpdater.Manifest manifest)
+        {
+            //force redraw
+            needClearDirty = true;
         }
 
         private void DrawToolFooterGUI()
         {
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
-            GUILayout.Label(t._("label_footer_version", TOOL_VERSION));
-
-            // i know this way of checking is so dumb
-
-            if (CHECK_UPDATE_STATUS == 0)
+            GUILayout.Label(t._("label_footer_version", currentVersion?.full_version_string));
+            
+            if (DressingToolsUpdater.IsUpdateChecked())
             {
-                FetchOnlineVersion();
-            }
-
-            if (CHECK_UPDATE_STATUS == 2)
-            {
-                if (TOOL_VERSION != ONLINE_VERSION)
+                if (DressingToolsUpdater.IsLastUpdateCheckErrored())
                 {
-                    GUILayout.Label(t._("label_update_available", ONLINE_VERSION));
-                    if (GUILayout.Button(t._("label_download")))
+                    GUILayout.Label(t._("label_could_not_check_update"));
+                }
+                else if (DressingToolsUpdater.IsUpdateAvailable())
+                {
+                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
+
+                    GUILayout.Label(t._("label_update_available", branch?.version));
+                    if (GUILayout.Button(t._("button_download_from_booth")))
                     {
-                        Application.OpenURL("https://github.com/poi-vrc/DressingTools/releases/latest");
+                        Application.OpenURL(branch?.booth_url);
+                    }
+                    if (GUILayout.Button(t._("button_download_from_github")))
+                    {
+                        Application.OpenURL(branch?.github_url);
                     }
                 }
                 else
@@ -213,9 +157,10 @@ namespace Chocopoi.DressingTools
                     GUILayout.Label(t._("label_up_to_date"));
                 }
             }
-            else if (CHECK_UPDATE_STATUS == 3)
+            else
             {
-                GUILayout.Label(t._("label_could_not_check_update"));
+                GUILayout.Label(t._("label_checking_for_updates"));
+                DressingToolsUpdater.FetchOnlineVersion(FinishFetchOnlineVersion);
             }
 
             EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools");
@@ -316,6 +261,21 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox(t._("helpbox_error_clothes_is_prefab"), MessageType.Error);
             }
 
+            if ((dressReport.errors & DressCheckCodeMask.Error.EXISTING_CLOTHES_DETECTED) == DressCheckCodeMask.Error.EXISTING_CLOTHES_DETECTED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_existing_clothes_detected"), MessageType.Error);
+            }
+
+            if ((dressReport.errors & DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_AVATAR) == DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_AVATAR)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_missing_scripts_detected_in_avatar"), MessageType.Error);
+            }
+
+            if ((dressReport.errors & DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_CLOTHES) == DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_CLOTHES)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_missing_scripts_detected_in_clothes"), MessageType.Error);
+            }
+
             // Warnings
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL)
@@ -365,9 +325,14 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox(t._("helpbox_info_existing_suffix_detected_not_removed"), MessageType.Info);
             }
 
-            if ((dressReport.infos & DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.ARMATURE_OBJECT_GUESSED)
+            if ((dressReport.infos & DressCheckCodeMask.Info.AVATAR_ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.AVATAR_ARMATURE_OBJECT_GUESSED)
             {
-                EditorGUILayout.HelpBox(t._("helpbox_info_armature_object_guessed"), MessageType.Info);
+                EditorGUILayout.HelpBox(t._("helpbox_info_avatar_armature_object_guessed"), MessageType.Info);
+            }
+
+            if ((dressReport.infos & DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED) == DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_info_clothes_armature_object_guessed"), MessageType.Info);
             }
 
             if ((dressReport.infos & DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED) == DressCheckCodeMask.Info.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL_WARNING_REMOVED)
@@ -385,7 +350,12 @@ namespace Chocopoi.DressingTools
                 prefixToBeAdded = prefixToBeAdded,
                 suffixToBeAdded = suffixToBeAdded,
                 removeExistingPrefixSuffix = removeExistingPrefixSuffix,
-                dynamicBoneOption = dynamicBoneOption
+                dynamicBoneOption = dynamicBoneOption,
+                groupBones = groupBones,
+                groupRootObjects = groupRootObjects,
+                groupDynamics = groupDynamics,
+                avatarArmatureObjectName = avatarArmatureObjectName,
+                clothesArmatureObjectName = clothesArmatureObjectName
             };
         }
 
@@ -418,6 +388,24 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.EndHorizontal();
         }
 
+        private void DrawCustomArmatureNameGUI()
+        {
+            useCustomArmatureObjectNames = GUILayout.Toggle(useCustomArmatureObjectNames, t._("toggle_use_custom_armature_object_names"));
+
+            if (!useCustomArmatureObjectNames)
+            {
+                avatarArmatureObjectName = "Armature";
+                clothesArmatureObjectName = "Armature";
+            }
+
+            EditorGUI.BeginDisabledGroup(!useCustomArmatureObjectNames);
+            EditorGUI.indentLevel = 1;
+            avatarArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_avatar_armature_object_name"), avatarArmatureObjectName);
+            clothesArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_clothes_armature_object_name"), clothesArmatureObjectName);
+            EditorGUI.indentLevel = 0;
+            EditorGUI.EndDisabledGroup();
+        }
+
         private void DrawSimpleGUI()
         {
             GUILayout.Label(t._("label_setup"), EditorStyles.boldLabel);
@@ -440,6 +428,14 @@ namespace Chocopoi.DressingTools
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
             DrawNewClothesNameGUI();
+
+            groupBones = groupRootObjects = GUILayout.Toggle(groupBones | groupRootObjects, t._("toggle_group_bones_and_root_objects"));
+
+            DrawCustomArmatureNameGUI();
+
+            // simple mode defaults to group dynamics
+
+            groupDynamics = true;
 
             // simple mode defaults to use generated prefix
 
@@ -485,7 +481,21 @@ namespace Chocopoi.DressingTools
 
             DrawNewClothesNameGUI();
 
-            DrawHorizontalLine();
+            DrawCustomArmatureNameGUI();
+
+            DressingUtils.DrawHorizontalLine();
+
+            GUILayout.Label(t._("label_grouping_bones_root_objects_dynamics"), EditorStyles.boldLabel);
+
+            EditorGUILayout.Separator();
+
+            groupBones = GUILayout.Toggle(groupBones, t._("toggle_group_bones"));
+
+            groupRootObjects = GUILayout.Toggle(groupRootObjects, t._("toggle_group_root_objects"));
+
+            groupDynamics = GUILayout.Toggle(groupDynamics, t._("toggle_group_dynamics"));
+
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_prefix_suffix"), EditorStyles.boldLabel);
 
@@ -510,7 +520,7 @@ namespace Chocopoi.DressingTools
 
             removeExistingPrefixSuffix = GUILayout.Toggle(removeExistingPrefixSuffix, t._("toggle_remove_existing_prefix_suffix_in_clothes_bone"));
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_dynamic_bone"), EditorStyles.boldLabel);
 
@@ -539,7 +549,7 @@ namespace Chocopoi.DressingTools
         {
             selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { t._("tab_simple_mode"), t._("tab_advanced_mode") });
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
@@ -551,7 +561,7 @@ namespace Chocopoi.DressingTools
                 DrawAdvancedGUI();
             }
 
-            DrawHorizontalLine();
+            DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_check_and_dress"), EditorStyles.boldLabel);
 
@@ -611,12 +621,24 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.EndScrollView();
         }
 
-        /// <summary>
-        /// Renders the window
-        /// </summary>
+        void DrawHeaderButtonsGUI()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            
+            if (GUILayout.Button("Settings 設定"))
+            {
+                SettingsWindow window = (SettingsWindow)GetWindow(typeof(SettingsWindow));
+                window.titleContent = new GUIContent("DressingTools Settings 設定");
+                window.Show();
+            }
+
+            GUILayout.EndHorizontal();
+        }
+
         void OnGUI()
         {
-            DrawLanguageSelectorGUI();
+            DrawHeaderButtonsGUI();
             DrawToolHeaderGUI();
 
             if (Application.isPlaying)

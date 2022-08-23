@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 using VRC.SDK3.Dynamics.PhysBone.Components;
+using Chocopoi.DressingTools.Reporting;
+using Chocopoi.DressingTools.Containers;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Rules
 {
     public class ArmatureRule : IDressCheckRule
     {
@@ -41,7 +43,7 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        private void AddRecursiveIgnoreTransforms(DressSettings settings, DynamicBone avatarDynBone, VRCPhysBone avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
+        private void AddRecursiveIgnoreTransforms(DressSettings settings, DTDynamicBone avatarDynBone, VRCPhysBone avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
         {
             string name = avatarDynamicsRoot.name + "_DBExcluded";
             GameObject dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
@@ -97,6 +99,12 @@ namespace Chocopoi.DressingTools
 
             foreach (Transform child in childs)
             {
+                // skip our container
+                if (child.name.EndsWith("_DT"))
+                {
+                    continue;
+                }
+
                 report.clothesAllObjects.Add(child.gameObject);
 
                 Transform avatarTrans = avatarBoneParent.Find(child.name);
@@ -117,10 +125,10 @@ namespace Chocopoi.DressingTools
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
                     
-                    DynamicBone avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
+                    DTDynamicBone avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
                     VRCPhysBone avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
 
-                    DynamicBone clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
+                    DTDynamicBone clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
                     VRCPhysBone clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
 
                     if (avatarDynBone != null || avatarPhysBone != null)
@@ -129,7 +137,7 @@ namespace Chocopoi.DressingTools
                         {
                             if (clothesDynBone != null)
                             {
-                                Object.DestroyImmediate(clothesDynBone);
+                                Object.DestroyImmediate(clothesDynBone.component);
                             }
 
                             if (clothesPhysBone != null)
@@ -152,7 +160,7 @@ namespace Chocopoi.DressingTools
 
                             if (clothesDynBone != null)
                             {
-                                Object.DestroyImmediate(clothesDynBone);
+                                Object.DestroyImmediate(clothesDynBone.component);
                             }
 
                             if (clothesPhysBone != null)
@@ -168,7 +176,7 @@ namespace Chocopoi.DressingTools
 
                             if (clothesDynBone != null)
                             {
-                                Object.DestroyImmediate(clothesDynBone);
+                                Object.DestroyImmediate(clothesDynBone.component);
                             }
 
                             if (clothesPhysBone != null)
@@ -180,11 +188,24 @@ namespace Chocopoi.DressingTools
 
                             if (avatarDynBone != null)
                             {
-                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone);
-                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+                                // get the dynbone type
+                                System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
 
-                                DynamicBone copiedDb = child.GetComponent<DynamicBone>();
-                                copiedDb.m_Root = child;
+                                if (DynamicBoneType != null)
+                                {
+                                    UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone.component);
+                                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
+
+                                    DTDynamicBone copiedDb = new DTDynamicBone(child.GetComponent(DynamicBoneType))
+                                    {
+                                        m_Root = child
+                                    };
+                                }
+                                else
+                                {
+                                    Debug.LogError("[DressingTools] Cannot copy component without DynamicBone installed in project!");
+                                    return false;
+                                }
                             }
 
                             if (avatarPhysBone != null)
@@ -205,7 +226,26 @@ namespace Chocopoi.DressingTools
                     }
                     else
                     {
-                        child.transform.SetParent(avatarTrans);
+                        Transform clothesBoneContainerTrans = null;
+
+                        if (settings.groupBones)
+                        {
+                            string name = avatarTrans.name + "_DT";
+                            GameObject clothesBoneContainer = avatarTrans.Find(name)?.gameObject;
+
+                            if (clothesBoneContainer == null)
+                            {
+                                clothesBoneContainer = new GameObject(name);
+                                clothesBoneContainer.transform.SetParent(avatarTrans);
+                            }
+
+                            clothesBoneContainerTrans = clothesBoneContainer.transform;
+                        } else
+                        {
+                            clothesBoneContainerTrans = avatarTrans;
+                        }
+
+                        child.transform.SetParent(clothesBoneContainerTrans);
                         child.name = settings.prefixToBeAdded + child.name + settings.suffixToBeAdded;
 
                         if (!ProcessBone(report, settings, level + 1, avatarTrans, child))
@@ -234,19 +274,39 @@ namespace Chocopoi.DressingTools
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find("Armature");
-            Transform clothesArmature = targetClothes.transform.Find("Armature");
+            Transform avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
+            Transform clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
 
             if (!avatarArmature)
             {
-                report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR;
-                return false;
+                //guess the armature object by finding if the object name contains settings.avatarArmatureObjectName, but don't rename it
+                avatarArmature = DressingUtils.GuessArmature(targetAvatar, settings.avatarArmatureObjectName, false);
+
+                if (avatarArmature)
+                {
+                    report.infos |= DressCheckCodeMask.Info.AVATAR_ARMATURE_OBJECT_GUESSED;
+                }
+                else
+                {
+                    report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_AVATAR;
+                    return false;
+                }
             }
 
             if (!clothesArmature)
             {
-                report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
-                return false;
+                //guess the armature object by finding if the object name contains settings.clothesArmatureObjectName and rename it
+                clothesArmature = DressingUtils.GuessArmature(targetClothes, settings.clothesArmatureObjectName, true);
+
+                if (clothesArmature)
+                {
+                    report.infos |= DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED;
+                }
+                else
+                {
+                    report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
+                    return false;
+                }
             }
 
             // Checking precautions

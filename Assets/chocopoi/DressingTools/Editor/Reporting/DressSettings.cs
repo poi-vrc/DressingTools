@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Reporting
 {
     public class DressSettings
     {
@@ -17,5 +17,15 @@ namespace Chocopoi.DressingTools
         public bool removeExistingPrefixSuffix;
 
         public int dynamicBoneOption;
+
+        public bool groupBones;
+
+        public bool groupRootObjects;
+
+        public bool groupDynamics;
+
+        public string avatarArmatureObjectName;
+
+        public string clothesArmatureObjectName;
     }
 }

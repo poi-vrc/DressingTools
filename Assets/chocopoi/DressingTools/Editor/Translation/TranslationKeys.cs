@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Translation
 {
     [System.Serializable]
     public class TranslationKeys
@@ -11,7 +11,7 @@ namespace Chocopoi.DressingTools
         public string label_header_tool_description;
         public string label_footer_version;
 
-        public string label_checking_for_update;
+        public string label_checking_for_updates;
         public string label_up_to_date;
         public string label_update_available;
         public string label_could_not_check_update;
@@ -84,15 +84,14 @@ namespace Chocopoi.DressingTools
         public string helpbox_info_existing_prefix_detected_not_removed;
         public string helpbox_info_existing_suffix_detected_and_removed;
         public string helpbox_info_existing_suffix_detected_not_removed;
-        public string helpbox_info_armature_object_guessed;
         public string helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed;
+        public string helpbox_info_avatar_armature_object_guessed;
+        public string helpbox_info_clothes_armature_object_guessed;
 
         public string helpbox_info_dyn_bone_config_details;
         public string helpbox_info_move_clothes_into_place;
         public string helpbox_warn_exit_play_mode;
         public string dialog_test_mode_not_implemented;
-
-        public string label_download;
 
         public string text_new_clothes_name;
         public string button_rename_clothes_name;
@@ -104,5 +103,40 @@ namespace Chocopoi.DressingTools
         public string label_statistics_total_clothes_physbones;
         public string label_statistics_total_clothes_objects;
         public string label_statistics_total_clothes_mesh_data;
+
+        public string label_grouping_bones_root_objects_dynamics;
+        public string toggle_group_bones;
+        public string toggle_group_root_objects;
+        public string toggle_group_dynamics;
+        public string toggle_group_bones_and_root_objects;
+
+        public string toggle_use_custom_armature_object_names;
+        public string text_custom_avatar_armature_object_name;
+        public string text_custom_clothes_armature_object_name;
+
+        public string helpbox_error_missing_scripts_detected_in_avatar;
+        public string helpbox_error_missing_scripts_detected_in_clothes;
+
+        public string button_download_from_booth;
+        public string button_download_from_github;
+
+        public string label_settings_updater_checker;
+        public string label_settings_updater_default_branch;
+        public string label_settings_updater_current_update_branch_cannot_be_found_switching_to_default;
+        public string label_settings_updater_default_branch_cannot_be_found_switching_to_first_branch;
+        public string popup_settings_updater_current_branch;
+        public string label_settings_updater_current_version;
+        public string label_settings_updater_latest_version;
+        public string label_settings_updater_status_update_available;
+        public string label_settings_updater_status_up_to_date;
+        public string label_settings_updater_last_update_check_errored;
+        public string label_settings_updater_manifest_not_downloaded;
+        public string button_settings_updater_check_update;
+        public string button_settings_updater_reset_to_defaults;
+
+        public string dialog_preferences_invalid_preferences_file;
+        public string dialog_preferences_incompatible_preferences_file;
+        public string dialog_preferences_unable_to_load_preferences_file;
+        public string dialog_preferences_unable_to_save_preferences_file;
     }
 }

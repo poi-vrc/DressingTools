@@ -1,42 +1,45 @@
 # DressingTools ドレッシングツール
 Dressing your own avatar is really that easy. 自分のアバターを着るのは本当に簡単なことです。
 
+[[Download latest stable 最新安定版のダウンロード]](https://github.com/poi-vrc/DressingTools/releases/latest)
+
+[[BOOTH Page]](https://chocopoi.booth.pm/items/3639300)
+
 ## Requirements 要件
 
-- VRCSDK2 or VRCSDK3
-- DynamicBone
+- VRCSDK3 (>=2022.04.21.03.29)
+
+> :warning: If you need to dress avatars or clothes that have DynamicBone on it, you still have to import DynamicBones.
+>
+>  DynamicBoneが搭載されたアバターや服を着せるには、DynamicBoneをインポートする必要があります。
 
 ## Instructions 使い方
 
-1. Import VRCSDK and DynamicBone
+1. Import the latest VRCSDK3 (>=2022.04.21.03.29)
 
-    VRCSDKとDynamicBoneをインポートしてください
+   最新のVRCSDK3 (>=2022.04.21.03.29) をインポートしてください。
 
-2. Download DressingTools from [here](https://github.com/poi-vrc/DressingTools/releases/latest).
+2. Download latest stable DressingTools from [here](https://github.com/poi-vrc/DressingTools/releases/latest).
 
-    [こちら](https://github.com/poi-vrc/DressingTools/releases/latest)からDressingToolsをダウンロードしてください
+   [こちら](https://github.com/poi-vrc/DressingTools/releases/latest)から最新安定版のDressingToolsをダウンロードしてください
 
-3.. Import your avatar and clothes
+3. DressingTools will be available at the Unity top menubar: `Tools -> chocopoi -> DressingTools`
 
-    アバターと服をインポートしてください
+   Unityのトップメニューバーから利用できるようになります： `Tools -> chocopoi -> DressingTools`。
 
-4. Duplicate (Select and `CTRL+D`) your avatar in your scene for backup
+4. Import your avatar and clothes
 
-    シーン内でアバターを複製 （選択してCtrl+D） してバックアップしてください
+   アバターと服をインポートしてください
 
-5. Dress up within 1 minute!
+5. Follow the steps in the instruction video:
 
-    1分以内に着ることができます!
+   説明ビデオの手順に従ってください:
 
-How-to 使い方:
+   [![how-to-dressingtools](https://img.youtube.com/vi/9nt2dDpnDA0/0.jpg)](https://www.youtube.com/watch?v=9nt2dDpnDA0)
 
-[![how-to-dressingtools](https://img.youtube.com/vi/9nt2dDpnDA0/0.jpg)](https://www.youtube.com/watch?v=9nt2dDpnDA0)
+6. You can easily dress up in less than 1 minute!
 
-## Detailed Documentation 詳細な資料
-
-The detailed documentation will be distributed soon.
-
-詳しい資料はまもなく配布されます。
+   1分足らずで簡単に着せ替えができる!
 
 ## License ライセンス
-[tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) This project is licensed under the GPLv3 License. Copyright (c) 2022 poi-vrc.
+[tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) This project is licensed under the GPLv3 License. Please make sure your project is licensed under the GPLv3 and published open-source to the users. Copyright (c) 2022 poi-vrc.
