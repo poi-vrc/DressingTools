@@ -1,0 +1,87 @@
+name: Check version and upload release
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+  pull_request:
+  create:
+    ref_type: tag
+  workflow_dispatch:
+
+jobs:
+  version-check-and-make-unitypackage:
+    name: Check version and make unitypackage
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.versionCheck.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      # verify version
+      - uses: poi-vrc/poi-check-version-files-action@v1.0
+        id: versionCheck
+        with:
+          version-text-file-path: "Assets/chocopoi/DressingTools/version.txt"
+          package-json-file-path: "Assets/chocopoi/DressingTools/package.json"
+      # create unitypackage
+      - run: |
+          echo "Assets/chocopoi/DressingTools.meta" > metaList
+          find Assets/chocopoi/DressingTools/ -name \*.meta >> metaList
+      - uses: poi-vrc/create-unitypackage@master
+        with:
+          package-path: 'DressingTools-${{ steps.versionCheck.outputs.version }}.unitypackage'
+          include-files: metaList
+      # upload artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: DressingTools-${{ steps.versionCheck.outputs.version }}
+          path: DressingTools-${{ steps.versionCheck.outputs.version }}.unitypackage
+  upload-release:
+    name: Upload release
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_type == 'tag' }}
+    needs: version-check-and-make-unitypackage
+    steps:
+      # download artifact
+      - uses: actions/download-artifact@v2
+        with:
+          name: DressingTools-${{ needs.version-check-and-make-unitypackage.outputs.version }}
+      # create release (nightly)
+      - name: Release prerelease
+        uses: poi-vrc/action-gh-release@v1
+        if: ${{ !endsWith(needs.version-check-and-make-unitypackage.outputs.version, '-stable') }}
+        with:
+          prerelease: true
+          files: |
+            DressingTools-${{ needs.version-check-and-make-unitypackage.outputs.version }}.unitypackage
+      # create release (stable)
+      - name: Release stable
+        uses: poi-vrc/action-gh-release@v1
+        if: ${{ endsWith(needs.version-check-and-make-unitypackage.outputs.version, '-stable') }}
+        with:
+          prerelease: false
+          files: |
+            DressingTools-${{ needs.version-check-and-make-unitypackage.outputs.version }}.unitypackage
+      # checkout to gh-pages
+      - name: Checkout to gh-pages
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+      # update manifest
+      - name: Update manifest JSON
+        uses: poi-vrc/poi-update-manifest-json-action@v1.0
+        with:
+          full-version: ${{ needs.version-check-and-make-unitypackage.outputs.version }}
+          release-booth-url: "https://chocopoi.booth.pm/items/3639300"
+      # push changes
+      - name: Push new manifest JSON
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add updater_manifest.json
+          git commit -m "Update updater_manifest.json for ${{ needs.version-check-and-make-unitypackage.outputs.version }}"
+          git push
+
+
+
+    
