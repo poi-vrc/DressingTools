@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Chocopoi.DressingTools.Reporting;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -24,7 +24,8 @@ namespace Chocopoi.DressingTools.Rules
                         {
                             child.name = child.name.Substring(prefixBracketEnd + 1).Trim();
                             report.infos |= DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_AND_REMOVED;
-                        } else
+                        }
+                        else
                         {
                             report.infos |= DressCheckCodeMask.Info.EXISTING_PREFIX_DETECTED_NOT_REMOVED;
                         }
@@ -66,7 +67,8 @@ namespace Chocopoi.DressingTools.Rules
                 if (clothesArmature)
                 {
                     report.infos |= DressCheckCodeMask.Info.CLOTHES_ARMATURE_OBJECT_GUESSED;
-                } else
+                }
+                else
                 {
                     report.errors |= DressCheckCodeMask.Error.NO_ARMATURE_IN_CLOTHES;
                     return false;

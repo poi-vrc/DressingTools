@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
-using Chocopoi.DressingTools.Reporting;
-using Chocopoi.DressingTools.Containers;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -16,7 +16,7 @@ namespace Chocopoi.DressingTools.Rules
             {
                 return true;
             }
-            
+
             GameObject dynamicsContainer = new GameObject("DT_Dynamics");
 
             // Find the clothes container (if applicable)

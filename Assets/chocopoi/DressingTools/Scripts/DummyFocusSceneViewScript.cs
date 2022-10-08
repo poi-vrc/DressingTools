@@ -13,6 +13,6 @@ public class DummyFocusSceneViewScript : MonoBehaviour
 
     void Update()
     {
-        
+
     }
 }

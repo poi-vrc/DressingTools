@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Chocopoi.DressingTools.Reporting;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Rules
 {

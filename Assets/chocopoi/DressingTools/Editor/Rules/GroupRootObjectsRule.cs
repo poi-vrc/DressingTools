@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Chocopoi.DressingTools.Reporting;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -40,7 +40,8 @@ namespace Chocopoi.DressingTools.Rules
                 {
                     obj.transform.SetParent(clothesContainer.transform);
                 }
-            } else
+            }
+            else
             {
                 foreach (GameObject obj in toParent)
                 {

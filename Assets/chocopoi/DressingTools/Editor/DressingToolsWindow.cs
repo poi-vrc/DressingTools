@@ -5,10 +5,10 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools
 {
@@ -131,7 +131,7 @@ namespace Chocopoi.DressingTools
             DressingUtils.DrawHorizontalLine();
 
             GUILayout.Label(t._("label_footer_version", currentVersion?.full_version_string));
-            
+
             if (DressingToolsUpdater.IsUpdateChecked())
             {
                 if (DressingToolsUpdater.IsLastUpdateCheckErrored())
@@ -206,7 +206,7 @@ namespace Chocopoi.DressingTools
             {
                 GUILayout.Label(t._("label_statistics_total_avatar_dynbones", dressReport.avatarDynBones.Count));
 
-                GUILayout.Label(t._("label_statistics_total_avatar_physbones", dressReport.avatarPhysBones.Count));    
+                GUILayout.Label(t._("label_statistics_total_avatar_physbones", dressReport.avatarPhysBones.Count));
 
                 GUILayout.Label(t._("label_statistics_total_clothes_dynbones", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
 
@@ -556,7 +556,8 @@ namespace Chocopoi.DressingTools
             if (selectedInterface == 0)
             {
                 DrawSimpleGUI();
-            } else
+            }
+            else
             {
                 DrawAdvancedGUI();
             }
@@ -607,7 +608,8 @@ namespace Chocopoi.DressingTools
                     // reset
                     clothesToDress = null;
                     dressReport = null;
-                } else
+                }
+                else
                 {
                     EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_failed_content", dressReport.result), t._("dialog_button_ok"));
                 }
@@ -625,7 +627,7 @@ namespace Chocopoi.DressingTools
         {
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            
+
             if (GUILayout.Button("Settings 設定"))
             {
                 SettingsWindow window = (SettingsWindow)GetWindow(typeof(SettingsWindow));
@@ -644,7 +646,8 @@ namespace Chocopoi.DressingTools
             if (Application.isPlaying)
             {
                 EditorGUILayout.HelpBox(t._("helpbox_warn_exit_play_mode"), MessageType.Warning);
-            } else
+            }
+            else
             {
                 DrawToolContentGUI();
             }

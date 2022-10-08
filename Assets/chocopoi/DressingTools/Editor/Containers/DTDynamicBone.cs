@@ -21,7 +21,7 @@ namespace Chocopoi.DressingTools.Containers
 
         public Transform transform
         {
-            get { return component.transform;  }
+            get { return component.transform; }
         }
 
         public GameObject gameObject

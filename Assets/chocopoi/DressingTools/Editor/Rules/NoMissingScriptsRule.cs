@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
-using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -19,7 +19,7 @@ namespace Chocopoi.DressingTools.Rules
                     return false;
                 }
             }
-            
+
             foreach (Transform child in gameObject.transform)
             {
                 if (!ScanGameObject(child.gameObject))

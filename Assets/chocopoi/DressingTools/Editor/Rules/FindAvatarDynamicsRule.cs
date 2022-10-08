@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
 using VRC.SDK3.Dynamics.PhysBone.Components;
-using Chocopoi.DressingTools.Reporting;
-using Chocopoi.DressingTools.Containers;
 
 namespace Chocopoi.DressingTools.Rules
 {

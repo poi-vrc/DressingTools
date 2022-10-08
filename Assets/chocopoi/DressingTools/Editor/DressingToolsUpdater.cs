@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
@@ -35,7 +35,7 @@ namespace Chocopoi.DressingTools
             public string default_branch;
             public ManifestBranch[] branches;
         }
-        
+
         public class ParsedVersion
         {
             public string full_version_string;
@@ -230,7 +230,8 @@ namespace Chocopoi.DressingTools
             {
                 //previous versions does not have branches, skipping them
                 pv.branch = null;
-            } else
+            }
+            else
             {
                 pv.branch = str.Substring(hyphenIndex + 1);
             }
@@ -260,7 +261,8 @@ namespace Chocopoi.DressingTools
             if (a.versionNumbers[0] > b.versionNumbers[0])
             {
                 return 1;
-            } else if (a.versionNumbers[0] < b.versionNumbers[0])
+            }
+            else if (a.versionNumbers[0] < b.versionNumbers[0])
             {
                 return -1;
             }

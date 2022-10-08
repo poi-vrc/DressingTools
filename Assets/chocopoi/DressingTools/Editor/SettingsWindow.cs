@@ -5,10 +5,10 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools
 {
@@ -93,16 +93,19 @@ namespace Chocopoi.DressingTools
                 if (DressingToolsUpdater.IsUpdateAvailable())
                 {
                     EditorGUILayout.LabelField(t._("label_settings_updater_status_update_available"));
-                } else
+                }
+                else
                 {
                     EditorGUILayout.LabelField(t._("label_settings_updater_status_up_to_date"));
                 }
-            } else
+            }
+            else
             {
                 if (DressingToolsUpdater.IsLastUpdateCheckErrored())
                 {
                     GUILayout.Label(t._("label_settings_updater_last_update_check_errored"));
-                } else
+                }
+                else
                 {
                     GUILayout.Label(t._("label_settings_updater_manifest_not_downloaded"));
                 }
@@ -172,7 +175,7 @@ namespace Chocopoi.DressingTools
             DrawUpdateBranchSelectorGUI();
 
             EditorGUILayout.EndScrollView();
-            
+
             if (GUILayout.Button(t._("button_settings_updater_reset_to_defaults")))
             {
                 Preferences.ResetToDefaults(preferences);

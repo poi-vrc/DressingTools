@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.Rules;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Dynamics.PhysBone.Components;
-using Chocopoi.DressingTools.Containers;
-using Chocopoi.DressingTools.Rules;
 
 namespace Chocopoi.DressingTools.Reporting
 {
@@ -132,7 +132,8 @@ namespace Chocopoi.DressingTools.Reporting
 
                 //add dummy focus sceneview script
                 targetAvatar.AddComponent<DummyFocusSceneViewScript>();
-            } else
+            }
+            else
             {
                 targetAvatar = settings.activeAvatar.gameObject;
                 targetClothes = settings.clothesToDress;
@@ -149,10 +150,12 @@ namespace Chocopoi.DressingTools.Reporting
             if (report.errors > 0)
             {
                 report.result = DressCheckResult.INCOMPATIBLE;
-            } else if (report.warnings > 0)
+            }
+            else if (report.warnings > 0)
             {
                 report.result = DressCheckResult.COMPATIBLE;
-            } else
+            }
+            else
             {
                 report.result = DressCheckResult.OK;
             }

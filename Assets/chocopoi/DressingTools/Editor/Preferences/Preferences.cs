@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
@@ -52,7 +52,7 @@ namespace Chocopoi.DressingTools
 
             try
             {
-                string json = File.ReadAllText(JsonPath); 
+                string json = File.ReadAllText(JsonPath);
                 Json p = JsonUtility.FromJson<Json>(json);
 
                 if (p == null)
@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools
                     EditorUtility.DisplayDialog("DressingTools", t._("dialog_preferences_invalid_preferences_file"), "OK");
                     return GenerateDefaultPreferences();
                 }
-                
+
                 if (p.version > TargetPreferencesVersion)
                 {
                     Debug.LogWarning("[DressingTools] Incompatible preferences version detected, expected version " + TargetPreferencesVersion + " but preferences file is at a newer version " + p.version + ", using default preferences file instead");

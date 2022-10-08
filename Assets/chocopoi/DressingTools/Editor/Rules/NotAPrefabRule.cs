@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
-using Chocopoi.DressingTools.Reporting;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -15,7 +15,8 @@ namespace Chocopoi.DressingTools.Rules
             {
                 report.errors |= DressCheckCodeMask.Error.CLOTHES_IS_A_PREFAB;
                 return false;
-            } else
+            }
+            else
             {
                 return true;
             }

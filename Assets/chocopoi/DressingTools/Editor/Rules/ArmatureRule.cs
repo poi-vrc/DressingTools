@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
 using VRC.SDK3.Dynamics.PhysBone.Components;
-using Chocopoi.DressingTools.Reporting;
-using Chocopoi.DressingTools.Containers;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -124,7 +124,7 @@ namespace Chocopoi.DressingTools.Rules
                 else
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
-                    
+
                     DTDynamicBone avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
                     VRCPhysBone avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
 
@@ -240,7 +240,8 @@ namespace Chocopoi.DressingTools.Rules
                             }
 
                             clothesBoneContainerTrans = clothesBoneContainer.transform;
-                        } else
+                        }
+                        else
                         {
                             clothesBoneContainerTrans = avatarTrans;
                         }

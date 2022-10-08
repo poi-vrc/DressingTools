@@ -36,7 +36,8 @@ namespace Chocopoi.DressingTools.Translation
                     string json = reader.ReadToEnd();
                     reader.Close();
                     translations.Add(locale, JsonUtility.FromJson<I18nTranslation>(json));
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     Debug.LogError(e);
                 }
@@ -47,7 +48,7 @@ namespace Chocopoi.DressingTools.Translation
         {
             selectedLocale = locale;
         }
-                                 
+
         public string _(string key, params object[] args)
         {
             return Translate(key, args);
@@ -71,7 +72,7 @@ namespace Chocopoi.DressingTools.Translation
             {
                 return value;
             }
-            
+
             return fallback ?? key;
         }
 
