@@ -50,6 +50,7 @@
         "helpbox_info_prefix_suffix": "骨の名前のプレフィックスとサフィックスを設定すると、様々な服の骨を識別することができ、管理や削除が容易になります。",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "警告: 一部の第1段階の骨に一致するアバターの骨がないため、アバターの中に移動しません",
         "helpbox_warn_check_result_compatible": "検査結果: 互換性はありますが、服は完全に適合していない可能性があります。",
+        "helpbox_warn_clothes_name_illegal_characters_detected_may_not_compatible_in_future_versions": "警告: 服の名前に不適切な記号が含まれている場合、将来のバージョンで互換性がない可能性があります、問題を解決するには、下の [変更する] を押してください",
         "helpbox_warn_exit_play_mode": "Play Modeを終了して続行してください!",
         "helpbox_warn_multiple_bones_in_avatar_armature_first_level": "警告: アバターのArmatureの第1段階で複数の骨が見つかりました",
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告: 服のArmatureの第1段階で複数の骨が見つかりました",

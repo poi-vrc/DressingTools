@@ -363,7 +363,8 @@ namespace Chocopoi.DressingTools
         {
             if (clothesToDress != null && (clothesToDress.name == null || clothesToDress.name == "" || illegalCharactersRegex.IsMatch(clothesToDress.name)))
             {
-                EditorGUILayout.HelpBox(t._("helpbox_error_clothes_name_illegal_characters_detected"), MessageType.Error);
+                //EditorGUILayout.HelpBox(t._("helpbox_error_clothes_name_illegal_characters_detected"), MessageType.Error);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_clothes_name_illegal_characters_detected_may_not_compatible_in_future_versions"), MessageType.Warning);
                 if (newClothesName == null || newClothesName == "")
                 {
                     newClothesName = "NewClothes_" + new System.Random().Next();
@@ -575,7 +576,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUI.BeginDisabledGroup(clothesToDress == null || clothesToDress.name == "" || illegalCharactersRegex.IsMatch(clothesToDress.name));
+            EditorGUI.BeginDisabledGroup(clothesToDress == null || clothesToDress.name == ""); //|| illegalCharactersRegex.IsMatch(clothesToDress.name));
             if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
                 dressReport = DressReport.GenerateReport(MakeDressSettings());

@@ -50,6 +50,7 @@
         "helpbox_info_prefix_suffix": "設定骨頭命名的前綴和後綴可讓您識別不同衣服的骨頭，以便您輕鬆管理和刪除它們。",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "警告： 有些衣服骨頭在第一級骨架中沒有匹配的角色骨頭, 他們不會被移動到角色中",
         "helpbox_warn_check_result_compatible": "檢查結果：　兼容，但你的衣服可能不完全適合你的角色。",
+        "helpbox_warn_clothes_name_illegal_characters_detected_may_not_compatible_in_future_versions": "警告: 在新衣服名稱中發現有不適合的符號, 有機會在將來的版本不兼容, 按下面的\"重新命名\"以修復問題",
         "helpbox_warn_exit_play_mode": "請退出Play Mode以繼續！",
         "helpbox_warn_multiple_bones_in_avatar_armature_first_level": "警告： 在角色骨架的第一級中發現到多個骨頭",
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "警告： 在衣服骨架的第一級中發現到多個骨頭",

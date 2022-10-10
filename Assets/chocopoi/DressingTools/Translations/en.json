@@ -50,6 +50,7 @@
         "helpbox_info_prefix_suffix": "Prefix and suffix allow you to identify specific clothes bones, so that you can manage and remove them easily.",
         "helpbox_warn_bones_not_matching_in_armature_first_level": "Warning: Some bones are not matching in the first level of armature. They will not be moved.",
         "helpbox_warn_check_result_compatible": "Check Result: Compatible, but your clothes might not fully fit with your active avatar.",
+        "helpbox_warn_clothes_name_illegal_characters_detected_may_not_compatible_in_future_versions": "Warning: Illegal characters detected in the name of the clothes. It might not work in future versions of DressingTools. Click \"Rename\" below to fix it.",
         "helpbox_warn_exit_play_mode": "Please exit play mode to continue!",
         "helpbox_warn_multiple_bones_in_avatar_armature_first_level": "Warning: Multiple bones detected in the first level of avatar armature.",
         "helpbox_warn_multiple_bones_in_clothes_armature_first_level": "Warning: Multiple bones detected in the first level of clothes armature.",

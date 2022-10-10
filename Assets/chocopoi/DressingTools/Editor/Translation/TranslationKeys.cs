@@ -78,6 +78,7 @@ namespace Chocopoi.DressingTools.Translation
         public string helpbox_warn_multiple_bones_in_avatar_armature_first_level;
         public string helpbox_warn_multiple_bones_in_clothes_armature_first_level;
         public string helpbox_warn_bones_not_matching_in_armature_first_level;
+        public string helpbox_warn_clothes_name_illegal_characters_detected_may_not_compatible_in_future_versions;
         public string helpbox_info_non_matching_clothes_bones_kept_untouched;
         public string helpbox_info_dynamic_bone_all_ignored;
         public string helpbox_info_existing_prefix_detected_and_removed;
