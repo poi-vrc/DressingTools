@@ -1,7 +1,7 @@
 {
     "name": "com.chocopoi.vrc.dressingtools",
     "displayName": "DressingTools",
-    "version": "1.2.0-nightly",
+    "version": "1.2.0.1-nightly",
     "unity": "2019.4",
     "description": "Dressing your own avatar is really that easy.",
     "vpmDependencies": {

@@ -69,6 +69,8 @@ namespace Chocopoi.DressingTools
 
             StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/version.txt");
             string str = reader.ReadToEnd();
+            // remove newline characters and trim string
+            str = str.Trim().Replace("\n", "").Replace("\r", "");
             reader.Close();
             return currentVersion = ParseVersionString(str);
         }
@@ -240,9 +242,9 @@ namespace Chocopoi.DressingTools
             pv.version = str.Substring(0, hyphenIndex);
             string[] strs = pv.version.Split('.');
 
-            if (strs.Length != 3)
+            if (strs.Length < 3)
             {
-                Debug.LogError("[DressingTools] Version string \"" + str + "\" is invalid and does not have exact 3 numbers in version part.");
+                Debug.LogError("[DressingTools] Version string \"" + str + "\" is invalid and has less than 3 numbers in version part.");
                 return null;
             }
 
@@ -257,34 +259,25 @@ namespace Chocopoi.DressingTools
 
         public static int CompareVersions(ParsedVersion a, ParsedVersion b)
         {
-            //compare major
-            if (a.versionNumbers[0] > b.versionNumbers[0])
+            if (a.versionNumbers.Length > b.versionNumbers.Length)
             {
                 return 1;
             }
-            else if (a.versionNumbers[0] < b.versionNumbers[0])
+            else if (a.versionNumbers.Length < b.versionNumbers.Length)
             {
                 return -1;
             }
 
-            //compare minor
-            if (a.versionNumbers[1] > b.versionNumbers[1])
+            for (int i = 0; i < a.versionNumbers.Length; i++)
             {
-                return 1;
-            }
-            else if (a.versionNumbers[1] < b.versionNumbers[1])
-            {
-                return -1;
-            }
-
-            //compare patch
-            if (a.versionNumbers[2] > b.versionNumbers[2])
-            {
-                return 1;
-            }
-            else if (a.versionNumbers[2] < b.versionNumbers[2])
-            {
-                return -1;
+                if (a.versionNumbers[i] > b.versionNumbers[i])
+                {
+                    return 1;
+                }
+                else if (a.versionNumbers[i] < b.versionNumbers[i])
+                {
+                    return -1;
+                }
             }
 
             //same
