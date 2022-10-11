@@ -11,7 +11,7 @@
 
         "label_checking_for_updates": "업데이트를 확인하는중...",
         "label_could_not_check_update": "업데이트를 확인하지 못했어요",
-        "label_update_available": "{0}에 대한 업데이트를 사용 가능해요! 아래 GitHub 웹사이트에서 새로운 버전을 다운로드하세요!",
+        "label_update_available": "{0}에 대한 업데이트를 사용 가능해요!",
         "label_up_to_date": "Tool이 최신 버전이에요.",
 
         "tab_simple_mode": "간단 모드",

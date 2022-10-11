@@ -62,6 +62,8 @@ namespace Chocopoi.DressingTools
 
         private bool needClearDirty = false;
 
+        private bool updateAvailableFoldout = false;
+
         /// <summary>
         /// Initialize the Dressing Tool window
         /// </summary>
@@ -94,14 +96,27 @@ namespace Chocopoi.DressingTools
             {
                 DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
 
-                EditorGUILayout.HelpBox(t._("label_update_available", branch?.version), MessageType.Warning);
-                if (GUILayout.Button(t._("button_download_from_booth")))
+                GUIStyle updateFoldoutStyle = new GUIStyle(EditorStyles.foldout);
+                updateFoldoutStyle.normal.textColor = Color.red;
+                updateFoldoutStyle.onNormal.textColor = Color.red;
+                updateFoldoutStyle.fontStyle = FontStyle.Bold;
+
+                if (updateAvailableFoldout = EditorGUILayout.Foldout(updateAvailableFoldout, "<" + t._("foldout_update_available") + "> " + DressingToolsUpdater.GetCurrentVersion().full_version_string + " -> " + branch.version, updateFoldoutStyle))
                 {
-                    Application.OpenURL(branch?.booth_url);
-                }
-                if (GUILayout.Button(t._("button_download_from_github")))
-                {
-                    Application.OpenURL(branch?.github_url);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    if (GUILayout.Button("> " + t._("button_download_from_booth"), EditorStyles.label))
+                    {
+                        Application.OpenURL(branch?.booth_url);
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    if (GUILayout.Button("> " + t._("button_download_from_github"), EditorStyles.label))
+                    {
+                        Application.OpenURL(branch?.github_url);
+                    }
+                    GUILayout.EndHorizontal();
                 }
             }
 
@@ -143,14 +158,6 @@ namespace Chocopoi.DressingTools
                     DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
 
                     GUILayout.Label(t._("label_update_available", branch?.version));
-                    if (GUILayout.Button(t._("button_download_from_booth")))
-                    {
-                        Application.OpenURL(branch?.booth_url);
-                    }
-                    if (GUILayout.Button(t._("button_download_from_github")))
-                    {
-                        Application.OpenURL(branch?.github_url);
-                    }
                 }
                 else
                 {
