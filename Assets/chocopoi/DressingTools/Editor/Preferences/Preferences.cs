@@ -31,6 +31,8 @@ namespace Chocopoi.DressingTools
 
         private static readonly string JsonPath = "Assets/chocopoi/DressingTools/preferences.json";
 
+        private static readonly string DefaultUpdateBranch = "stable";
+
         private static Json preferences = null;
 
         public static Json GetPreferences()
@@ -111,7 +113,16 @@ namespace Chocopoi.DressingTools
                 json.app = new JsonApp();
             }
             json.app.selected_language = 0;
-            json.app.update_branch = "stable";
+
+            // attempt to get current branch version
+            try
+            {
+                json.app.update_branch = DressingToolsUpdater.GetCurrentVersion()?.branch ?? DefaultUpdateBranch;
+            }
+            catch (Exception)
+            {
+                json.app.update_branch = DefaultUpdateBranch;
+            }
         }
     }
 }
