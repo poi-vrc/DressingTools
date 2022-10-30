@@ -39,7 +39,9 @@ namespace Chocopoi.DressingTools.Reporting
             CLOTHES_IS_A_PREFAB = 0x0020,
             EXISTING_CLOTHES_DETECTED = 0x0040,
             MISSING_SCRIPTS_DETECTED_IN_AVATAR = 0x0080,
-            MISSING_SCRIPTS_DETECTED_IN_CLOTHES = 0x0100
+            MISSING_SCRIPTS_DETECTED_IN_CLOTHES = 0x0100,
+            CLOTHES_INSIDE_AVATAR = 0x0200,
+            AVATAR_INSIDE_CLOTHES = 0x0400,
         }
     }
 

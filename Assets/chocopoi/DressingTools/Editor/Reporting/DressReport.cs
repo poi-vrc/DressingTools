@@ -15,6 +15,7 @@ namespace Chocopoi.DressingTools.Reporting
         {
             new NotAPrefabRule(),
             new NoMissingScriptsRule(),
+            new ObjectPlacementRule(),
             new ExistingPrefixSuffixRule(),
             new FindAvatarDynamicsRule(),
             new ArmatureRule(),

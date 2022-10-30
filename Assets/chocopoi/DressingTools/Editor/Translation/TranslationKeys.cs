@@ -88,6 +88,8 @@ namespace Chocopoi.DressingTools.Translation
         public string helpbox_info_multiple_bones_in_clothes_armature_first_level_warning_removed;
         public string helpbox_info_avatar_armature_object_guessed;
         public string helpbox_info_clothes_armature_object_guessed;
+        public string helpbox_error_clothes_inside_avatar;
+        public string helpbox_error_avatar_inside_clothes;
 
         public string helpbox_info_dyn_bone_config_details;
         public string helpbox_info_move_clothes_into_place;

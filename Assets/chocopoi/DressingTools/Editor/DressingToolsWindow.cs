@@ -283,6 +283,16 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox(t._("helpbox_error_missing_scripts_detected_in_clothes"), MessageType.Error);
             }
 
+            if ((dressReport.errors & DressCheckCodeMask.Error.CLOTHES_INSIDE_AVATAR) == DressCheckCodeMask.Error.CLOTHES_INSIDE_AVATAR)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_clothes_inside_avatar"), MessageType.Error);
+            }
+
+            if ((dressReport.errors & DressCheckCodeMask.Error.AVATAR_INSIDE_CLOTHES) == DressCheckCodeMask.Error.AVATAR_INSIDE_CLOTHES)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_error_avatar_inside_clothes"), MessageType.Error);
+            }
+
             // Warnings
 
             if ((dressReport.warnings & DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL) == DressCheckCodeMask.Warn.MULTIPLE_BONES_IN_AVATAR_ARMATURE_FIRST_LEVEL)
