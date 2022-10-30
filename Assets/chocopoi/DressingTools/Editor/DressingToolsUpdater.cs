@@ -67,12 +67,20 @@ namespace Chocopoi.DressingTools
                 return currentVersion;
             }
 
-            StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/version.txt");
-            string str = reader.ReadToEnd();
-            // remove newline characters and trim string
-            str = str.Trim().Replace("\n", "").Replace("\r", "");
-            reader.Close();
-            return currentVersion = ParseVersionString(str);
+            try
+            {
+                StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/version.txt");
+                string str = reader.ReadToEnd();
+                // remove newline characters and trim string
+                str = str.Trim().Replace("\n", "").Replace("\r", "");
+                reader.Close();
+                return currentVersion = ParseVersionString(str);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                return null;
+            }
         }
 
         public static bool IsUpdateChecked()

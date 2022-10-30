@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.Debugging;
 using Chocopoi.DressingTools.Rules;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -52,6 +53,8 @@ namespace Chocopoi.DressingTools.Reporting
 
         public List<GameObject> clothesMeshDataObjects;
 
+        public DebugDump.DressReportDumpJson dressReportDump;
+
         private DressReport()
         {
             testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/chocopoi/DressingTools/Animations/TestModeAnimationController.controller");
@@ -100,6 +103,15 @@ namespace Chocopoi.DressingTools.Reporting
                 report.errors |= DressCheckCodeMask.Error.NULL_ACTIVE_AVATAR_OR_CLOTHES;
                 return report;
             }
+
+            // generate dump of original first
+
+            report.dressReportDump = new DebugDump.DressReportDumpJson
+            {
+                present = true,
+                original_avatar_tree_csv = DebugDump.GenerateGameObjectTreeCsv(settings.activeAvatar.transform, DebugDump.GameObjectCsvHeader),
+                original_clothes_tree_csv = DebugDump.GenerateGameObjectTreeCsv(settings.clothesToDress.transform, DebugDump.GameObjectCsvHeader)
+            };
 
             string avatarNewName = "DressingToolsPreview_" + settings.activeAvatar.gameObject.name;
             string clothesNewName = "DressingToolsPreview_" + settings.clothesToDress.name;
@@ -160,6 +172,15 @@ namespace Chocopoi.DressingTools.Reporting
             {
                 report.result = DressCheckResult.OK;
             }
+
+            report.dressReportDump.avatar_components_csv = DebugDump.GenerateSpecialComponentsCsv(report.avatarDynBones, report.avatarPhysBones, DebugDump.FindParentConstraints(targetAvatar.transform));
+            report.dressReportDump.clothes_components_csv = DebugDump.GenerateSpecialComponentsCsv(report.clothesDynBones, report.clothesPhysBones, null);
+            report.dressReportDump.resultant_avatar_tree_csv = DebugDump.GenerateGameObjectTreeCsv(targetAvatar.transform, DebugDump.GameObjectCsvHeader);
+            report.dressReportDump.resultant_clothes_tree_csv = DebugDump.GenerateGameObjectTreeCsv(targetClothes.transform, DebugDump.GameObjectCsvHeader);
+            report.dressReportDump.errors = (int)report.errors;
+            report.dressReportDump.infos = (int)report.infos;
+            report.dressReportDump.result = (int)report.result;
+            report.dressReportDump.warnings = (int)report.warnings;
 
 #if UNITY_EDITOR
             Selection.activeGameObject = targetAvatar;

@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Chocopoi.DressingTools.Debugging;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
@@ -672,6 +673,11 @@ namespace Chocopoi.DressingTools
         {
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button(t._("button_save_debug_dump")))
+            {
+                DebugDump.GenerateDump(dressReport);
+            }
 
             if (GUILayout.Button("Settings 設定"))
             {

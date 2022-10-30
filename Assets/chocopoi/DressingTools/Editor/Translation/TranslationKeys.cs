@@ -143,5 +143,8 @@ namespace Chocopoi.DressingTools.Translation
         public string dialog_preferences_unable_to_save_preferences_file;
 
         public string foldout_update_available;
+        public string button_save_debug_dump;
+        public string dialog_confirmation_of_content_of_debug_dump;
+        public string dialog_confirmation_of_no_previous_dress_report;
     }
 }
