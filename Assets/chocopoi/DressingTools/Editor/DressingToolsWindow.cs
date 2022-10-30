@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading;
+﻿using System.Text.RegularExpressions;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Chocopoi.DressingTools
 {
@@ -596,6 +589,27 @@ namespace Chocopoi.DressingTools
             EditorGUI.BeginDisabledGroup(clothesToDress == null || clothesToDress.name == ""); //|| illegalCharactersRegex.IsMatch(clothesToDress.name));
             if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
+                // clone if prefab
+
+                if (PrefabUtility.IsPartOfAnyPrefab(clothesToDress))
+                {
+                    // clone the prefab
+                    GameObject clonedPrefab = Instantiate(clothesToDress);
+                    clonedPrefab.name = clothesToDress.name;
+
+                    // if prefab is in scene, disable it and rename
+                    if (PrefabUtility.GetPrefabInstanceStatus(clothesToDress) != PrefabInstanceStatus.NotAPrefab)
+                    {
+                        clothesToDress.SetActive(false);
+                        clothesToDress.name += "-Prefab";
+                    }
+
+                    // set the clone to be the target clothes to dress
+                    clothesToDress = clonedPrefab;
+                }
+
+                // evaluate dressreport
+
                 dressReport = DressReport.GenerateReport(MakeDressSettings());
                 dressNowConfirm = false;
                 Debug.Log("[DressingTools] Dress report generated with result " + dressReport.result + ", info code " + dressReport.infos + " warn code " + dressReport.warnings + " error code " + dressReport.errors);
