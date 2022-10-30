@@ -594,14 +594,26 @@ namespace Chocopoi.DressingTools
                 if (PrefabUtility.IsPartOfAnyPrefab(clothesToDress))
                 {
                     // clone the prefab
-                    GameObject clonedPrefab = Instantiate(clothesToDress);
-                    clonedPrefab.name = clothesToDress.name;
+                    GameObject clonedPrefab = null;
 
-                    // if prefab is in scene, disable it and rename
+                    // check if in scene or not
                     if (PrefabUtility.GetPrefabInstanceStatus(clothesToDress) != PrefabInstanceStatus.NotAPrefab)
                     {
-                        clothesToDress.SetActive(false);
+                        // if in scene, we cannot clone with prefab connection or the overrides will be gone
+                        clonedPrefab = Instantiate(clothesToDress);
+
+                        // rename and disable original
+                        clonedPrefab.name = clothesToDress.name;
                         clothesToDress.name += "-Prefab";
+                        clothesToDress.SetActive(false);
+                    } else
+                    {
+                        // create prefab connection
+                        clonedPrefab = (GameObject)PrefabUtility.InstantiatePrefab(clothesToDress);
+                        clonedPrefab.name = clothesToDress.name;
+
+                        // unpack the outermost root of the prefab
+                        PrefabUtility.UnpackPrefabInstance(clonedPrefab, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
                     }
 
                     // set the clone to be the target clothes to dress
