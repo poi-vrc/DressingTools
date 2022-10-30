@@ -606,7 +606,8 @@ namespace Chocopoi.DressingTools
                         clonedPrefab.name = clothesToDress.name;
                         clothesToDress.name += "-Prefab";
                         clothesToDress.SetActive(false);
-                    } else
+                    }
+                    else
                     {
                         // create prefab connection
                         clonedPrefab = (GameObject)PrefabUtility.InstantiatePrefab(clothesToDress);
