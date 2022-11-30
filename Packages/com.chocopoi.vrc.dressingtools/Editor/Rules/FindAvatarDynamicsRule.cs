@@ -4,7 +4,6 @@ using Chocopoi.DressingTools.Containers;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -32,6 +31,7 @@ namespace Chocopoi.DressingTools.Rules
 
             // get the dynbone type
             System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
+            System.Type PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
             // scan avatar dynbones
 
@@ -46,10 +46,13 @@ namespace Chocopoi.DressingTools.Rules
 
             // scan avatar physbones
 
-            VRCPhysBone[] avatarPhysBones = targetAvatar.GetComponentsInChildren<VRCPhysBone>();
-            foreach (VRCPhysBone physBone in avatarPhysBones)
+            if (PhysBoneType != null)
             {
-                report.avatarPhysBones.Add(physBone);
+                Component[] avatarPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
+                foreach (Component physBone in avatarPhysBones)
+                {
+                    report.avatarPhysBones.Add(new DTPhysBone(physBone));
+                }
             }
 
             // scan original clothes dynbones
@@ -65,10 +68,13 @@ namespace Chocopoi.DressingTools.Rules
 
             // scan original clothes physbones
 
-            VRCPhysBone[] clothesPhysBones = targetClothes.GetComponentsInChildren<VRCPhysBone>();
-            foreach (VRCPhysBone physBone in avatarPhysBones)
+            if (PhysBoneType != null)
             {
-                report.clothesOriginalPhysBones.Add(physBone);
+                Component[] clothesPhysBones = targetClothes.GetComponentsInChildren(PhysBoneType);
+                foreach (Component physBone in clothesPhysBones)
+                {
+                    report.clothesOriginalPhysBones.Add(new DTPhysBone(physBone));
+                }
             }
 
             return true;

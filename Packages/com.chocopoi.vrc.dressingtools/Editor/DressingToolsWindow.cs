@@ -8,6 +8,8 @@ namespace Chocopoi.DressingTools
 {
     public class DressingToolsWindow : EditorWindow
     {
+        private static System.Type VrcAvatarDescriptorType = DressingUtils.FindType("VRC.SDKBase.VRC_AvatarDescriptor");
+
         private static Translation.I18n t = Translation.I18n.GetInstance();
 
         private static DressingToolsUpdater.ParsedVersion currentVersion = DressingToolsUpdater.GetCurrentVersion();
@@ -16,7 +18,7 @@ namespace Chocopoi.DressingTools
 
         private int dynamicBoneOption = 0;
 
-        private VRC.SDKBase.VRC_AvatarDescriptor activeAvatar;
+        private GameObject activeAvatar;
 
         private GameObject clothesToDress;
 
@@ -424,18 +426,21 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
 
-            if (activeAvatar == null)
-            {
-                VRC.SDKBase.VRC_AvatarDescriptor[] avatars = FindObjectsOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
-                foreach (VRC.SDKBase.VRC_AvatarDescriptor avatar in avatars)
-                {
-                    if (!avatar.name.StartsWith("DressingToolsPreview_"))
-                    {
-                        activeAvatar = avatar;
-                    }
-                }
-            }
-            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            //if (activeAvatar == null)
+            //{
+            //    // Find avatars if VRCSDK is used
+
+            //    Object[] avatars = FindObjectsOfType(VrcAvatarDescriptorType);
+            //    foreach (Object avatar in avatars)
+            //    {
+            //        if (!avatar.name.StartsWith("DressingToolsPreview_"))
+            //        {
+            //            activeAvatar = (GameObject)avatar;
+            //        }
+            //    }
+            //}
+
+            activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(GameObject), true);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
@@ -477,11 +482,21 @@ namespace Chocopoi.DressingTools
         {
             GUILayout.Label(t._("label_select_avatar"), EditorStyles.boldLabel);
 
-            if (activeAvatar == null)
-            {
-                activeAvatar = FindObjectOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
-            }
-            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+            //if (activeAvatar == null)
+            //{
+            //    // Find avatars if VRCSDK is used
+
+            //    GameObject[] avatars = (GameObject[])FindObjectsOfType(VrcAvatarDescriptorType);
+            //    foreach (GameObject avatar in avatars)
+            //    {
+            //        if (!avatar.name.StartsWith("DressingToolsPreview_"))
+            //        {
+            //            activeAvatar = avatar;
+            //        }
+            //    }
+            //}
+
+            activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(GameObject), true);
 
             EditorGUILayout.Separator();
 

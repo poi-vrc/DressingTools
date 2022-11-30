@@ -6,7 +6,6 @@ using Chocopoi.DressingTools.Rules;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools.Reporting
 {
@@ -39,7 +38,7 @@ namespace Chocopoi.DressingTools.Reporting
 
         public List<DTDynamicBone> avatarDynBones;
 
-        public List<VRCPhysBone> avatarPhysBones;
+        public List<DTPhysBone> avatarPhysBones;
 
         public List<GameObject> clothesAllObjects;
 
@@ -47,9 +46,9 @@ namespace Chocopoi.DressingTools.Reporting
 
         public List<DTDynamicBone> clothesDynBones;
 
-        public List<VRCPhysBone> clothesOriginalPhysBones;
+        public List<DTPhysBone> clothesOriginalPhysBones;
 
-        public List<VRCPhysBone> clothesPhysBones;
+        public List<DTPhysBone> clothesPhysBones;
 
         public List<GameObject> clothesMeshDataObjects;
 
@@ -65,11 +64,11 @@ namespace Chocopoi.DressingTools.Reporting
             }
 
             avatarDynBones = new List<DTDynamicBone>();
-            avatarPhysBones = new List<VRCPhysBone>();
+            avatarPhysBones = new List<DTPhysBone>();
             clothesDynBones = new List<DTDynamicBone>();
-            clothesPhysBones = new List<VRCPhysBone>();
+            clothesPhysBones = new List<DTPhysBone>();
             clothesOriginalDynBones = new List<DTDynamicBone>();
-            clothesOriginalPhysBones = new List<VRCPhysBone>();
+            clothesOriginalPhysBones = new List<DTPhysBone>();
             clothesAllObjects = new List<GameObject>();
             clothesMeshDataObjects = new List<GameObject>();
         }

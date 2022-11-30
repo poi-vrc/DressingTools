@@ -4,7 +4,6 @@ using Chocopoi.DressingTools.Containers;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -53,7 +52,7 @@ namespace Chocopoi.DressingTools.Rules
                 Object.DestroyImmediate(dynBone.component);
             }
 
-            foreach (VRCPhysBone physBone in report.clothesPhysBones)
+            foreach (DTPhysBone physBone in report.clothesPhysBones)
             {
                 // in case it does not have a root transform
                 if (physBone.rootTransform == null)
@@ -61,12 +60,12 @@ namespace Chocopoi.DressingTools.Rules
                     physBone.rootTransform = physBone.gameObject.transform;
                 }
 
-                UnityEditorInternal.ComponentUtility.CopyComponent(physBone);
+                UnityEditorInternal.ComponentUtility.CopyComponent(physBone.component);
                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(dynamicsContainer);
 
                 // destroy the original one
 
-                Object.DestroyImmediate(physBone);
+                Object.DestroyImmediate(physBone.component);
             }
 
             return true;

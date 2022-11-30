@@ -6,7 +6,7 @@ namespace Chocopoi.DressingTools.Reporting
 {
     public class DressSettings
     {
-        public VRC.SDKBase.VRC_AvatarDescriptor activeAvatar;
+        public GameObject activeAvatar;
 
         public GameObject clothesToDress;
 

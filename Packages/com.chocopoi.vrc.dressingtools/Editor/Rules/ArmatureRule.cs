@@ -4,7 +4,6 @@ using Chocopoi.DressingTools.Containers;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools.Rules
 {
@@ -43,7 +42,7 @@ namespace Chocopoi.DressingTools.Rules
             }
         }
 
-        private void AddRecursiveIgnoreTransforms(DressSettings settings, DTDynamicBone avatarDynBone, VRCPhysBone avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
+        private void AddRecursiveIgnoreTransforms(DressSettings settings, DTDynamicBone avatarDynBone, DTPhysBone avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
         {
             string name = avatarDynamicsRoot.name + "_DBExcluded";
             GameObject dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
@@ -126,10 +125,10 @@ namespace Chocopoi.DressingTools.Rules
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
                     DTDynamicBone avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
-                    VRCPhysBone avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
+                    DTPhysBone avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
 
                     DTDynamicBone clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
-                    VRCPhysBone clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
+                    DTPhysBone clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
 
                     if (avatarDynBone != null || avatarPhysBone != null)
                     {
@@ -142,7 +141,7 @@ namespace Chocopoi.DressingTools.Rules
 
                             if (clothesPhysBone != null)
                             {
-                                Object.DestroyImmediate(clothesPhysBone);
+                                Object.DestroyImmediate(clothesPhysBone.component);
                             }
 
                             AddRecursiveDynamicsParentConstraints(avatarTrans, child);
@@ -165,7 +164,7 @@ namespace Chocopoi.DressingTools.Rules
 
                             if (clothesPhysBone != null)
                             {
-                                Object.DestroyImmediate(clothesPhysBone);
+                                Object.DestroyImmediate(clothesPhysBone.component);
                             }
 
                             AddRecursiveIgnoreTransforms(settings, avatarDynBone, avatarPhysBone, avatarTrans, child);
@@ -181,7 +180,7 @@ namespace Chocopoi.DressingTools.Rules
 
                             if (clothesPhysBone != null)
                             {
-                                Object.DestroyImmediate(clothesPhysBone);
+                                Object.DestroyImmediate(clothesPhysBone.component);
                             }
 
                             //copy component using unityeditor internal method (easiest way)
@@ -210,10 +209,10 @@ namespace Chocopoi.DressingTools.Rules
 
                             if (avatarPhysBone != null)
                             {
-                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarPhysBone);
+                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarPhysBone.component);
                                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
 
-                                VRCPhysBone copiedPb = child.GetComponent<VRCPhysBone>();
+                                DTPhysBone copiedPb = child.GetComponent<DTPhysBone>();
                                 copiedPb.rootTransform = child;
                             }
                         }

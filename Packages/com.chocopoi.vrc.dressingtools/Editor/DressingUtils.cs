@@ -3,7 +3,6 @@ using System.Reflection;
 using Chocopoi.DressingTools.Containers;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools
 {
@@ -23,9 +22,9 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static VRCPhysBone FindPhysBoneWithRoot(List<VRCPhysBone> avatarPhysBones, Transform dynamicsRoot)
+        public static DTPhysBone FindPhysBoneWithRoot(List<DTPhysBone> avatarPhysBones, Transform dynamicsRoot)
         {
-            foreach (VRCPhysBone bone in avatarPhysBones)
+            foreach (DTPhysBone bone in avatarPhysBones)
             {
                 if (bone.rootTransform != null ? bone.rootTransform == dynamicsRoot : bone.transform == dynamicsRoot)
                 {
@@ -40,7 +39,7 @@ namespace Chocopoi.DressingTools
             return FindDynBoneWithRoot(avatarDynBones, dynamicsRoot) != null;
         }
 
-        public static bool IsPhysBoneExists(List<VRCPhysBone> avatarPhysBones, Transform dynamicsRoot)
+        public static bool IsPhysBoneExists(List<DTPhysBone> avatarPhysBones, Transform dynamicsRoot)
         {
             return FindPhysBoneWithRoot(avatarPhysBones, dynamicsRoot) != null;
         }

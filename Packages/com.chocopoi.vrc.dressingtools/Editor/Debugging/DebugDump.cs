@@ -8,7 +8,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.SceneManagement;
-using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Chocopoi.DressingTools.Debugging
 {
@@ -158,7 +157,7 @@ namespace Chocopoi.DressingTools.Debugging
 
         }
 
-        public static string GenerateSpecialComponentsCsv(List<DTDynamicBone> dynBones, List<VRCPhysBone> physBones, List<ParentConstraint> parentConstraints)
+        public static string GenerateSpecialComponentsCsv(List<DTDynamicBone> dynBones, List<DTPhysBone> physBones, List<ParentConstraint> parentConstraints)
         {
             string csv = ComponentsCsvHeader;
 
@@ -167,9 +166,9 @@ namespace Chocopoi.DressingTools.Debugging
                 csv += string.Format("{0},{1}\n", bone.component.GetInstanceID(), "DynamicBone");
             }
 
-            foreach (VRCPhysBone bone in physBones)
+            foreach (DTPhysBone bone in physBones)
             {
-                csv += string.Format("{0},{1}\n", bone.GetInstanceID(), "VRCPhysBone");
+                csv += string.Format("{0},{1}\n", bone.component.GetInstanceID(), "VRCPhysBone");
             }
 
             if (parentConstraints != null)
