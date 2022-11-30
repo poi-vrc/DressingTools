@@ -32,7 +32,7 @@ namespace Chocopoi.DressingTools.Translation
             {
                 try
                 {
-                    StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/Translations/" + locale + ".json");
+                    StreamReader reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/Translations/" + locale + ".json");
                     string json = reader.ReadToEnd();
                     reader.Close();
                     translations.Add(locale, JsonUtility.FromJson<I18nTranslation>(json));

@@ -1,0 +1,17 @@
+{
+    "name": "com.chocopoi.vrc.dressingtools.Editor",
+    "references": [
+        "GUID:85e555d1cc87ace4d8e14fcfe9062453"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -69,7 +69,7 @@ namespace Chocopoi.DressingTools
 
             try
             {
-                StreamReader reader = new StreamReader("Assets/chocopoi/DressingTools/version.txt");
+                StreamReader reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/version.txt");
                 string str = reader.ReadToEnd();
                 // remove newline characters and trim string
                 str = str.Trim().Replace("\n", "").Replace("\r", "");
