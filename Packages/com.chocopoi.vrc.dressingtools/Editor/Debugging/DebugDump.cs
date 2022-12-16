@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Chocopoi.DressingTools.DynamicsProxy;
+using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;

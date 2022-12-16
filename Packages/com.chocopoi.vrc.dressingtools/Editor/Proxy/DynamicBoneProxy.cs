@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.DynamicsProxy
+namespace Chocopoi.DressingTools.Proxy
 {
     public class DynamicBoneProxy
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Debugging;
-using Chocopoi.DressingTools.DynamicsProxy;
+using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Hooks;
 using UnityEditor;
 using UnityEditor.Animations;

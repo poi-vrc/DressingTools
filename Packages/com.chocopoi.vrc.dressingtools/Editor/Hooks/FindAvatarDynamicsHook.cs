@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.DynamicsProxy;
+using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
