@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.Plastic.Newtonsoft.Json.Linq;
-using UnityEditor;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
