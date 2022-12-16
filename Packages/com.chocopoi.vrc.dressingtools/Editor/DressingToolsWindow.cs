@@ -90,7 +90,7 @@ namespace Chocopoi.DressingTools
 
             if (DressingToolsUpdater.IsUpdateChecked() && !DressingToolsUpdater.IsLastUpdateCheckErrored() && DressingToolsUpdater.IsUpdateAvailable())
             {
-                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
+                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(PreferencesUtility.GetPreferences().app.updateBranch);
 
                 GUIStyle updateFoldoutStyle = new GUIStyle(EditorStyles.foldout);
                 updateFoldoutStyle.normal.textColor = Color.red;
@@ -151,7 +151,7 @@ namespace Chocopoi.DressingTools
                 }
                 else if (DressingToolsUpdater.IsUpdateAvailable())
                 {
-                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(Preferences.GetPreferences().app.update_branch);
+                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(PreferencesUtility.GetPreferences().app.updateBranch);
 
                     GUILayout.Label(t._("label_update_available", branch?.version));
                 }

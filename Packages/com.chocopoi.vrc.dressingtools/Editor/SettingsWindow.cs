@@ -18,7 +18,7 @@ namespace Chocopoi.DressingTools
 
         private Vector2 scrollPos;
 
-        private Preferences.Json preferences;
+        private Preferences preferences;
 
         private bool needRepaint;
 
@@ -31,12 +31,12 @@ namespace Chocopoi.DressingTools
         {
             GUILayout.Label("Language 語言 言語:");
 
-            int selectedLanguage = GUILayout.Toolbar(preferences.app.selected_language, new string[] { "English", "中文", "日本語", "한국어", "Français" });
-            if (selectedLanguage != preferences.app.selected_language)
+            int selectedLanguage = GUILayout.Toolbar(preferences.app.selectedLanguage, new string[] { "English", "中文", "日本語", "한국어", "Français" });
+            if (selectedLanguage != preferences.app.selectedLanguage)
             {
-                preferences.app.selected_language = selectedLanguage;
+                preferences.app.selectedLanguage = selectedLanguage;
                 UpdateLocale();
-                Preferences.SavePreferences();
+                PreferencesUtility.SavePreferences();
             }
         }
 
@@ -64,10 +64,10 @@ namespace Chocopoi.DressingTools
 
                 // get the branches from manifest and display in GUI
                 string[] branches = DressingToolsUpdater.GetAvailableBranches();
-                int branchIndex = FindArrayItemIndex(branches, preferences.app.update_branch);
+                int branchIndex = FindArrayItemIndex(branches, preferences.app.updateBranch);
                 if (branchIndex == -1)
                 {
-                    GUILayout.Label(t._("label_settings_updater_current_update_branch_cannot_be_found_switching_to_default", preferences.app.update_branch), EditorStyles.boldLabel);
+                    GUILayout.Label(t._("label_settings_updater_current_update_branch_cannot_be_found_switching_to_default", preferences.app.updateBranch), EditorStyles.boldLabel);
 
                     branchIndex = FindArrayItemIndex(branches, DressingToolsUpdater.GetDefaultBranchName());
                     if (branchIndex == -1)
@@ -81,13 +81,13 @@ namespace Chocopoi.DressingTools
                 // detect changes and save to file
                 if (branchIndex != selectedUpdateBranch)
                 {
-                    preferences.app.update_branch = branches[selectedUpdateBranch];
-                    Preferences.SavePreferences();
+                    preferences.app.updateBranch = branches[selectedUpdateBranch];
+                    PreferencesUtility.SavePreferences();
                 }
 
                 EditorGUILayout.LabelField(t._("label_settings_updater_current_version", DressingToolsUpdater.GetCurrentVersion().full_version_string));
 
-                DressingToolsUpdater.ManifestBranch latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.update_branch);
+                DressingToolsUpdater.ManifestBranch latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.updateBranch);
                 EditorGUILayout.LabelField(t._("label_settings_updater_latest_version", latestVersion.version));
 
                 if (DressingToolsUpdater.IsUpdateAvailable())
@@ -135,28 +135,28 @@ namespace Chocopoi.DressingTools
 
         private void ReloadPreferences()
         {
-            preferences = Preferences.GetPreferences();
+            preferences = PreferencesUtility.GetPreferences();
         }
 
         private void UpdateLocale()
         {
-            if (preferences.app.selected_language == 0)
+            if (preferences.app.selectedLanguage == 0)
             {
                 t.SetLocale("en");
             }
-            else if (preferences.app.selected_language == 1)
+            else if (preferences.app.selectedLanguage == 1)
             {
                 t.SetLocale("zh");
             }
-            else if (preferences.app.selected_language == 2)
+            else if (preferences.app.selectedLanguage == 2)
             {
                 t.SetLocale("jp");
             }
-            else if (preferences.app.selected_language == 3)
+            else if (preferences.app.selectedLanguage == 3)
             {
                 t.SetLocale("kr");
             }
-            else if (preferences.app.selected_language == 4)
+            else if (preferences.app.selectedLanguage == 4)
             {
                 t.SetLocale("fr");
             }
@@ -178,8 +178,8 @@ namespace Chocopoi.DressingTools
 
             if (GUILayout.Button(t._("button_settings_updater_reset_to_defaults")))
             {
-                Preferences.ResetToDefaults(preferences);
-                Preferences.SavePreferences();
+                PreferencesUtility.ResetToDefaults(preferences);
+                PreferencesUtility.SavePreferences();
                 UpdateLocale();
             }
         }

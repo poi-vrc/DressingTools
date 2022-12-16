@@ -214,9 +214,9 @@ namespace Chocopoi.DressingTools
                 return true;
             }
 
-            Preferences.Json preferences = Preferences.GetPreferences();
+            Preferences preferences = PreferencesUtility.GetPreferences();
 
-            ManifestBranch branch = GetBranchLatestVersion(preferences.app.update_branch);
+            ManifestBranch branch = GetBranchLatestVersion(preferences.app.updateBranch);
             ParsedVersion remoteVersion = ParseVersionString(branch.version);
 
             if (remoteVersion == null)

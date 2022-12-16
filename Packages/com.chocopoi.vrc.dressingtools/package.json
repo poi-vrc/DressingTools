@@ -4,6 +4,9 @@
     "version": "1.2.0-stable",
     "unity": "2019.4",
     "description": "Dressing your own avatar is really that easy.",
+    "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.2"
+    },
     "vpmDependencies": {
         "com.vrchat.avatars": "3.1.0"
     },
