@@ -36,19 +36,13 @@ namespace Chocopoi.DressingTools.Reporting
 
         // stores the gameobjects/dynamicbones detected during the check
 
-        public List<DynamicBoneProxy> avatarDynBones;
-
-        public List<PhysBoneProxy> avatarPhysBones;
+        public List<IDynamicsProxy> avatarDynamics;
 
         public List<GameObject> clothesAllObjects;
 
-        public List<DynamicBoneProxy> clothesOriginalDynBones;
+        public List<IDynamicsProxy> clothesOriginalDynamics;
 
-        public List<DynamicBoneProxy> clothesDynBones;
-
-        public List<PhysBoneProxy> clothesOriginalPhysBones;
-
-        public List<PhysBoneProxy> clothesPhysBones;
+        public List<IDynamicsProxy> clothesDynamics;
 
         public List<GameObject> clothesMeshDataObjects;
 
@@ -63,12 +57,9 @@ namespace Chocopoi.DressingTools.Reporting
                 Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
             }
 
-            avatarDynBones = new List<DynamicBoneProxy>();
-            avatarPhysBones = new List<PhysBoneProxy>();
-            clothesDynBones = new List<DynamicBoneProxy>();
-            clothesPhysBones = new List<PhysBoneProxy>();
-            clothesOriginalDynBones = new List<DynamicBoneProxy>();
-            clothesOriginalPhysBones = new List<PhysBoneProxy>();
+            avatarDynamics = new List<IDynamicsProxy>();
+            clothesDynamics = new List<IDynamicsProxy>();
+            clothesOriginalDynamics = new List<IDynamicsProxy>();
             clothesAllObjects = new List<GameObject>();
             clothesMeshDataObjects = new List<GameObject>();
         }
@@ -172,8 +163,8 @@ namespace Chocopoi.DressingTools.Reporting
                 report.result = DressCheckResult.OK;
             }
 
-            report.dressReportDump.avatar_components_csv = DebugDump.GenerateSpecialComponentsCsv(report.avatarDynBones, report.avatarPhysBones, DebugDump.FindParentConstraints(targetAvatar.transform));
-            report.dressReportDump.clothes_components_csv = DebugDump.GenerateSpecialComponentsCsv(report.clothesDynBones, report.clothesPhysBones, null);
+            report.dressReportDump.avatar_components_csv = DebugDump.GenerateSpecialComponentsCsv(report.avatarDynamics, DebugDump.FindParentConstraints(targetAvatar.transform));
+            report.dressReportDump.clothes_components_csv = DebugDump.GenerateSpecialComponentsCsv(report.clothesDynamics, null);
             report.dressReportDump.resultant_avatar_tree_csv = DebugDump.GenerateGameObjectTreeCsv(targetAvatar.transform, DebugDump.GameObjectCsvHeader);
             report.dressReportDump.resultant_clothes_tree_csv = DebugDump.GenerateGameObjectTreeCsv(targetClothes.transform, DebugDump.GameObjectCsvHeader);
             report.dressReportDump.errors = (int)report.errors;

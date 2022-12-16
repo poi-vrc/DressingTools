@@ -40,7 +40,7 @@ namespace Chocopoi.DressingTools.Hooks
                 Component[] avatarDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
                 foreach (Component dynBone in avatarDynBones)
                 {
-                    report.avatarDynBones.Add(new DynamicBoneProxy(dynBone));
+                    report.avatarDynamics.Add(new DynamicBoneProxy(dynBone));
                 }
             }
 
@@ -51,7 +51,7 @@ namespace Chocopoi.DressingTools.Hooks
                 Component[] avatarPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
                 foreach (Component physBone in avatarPhysBones)
                 {
-                    report.avatarPhysBones.Add(new PhysBoneProxy(physBone));
+                    report.avatarDynamics.Add(new PhysBoneProxy(physBone));
                 }
             }
 
@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.Hooks
                 Component[] clothesDynBones = targetClothes.GetComponentsInChildren(DynamicBoneType);
                 foreach (Component dynBone in clothesDynBones)
                 {
-                    report.clothesOriginalDynBones.Add(new DynamicBoneProxy(dynBone));
+                    report.clothesOriginalDynamics.Add(new DynamicBoneProxy(dynBone));
                 }
             }
 
@@ -73,7 +73,7 @@ namespace Chocopoi.DressingTools.Hooks
                 Component[] clothesPhysBones = targetClothes.GetComponentsInChildren(PhysBoneType);
                 foreach (Component physBone in clothesPhysBones)
                 {
-                    report.clothesOriginalPhysBones.Add(new PhysBoneProxy(physBone));
+                    report.clothesOriginalDynamics.Add(new PhysBoneProxy(physBone));
                 }
             }
 

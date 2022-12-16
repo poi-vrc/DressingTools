@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.Hooks
             }
         }
 
-        private void AddRecursiveIgnoreTransforms(DressSettings settings, DynamicBoneProxy avatarDynBone, PhysBoneProxy avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
+        private void AddRecursiveIgnoreTransforms(DressSettings settings, IDynamicsProxy dynamics, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
         {
             string name = avatarDynamicsRoot.name + "_DBExcluded";
             GameObject dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
@@ -55,14 +55,9 @@ namespace Chocopoi.DressingTools.Hooks
 
             //verify if it is excluded
 
-            if (avatarDynBone != null && !avatarDynBone.m_Exclusions.Contains(dynBoneChild.transform))
+            if (dynamics != null && !dynamics.IgnoreTransforms.Contains(dynBoneChild.transform))
             {
-                avatarDynBone.m_Exclusions.Add(dynBoneChild.transform);
-            }
-
-            if (avatarPhysBone != null && !avatarPhysBone.ignoreTransforms.Contains(dynBoneChild.transform))
-            {
-                avatarPhysBone.ignoreTransforms.Add(dynBoneChild.transform);
+                dynamics.IgnoreTransforms.Add(dynBoneChild.transform);
             }
 
             clothesDynamicsRoot.name = settings.prefixToBeAdded + clothesDynamicsRoot.name + settings.suffixToBeAdded;
@@ -82,7 +77,7 @@ namespace Chocopoi.DressingTools.Hooks
                 Transform avatarTrans = avatarDynamicsRoot.Find(child.name);
                 if (avatarTrans != null)
                 {
-                    AddRecursiveIgnoreTransforms(settings, avatarDynBone, avatarPhysBone, avatarTrans, child);
+                    AddRecursiveIgnoreTransforms(settings, dynamics, avatarTrans, child);
                 }
             }
         }
@@ -124,31 +119,23 @@ namespace Chocopoi.DressingTools.Hooks
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    DynamicBoneProxy avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
-                    PhysBoneProxy avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
+                    IDynamicsProxy avatarDynamics = DressingUtils.FindDynamicsWithRoot(report.avatarDynamics, avatarTrans);
+                    IDynamicsProxy clothesDynamics = DressingUtils.FindDynamicsWithRoot(report.clothesOriginalDynamics, child);
 
-                    DynamicBoneProxy clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
-                    PhysBoneProxy clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
-
-                    if (avatarDynBone != null || avatarPhysBone != null)
+                    if (avatarDynamics != null)
                     {
                         if (settings.dynamicBoneOption == 0) //remove and use parent constraints
                         {
-                            if (clothesDynBone != null)
+                            if (clothesDynamics != null)
                             {
-                                Object.DestroyImmediate(clothesDynBone.component);
-                            }
-
-                            if (clothesPhysBone != null)
-                            {
-                                Object.DestroyImmediate(clothesPhysBone.component);
+                                Object.DestroyImmediate(clothesDynamics.Component);
                             }
 
                             AddRecursiveDynamicsParentConstraints(avatarTrans, child);
                         }
                         else if (settings.dynamicBoneOption == 1) //keep dynbone and use parentconstraint if necessary
                         {
-                            if (clothesDynBone == null && clothesPhysBone == null)
+                            if (clothesDynamics == null)
                             {
                                 AddRecursiveDynamicsParentConstraints(avatarTrans, child);
                             }
@@ -157,63 +144,63 @@ namespace Chocopoi.DressingTools.Hooks
                         {
                             // destroy the child dynbone / physbone component
 
-                            if (clothesDynBone != null)
+                            if (clothesDynamics != null)
                             {
-                                Object.DestroyImmediate(clothesDynBone.component);
+                                Object.DestroyImmediate(clothesDynamics.Component);
                             }
 
-                            if (clothesPhysBone != null)
-                            {
-                                Object.DestroyImmediate(clothesPhysBone.component);
-                            }
-
-                            AddRecursiveIgnoreTransforms(settings, avatarDynBone, avatarPhysBone, avatarTrans, child);
+                            AddRecursiveIgnoreTransforms(settings, avatarDynamics, avatarTrans, child);
                         }
                         else if (settings.dynamicBoneOption == 3) //copy dyn bone to clothes bone
                         {
                             //destroy the existing dynbone / physbone
 
-                            if (clothesDynBone != null)
+                            if (clothesDynamics != null)
                             {
-                                Object.DestroyImmediate(clothesDynBone.component);
-                            }
-
-                            if (clothesPhysBone != null)
-                            {
-                                Object.DestroyImmediate(clothesPhysBone.component);
+                                Object.DestroyImmediate(clothesDynamics.Component);
                             }
 
                             //copy component using unityeditor internal method (easiest way)
 
-                            if (avatarDynBone != null)
+                            if (avatarDynamics != null)
                             {
-                                // get the dynbone type
-                                System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
+                                // get the dynamics type
+                                System.Type DynamicsType = null;
 
-                                if (DynamicBoneType != null)
+                                // TODO: move these to DressingUtils
+                                if (avatarDynamics is DynamicBoneProxy)
                                 {
-                                    UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone.component);
+                                    DynamicsType = DressingUtils.FindType("DynamicBone");
+                                } else if (avatarDynamics is PhysBoneProxy)
+                                {
+                                    DynamicsType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+                                }
+
+                                if (DynamicsType != null)
+                                {
+                                    UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynamics.Component);
                                     UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
 
-                                    DynamicBoneProxy copiedDb = new DynamicBoneProxy(child.GetComponent(DynamicBoneType))
+                                    if (avatarDynamics is DynamicBoneProxy)
                                     {
-                                        m_Root = child
-                                    };
+                                        DynamicBoneProxy copiedDb = new DynamicBoneProxy(child.GetComponent(DynamicsType))
+                                        {
+                                            RootTransform = child
+                                        };
+                                    }
+                                    else if (avatarDynamics is PhysBoneProxy)
+                                    {
+                                        PhysBoneProxy copiedPb = new PhysBoneProxy(child.GetComponent(DynamicsType))
+                                        {
+                                            RootTransform = child
+                                        };
+                                    }
                                 }
                                 else
                                 {
-                                    Debug.LogError("[DressingTools] Cannot copy component without DynamicBone installed in project!");
+                                    Debug.LogError("[DressingTools] Cannot copy component without DynamicBone/PhysBone installed in project!");
                                     return false;
                                 }
-                            }
-
-                            if (avatarPhysBone != null)
-                            {
-                                UnityEditorInternal.ComponentUtility.CopyComponent(avatarPhysBone.component);
-                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
-
-                                PhysBoneProxy copiedPb = child.GetComponent<PhysBoneProxy>();
-                                copiedPb.rootTransform = child;
                             }
                         }
                         else if (settings.dynamicBoneOption == 4) //ignore all

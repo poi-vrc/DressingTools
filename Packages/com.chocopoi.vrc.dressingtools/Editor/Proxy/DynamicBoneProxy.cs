@@ -4,41 +4,41 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Proxy
 {
-    public class DynamicBoneProxy
+    public class DynamicBoneProxy: IDynamicsProxy
     {
         private static System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
 
-        public readonly Component component;
-
         public DynamicBoneProxy(Component component)
         {
-            this.component = component;
+            Component = component;
             if (DynamicBoneType == null)
             {
                 throw new System.Exception("No DynamicBone component is found in this project. It is required to process DynamicBone-based clothes.");
             }
         }
 
-        public Transform transform
+        public Component Component { get; }
+
+        public Transform Transform
         {
-            get { return component.transform; }
+            get { return Component.transform; }
         }
 
-        public GameObject gameObject
+        public GameObject GameObject
         {
-            get { return component.gameObject; }
+            get { return Component.gameObject; }
         }
 
-        public Transform m_Root
+        public Transform RootTransform
         {
-            get { return (Transform)DynamicBoneType.GetField("m_Root").GetValue(component); }
-            set { DynamicBoneType.GetField("m_Root").SetValue(component, value); }
+            get { return (Transform)DynamicBoneType.GetField("m_Root").GetValue(Component); }
+            set { DynamicBoneType.GetField("m_Root").SetValue(Component, value); }
         }
 
-        public List<Transform> m_Exclusions
+        public List<Transform> IgnoreTransforms
         {
-            get { return (List<Transform>)DynamicBoneType.GetField("m_Exclusions").GetValue(component); }
-            set { DynamicBoneType.GetField("m_Exclusions").SetValue(component, value); }
+            get { return (List<Transform>)DynamicBoneType.GetField("m_Exclusions").GetValue(Component); }
+            set { DynamicBoneType.GetField("m_Exclusions").SetValue(Component, value); }
         }
     }
 }

@@ -42,9 +42,9 @@ namespace Chocopoi.DressingTools.Hooks
                 {
                     DynamicBoneProxy dynBone = new DynamicBoneProxy(comp);
 
-                    if (!DressingUtils.IsDynBoneExists(report.avatarDynBones, dynBone.m_Root))
+                    if (!DressingUtils.IsDynamicsExists(report.avatarDynamics, dynBone.RootTransform))
                     {
-                        report.clothesDynBones.Add(dynBone);
+                        report.clothesDynamics.Add(dynBone);
                     }
                 }
             }
@@ -57,11 +57,11 @@ namespace Chocopoi.DressingTools.Hooks
                 foreach (Component physBone in clothesPhysBones)
                 {
                     PhysBoneProxy PhysBoneProxy = new PhysBoneProxy(physBone);
-                    Transform physBoneRoot = PhysBoneProxy.rootTransform ?? PhysBoneProxy.transform;
+                    Transform physBoneRoot = PhysBoneProxy.RootTransform ?? PhysBoneProxy.Transform;
 
-                    if (!DressingUtils.IsPhysBoneExists(report.avatarPhysBones, physBoneRoot))
+                    if (!DressingUtils.IsDynamicsExists(report.avatarDynamics, physBoneRoot))
                     {
-                        report.clothesPhysBones.Add(PhysBoneProxy);
+                        report.avatarDynamics.Add(PhysBoneProxy);
                     }
                 }
             }

@@ -11,7 +11,7 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            if (!settings.groupDynamics || (report.clothesDynBones.Count == 0 && report.clothesPhysBones.Count == 0))
+            if (!settings.groupDynamics || (report.clothesDynamics.Count == 0))
             {
                 return true;
             }
@@ -36,36 +36,20 @@ namespace Chocopoi.DressingTools.Hooks
 
             // move all the found dynamics
 
-            foreach (DynamicBoneProxy dynBone in report.clothesDynBones)
+            foreach (IDynamicsProxy dynamics in report.clothesDynamics)
             {
                 // in case it does not have a root transform
-                if (dynBone.m_Root == null)
+                if (dynamics.RootTransform == null)
                 {
-                    dynBone.m_Root = dynBone.gameObject.transform;
+                    dynamics.RootTransform = dynamics.GameObject.transform;
                 }
 
-                UnityEditorInternal.ComponentUtility.CopyComponent(dynBone.component);
+                UnityEditorInternal.ComponentUtility.CopyComponent(dynamics.Component);
                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(dynamicsContainer);
 
                 // destroy the original one
 
-                Object.DestroyImmediate(dynBone.component);
-            }
-
-            foreach (PhysBoneProxy physBone in report.clothesPhysBones)
-            {
-                // in case it does not have a root transform
-                if (physBone.rootTransform == null)
-                {
-                    physBone.rootTransform = physBone.gameObject.transform;
-                }
-
-                UnityEditorInternal.ComponentUtility.CopyComponent(physBone.component);
-                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(dynamicsContainer);
-
-                // destroy the original one
-
-                Object.DestroyImmediate(physBone.component);
+                Object.DestroyImmediate(dynamics.Component);
             }
 
             return true;

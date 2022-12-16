@@ -10,11 +10,11 @@ namespace Chocopoi.DressingTools
     {
         private static Dictionary<string, System.Type> reflectionTypeCache = new Dictionary<string, System.Type>();
 
-        public static DynamicBoneProxy FindDynBoneWithRoot(List<DynamicBoneProxy> avatarDynBones, Transform dynamicsRoot)
+        public static IDynamicsProxy FindDynamicsWithRoot(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
         {
-            foreach (DynamicBoneProxy bone in avatarDynBones)
+            foreach (IDynamicsProxy bone in avatarDynamics)
             {
-                if (bone.m_Root == dynamicsRoot)
+                if (bone.RootTransform == dynamicsRoot)
                 {
                     return bone;
                 }
@@ -22,26 +22,9 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static PhysBoneProxy FindPhysBoneWithRoot(List<PhysBoneProxy> avatarPhysBones, Transform dynamicsRoot)
+        public static bool IsDynamicsExists(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
         {
-            foreach (PhysBoneProxy bone in avatarPhysBones)
-            {
-                if (bone.rootTransform != null ? bone.rootTransform == dynamicsRoot : bone.transform == dynamicsRoot)
-                {
-                    return bone;
-                }
-            }
-            return null;
-        }
-
-        public static bool IsDynBoneExists(List<DynamicBoneProxy> avatarDynBones, Transform dynamicsRoot)
-        {
-            return FindDynBoneWithRoot(avatarDynBones, dynamicsRoot) != null;
-        }
-
-        public static bool IsPhysBoneExists(List<PhysBoneProxy> avatarPhysBones, Transform dynamicsRoot)
-        {
-            return FindPhysBoneWithRoot(avatarPhysBones, dynamicsRoot) != null;
+            return FindDynamicsWithRoot(avatarDynamics, dynamicsRoot) != null;
         }
 
         public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName, bool rename = false)

@@ -207,13 +207,9 @@ namespace Chocopoi.DressingTools
 
             if (showStatisticsFoldout)
             {
-                GUILayout.Label(t._("label_statistics_total_avatar_dynbones", dressReport.avatarDynBones.Count));
+                GUILayout.Label(t._("label_statistics_total_avatar_dynamics", dressReport.avatarDynamics.Count));
 
-                GUILayout.Label(t._("label_statistics_total_avatar_physbones", dressReport.avatarPhysBones.Count));
-
-                GUILayout.Label(t._("label_statistics_total_clothes_dynbones", dressReport.clothesDynBones.Count, dressReport.clothesOriginalDynBones.Count));
-
-                GUILayout.Label(t._("label_statistics_total_clothes_physbones", dressReport.clothesPhysBones.Count, dressReport.clothesOriginalPhysBones.Count));
+                GUILayout.Label(t._("label_statistics_total_clothes_dynamics", dressReport.clothesDynamics.Count, dressReport.clothesOriginalDynamics.Count));
 
                 GUILayout.Label(t._("label_statistics_total_clothes_objects", dressReport.clothesAllObjects.Count));
 

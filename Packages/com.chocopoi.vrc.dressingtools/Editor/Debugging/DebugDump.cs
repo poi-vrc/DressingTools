@@ -157,18 +157,19 @@ namespace Chocopoi.DressingTools.Debugging
 
         }
 
-        public static string GenerateSpecialComponentsCsv(List<DynamicBoneProxy> dynBones, List<PhysBoneProxy> physBones, List<ParentConstraint> parentConstraints)
+        public static string GenerateSpecialComponentsCsv(List<IDynamicsProxy> dynamics, List<ParentConstraint> parentConstraints)
         {
             string csv = ComponentsCsvHeader;
 
-            foreach (DynamicBoneProxy bone in dynBones)
+            foreach (IDynamicsProxy bone in dynamics)
             {
-                csv += string.Format("{0},{1}\n", bone.component.GetInstanceID(), "DynamicBone");
-            }
-
-            foreach (PhysBoneProxy bone in physBones)
-            {
-                csv += string.Format("{0},{1}\n", bone.component.GetInstanceID(), "VRCPhysBone");
+                if (bone is DynamicBoneProxy)
+                {
+                    csv += string.Format("{0},{1}\n", bone.Component.GetInstanceID(), "DynamicBone");
+                } else if (bone is PhysBoneProxy)
+                {
+                    csv += string.Format("{0},{1}\n", bone.Component.GetInstanceID(), "VRCPhysBone");
+                }
             }
 
             if (parentConstraints != null)
