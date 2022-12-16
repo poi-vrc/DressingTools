@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Containers;
 using Chocopoi.DressingTools.Debugging;
-using Chocopoi.DressingTools.Rules;
+using Chocopoi.DressingTools.DynamicsProxy;
+using Chocopoi.DressingTools.Hooks;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -11,17 +11,17 @@ namespace Chocopoi.DressingTools.Reporting
 {
     public class DressReport
     {
-        private static readonly IDressCheckRule[] rules = new IDressCheckRule[]
+        private static readonly IDressHook[] hooks = new IDressHook[]
         {
-            new NotAPrefabRule(),
-            new NoMissingScriptsRule(),
-            new ObjectPlacementRule(),
-            new ExistingPrefixSuffixRule(),
-            new FindAvatarDynamicsRule(),
-            new ArmatureRule(),
-            new GroupRootObjectsRule(),
-            new FindClothesDynamicsRule(),
-            new GroupClothesDynamicsRule()
+            new NotAPrefabHook(),
+            new NoMissingScriptsHook(),
+            new ObjectPlacementHook(),
+            new ExistingPrefixSuffixHook(),
+            new FindAvatarDynamicsHook(),
+            new ArmatureHook(),
+            new GroupRootObjectsHook(),
+            new FindClothesDynamicsHook(),
+            new GroupClothesDynamicsHook()
         };
 
         private static AnimatorController testModeAnimationController;
@@ -36,19 +36,19 @@ namespace Chocopoi.DressingTools.Reporting
 
         // stores the gameobjects/dynamicbones detected during the check
 
-        public List<DTDynamicBone> avatarDynBones;
+        public List<DynamicBoneProxy> avatarDynBones;
 
-        public List<DTPhysBone> avatarPhysBones;
+        public List<PhysBoneProxy> avatarPhysBones;
 
         public List<GameObject> clothesAllObjects;
 
-        public List<DTDynamicBone> clothesOriginalDynBones;
+        public List<DynamicBoneProxy> clothesOriginalDynBones;
 
-        public List<DTDynamicBone> clothesDynBones;
+        public List<DynamicBoneProxy> clothesDynBones;
 
-        public List<DTPhysBone> clothesOriginalPhysBones;
+        public List<PhysBoneProxy> clothesOriginalPhysBones;
 
-        public List<DTPhysBone> clothesPhysBones;
+        public List<PhysBoneProxy> clothesPhysBones;
 
         public List<GameObject> clothesMeshDataObjects;
 
@@ -63,12 +63,12 @@ namespace Chocopoi.DressingTools.Reporting
                 Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
             }
 
-            avatarDynBones = new List<DTDynamicBone>();
-            avatarPhysBones = new List<DTPhysBone>();
-            clothesDynBones = new List<DTDynamicBone>();
-            clothesPhysBones = new List<DTPhysBone>();
-            clothesOriginalDynBones = new List<DTDynamicBone>();
-            clothesOriginalPhysBones = new List<DTPhysBone>();
+            avatarDynBones = new List<DynamicBoneProxy>();
+            avatarPhysBones = new List<PhysBoneProxy>();
+            clothesDynBones = new List<DynamicBoneProxy>();
+            clothesPhysBones = new List<PhysBoneProxy>();
+            clothesOriginalDynBones = new List<DynamicBoneProxy>();
+            clothesOriginalPhysBones = new List<PhysBoneProxy>();
             clothesAllObjects = new List<GameObject>();
             clothesMeshDataObjects = new List<GameObject>();
         }
@@ -151,9 +151,9 @@ namespace Chocopoi.DressingTools.Reporting
                 targetClothes = settings.clothesToDress;
             }
 
-            foreach (Rules.IDressCheckRule rule in rules)
+            foreach (Hooks.IDressHook hook in hooks)
             {
-                if (!rule.Evaluate(report, settings, targetAvatar, targetClothes))
+                if (!hook.Evaluate(report, settings, targetAvatar, targetClothes))
                 {
                     break;
                 }

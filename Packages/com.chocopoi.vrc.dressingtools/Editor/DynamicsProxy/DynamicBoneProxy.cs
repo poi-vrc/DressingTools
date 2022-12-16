@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Containers
+namespace Chocopoi.DressingTools.DynamicsProxy
 {
-    public class DTDynamicBone
+    public class DynamicBoneProxy
     {
         private static System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
 
         public readonly Component component;
 
-        public DTDynamicBone(Component component)
+        public DynamicBoneProxy(Component component)
         {
             this.component = component;
             if (DynamicBoneType == null)

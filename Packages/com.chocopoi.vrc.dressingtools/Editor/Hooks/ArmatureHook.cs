@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.DynamicsProxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class ArmatureRule : IDressCheckRule
+    public class ArmatureHook : IDressHook
     {
         private void AddRecursiveDynamicsParentConstraints(Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
         {
@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.Rules
             }
         }
 
-        private void AddRecursiveIgnoreTransforms(DressSettings settings, DTDynamicBone avatarDynBone, DTPhysBone avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
+        private void AddRecursiveIgnoreTransforms(DressSettings settings, DynamicBoneProxy avatarDynBone, PhysBoneProxy avatarPhysBone, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
         {
             string name = avatarDynamicsRoot.name + "_DBExcluded";
             GameObject dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
@@ -124,11 +124,11 @@ namespace Chocopoi.DressingTools.Rules
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    DTDynamicBone avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
-                    DTPhysBone avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
+                    DynamicBoneProxy avatarDynBone = DressingUtils.FindDynBoneWithRoot(report.avatarDynBones, avatarTrans);
+                    PhysBoneProxy avatarPhysBone = DressingUtils.FindPhysBoneWithRoot(report.avatarPhysBones, avatarTrans);
 
-                    DTDynamicBone clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
-                    DTPhysBone clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
+                    DynamicBoneProxy clothesDynBone = DressingUtils.FindDynBoneWithRoot(report.clothesOriginalDynBones, child);
+                    PhysBoneProxy clothesPhysBone = DressingUtils.FindPhysBoneWithRoot(report.clothesOriginalPhysBones, child);
 
                     if (avatarDynBone != null || avatarPhysBone != null)
                     {
@@ -195,7 +195,7 @@ namespace Chocopoi.DressingTools.Rules
                                     UnityEditorInternal.ComponentUtility.CopyComponent(avatarDynBone.component);
                                     UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
 
-                                    DTDynamicBone copiedDb = new DTDynamicBone(child.GetComponent(DynamicBoneType))
+                                    DynamicBoneProxy copiedDb = new DynamicBoneProxy(child.GetComponent(DynamicBoneType))
                                     {
                                         m_Root = child
                                     };
@@ -212,7 +212,7 @@ namespace Chocopoi.DressingTools.Rules
                                 UnityEditorInternal.ComponentUtility.CopyComponent(avatarPhysBone.component);
                                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(child.gameObject);
 
-                                DTPhysBone copiedPb = child.GetComponent<DTPhysBone>();
+                                PhysBoneProxy copiedPb = child.GetComponent<PhysBoneProxy>();
                                 copiedPb.rootTransform = child;
                             }
                         }

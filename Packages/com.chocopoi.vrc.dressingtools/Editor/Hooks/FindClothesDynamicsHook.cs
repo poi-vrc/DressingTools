@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.DynamicsProxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 using UnityEngine.Animations;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class FindAvatarDynamicsRule : IDressCheckRule
+    public class FindClothesDynamicsHook : IDressHook
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
@@ -33,47 +33,36 @@ namespace Chocopoi.DressingTools.Rules
             System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
             System.Type PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
-            // scan avatar dynbones
+            // scan clothes dynbones
 
             if (DynamicBoneType != null)
             {
-                Component[] avatarDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
-                foreach (Component dynBone in avatarDynBones)
+                Component[] clothesDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
+                foreach (Component comp in clothesDynBones)
                 {
-                    report.avatarDynBones.Add(new DTDynamicBone(dynBone));
+                    DynamicBoneProxy dynBone = new DynamicBoneProxy(comp);
+
+                    if (!DressingUtils.IsDynBoneExists(report.avatarDynBones, dynBone.m_Root))
+                    {
+                        report.clothesDynBones.Add(dynBone);
+                    }
                 }
             }
 
-            // scan avatar physbones
+            // scan clothes physbones
 
             if (PhysBoneType != null)
             {
-                Component[] avatarPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
-                foreach (Component physBone in avatarPhysBones)
-                {
-                    report.avatarPhysBones.Add(new DTPhysBone(physBone));
-                }
-            }
-
-            // scan original clothes dynbones
-
-            if (DynamicBoneType != null)
-            {
-                Component[] clothesDynBones = targetClothes.GetComponentsInChildren(DynamicBoneType);
-                foreach (Component dynBone in clothesDynBones)
-                {
-                    report.clothesOriginalDynBones.Add(new DTDynamicBone(dynBone));
-                }
-            }
-
-            // scan original clothes physbones
-
-            if (PhysBoneType != null)
-            {
-                Component[] clothesPhysBones = targetClothes.GetComponentsInChildren(PhysBoneType);
+                Component[] clothesPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
                 foreach (Component physBone in clothesPhysBones)
                 {
-                    report.clothesOriginalPhysBones.Add(new DTPhysBone(physBone));
+                    PhysBoneProxy PhysBoneProxy = new PhysBoneProxy(physBone);
+                    Transform physBoneRoot = PhysBoneProxy.rootTransform ?? PhysBoneProxy.transform;
+
+                    if (!DressingUtils.IsPhysBoneExists(report.avatarPhysBones, physBoneRoot))
+                    {
+                        report.clothesPhysBones.Add(PhysBoneProxy);
+                    }
                 }
             }
 

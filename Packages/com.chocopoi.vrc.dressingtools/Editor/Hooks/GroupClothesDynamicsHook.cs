@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.DynamicsProxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class GroupClothesDynamicsRule : IDressCheckRule
+    public class GroupClothesDynamicsHook : IDressHook
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
@@ -36,7 +36,7 @@ namespace Chocopoi.DressingTools.Rules
 
             // move all the found dynamics
 
-            foreach (DTDynamicBone dynBone in report.clothesDynBones)
+            foreach (DynamicBoneProxy dynBone in report.clothesDynBones)
             {
                 // in case it does not have a root transform
                 if (dynBone.m_Root == null)
@@ -52,7 +52,7 @@ namespace Chocopoi.DressingTools.Rules
                 Object.DestroyImmediate(dynBone.component);
             }
 
-            foreach (DTPhysBone physBone in report.clothesPhysBones)
+            foreach (PhysBoneProxy physBone in report.clothesPhysBones)
             {
                 // in case it does not have a root transform
                 if (physBone.rootTransform == null)

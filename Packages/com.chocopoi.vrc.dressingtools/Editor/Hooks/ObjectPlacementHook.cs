@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class ObjectPlacementRule : IDressCheckRule
+    public class ObjectPlacementHook : IDressHook
     {
         public bool SearchTarget(Transform toSearch, Transform target)
         {

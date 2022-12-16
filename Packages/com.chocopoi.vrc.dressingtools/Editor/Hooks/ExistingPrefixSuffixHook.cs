@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class ExistingPrefixSuffixRule : IDressCheckRule
+    public class ExistingPrefixSuffixHook : IDressHook
     {
         public void ProcessBone(DressReport report, DressSettings settings, Transform boneParent)
         {

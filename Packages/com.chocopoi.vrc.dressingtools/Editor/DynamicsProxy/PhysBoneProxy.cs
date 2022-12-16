@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Containers
+namespace Chocopoi.DressingTools.DynamicsProxy
 {
-    public class DTPhysBone
+    public class PhysBoneProxy
     {
         private static System.Type PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
         public readonly Component component;
 
-        public DTPhysBone(Component component)
+        public PhysBoneProxy(Component component)
         {
             this.component = component;
             if (PhysBoneType == null)
             {
-                throw new System.Exception("No VRCPhysBone component is found in this project. It is required to process DynamicBone-based clothes.");
+                throw new System.Exception("No VRCPhysBone component is found in this project. It is required to process PhysBone-based clothes.");
             }
         }
 

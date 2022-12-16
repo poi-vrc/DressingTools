@@ -4,9 +4,9 @@ using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class NoMissingScriptsRule : IDressCheckRule
+    public class NoMissingScriptsHook : IDressHook
     {
         public bool ScanGameObject(GameObject gameObject)
         {

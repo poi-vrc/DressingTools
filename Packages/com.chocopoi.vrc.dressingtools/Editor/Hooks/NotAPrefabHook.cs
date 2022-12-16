@@ -4,9 +4,9 @@ using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class NotAPrefabRule : IDressCheckRule
+    public class NotAPrefabHook : IDressHook
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {

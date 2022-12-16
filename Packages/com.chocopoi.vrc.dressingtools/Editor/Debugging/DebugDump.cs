@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.DynamicsProxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
@@ -157,16 +157,16 @@ namespace Chocopoi.DressingTools.Debugging
 
         }
 
-        public static string GenerateSpecialComponentsCsv(List<DTDynamicBone> dynBones, List<DTPhysBone> physBones, List<ParentConstraint> parentConstraints)
+        public static string GenerateSpecialComponentsCsv(List<DynamicBoneProxy> dynBones, List<PhysBoneProxy> physBones, List<ParentConstraint> parentConstraints)
         {
             string csv = ComponentsCsvHeader;
 
-            foreach (DTDynamicBone bone in dynBones)
+            foreach (DynamicBoneProxy bone in dynBones)
             {
                 csv += string.Format("{0},{1}\n", bone.component.GetInstanceID(), "DynamicBone");
             }
 
-            foreach (DTPhysBone bone in physBones)
+            foreach (PhysBoneProxy bone in physBones)
             {
                 csv += string.Format("{0},{1}\n", bone.component.GetInstanceID(), "VRCPhysBone");
             }

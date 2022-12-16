@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Chocopoi.DressingTools.Containers;
+using Chocopoi.DressingTools.DynamicsProxy;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,9 +10,9 @@ namespace Chocopoi.DressingTools
     {
         private static Dictionary<string, System.Type> reflectionTypeCache = new Dictionary<string, System.Type>();
 
-        public static DTDynamicBone FindDynBoneWithRoot(List<DTDynamicBone> avatarDynBones, Transform dynamicsRoot)
+        public static DynamicBoneProxy FindDynBoneWithRoot(List<DynamicBoneProxy> avatarDynBones, Transform dynamicsRoot)
         {
-            foreach (DTDynamicBone bone in avatarDynBones)
+            foreach (DynamicBoneProxy bone in avatarDynBones)
             {
                 if (bone.m_Root == dynamicsRoot)
                 {
@@ -22,9 +22,9 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static DTPhysBone FindPhysBoneWithRoot(List<DTPhysBone> avatarPhysBones, Transform dynamicsRoot)
+        public static PhysBoneProxy FindPhysBoneWithRoot(List<PhysBoneProxy> avatarPhysBones, Transform dynamicsRoot)
         {
-            foreach (DTPhysBone bone in avatarPhysBones)
+            foreach (PhysBoneProxy bone in avatarPhysBones)
             {
                 if (bone.rootTransform != null ? bone.rootTransform == dynamicsRoot : bone.transform == dynamicsRoot)
                 {
@@ -34,12 +34,12 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static bool IsDynBoneExists(List<DTDynamicBone> avatarDynBones, Transform dynamicsRoot)
+        public static bool IsDynBoneExists(List<DynamicBoneProxy> avatarDynBones, Transform dynamicsRoot)
         {
             return FindDynBoneWithRoot(avatarDynBones, dynamicsRoot) != null;
         }
 
-        public static bool IsPhysBoneExists(List<DTPhysBone> avatarPhysBones, Transform dynamicsRoot)
+        public static bool IsPhysBoneExists(List<PhysBoneProxy> avatarPhysBones, Transform dynamicsRoot)
         {
             return FindPhysBoneWithRoot(avatarPhysBones, dynamicsRoot) != null;
         }

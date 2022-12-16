@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Rules
+namespace Chocopoi.DressingTools.Hooks
 {
-    public class GroupRootObjectsRule : IDressCheckRule
+    public class GroupRootObjectsHook : IDressHook
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
