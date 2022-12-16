@@ -142,7 +142,7 @@ namespace Chocopoi.DressingTools
         {
             if (preferences.app.selectedLanguage == 0)
             {
-                t.SetLocale("en-gb");
+                t.SetLocale("en");
             }
             else if (preferences.app.selectedLanguage == 1)
             {

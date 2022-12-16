@@ -8,7 +8,7 @@ namespace Chocopoi.DressingTools.Translation
 {
     public class I18n
     {
-        private static readonly string DEFAULT_LOCALE = "en-gb";
+        private static readonly string DEFAULT_LOCALE = "en";
 
         private static I18n instance = null;
 
@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools.Translation
 
         private I18n()
         {
-            LoadTranslations(new string[] { "en-gb", "zh-tw", "jp", "kor", "fr" });
+            LoadTranslations(new string[] { "en", "zh-tw", "jp", "kor", "fr" });
         }
 
         public void LoadTranslations(string[] locales)
