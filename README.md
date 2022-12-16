@@ -1,4 +1,4 @@
-# DressingTools ドレッシングツール
+# DressingTools [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/)
 Dressing your own avatar is really that easy. 自分のアバターを着るのは本当に簡単なことです。
 
 [[Download latest stable 最新安定版のダウンロード]](https://github.com/poi-vrc/DressingTools/releases/latest)
