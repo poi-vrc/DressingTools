@@ -150,11 +150,11 @@ namespace Chocopoi.DressingTools
             }
             else if (preferences.app.selectedLanguage == 2)
             {
-                t.SetLocale("jp");
+                t.SetLocale("ja");
             }
             else if (preferences.app.selectedLanguage == 3)
             {
-                t.SetLocale("kor");
+                t.SetLocale("ko");
             }
             else if (preferences.app.selectedLanguage == 4)
             {

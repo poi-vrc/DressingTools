@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Chocopoi.DressingTools.Translation
 
         private I18n()
         {
-            LoadTranslations(new string[] { "en", "zh-tw", "jp", "kor", "fr" });
+            LoadTranslations(new string[] { "en", "zh-tw", "ja", "ko", "fr" });
         }
 
         public void LoadTranslations(string[] locales)
