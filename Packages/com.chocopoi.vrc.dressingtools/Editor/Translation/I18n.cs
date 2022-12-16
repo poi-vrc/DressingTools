@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Translation
 {
     public class I18n
     {
-        private static readonly string DEFAULT_LOCALE = "en";
+        private static readonly string DEFAULT_LOCALE = "en-uk";
 
         private static I18n instance = null;
 
@@ -16,18 +17,18 @@ namespace Chocopoi.DressingTools.Translation
             return instance ?? (instance = new I18n());
         }
 
-        private Dictionary<string, I18nTranslation> translations = null;
+        private Dictionary<string, JObject> translations = null;
 
         private string selectedLocale = null;
 
         private I18n()
         {
-            LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
+            LoadTranslations(new string[] { "en-uk", "zh-tw", "jp", "kor", "fr" });
         }
 
         public void LoadTranslations(string[] locales)
         {
-            translations = new Dictionary<string, I18nTranslation>(locales.Length);
+            translations = new Dictionary<string, JObject>(locales.Length);
             foreach (string locale in locales)
             {
                 try
@@ -35,7 +36,7 @@ namespace Chocopoi.DressingTools.Translation
                     StreamReader reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/Translations/" + locale + ".json");
                     string json = reader.ReadToEnd();
                     reader.Close();
-                    translations.Add(locale, JsonUtility.FromJson<I18nTranslation>(json));
+                    translations.Add(locale, JObject.Parse(json));
                 }
                 catch (IOException e)
                 {
@@ -80,9 +81,9 @@ namespace Chocopoi.DressingTools.Translation
         {
             if (locale != null && translations.ContainsKey(locale))
             {
-                translations.TryGetValue(locale, out I18nTranslation t);
+                translations.TryGetValue(locale, out JObject t);
 
-                string value = (string)t?.keys.GetType().GetField(key)?.GetValue(t.keys);
+                string value = t?.Value<string>(key);
 
                 if (value != null)
                 {

@@ -74,7 +74,7 @@ namespace Chocopoi.DressingTools
         [MenuItem("Tools/chocopoi/Translations/Reload Dressing Tools Translations", false, 1)]
         public static void ReloadTranslations()
         {
-            t.LoadTranslations(new string[] { "en", "zh", "jp", "kr", "fr" });
+            t.LoadTranslations(new string[] { "en-uk", "zh-tw", "jp", "kor", "fr" });
         }
 
         private void DrawToolHeaderGUI()

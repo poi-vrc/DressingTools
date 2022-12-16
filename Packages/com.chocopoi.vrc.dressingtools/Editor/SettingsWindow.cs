@@ -142,11 +142,11 @@ namespace Chocopoi.DressingTools
         {
             if (preferences.app.selectedLanguage == 0)
             {
-                t.SetLocale("en");
+                t.SetLocale("en-uk");
             }
             else if (preferences.app.selectedLanguage == 1)
             {
-                t.SetLocale("zh");
+                t.SetLocale("zh-tw");
             }
             else if (preferences.app.selectedLanguage == 2)
             {
@@ -154,7 +154,7 @@ namespace Chocopoi.DressingTools
             }
             else if (preferences.app.selectedLanguage == 3)
             {
-                t.SetLocale("kr");
+                t.SetLocale("kor");
             }
             else if (preferences.app.selectedLanguage == 4)
             {
