@@ -171,7 +171,8 @@ namespace Chocopoi.DressingTools.Hooks
                                 if (avatarDynamics is DynamicBoneProxy)
                                 {
                                     DynamicsType = DressingUtils.FindType("DynamicBone");
-                                } else if (avatarDynamics is PhysBoneProxy)
+                                }
+                                else if (avatarDynamics is PhysBoneProxy)
                                 {
                                     DynamicsType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
                                 }

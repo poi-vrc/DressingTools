@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Debugging;
-using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Hooks;
+using Chocopoi.DressingTools.Proxy;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;

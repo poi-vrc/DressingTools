@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Proxy
 {
-    public class PhysBoneProxy: IDynamicsProxy
+    public class PhysBoneProxy : IDynamicsProxy
     {
         private static System.Type PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 

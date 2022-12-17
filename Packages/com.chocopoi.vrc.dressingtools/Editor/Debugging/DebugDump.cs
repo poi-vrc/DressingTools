@@ -166,7 +166,8 @@ namespace Chocopoi.DressingTools.Debugging
                 if (bone is DynamicBoneProxy)
                 {
                     csv += string.Format("{0},{1}\n", bone.Component.GetInstanceID(), "DynamicBone");
-                } else if (bone is PhysBoneProxy)
+                }
+                else if (bone is PhysBoneProxy)
                 {
                     csv += string.Format("{0},{1}\n", bone.Component.GetInstanceID(), "VRCPhysBone");
                 }

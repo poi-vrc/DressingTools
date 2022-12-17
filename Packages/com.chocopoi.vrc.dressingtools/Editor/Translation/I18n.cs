@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Translation
 {

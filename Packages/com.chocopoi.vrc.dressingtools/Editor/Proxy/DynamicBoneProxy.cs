@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Proxy
 {
-    public class DynamicBoneProxy: IDynamicsProxy
+    public class DynamicBoneProxy : IDynamicsProxy
     {
         private static System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
 
