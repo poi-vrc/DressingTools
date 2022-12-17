@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEditor;
 
 namespace Chocopoi.DressingTools.Translation
 {
@@ -24,20 +25,35 @@ namespace Chocopoi.DressingTools.Translation
 
         private I18n()
         {
-            LoadTranslations(new string[] { "en", "zh-tw", "ja", "ko", "fr" });
+            LoadTranslations();
         }
 
-        public void LoadTranslations(string[] locales)
+        public string[] GetAvailableLocales()
         {
-            translations = new Dictionary<string, JObject>(locales.Length);
-            foreach (string locale in locales)
+            if (translations == null)
+            {
+                return new string[] { };
+            }
+
+            string[] keys = new string[translations.Keys.Count];
+            translations.Keys.CopyTo(keys, 0);
+
+            return keys;
+        }
+
+        public void LoadTranslations()
+        {
+            translations = new Dictionary<string, JObject>();
+
+            string[] translationFileNames = Directory.GetFiles("Packages/com.chocopoi.vrc.dressingtools/Translations", "*.json");
+            foreach (var translationFileName in translationFileNames)
             {
                 try
                 {
-                    StreamReader reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/Translations/" + locale + ".json");
+                    StreamReader reader = new StreamReader(translationFileName);
                     string json = reader.ReadToEnd();
                     reader.Close();
-                    translations.Add(locale, JObject.Parse(json));
+                    translations.Add(Path.GetFileNameWithoutExtension(translationFileName), JObject.Parse(json));
                 }
                 catch (IOException e)
                 {

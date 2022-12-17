@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -20,23 +21,35 @@ namespace Chocopoi.DressingTools
 
         private Preferences preferences;
 
+        private int lastSelectedLanguage;
+
         private bool needRepaint;
+
+        private string[] availableLocales;
+
+        private string[] availableLocalesHumanReadable;
 
         public SettingsWindow()
         {
             ReloadPreferences();
+
+            availableLocales = t.GetAvailableLocales();
+            availableLocalesHumanReadable = new string[availableLocales.Length];
+            for (int i = 0; i < availableLocales.Length; i++)
+            {
+                availableLocalesHumanReadable[i] = new CultureInfo(availableLocales[i]).NativeName;
+            }
         }
 
         private void DrawSelectLanguageGUI()
         {
-            GUILayout.Label("Language 語言 言語:");
-
-            int selectedLanguage = GUILayout.Toolbar(preferences.app.selectedLanguage, new string[] { "English", "中文", "日本語", "한국어", "Français" });
-            if (selectedLanguage != preferences.app.selectedLanguage)
+            int selectedLanguage = EditorGUILayout.Popup("Language 言語:", FindArrayItemIndex(availableLocales, preferences.app.selectedLanguage), availableLocalesHumanReadable);
+            if (selectedLanguage != lastSelectedLanguage)
             {
-                preferences.app.selectedLanguage = selectedLanguage;
-                UpdateLocale();
+                t.SetLocale(preferences.app.selectedLanguage = availableLocales[selectedLanguage]);
                 PreferencesUtility.SavePreferences();
+
+                lastSelectedLanguage = selectedLanguage;
             }
         }
 
@@ -138,30 +151,6 @@ namespace Chocopoi.DressingTools
             preferences = PreferencesUtility.GetPreferences();
         }
 
-        private void UpdateLocale()
-        {
-            if (preferences.app.selectedLanguage == 0)
-            {
-                t.SetLocale("en");
-            }
-            else if (preferences.app.selectedLanguage == 1)
-            {
-                t.SetLocale("zh-tw");
-            }
-            else if (preferences.app.selectedLanguage == 2)
-            {
-                t.SetLocale("ja");
-            }
-            else if (preferences.app.selectedLanguage == 3)
-            {
-                t.SetLocale("ko");
-            }
-            else if (preferences.app.selectedLanguage == 4)
-            {
-                t.SetLocale("fr");
-            }
-        }
-
         private void OnGUI()
         {
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
@@ -180,7 +169,7 @@ namespace Chocopoi.DressingTools
             {
                 PreferencesUtility.ResetToDefaults(preferences);
                 PreferencesUtility.SavePreferences();
-                UpdateLocale();
+                t.SetLocale(preferences.app.selectedLanguage);
             }
         }
     }

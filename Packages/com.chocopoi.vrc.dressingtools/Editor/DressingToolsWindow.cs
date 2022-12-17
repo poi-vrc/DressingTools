@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.IO;
+using System.Text.RegularExpressions;
 using Chocopoi.DressingTools.Debugging;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
@@ -74,7 +75,7 @@ namespace Chocopoi.DressingTools
         [MenuItem("Tools/chocopoi/Translations/Reload Dressing Tools Translations", false, 1)]
         public static void ReloadTranslations()
         {
-            t.LoadTranslations(new string[] { "en", "zh-tw", "ja", "ko", "fr" });
+            t.LoadTranslations();
         }
 
         private void DrawToolHeaderGUI()

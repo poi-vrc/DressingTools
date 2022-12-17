@@ -101,7 +101,7 @@ namespace Chocopoi.DressingTools
             {
                 p.app = new Preferences.App();
             }
-            p.app.selectedLanguage = 0;
+            p.app.selectedLanguage = "en";
 
             // attempt to get current branch version
             try

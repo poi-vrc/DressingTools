@@ -7,7 +7,7 @@ namespace Chocopoi.DressingTools
     {
         public class App
         {
-            public int selectedLanguage;
+            public string selectedLanguage;
             public string updateBranch;
         }
 
