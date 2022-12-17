@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.Debugging
             public DependenciesDumpJson dependencies_dump;
         }
 
-        private static Translation.I18n t = Translation.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.GetInstance();
 
         private static readonly int DumpVersion = 1;
 

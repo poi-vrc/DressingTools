@@ -3,7 +3,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Translation
+namespace Chocopoi.DressingTools.Localization
 {
     public class I18n
     {

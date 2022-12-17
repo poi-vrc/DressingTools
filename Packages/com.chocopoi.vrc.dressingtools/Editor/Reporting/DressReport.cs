@@ -49,11 +49,11 @@ namespace Chocopoi.DressingTools.Reporting
 
         private DressReport()
         {
-            testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/chocopoi/DressingTools/Animations/TestModeAnimationController.controller");
+            testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Packages/com.chocopoi.vrc.dressingtools/Animations/TestModeAnimationController.controller");
 
             if (testModeAnimationController == null)
             {
-                Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
+                Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Packages/com.chocopoi.vrc.dressingtools/Animations\". Did you move it to another location?");
             }
 
             avatarDynamics = new List<IDynamicsProxy>();

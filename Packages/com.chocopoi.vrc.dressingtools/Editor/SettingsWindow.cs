@@ -6,7 +6,7 @@ namespace Chocopoi.DressingTools
 {
     public class SettingsWindow : EditorWindow
     {
-        private static Translation.I18n t = Translation.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.GetInstance();
 
         private Vector2 scrollPos;
 

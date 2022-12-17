@@ -8,7 +8,7 @@ namespace Chocopoi.DressingTools
 {
     public class PreferencesUtility
     {
-        private static Translation.I18n t = Translation.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.GetInstance();
 
         private static readonly int TargetPreferencesVersion = 2;
 

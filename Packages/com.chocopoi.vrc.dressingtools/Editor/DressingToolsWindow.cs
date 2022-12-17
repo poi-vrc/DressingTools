@@ -10,7 +10,7 @@ namespace Chocopoi.DressingTools
     {
         private static readonly System.Type VrcAvatarDescriptorType = DressingUtils.FindType("VRC.SDKBase.VRC_AvatarDescriptor");
 
-        private static Translation.I18n t = Translation.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.GetInstance();
 
         private static readonly DressingToolsUpdater.ParsedVersion currentVersion = DressingToolsUpdater.GetCurrentVersion();
 
