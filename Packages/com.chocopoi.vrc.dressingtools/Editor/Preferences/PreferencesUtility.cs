@@ -12,7 +12,9 @@ namespace Chocopoi.DressingTools
 
         private static readonly int TargetPreferencesVersion = 2;
 
-        private static readonly string JsonPath = "Assets/chocopoi/DressingTools/Resources/preferences.json";
+        private static readonly string JsonPath = "Assets/chocopoi/DressingTools/Resources";
+
+        private static readonly string JsonFileName = "preferences.json";
 
         private static readonly string DefaultUpdateBranch = "stable";
 
@@ -71,7 +73,11 @@ namespace Chocopoi.DressingTools
         {
             try
             {
-                File.WriteAllText(JsonPath, JsonConvert.SerializeObject(preferences));
+                if (!Directory.Exists(JsonPath))
+                {
+                    Directory.CreateDirectory(JsonPath);
+                }
+                File.WriteAllText(JsonPath + "/" + JsonFileName, JsonConvert.SerializeObject(preferences));
             }
             catch (IOException e)
             {

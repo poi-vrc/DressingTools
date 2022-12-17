@@ -96,5 +96,7 @@ crashlytics-build.properties
 /[Aa]ssets/csc.rsp
 /[Aa]ssets/csc.rsp.meta
 
-/[Aa]ssets/chocopoi/DressingTools/preferences.json
-/[Aa]ssets/chocopoi/DressingTools/preferences.json.meta
+/[Aa]ssets/chocopoi/DressingTools/Resources/preferences.json
+/[Aa]ssets/chocopoi/DressingTools/Resources/preferences.json.meta
+/[Aa]ssets/chocopoi/DressingTools/Resources
+/[Aa]ssets/chocopoi/DressingTools/Resources.meta
