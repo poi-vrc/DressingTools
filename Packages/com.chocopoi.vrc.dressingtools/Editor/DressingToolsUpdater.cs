@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -69,8 +67,8 @@ namespace Chocopoi.DressingTools
 
             try
             {
-                StreamReader reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/version.txt");
-                string str = reader.ReadToEnd();
+                var reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/version.txt");
+                var str = reader.ReadToEnd();
                 // remove newline characters and trim string
                 str = str.Trim().Replace("\n", "").Replace("\r", "");
                 reader.Close();
@@ -105,11 +103,11 @@ namespace Chocopoi.DressingTools
             {
                 try
                 {
-                    WebRequest request = WebRequest.Create(ManifestJsonUrl + "?" + DateTimeOffset.Now.ToUnixTimeSeconds());
-                    WebResponse response = request.GetResponse();
+                    var request = WebRequest.Create(ManifestJsonUrl + "?" + DateTimeOffset.Now.ToUnixTimeSeconds());
+                    var response = request.GetResponse();
 
-                    StreamReader reader = new StreamReader(response.GetResponseStream());
-                    string json = reader.ReadToEnd();
+                    var reader = new StreamReader(response.GetResponseStream());
+                    var json = reader.ReadToEnd();
 
                     manifest = JsonUtility.FromJson<Manifest>(json);
 
@@ -141,7 +139,7 @@ namespace Chocopoi.DressingTools
                 throw new Exception("Online updater manifest has not been loaded.");
             }
 
-            for (int i = 0; i < manifest.branches.Length; i++)
+            for (var i = 0; i < manifest.branches.Length; i++)
             {
                 if (manifest.branches[i].name == branchName)
                 {
@@ -154,7 +152,7 @@ namespace Chocopoi.DressingTools
 
         public static ManifestBranch GetBranchLatestVersion(string branchName)
         {
-            ManifestBranch branch = GetManifestBranch(branchName);
+            var branch = GetManifestBranch(branchName);
 
             if (branch == null)
             {
@@ -192,8 +190,8 @@ namespace Chocopoi.DressingTools
                 throw new Exception("Online updater manifest has not been loaded.");
             }
 
-            string[] strs = new string[manifest.branches.Length];
-            for (int i = 0; i < strs.Length; i++)
+            var strs = new string[manifest.branches.Length];
+            for (var i = 0; i < strs.Length; i++)
             {
                 strs[i] = manifest.branches[i].name;
             }
@@ -214,10 +212,10 @@ namespace Chocopoi.DressingTools
                 return true;
             }
 
-            Preferences preferences = PreferencesUtility.GetPreferences();
+            var preferences = PreferencesUtility.GetPreferences();
 
-            ManifestBranch branch = GetBranchLatestVersion(preferences.app.updateBranch);
-            ParsedVersion remoteVersion = ParseVersionString(branch.version);
+            var branch = GetBranchLatestVersion(preferences.app.updateBranch);
+            var remoteVersion = ParseVersionString(branch.version);
 
             if (remoteVersion == null)
             {
@@ -229,12 +227,12 @@ namespace Chocopoi.DressingTools
 
         public static ParsedVersion ParseVersionString(string str)
         {
-            ParsedVersion pv = new ParsedVersion();
+            var pv = new ParsedVersion();
 
             pv.full_version_string = str;
 
             //find the first hyphen first
-            int hyphenIndex = str.IndexOf('-');
+            var hyphenIndex = str.IndexOf('-');
 
             if (hyphenIndex == -1)
             {
@@ -248,7 +246,7 @@ namespace Chocopoi.DressingTools
 
             //split the version part
             pv.version = str.Substring(0, hyphenIndex);
-            string[] strs = pv.version.Split('.');
+            var strs = pv.version.Split('.');
 
             if (strs.Length < 3)
             {
@@ -257,7 +255,7 @@ namespace Chocopoi.DressingTools
             }
 
             pv.versionNumbers = new int[strs.Length];
-            for (int i = 0; i < strs.Length; i++)
+            for (var i = 0; i < strs.Length; i++)
             {
                 pv.versionNumbers[i] = int.Parse(strs[i]);
             }
@@ -276,7 +274,7 @@ namespace Chocopoi.DressingTools
                 return -1;
             }
 
-            for (int i = 0; i < a.versionNumbers.Length; i++)
+            for (var i = 0; i < a.versionNumbers.Length; i++)
             {
                 if (a.versionNumbers[i] > b.versionNumbers[i])
                 {

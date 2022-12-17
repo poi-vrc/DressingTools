@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Chocopoi.DressingTools.Debugging;
 using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
@@ -9,11 +8,11 @@ namespace Chocopoi.DressingTools
 {
     public class DressingToolsWindow : EditorWindow
     {
-        private static System.Type VrcAvatarDescriptorType = DressingUtils.FindType("VRC.SDKBase.VRC_AvatarDescriptor");
+        private static readonly System.Type VrcAvatarDescriptorType = DressingUtils.FindType("VRC.SDKBase.VRC_AvatarDescriptor");
 
         private static Translation.I18n t = Translation.I18n.GetInstance();
 
-        private static DressingToolsUpdater.ParsedVersion currentVersion = DressingToolsUpdater.GetCurrentVersion();
+        private static readonly DressingToolsUpdater.ParsedVersion currentVersion = DressingToolsUpdater.GetCurrentVersion();
 
         private static Regex illegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 
@@ -67,7 +66,7 @@ namespace Chocopoi.DressingTools
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void Init()
         {
-            DressingToolsWindow window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
+            var window = (DressingToolsWindow)GetWindow(typeof(DressingToolsWindow));
             window.titleContent = new GUIContent(t._("label_tool_name"));
             window.Show();
         }
@@ -80,7 +79,7 @@ namespace Chocopoi.DressingTools
 
         private void DrawToolHeaderGUI()
         {
-            GUIStyle titleLabelStyle = new GUIStyle(GUI.skin.label)
+            var titleLabelStyle = new GUIStyle(GUI.skin.label)
             {
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 24
@@ -91,9 +90,9 @@ namespace Chocopoi.DressingTools
 
             if (DressingToolsUpdater.IsUpdateChecked() && !DressingToolsUpdater.IsLastUpdateCheckErrored() && DressingToolsUpdater.IsUpdateAvailable())
             {
-                DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(PreferencesUtility.GetPreferences().app.updateBranch);
+                var branch = DressingToolsUpdater.GetBranchLatestVersion(PreferencesUtility.GetPreferences().app.updateBranch);
 
-                GUIStyle updateFoldoutStyle = new GUIStyle(EditorStyles.foldout);
+                var updateFoldoutStyle = new GUIStyle(EditorStyles.foldout);
                 updateFoldoutStyle.normal.textColor = Color.red;
                 updateFoldoutStyle.onNormal.textColor = Color.red;
                 updateFoldoutStyle.fontStyle = FontStyle.Bold;
@@ -152,7 +151,7 @@ namespace Chocopoi.DressingTools
                 }
                 else if (DressingToolsUpdater.IsUpdateAvailable())
                 {
-                    DressingToolsUpdater.ManifestBranch branch = DressingToolsUpdater.GetBranchLatestVersion(PreferencesUtility.GetPreferences().app.updateBranch);
+                    var branch = DressingToolsUpdater.GetBranchLatestVersion(PreferencesUtility.GetPreferences().app.updateBranch);
 
                     GUILayout.Label(t._("label_update_available", branch?.version));
                 }
@@ -552,7 +551,7 @@ namespace Chocopoi.DressingTools
 
             GUILayout.Label(t._("label_dynamic_bone_if_in_avatar_bone"));
 
-            GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton)
+            var radioStyle = new GUIStyle(EditorStyles.radioButton)
             {
                 wordWrap = true
             };
@@ -590,7 +589,7 @@ namespace Chocopoi.DressingTools
 
             GUILayout.Label(t._("label_check_and_dress"), EditorStyles.boldLabel);
 
-            GUIStyle checkBtnStyle = new GUIStyle(GUI.skin.button)
+            var checkBtnStyle = new GUIStyle(GUI.skin.button)
             {
                 fontSize = 16
             };
@@ -693,7 +692,7 @@ namespace Chocopoi.DressingTools
 
             if (GUILayout.Button("Settings 設定"))
             {
-                SettingsWindow window = (SettingsWindow)GetWindow(typeof(SettingsWindow));
+                var window = (SettingsWindow)GetWindow(typeof(SettingsWindow));
                 window.titleContent = new GUIContent("DressingTools Settings 設定");
                 window.Show();
             }

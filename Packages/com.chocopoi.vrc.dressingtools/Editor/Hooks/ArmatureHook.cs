@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
@@ -13,10 +12,10 @@ namespace Chocopoi.DressingTools.Hooks
         {
             // add parent constraint
 
-            ParentConstraint comp = clothesDynamicsRoot.gameObject.AddComponent<ParentConstraint>();
+            var comp = clothesDynamicsRoot.gameObject.AddComponent<ParentConstraint>();
             comp.constraintActive = true;
 
-            ConstraintSource source = new ConstraintSource
+            var source = new ConstraintSource
             {
                 sourceTransform = avatarDynamicsRoot,
                 weight = 1
@@ -25,16 +24,16 @@ namespace Chocopoi.DressingTools.Hooks
 
             // scan for other child bones
 
-            List<Transform> childs = new List<Transform>();
+            var childs = new List<Transform>();
 
-            for (int i = 0; i < clothesDynamicsRoot.childCount; i++)
+            for (var i = 0; i < clothesDynamicsRoot.childCount; i++)
             {
                 childs.Add(clothesDynamicsRoot.GetChild(i));
             }
 
-            foreach (Transform child in childs)
+            foreach (var child in childs)
             {
-                Transform avatarTrans = avatarDynamicsRoot.Find(child.name);
+                var avatarTrans = avatarDynamicsRoot.Find(child.name);
                 if (avatarTrans != null)
                 {
                     AddRecursiveDynamicsParentConstraints(avatarTrans, child);
@@ -44,8 +43,8 @@ namespace Chocopoi.DressingTools.Hooks
 
         private void AddRecursiveIgnoreTransforms(DressSettings settings, IDynamicsProxy dynamics, Transform avatarDynamicsRoot, Transform clothesDynamicsRoot)
         {
-            string name = avatarDynamicsRoot.name + "_DBExcluded";
-            GameObject dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
+            var name = avatarDynamicsRoot.name + "_DBExcluded";
+            var dynBoneChild = avatarDynamicsRoot.Find(name)?.gameObject;
 
             if (dynBoneChild == null)
             {
@@ -65,16 +64,16 @@ namespace Chocopoi.DressingTools.Hooks
 
             // scan for other child bones
 
-            List<Transform> childs = new List<Transform>();
+            var childs = new List<Transform>();
 
-            for (int i = 0; i < clothesDynamicsRoot.childCount; i++)
+            for (var i = 0; i < clothesDynamicsRoot.childCount; i++)
             {
                 childs.Add(clothesDynamicsRoot.GetChild(i));
             }
 
-            foreach (Transform child in childs)
+            foreach (var child in childs)
             {
-                Transform avatarTrans = avatarDynamicsRoot.Find(child.name);
+                var avatarTrans = avatarDynamicsRoot.Find(child.name);
                 if (avatarTrans != null)
                 {
                     AddRecursiveIgnoreTransforms(settings, dynamics, avatarTrans, child);
@@ -84,14 +83,14 @@ namespace Chocopoi.DressingTools.Hooks
 
         private bool ProcessBone(DressReport report, DressSettings settings, int level, Transform avatarBoneParent, Transform clothesBoneParent)
         {
-            List<Transform> childs = new List<Transform>();
+            var childs = new List<Transform>();
 
-            for (int i = 0; i < clothesBoneParent.childCount; i++)
+            for (var i = 0; i < clothesBoneParent.childCount; i++)
             {
                 childs.Add(clothesBoneParent.GetChild(i));
             }
 
-            foreach (Transform child in childs)
+            foreach (var child in childs)
             {
                 // skip our container
                 if (child.name.EndsWith("_DT"))
@@ -101,7 +100,7 @@ namespace Chocopoi.DressingTools.Hooks
 
                 report.clothesAllObjects.Add(child.gameObject);
 
-                Transform avatarTrans = avatarBoneParent.Find(child.name);
+                var avatarTrans = avatarBoneParent.Find(child.name);
 
                 if (avatarTrans == null)
                 {
@@ -119,8 +118,8 @@ namespace Chocopoi.DressingTools.Hooks
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    IDynamicsProxy avatarDynamics = DressingUtils.FindDynamicsWithRoot(report.avatarDynamics, avatarTrans);
-                    IDynamicsProxy clothesDynamics = DressingUtils.FindDynamicsWithRoot(report.clothesOriginalDynamics, child);
+                    var avatarDynamics = DressingUtils.FindDynamicsWithRoot(report.avatarDynamics, avatarTrans);
+                    var clothesDynamics = DressingUtils.FindDynamicsWithRoot(report.clothesOriginalDynamics, child);
 
                     if (avatarDynamics != null)
                     {
@@ -184,14 +183,14 @@ namespace Chocopoi.DressingTools.Hooks
 
                                     if (avatarDynamics is DynamicBoneProxy)
                                     {
-                                        DynamicBoneProxy copiedDb = new DynamicBoneProxy(child.GetComponent(DynamicsType))
+                                        var copiedDb = new DynamicBoneProxy(child.GetComponent(DynamicsType))
                                         {
                                             RootTransform = child
                                         };
                                     }
                                     else if (avatarDynamics is PhysBoneProxy)
                                     {
-                                        PhysBoneProxy copiedPb = new PhysBoneProxy(child.GetComponent(DynamicsType))
+                                        var copiedPb = new PhysBoneProxy(child.GetComponent(DynamicsType))
                                         {
                                             RootTransform = child
                                         };
@@ -217,8 +216,8 @@ namespace Chocopoi.DressingTools.Hooks
 
                         if (settings.groupBones)
                         {
-                            string name = avatarTrans.name + "_DT";
-                            GameObject clothesBoneContainer = avatarTrans.Find(name)?.gameObject;
+                            var name = avatarTrans.name + "_DT";
+                            var clothesBoneContainer = avatarTrans.Find(name)?.gameObject;
 
                             if (clothesBoneContainer == null)
                             {
@@ -249,8 +248,8 @@ namespace Chocopoi.DressingTools.Hooks
 
         public bool IsOnlyOneEnabledChildBone(Transform armature)
         {
-            int count = 0;
-            for (int i = 0; i < armature.childCount; i++)
+            var count = 0;
+            for (var i = 0; i < armature.childCount; i++)
             {
                 if (armature.GetChild(i).gameObject.activeSelf)
                 {
@@ -262,8 +261,8 @@ namespace Chocopoi.DressingTools.Hooks
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
-            Transform clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
+            var avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
+            var clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
 
             if (!avatarArmature)
             {

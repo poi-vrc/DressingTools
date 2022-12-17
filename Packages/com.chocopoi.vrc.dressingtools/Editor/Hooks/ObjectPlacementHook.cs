@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Reporting;
+﻿using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Hooks
@@ -9,10 +7,10 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public bool SearchTarget(Transform toSearch, Transform target)
         {
-            bool result = false;
-            for (int i = 0; i < toSearch.childCount; i++)
+            var result = false;
+            for (var i = 0; i < toSearch.childCount; i++)
             {
-                Transform child = toSearch.GetChild(i);
+                var child = toSearch.GetChild(i);
 
                 if (child == target)
                 {

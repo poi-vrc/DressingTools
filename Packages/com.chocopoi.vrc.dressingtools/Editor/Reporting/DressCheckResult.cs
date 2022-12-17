@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Chocopoi.DressingTools.Reporting
+﻿namespace Chocopoi.DressingTools.Reporting
 {
     public enum DressCheckResult
     {

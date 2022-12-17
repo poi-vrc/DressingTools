@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using Chocopoi.DressingTools.Proxy;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Chocopoi.DressingTools
 
         public static IDynamicsProxy FindDynamicsWithRoot(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
         {
-            foreach (IDynamicsProxy bone in avatarDynamics)
+            foreach (var bone in avatarDynamics)
             {
                 if (bone.RootTransform == dynamicsRoot)
                 {
@@ -29,11 +28,11 @@ namespace Chocopoi.DressingTools
 
         public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName, bool rename = false)
         {
-            List<Transform> transforms = new List<Transform>();
+            var transforms = new List<Transform>();
 
-            for (int i = 0; i < targetClothes.transform.childCount; i++)
+            for (var i = 0; i < targetClothes.transform.childCount; i++)
             {
-                Transform child = targetClothes.transform.GetChild(i);
+                var child = targetClothes.transform.GetChild(i);
 
                 if (child.name.ToLower().Trim().Contains(armatureObjectName.ToLower()))
                 {
@@ -64,11 +63,11 @@ namespace Chocopoi.DressingTools
             }
 
             // scan from assemblies and save to cache
-            Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
 
-            foreach (Assembly assembly in assemblies)
+            foreach (var assembly in assemblies)
             {
-                System.Type type = assembly.GetType(typeName);
+                var type = assembly.GetType(typeName);
                 if (type != null)
                 {
                     reflectionTypeCache[typeName] = type;
@@ -84,7 +83,7 @@ namespace Chocopoi.DressingTools
         public static void DrawHorizontalLine(int i_height = 1)
         {
             EditorGUILayout.Separator();
-            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
+            var rect = EditorGUILayout.GetControlRect(false, i_height);
             rect.height = i_height;
             EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
             EditorGUILayout.Separator();

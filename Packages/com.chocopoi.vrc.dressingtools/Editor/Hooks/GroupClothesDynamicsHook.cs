@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Proxy;
-using Chocopoi.DressingTools.Reporting;
-using UnityEditor;
+﻿using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Hooks
@@ -16,14 +12,14 @@ namespace Chocopoi.DressingTools.Hooks
                 return true;
             }
 
-            GameObject dynamicsContainer = new GameObject("DT_Dynamics");
+            var dynamicsContainer = new GameObject("DT_Dynamics");
 
             // Find the clothes container (if applicable)
 
             GameObject clothesContainer = null;
             if (settings.groupRootObjects)
             {
-                string name = "DT_" + settings.clothesToDress.name;
+                var name = "DT_" + settings.clothesToDress.name;
                 clothesContainer = targetAvatar.transform.Find(name)?.gameObject;
             }
             else
@@ -36,7 +32,7 @@ namespace Chocopoi.DressingTools.Hooks
 
             // move all the found dynamics
 
-            foreach (IDynamicsProxy dynamics in report.clothesDynamics)
+            foreach (var dynamics in report.clothesDynamics)
             {
                 // in case it does not have a root transform
                 if (dynamics.RootTransform == null)

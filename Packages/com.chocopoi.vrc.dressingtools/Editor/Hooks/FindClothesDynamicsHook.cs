@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Proxy;
+﻿using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.Hooks
 {
@@ -11,7 +8,7 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
+            var avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
 
             if (!avatarArmature)
             {
@@ -30,17 +27,17 @@ namespace Chocopoi.DressingTools.Hooks
             }
 
             // get the dynbone type
-            System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
-            System.Type PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+            var DynamicBoneType = DressingUtils.FindType("DynamicBone");
+            var PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
             // scan clothes dynbones
 
             if (DynamicBoneType != null)
             {
-                Component[] clothesDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
-                foreach (Component comp in clothesDynBones)
+                var clothesDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
+                foreach (var comp in clothesDynBones)
                 {
-                    DynamicBoneProxy dynBone = new DynamicBoneProxy(comp);
+                    var dynBone = new DynamicBoneProxy(comp);
 
                     if (!DressingUtils.IsDynamicsExists(report.avatarDynamics, dynBone.RootTransform))
                     {
@@ -53,11 +50,11 @@ namespace Chocopoi.DressingTools.Hooks
 
             if (PhysBoneType != null)
             {
-                Component[] clothesPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
-                foreach (Component physBone in clothesPhysBones)
+                var clothesPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
+                foreach (var physBone in clothesPhysBones)
                 {
-                    PhysBoneProxy PhysBoneProxy = new PhysBoneProxy(physBone);
-                    Transform physBoneRoot = PhysBoneProxy.RootTransform ?? PhysBoneProxy.Transform;
+                    var PhysBoneProxy = new PhysBoneProxy(physBone);
+                    var physBoneRoot = PhysBoneProxy.RootTransform ?? PhysBoneProxy.Transform;
 
                     if (!DressingUtils.IsDynamicsExists(report.avatarDynamics, physBoneRoot))
                     {

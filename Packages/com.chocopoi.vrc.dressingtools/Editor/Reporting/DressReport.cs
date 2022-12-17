@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Debugging;
 using Chocopoi.DressingTools.Hooks;
 using Chocopoi.DressingTools.Proxy;
@@ -66,8 +65,8 @@ namespace Chocopoi.DressingTools.Reporting
 
         public static void CleanUp()
         {
-            GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
-            foreach (GameObject obj in allObjects)
+            var allObjects = Object.FindObjectsOfType<GameObject>();
+            foreach (var obj in allObjects)
             {
                 if (obj.name.StartsWith("DressingToolsPreview_"))
                 {
@@ -85,7 +84,7 @@ namespace Chocopoi.DressingTools.Reporting
         {
             CleanUp();
 
-            DressReport report = new DressReport();
+            var report = new DressReport();
 
             if (settings.activeAvatar == null || settings.clothesToDress == null)
             {
@@ -103,8 +102,8 @@ namespace Chocopoi.DressingTools.Reporting
                 original_clothes_tree_csv = DebugDump.GenerateGameObjectTreeCsv(settings.clothesToDress.transform, DebugDump.GameObjectCsvHeader)
             };
 
-            string avatarNewName = "DressingToolsPreview_" + settings.activeAvatar.gameObject.name;
-            string clothesNewName = "DressingToolsPreview_" + settings.clothesToDress.name;
+            var avatarNewName = "DressingToolsPreview_" + settings.activeAvatar.gameObject.name;
+            var clothesNewName = "DressingToolsPreview_" + settings.clothesToDress.name;
 
             GameObject targetAvatar;
             GameObject targetClothes;
@@ -114,18 +113,18 @@ namespace Chocopoi.DressingTools.Reporting
                 targetAvatar = Object.Instantiate(settings.activeAvatar.gameObject);
                 targetAvatar.name = avatarNewName;
 
-                Vector3 newAvatarPosition = targetAvatar.transform.position;
+                var newAvatarPosition = targetAvatar.transform.position;
                 newAvatarPosition.x -= 20;
                 targetAvatar.transform.position = newAvatarPosition;
 
                 targetClothes = Object.Instantiate(settings.clothesToDress);
                 targetClothes.name = clothesNewName;
 
-                Vector3 newClothesPosition = targetClothes.transform.position;
+                var newClothesPosition = targetClothes.transform.position;
                 newClothesPosition.x -= 20;
                 targetClothes.transform.position = newClothesPosition;
 
-                Animator animator = targetAvatar.GetComponent<Animator>();
+                var animator = targetAvatar.GetComponent<Animator>();
 
                 //add animation controller
                 if (animator != null)
@@ -142,7 +141,7 @@ namespace Chocopoi.DressingTools.Reporting
                 targetClothes = settings.clothesToDress;
             }
 
-            foreach (Hooks.IDressHook hook in hooks)
+            foreach (var hook in hooks)
             {
                 if (!hook.Evaluate(report, settings, targetAvatar, targetClothes))
                 {

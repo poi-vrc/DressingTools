@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Reporting;
+﻿using Chocopoi.DressingTools.Reporting;
 using UnityEditor;
 using UnityEngine;
 

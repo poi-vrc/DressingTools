@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Chocopoi.DressingTools.Reporting;
+﻿using System.Globalization;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Chocopoi.DressingTools
 {
@@ -27,7 +18,7 @@ namespace Chocopoi.DressingTools
 
         private string[] availableLocales;
 
-        private string[] availableLocalesHumanReadable;
+        private readonly string[] availableLocalesHumanReadable;
 
         public SettingsWindow()
         {
@@ -35,7 +26,7 @@ namespace Chocopoi.DressingTools
 
             availableLocales = t.GetAvailableLocales();
             availableLocalesHumanReadable = new string[availableLocales.Length];
-            for (int i = 0; i < availableLocales.Length; i++)
+            for (var i = 0; i < availableLocales.Length; i++)
             {
                 availableLocalesHumanReadable[i] = new CultureInfo(availableLocales[i]).NativeName;
             }
@@ -43,7 +34,7 @@ namespace Chocopoi.DressingTools
 
         private void DrawSelectLanguageGUI()
         {
-            int selectedLanguage = EditorGUILayout.Popup("Language 言語:", FindArrayItemIndex(availableLocales, preferences.app.selectedLanguage), availableLocalesHumanReadable);
+            var selectedLanguage = EditorGUILayout.Popup("Language 言語:", FindArrayItemIndex(availableLocales, preferences.app.selectedLanguage), availableLocalesHumanReadable);
             if (selectedLanguage != lastSelectedLanguage)
             {
                 t.SetLocale(preferences.app.selectedLanguage = availableLocales[selectedLanguage]);
@@ -55,7 +46,7 @@ namespace Chocopoi.DressingTools
 
         private int FindArrayItemIndex(string[] array, string item)
         {
-            for (int i = 0; i < array.Length; i++)
+            for (var i = 0; i < array.Length; i++)
             {
                 if (array[i].Equals(item))
                 {
@@ -76,8 +67,8 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.LabelField(t._("label_settings_updater_default_branch", DressingToolsUpdater.GetDefaultBranchName()));
 
                 // get the branches from manifest and display in GUI
-                string[] branches = DressingToolsUpdater.GetAvailableBranches();
-                int branchIndex = FindArrayItemIndex(branches, preferences.app.updateBranch);
+                var branches = DressingToolsUpdater.GetAvailableBranches();
+                var branchIndex = FindArrayItemIndex(branches, preferences.app.updateBranch);
                 if (branchIndex == -1)
                 {
                     GUILayout.Label(t._("label_settings_updater_current_update_branch_cannot_be_found_switching_to_default", preferences.app.updateBranch), EditorStyles.boldLabel);
@@ -89,7 +80,7 @@ namespace Chocopoi.DressingTools
                         GUILayout.Label(t._("label_settings_updater_default_branch_cannot_be_found_switching_to_first_branch"), EditorStyles.boldLabel);
                     }
                 }
-                int selectedUpdateBranch = EditorGUILayout.Popup(t._("popup_settings_updater_current_branch"), branchIndex, branches);
+                var selectedUpdateBranch = EditorGUILayout.Popup(t._("popup_settings_updater_current_branch"), branchIndex, branches);
 
                 // detect changes and save to file
                 if (branchIndex != selectedUpdateBranch)
@@ -100,7 +91,7 @@ namespace Chocopoi.DressingTools
 
                 EditorGUILayout.LabelField(t._("label_settings_updater_current_version", DressingToolsUpdater.GetCurrentVersion().full_version_string));
 
-                DressingToolsUpdater.ManifestBranch latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.updateBranch);
+                var latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.updateBranch);
                 EditorGUILayout.LabelField(t._("label_settings_updater_latest_version", latestVersion.version));
 
                 if (DressingToolsUpdater.IsUpdateAvailable())

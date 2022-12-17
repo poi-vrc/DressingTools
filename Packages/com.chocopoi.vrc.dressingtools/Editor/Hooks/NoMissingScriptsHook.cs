@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Reporting;
-using UnityEditor;
+﻿using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Hooks
@@ -10,8 +7,8 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public bool ScanGameObject(GameObject gameObject)
         {
-            Component[] components = gameObject.GetComponents<Component>();
-            for (int i = 0; i < components.Length; i++)
+            var components = gameObject.GetComponents<Component>();
+            for (var i = 0; i < components.Length; i++)
             {
                 if (components[i] == null)
                 {
@@ -33,7 +30,7 @@ namespace Chocopoi.DressingTools.Hooks
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            bool result = true;
+            var result = true;
 
             //scan avatar missing scripts
             result &= ScanGameObject(targetAvatar);

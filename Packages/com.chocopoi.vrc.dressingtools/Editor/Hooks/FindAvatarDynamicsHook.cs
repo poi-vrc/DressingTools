@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Proxy;
+﻿using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.Hooks
 {
@@ -11,7 +8,7 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
+            var avatarArmature = targetAvatar.transform.Find(settings.avatarArmatureObjectName);
 
             if (!avatarArmature)
             {
@@ -30,15 +27,15 @@ namespace Chocopoi.DressingTools.Hooks
             }
 
             // get the dynbone type
-            System.Type DynamicBoneType = DressingUtils.FindType("DynamicBone");
-            System.Type PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+            var DynamicBoneType = DressingUtils.FindType("DynamicBone");
+            var PhysBoneType = DressingUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
             // scan avatar dynbones
 
             if (DynamicBoneType != null)
             {
-                Component[] avatarDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
-                foreach (Component dynBone in avatarDynBones)
+                var avatarDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
+                foreach (var dynBone in avatarDynBones)
                 {
                     report.avatarDynamics.Add(new DynamicBoneProxy(dynBone));
                 }
@@ -48,8 +45,8 @@ namespace Chocopoi.DressingTools.Hooks
 
             if (PhysBoneType != null)
             {
-                Component[] avatarPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
-                foreach (Component physBone in avatarPhysBones)
+                var avatarPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
+                foreach (var physBone in avatarPhysBones)
                 {
                     report.avatarDynamics.Add(new PhysBoneProxy(physBone));
                 }
@@ -59,8 +56,8 @@ namespace Chocopoi.DressingTools.Hooks
 
             if (DynamicBoneType != null)
             {
-                Component[] clothesDynBones = targetClothes.GetComponentsInChildren(DynamicBoneType);
-                foreach (Component dynBone in clothesDynBones)
+                var clothesDynBones = targetClothes.GetComponentsInChildren(DynamicBoneType);
+                foreach (var dynBone in clothesDynBones)
                 {
                     report.clothesOriginalDynamics.Add(new DynamicBoneProxy(dynBone));
                 }
@@ -70,8 +67,8 @@ namespace Chocopoi.DressingTools.Hooks
 
             if (PhysBoneType != null)
             {
-                Component[] clothesPhysBones = targetClothes.GetComponentsInChildren(PhysBoneType);
-                foreach (Component physBone in clothesPhysBones)
+                var clothesPhysBones = targetClothes.GetComponentsInChildren(PhysBoneType);
+                foreach (var physBone in clothesPhysBones)
                 {
                     report.clothesOriginalDynamics.Add(new PhysBoneProxy(physBone));
                 }

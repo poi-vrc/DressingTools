@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
@@ -9,11 +8,11 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            List<GameObject> toParent = new List<GameObject>();
+            var toParent = new List<GameObject>();
 
-            for (int i = 0; i < targetClothes.transform.childCount; i++)
+            for (var i = 0; i < targetClothes.transform.childCount; i++)
             {
-                GameObject obj = targetClothes.transform.GetChild(i)?.gameObject;
+                var obj = targetClothes.transform.GetChild(i)?.gameObject;
                 if (obj.name != settings.avatarArmatureObjectName)
                 {
                     report.clothesAllObjects.Add(obj);
@@ -24,8 +23,8 @@ namespace Chocopoi.DressingTools.Hooks
 
             if (settings.groupRootObjects)
             {
-                string name = "DT_" + settings.clothesToDress.name;
-                GameObject clothesContainer = targetAvatar.transform.Find(name)?.gameObject;
+                var name = "DT_" + settings.clothesToDress.name;
+                var clothesContainer = targetAvatar.transform.Find(name)?.gameObject;
 
                 if (clothesContainer != null)
                 {
@@ -36,14 +35,14 @@ namespace Chocopoi.DressingTools.Hooks
                 clothesContainer = new GameObject(name);
                 clothesContainer.transform.SetParent(targetAvatar.transform);
 
-                foreach (GameObject obj in toParent)
+                foreach (var obj in toParent)
                 {
                     obj.transform.SetParent(clothesContainer.transform);
                 }
             }
             else
             {
-                foreach (GameObject obj in toParent)
+                foreach (var obj in toParent)
                 {
                     obj.name = settings.prefixToBeAdded + obj.name + settings.suffixToBeAdded;
 

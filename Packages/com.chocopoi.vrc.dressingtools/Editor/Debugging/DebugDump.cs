@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Chocopoi.DressingTools.Proxy;
@@ -72,20 +71,22 @@ namespace Chocopoi.DressingTools.Debugging
 
         private static void PutDumpInfo(DebugDumpJson dump)
         {
-            dump.debug_info = new DebugDumpInfoJson();
-            dump.debug_info.operating_system = SystemInfo.operatingSystem;
-            dump.debug_info.unity_version = Application.unityVersion;
-            dump.debug_info.tool_version = DressingToolsUpdater.GetCurrentVersion()?.full_version_string;
-            dump.debug_info.version = DumpVersion;
-            dump.debug_info.generated_utc_time = System.DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+            dump.debug_info = new DebugDumpInfoJson
+            {
+                operating_system = SystemInfo.operatingSystem,
+                unity_version = Application.unityVersion,
+                tool_version = DressingToolsUpdater.GetCurrentVersion()?.full_version_string,
+                version = DumpVersion,
+                generated_utc_time = System.DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)
+            };
         }
 
         public static string GetVRCSDKVersion()
         {
             try
             {
-                StreamReader reader = new StreamReader("Assets/VRCSDK/version.txt");
-                string str = reader.ReadToEnd();
+                var reader = new StreamReader("Assets/VRCSDK/version.txt");
+                var str = reader.ReadToEnd();
                 // remove newline characters and trim string
                 str = str.Trim().Replace("\n", "").Replace("\r", "");
                 reader.Close();
@@ -102,7 +103,7 @@ namespace Chocopoi.DressingTools.Debugging
             dump.dependencies_dump = new DependenciesDumpJson();
 
             // VRCSDK
-            string vrcsdk_version = GetVRCSDKVersion();
+            var vrcsdk_version = GetVRCSDKVersion();
             if (vrcsdk_version == null)
             {
                 dump.dependencies_dump.vrc_sdk3_present = false;
@@ -125,9 +126,9 @@ namespace Chocopoi.DressingTools.Debugging
                 csv = GameObjectCsvHeader;
             }
 
-            for (int i = 0; i < parent.childCount; i++)
+            for (var i = 0; i < parent.childCount; i++)
             {
-                Transform child = parent.GetChild(i);
+                var child = parent.GetChild(i);
 
                 csv += string.Format("{0},{1},{2},{3},{4}\n", parent.GetInstanceID(), parent.name, child.GetInstanceID(), child.name, child.gameObject.activeSelf ? 1 : 0);
 
@@ -143,11 +144,11 @@ namespace Chocopoi.DressingTools.Debugging
                 parentConstraints = new List<ParentConstraint>();
             }
 
-            for (int i = 0; i < parent.childCount; i++)
+            for (var i = 0; i < parent.childCount; i++)
             {
-                Transform child = parent.GetChild(i);
+                var child = parent.GetChild(i);
 
-                ParentConstraint[] comps = child.GetComponents<ParentConstraint>();
+                var comps = child.GetComponents<ParentConstraint>();
                 parentConstraints.AddRange(comps);
 
                 FindParentConstraints(child, parentConstraints);
@@ -159,9 +160,9 @@ namespace Chocopoi.DressingTools.Debugging
 
         public static string GenerateSpecialComponentsCsv(List<IDynamicsProxy> dynamics, List<ParentConstraint> parentConstraints)
         {
-            string csv = ComponentsCsvHeader;
+            var csv = ComponentsCsvHeader;
 
-            foreach (IDynamicsProxy bone in dynamics)
+            foreach (var bone in dynamics)
             {
                 if (bone is DynamicBoneProxy)
                 {
@@ -175,7 +176,7 @@ namespace Chocopoi.DressingTools.Debugging
 
             if (parentConstraints != null)
             {
-                foreach (ParentConstraint constraint in parentConstraints)
+                foreach (var constraint in parentConstraints)
                 {
                     csv += string.Format("{0},{1}\n", constraint.GetInstanceID(), "ParentConstraint");
                 }
@@ -188,12 +189,12 @@ namespace Chocopoi.DressingTools.Debugging
         {
             dump.active_scene_dump = new ActiveSceneDumpJson();
 
-            Scene scene = SceneManager.GetActiveScene();
+            var scene = SceneManager.GetActiveScene();
 
-            string obj_csv = GameObjectCsvHeader;
-            GameObject[] objects = scene.GetRootGameObjects();
+            var obj_csv = GameObjectCsvHeader;
+            var objects = scene.GetRootGameObjects();
 
-            foreach (GameObject obj in objects)
+            foreach (var obj in objects)
             {
                 obj_csv += string.Format("{0},{1},{2},{3},{4}\n", -1, null, obj.GetInstanceID(), obj.name, obj.activeSelf ? 1 : 0);
                 obj_csv = GenerateGameObjectTreeCsv(obj.transform, obj_csv);
@@ -217,7 +218,7 @@ namespace Chocopoi.DressingTools.Debugging
             }
 
             // generate dump
-            DebugDumpJson dump = new DebugDumpJson();
+            var dump = new DebugDumpJson();
 
             PutDumpInfo(dump);
             PutDependenciesDump(dump);
@@ -226,8 +227,8 @@ namespace Chocopoi.DressingTools.Debugging
 
             // save file
 
-            string dateTime = System.DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-            string path = EditorUtility.SaveFilePanel("", "", "DressingTools_DebugDump_" + dateTime + ".json", "json");
+            var dateTime = System.DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            var path = EditorUtility.SaveFilePanel("", "", "DressingTools_DebugDump_" + dateTime + ".json", "json");
 
             if (path.Length != 0)
             {
@@ -237,7 +238,7 @@ namespace Chocopoi.DressingTools.Debugging
                 }
                 catch (IOException e)
                 {
-                    UnityEngine.Debug.LogError(e);
+                    Debug.LogError(e);
                     EditorUtility.DisplayDialog("DressingTools", t._("dialog_preferences_unable_to_save_debug_dump_file", e.Message), "OK");
                 }
             }

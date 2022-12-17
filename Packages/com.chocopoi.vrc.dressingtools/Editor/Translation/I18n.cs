@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Translation
@@ -35,7 +32,7 @@ namespace Chocopoi.DressingTools.Translation
                 return new string[] { };
             }
 
-            string[] keys = new string[translations.Keys.Count];
+            var keys = new string[translations.Keys.Count];
             translations.Keys.CopyTo(keys, 0);
 
             return keys;
@@ -45,13 +42,13 @@ namespace Chocopoi.DressingTools.Translation
         {
             translations = new Dictionary<string, JObject>();
 
-            string[] translationFileNames = Directory.GetFiles("Packages/com.chocopoi.vrc.dressingtools/Translations", "*.json");
+            var translationFileNames = Directory.GetFiles("Packages/com.chocopoi.vrc.dressingtools/Translations", "*.json");
             foreach (var translationFileName in translationFileNames)
             {
                 try
                 {
-                    StreamReader reader = new StreamReader(translationFileName);
-                    string json = reader.ReadToEnd();
+                    var reader = new StreamReader(translationFileName);
+                    var json = reader.ReadToEnd();
                     reader.Close();
                     translations.Add(Path.GetFileNameWithoutExtension(translationFileName), JObject.Parse(json));
                 }
@@ -98,9 +95,9 @@ namespace Chocopoi.DressingTools.Translation
         {
             if (locale != null && translations.ContainsKey(locale))
             {
-                translations.TryGetValue(locale, out JObject t);
+                translations.TryGetValue(locale, out var t);
 
-                string value = t?.Value<string>(key);
+                var value = t?.Value<string>(key);
 
                 if (value != null)
                 {

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Chocopoi.DressingTools.Reporting;
+﻿using Chocopoi.DressingTools.Reporting;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Hooks
@@ -9,15 +7,15 @@ namespace Chocopoi.DressingTools.Hooks
     {
         public void ProcessBone(DressReport report, DressSettings settings, Transform boneParent)
         {
-            for (int i = 0; i < boneParent.childCount; i++)
+            for (var i = 0; i < boneParent.childCount; i++)
             {
-                Transform child = boneParent.GetChild(i);
+                var child = boneParent.GetChild(i);
 
                 // check if there is a prefix
                 if (child.name.StartsWith("("))
                 {
                     //find the first closing bracket
-                    int prefixBracketEnd = child.name.IndexOf(")");
+                    var prefixBracketEnd = child.name.IndexOf(")");
                     if (prefixBracketEnd != -1 && prefixBracketEnd != child.name.Length - 1) //remove it if there is
                     {
                         if (settings.removeExistingPrefixSuffix)
@@ -36,7 +34,7 @@ namespace Chocopoi.DressingTools.Hooks
                 if (child.name.EndsWith(")"))
                 {
                     //find the first closing bracket
-                    int suffixBracketStart = child.name.LastIndexOf("(");
+                    var suffixBracketStart = child.name.LastIndexOf("(");
                     if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
                     {
                         if (settings.removeExistingPrefixSuffix)
@@ -57,7 +55,7 @@ namespace Chocopoi.DressingTools.Hooks
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            Transform clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
+            var clothesArmature = targetClothes.transform.Find(settings.clothesArmatureObjectName);
 
             if (!clothesArmature)
             {

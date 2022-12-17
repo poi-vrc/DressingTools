@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -41,8 +37,8 @@ namespace Chocopoi.DressingTools
 
             try
             {
-                string json = File.ReadAllText(JsonPath);
-                Preferences p = JsonConvert.DeserializeObject<Preferences>(json);
+                var json = File.ReadAllText(JsonPath);
+                var p = JsonConvert.DeserializeObject<Preferences>(json);
 
                 if (p == null)
                 {
@@ -51,7 +47,7 @@ namespace Chocopoi.DressingTools
                     return GenerateDefaultPreferences();
                 }
 
-                int version = p.version;
+                var version = p.version;
 
                 if (version > TargetPreferencesVersion)
                 {
@@ -86,7 +82,7 @@ namespace Chocopoi.DressingTools
 
         public static Preferences GenerateDefaultPreferences()
         {
-            Preferences p = new Preferences();
+            var p = new Preferences();
             ResetToDefaults(p);
             return p;
         }
