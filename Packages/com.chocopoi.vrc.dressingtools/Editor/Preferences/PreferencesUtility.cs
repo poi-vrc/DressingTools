@@ -104,16 +104,7 @@ namespace Chocopoi.DressingTools
                 p.app = new Preferences.App();
             }
             p.app.selectedLanguage = "en";
-
-            // attempt to get current branch version
-            try
-            {
-                p.app.updateBranch = DressingToolsUpdater.GetCurrentVersion()?.branch ?? DefaultUpdateBranch;
-            }
-            catch (Exception)
-            {
-                p.app.updateBranch = DefaultUpdateBranch;
-            }
+            p.app.updateBranch = DefaultUpdateBranch;
         }
     }
 }

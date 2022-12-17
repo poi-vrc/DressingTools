@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,10 +37,9 @@ namespace Chocopoi.DressingTools
 
         public class ParsedVersion
         {
-            public string full_version_string;
+            public string fullVersionString;
             public string version;
             public int[] versionNumbers;
-            public string branch;
         }
 
         private static readonly int SupportedManifestVersion = 1;
@@ -67,12 +67,19 @@ namespace Chocopoi.DressingTools
 
             try
             {
-                var reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/version.txt");
+                var reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/package.json");
                 var str = reader.ReadToEnd();
-                // remove newline characters and trim string
-                str = str.Trim().Replace("\n", "").Replace("\r", "");
                 reader.Close();
-                return currentVersion = ParseVersionString(str);
+
+                var packageJson = JObject.Parse(str);
+
+                if (!packageJson.ContainsKey("version"))
+                {
+                    Debug.LogError("[DressingTools] Error: package.json does not contain version key!");
+                    return null;
+                }
+
+                return currentVersion = ParseVersionString(packageJson.Value<string>("version"));
             }
             catch (Exception e)
             {
@@ -159,7 +166,7 @@ namespace Chocopoi.DressingTools
                 if (!branchNotFoundWarningSent)
                 {
                     branchNotFoundWarningSent = true;
-                    Debug.LogWarning("Branch \"" + currentVersion.branch + "\" not found in manifest. Using default branch \"" + manifest.default_branch + "\" instead");
+                    Debug.LogWarning("Branch \"" + branchName + "\" not found in manifest. Using default branch \"" + manifest.default_branch + "\" instead");
                 }
 
                 branch = GetManifestBranch(manifest.default_branch);
@@ -206,12 +213,6 @@ namespace Chocopoi.DressingTools
                 throw new Exception("Current version or online updater manifest has not been loaded.");
             }
 
-            if (currentVersion.branch == null || currentVersion.branch == "")
-            {
-                Debug.LogWarning("Current version branch is empty, which is unexpected. Defaults to tell user there is an update anyways.");
-                return true;
-            }
-
             var preferences = PreferencesUtility.GetPreferences();
 
             var branch = GetBranchLatestVersion(preferences.app.updateBranch);
@@ -222,30 +223,29 @@ namespace Chocopoi.DressingTools
                 throw new Exception("Error parsing remote version string \"" + branch.version + "\"!");
             }
 
-            return !currentVersion.branch.Equals(remoteVersion.branch) || CompareVersions(remoteVersion, currentVersion) > 0;
+            //return CompareVersions(remoteVersion, currentVersion) > 0;
+            return !remoteVersion.version.Equals(currentVersion.version);
         }
 
         public static ParsedVersion ParseVersionString(string str)
         {
             var pv = new ParsedVersion();
 
-            pv.full_version_string = str;
+            pv.fullVersionString = str;
 
-            //find the first hyphen first
+            //find the first hyphen first, we ignore the content after hyphen since v2
             var hyphenIndex = str.IndexOf('-');
 
-            if (hyphenIndex == -1)
+            if (hyphenIndex != -1)
             {
-                //previous versions does not have branches, skipping them
-                pv.branch = null;
+                //split the version part
+                pv.version = str.Substring(0, hyphenIndex);
             }
             else
             {
-                pv.branch = str.Substring(hyphenIndex + 1);
+                pv.version = str;
             }
 
-            //split the version part
-            pv.version = str.Substring(0, hyphenIndex);
             var strs = pv.version.Split('.');
 
             if (strs.Length < 3)

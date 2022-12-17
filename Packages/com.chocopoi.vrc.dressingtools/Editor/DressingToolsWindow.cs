@@ -97,7 +97,7 @@ namespace Chocopoi.DressingTools
                 updateFoldoutStyle.onNormal.textColor = Color.red;
                 updateFoldoutStyle.fontStyle = FontStyle.Bold;
 
-                if (updateAvailableFoldout = EditorGUILayout.Foldout(updateAvailableFoldout, "<" + t._("foldout_update_available") + "> " + DressingToolsUpdater.GetCurrentVersion().full_version_string + " -> " + branch.version, updateFoldoutStyle))
+                if (updateAvailableFoldout = EditorGUILayout.Foldout(updateAvailableFoldout, "<" + t._("foldout_update_available") + "> " + DressingToolsUpdater.GetCurrentVersion()?.fullVersionString + " -> " + branch.version, updateFoldoutStyle))
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -141,7 +141,7 @@ namespace Chocopoi.DressingTools
         {
             DressingUtils.DrawHorizontalLine();
 
-            GUILayout.Label(t._("label_footer_version", currentVersion?.full_version_string));
+            GUILayout.Label(t._("label_footer_version", currentVersion?.fullVersionString));
 
             if (DressingToolsUpdater.IsUpdateChecked())
             {

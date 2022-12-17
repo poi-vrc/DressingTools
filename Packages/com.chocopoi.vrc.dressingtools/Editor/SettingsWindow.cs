@@ -89,7 +89,7 @@ namespace Chocopoi.DressingTools
                     PreferencesUtility.SavePreferences();
                 }
 
-                EditorGUILayout.LabelField(t._("label_settings_updater_current_version", DressingToolsUpdater.GetCurrentVersion().full_version_string));
+                EditorGUILayout.LabelField(t._("label_settings_updater_current_version", DressingToolsUpdater.GetCurrentVersion()?.fullVersionString));
 
                 var latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.updateBranch);
                 EditorGUILayout.LabelField(t._("label_settings_updater_latest_version", latestVersion.version));

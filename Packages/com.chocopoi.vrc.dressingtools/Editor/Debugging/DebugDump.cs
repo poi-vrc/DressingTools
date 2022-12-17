@@ -75,7 +75,7 @@ namespace Chocopoi.DressingTools.Debugging
             {
                 operating_system = SystemInfo.operatingSystem,
                 unity_version = Application.unityVersion,
-                tool_version = DressingToolsUpdater.GetCurrentVersion()?.full_version_string,
+                tool_version = DressingToolsUpdater.GetCurrentVersion()?.fullVersionString,
                 version = DumpVersion,
                 generated_utc_time = System.DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)
             };
