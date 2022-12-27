@@ -34,12 +34,6 @@ namespace Chocopoi.DressingTools.Hooks
 
             foreach (var dynamics in report.clothesDynamics)
             {
-                // in case it does not have a root transform
-                if (dynamics.RootTransform == null)
-                {
-                    dynamics.RootTransform = dynamics.GameObject.transform;
-                }
-
                 UnityEditorInternal.ComponentUtility.CopyComponent(dynamics.Component);
                 UnityEditorInternal.ComponentUtility.PasteComponentAsNew(dynamicsContainer);
 
