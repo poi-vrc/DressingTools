@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.chocopoi.vrc.avatarlib": {
+      "version": "file:com.chocopoi.vrc.avatarlib",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.chocopoi.vrc.dressingtools": {
       "version": "file:com.chocopoi.vrc.dressingtools",
       "depth": 0,
