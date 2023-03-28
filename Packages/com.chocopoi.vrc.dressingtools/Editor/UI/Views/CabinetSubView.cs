@@ -1,8 +1,8 @@
-﻿using Chocopoi.DressingTools.UIBase.Views;
-using UnityEngine;
-using UnityEditor;
-using Chocopoi.DressingTools.Cabinet;
+﻿using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UI.Presenters;
+using Chocopoi.DressingTools.UIBase.Views;
+using UnityEditor;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
@@ -32,7 +32,8 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     cabinetPresenter.GetAvatarCabinet(selectedCreateCabinetGameObject);
                 }
-            } else
+            }
+            else
             {
                 GUILayout.Label("Hello World");
             }
