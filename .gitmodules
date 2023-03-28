@@ -1,0 +1,3 @@
+[submodule "Packages/com.chocopoi.vrc.avatarlib"]
+	path = Packages/com.chocopoi.vrc.avatarlib
+	url = https://github.com/poi-vrc/AvatarLib.git
