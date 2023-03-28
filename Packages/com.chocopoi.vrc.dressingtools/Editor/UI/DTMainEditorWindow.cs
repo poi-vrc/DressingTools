@@ -18,10 +18,10 @@ namespace Chocopoi.DressingTools.UI
         protected int selectedTab;
 
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
-        public static void Init()
+        public static void ShowWindow()
         {
             var window = (DTMainEditorWindow)GetWindow(typeof(DTMainEditorWindow));
-            window.titleContent = new GUIContent("DressingToolsNew");
+            window.titleContent = new GUIContent("DressingTools");
             window.Show();
         }
 
