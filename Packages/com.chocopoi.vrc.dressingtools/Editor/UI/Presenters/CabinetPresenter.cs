@@ -25,7 +25,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (container == null)
             {
-                var gameObject = new GameObject("DressingToolsContainer");
+                var gameObject = new GameObject("DressingTools");
                 container = gameObject.AddComponent<DTContainer>();
             }
 
