@@ -8,6 +8,8 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         public GameObject avatarGameObject;
 
+        public string avatarArmatureName;
+
         public DTCabinetWearable[] wearables;
 
         // Start is called before the first frame update

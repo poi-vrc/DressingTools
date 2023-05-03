@@ -21,6 +21,12 @@ namespace Chocopoi.DressingTools.Cabinet
     }
 
     [Serializable]
+    public class DTCabinetBoneMapping : DTBoneMapping
+    {
+        public GameObject avatarBoneReference;
+        public GameObject wearableBoneReference;
+    }
+
     public class DTBoneMapping
     {
         public DTBoneMappingType mappingType;
