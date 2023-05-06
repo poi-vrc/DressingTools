@@ -146,5 +146,14 @@ namespace Chocopoi.DressingTools.Translation
         public string button_save_debug_dump;
         public string dialog_confirmation_of_content_of_debug_dump;
         public string dialog_confirmation_of_no_previous_dress_report;
+
+        public string button_remove_all_missing_scripts;
+        public string dialog_missing_scripts_removal_success;
+        public string dialog_missing_scripts_removal_failure;
+        public string helpbox_warn_gameobjects_contain_missing_scripts;
+        public string helpbox_warn_missing_scripts_cannot_detect_if_dynamicbones_not_installed;
+        public string label_missing_scripts_click_to_locate;
+        public string helpbox_warn_missing_scripts_detected_in_avatar_will_be_removed;
+        public string helpbox_warn_missing_scripts_detected_in_clothes_will_be_removed;
     }
 }

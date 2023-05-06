@@ -8,6 +8,8 @@ namespace Chocopoi.DressingTools.Reporting
 {
     public class MissingScriptsChecker
     {
+        private static Translation.I18n t = Translation.I18n.GetInstance();
+
         public static void ScanGameObject(GameObject gameObject, List<GameObject> missingScriptObjects)
         {
             Component[] components = gameObject.GetComponents<Component>();
@@ -33,13 +35,13 @@ namespace Chocopoi.DressingTools.Reporting
 
             public void OnGUI()
             {
-                EditorGUILayout.HelpBox("The following GameObjects contain missing scripts, which will affect VRChat uploading and DressingTools. If it's located at \"Armature\" or prefab root, it is most likely some script-embedding tool put some scripts in it and safe to remove.", MessageType.Warning);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_gameobjects_contain_missing_scripts"), MessageType.Warning);
                 if (DressingUtils.FindType("DynamicBone") == null)
                 {
-                    EditorGUILayout.HelpBox("We cannot detect if it is DynamicBones if it's not installed, which allow us to determine whether those missing scripts are safe to remove or not. Try installing DynamicBones if the avatar/clothes use them.", MessageType.Error);
+                    EditorGUILayout.HelpBox(t._("helpbox_warn_missing_scripts_cannot_detect_if_dynamicbones_not_installed"), MessageType.Warning);
                 }
                 EditorGUILayout.Separator();
-                if (GUILayout.Button("Remove All Missing Scripts (Caution)") && EditorUtility.DisplayDialog("DressingTools", "Are you sure?", "Yes", "No"))
+                if (GUILayout.Button(t._("button_remove_all_missing_scripts")) && EditorUtility.DisplayDialog("DressingTools", t._("dialog_dress_confirmation_content"), t._("dialog_button_yes"), t._("dialog_button_no")))
                 {
                     int count = 0;
                     foreach (var obj in missingScripts)
@@ -48,16 +50,16 @@ namespace Chocopoi.DressingTools.Reporting
                     }
                     if (missingScripts.Count == count)
                     {
-                        EditorUtility.DisplayDialog("DressingTools", "Successfully removed " + count + " missing script(s).", "OK");
+                        EditorUtility.DisplayDialog("DressingTools", t._("dialog_missing_scripts_removal_success", count), "OK");
                     }
                     else
                     {
-                        EditorUtility.DisplayDialog("DressingTools", "Unable to remove all scripts. Only removed " + count + " missing script(s).", "OK");
+                        EditorUtility.DisplayDialog("DressingTools", t._("dialog_missing_scripts_removal_failure", count), "OK");
                     }
                     missingScripts = new List<GameObject>();
                     Close();
                 }
-                EditorGUILayout.LabelField("Click on the icons to locate them:", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField(t._("label_missing_scripts_click_to_locate"), EditorStyles.boldLabel);
                 DressingUtils.DrawHorizontalLine();
                 foreach (var obj in missingScripts)
                 {
