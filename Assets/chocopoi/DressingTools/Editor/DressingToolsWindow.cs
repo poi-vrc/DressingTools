@@ -304,6 +304,17 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.HelpBox(t._("helpbox_warn_bones_not_matching_in_armature_first_level"), MessageType.Warning);
             }
 
+            if ((dressReport.warnings & DressCheckCodeMask.Warn.MISSING_SCRIPTS_DETECTED_IN_AVATAR_WILL_BE_REMOVED) == DressCheckCodeMask.Warn.MISSING_SCRIPTS_DETECTED_IN_AVATAR_WILL_BE_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_warn_missing_scripts_detected_in_avatar_will_be_removed"), MessageType.Warning);
+            }
+
+            if ((dressReport.warnings & DressCheckCodeMask.Warn.MISSING_SCRIPTS_DETECTED_IN_CLOTHES_WILL_BE_REMOVED) == DressCheckCodeMask.Warn.MISSING_SCRIPTS_DETECTED_IN_CLOTHES_WILL_BE_REMOVED)
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_warn_missing_scripts_detected_in_clothes_will_be_removed"), MessageType.Warning);
+            }
+
+
             // Infos
 
             if ((dressReport.infos & DressCheckCodeMask.Info.NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED) == DressCheckCodeMask.Info.NON_MATCHING_CLOTHES_BONE_KEPT_UNTOUCHED)
