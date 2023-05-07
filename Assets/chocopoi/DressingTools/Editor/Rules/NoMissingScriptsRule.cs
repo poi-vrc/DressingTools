@@ -8,50 +8,59 @@ namespace Chocopoi.DressingTools.Rules
 {
     public class NoMissingScriptsRule : IDressCheckRule
     {
-        public bool ScanGameObject(GameObject gameObject)
+        private int RemoveAllMissingScripts(List<GameObject> list)
         {
-            Component[] components = gameObject.GetComponents<Component>();
-            for (int i = 0; i < components.Length; i++)
+            int count = 0;
+            foreach (var obj in list)
             {
-                if (components[i] == null)
-                {
-                    Debug.LogError("[DressingTools] Missing script detected, make sure you have imported DynamicBones or related stuff.");
-                    return false;
-                }
+                count += GameObjectUtility.RemoveMonoBehavioursWithMissingScript(obj);
             }
-
-            foreach (Transform child in gameObject.transform)
-            {
-                if (!ScanGameObject(child.gameObject))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return count;
         }
 
         public bool Evaluate(DressReport report, DressSettings settings, GameObject targetAvatar, GameObject targetClothes)
         {
-            bool result = true;
+            bool dynBoneInstalled = DressingUtils.FindType("DynamicBone") != null;
 
             //scan avatar missing scripts
-            result &= ScanGameObject(targetAvatar);
+            var avatarMissingScriptObjects = new List<GameObject>();
+            MissingScriptsChecker.ScanGameObject(targetAvatar, avatarMissingScriptObjects);
 
-            if (!result)
+            if (avatarMissingScriptObjects.Count > 0)
             {
-                report.errors |= DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_AVATAR;
+                Debug.LogWarning("[DressingTools] Missing script detected in avatar, make sure you have imported DynamicBones or related stuff.");
+                if (dynBoneInstalled)
+                {
+                    report.warnings |= DressCheckCodeMask.Warn.MISSING_SCRIPTS_DETECTED_IN_AVATAR_WILL_BE_REMOVED;
+                    int count = RemoveAllMissingScripts(avatarMissingScriptObjects);
+                    Debug.Log("[DressingTools] Removed " + count + "/" + avatarMissingScriptObjects.Count + " avatar missing script(s).");
+                }
+                else
+                {
+                    report.errors |= DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_AVATAR;
+                }
             }
 
             //scan clothes missing scripts
-            result &= ScanGameObject(targetClothes);
+            var clothesMissingScriptObjects = new List<GameObject>();
+            MissingScriptsChecker.ScanGameObject(targetClothes, clothesMissingScriptObjects);
 
-            if (!result)
+            if (clothesMissingScriptObjects.Count > 0)
             {
-                report.errors |= DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_CLOTHES;
+                Debug.LogWarning("[DressingTools] Missing script detected in clothes, make sure you have imported DynamicBones or related stuff.");
+                if (dynBoneInstalled)
+                {
+                    report.warnings |= DressCheckCodeMask.Warn.MISSING_SCRIPTS_DETECTED_IN_CLOTHES_WILL_BE_REMOVED;
+                    int count = RemoveAllMissingScripts(clothesMissingScriptObjects);
+                    Debug.Log("[DressingTools] Removed " + count + "/" + clothesMissingScriptObjects.Count + " clothes missing script(s).");
+                }
+                else
+                {
+                    report.errors |= DressCheckCodeMask.Error.MISSING_SCRIPTS_DETECTED_IN_CLOTHES;
+                }
             }
 
-            return result;
+            return dynBoneInstalled || (avatarMissingScriptObjects.Count == 0 && clothesMissingScriptObjects.Count == 0);
         }
     }
 }

@@ -152,6 +152,13 @@ namespace Chocopoi.DressingTools.Reporting
                 targetClothes = settings.clothesToDress;
             }
 
+            // temporary migration to missing scripts problem until v2
+            if (!MissingScriptsChecker.Check(settings.activeAvatar.gameObject, settings.clothesToDress))
+            {
+                report.result = DressCheckResult.INCOMPATIBLE;
+                return report;
+            }
+
             foreach (Rules.IDressCheckRule rule in rules)
             {
                 if (!rule.Evaluate(report, settings, targetAvatar, targetClothes))
