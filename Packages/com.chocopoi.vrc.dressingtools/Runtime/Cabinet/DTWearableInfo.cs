@@ -9,6 +9,7 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         public string uuid;
         public string name;
+        public string author;
         public string description;
         public string createdTime;
         public string updatedTime;
