@@ -9,8 +9,11 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         public string avatarPath;
         public string avatarBlendshapeName;
+        public float avatarFromValue;
+        public float avatarToValue;
         public string wearablePath;
         public string wearableBlendshapeName;
-        public bool inverted;
+        public float wearableFromValue;
+        public float wearableToValue;
     }
 }
