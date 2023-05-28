@@ -3,8 +3,9 @@
 namespace Chocopoi.DressingTools.Cabinet
 {
     [Serializable]
-    public class DTCabinetWearableConfig : DTWearableConfig
+    public class DTCabinetWearable : DTWearableConfig
     {
         public DTGameObjectReference[] objectReferences;
+        public string serializedJson;
     }
 }

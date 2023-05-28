@@ -20,6 +20,7 @@ namespace Chocopoi.DressingTools.Cabinet
         CopyDynamics = 3
     }
 
+    [Serializable]
     public class DTGameObjectReference
     {
         public string path;

@@ -14,7 +14,10 @@ namespace Chocopoi.DressingTools.Cabinet
     [Serializable]
     public class DTWearableConfig
     {
-        public string name;
+        public const int CurrentConfigVersion = 1;
+
+        public int configVersion;
+        public DTWearableInfo info;
         public DTAvatarConfig[] targetAvatarConfigs;
         public DTWearableType wearableType;
 
