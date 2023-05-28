@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.Dresser
 {
     [Serializable]
-    internal enum DTDresserReportLogType
+    public enum DTDresserReportLogType
     {
         Fatal = -2,
         Error = -1,
@@ -16,7 +16,7 @@ namespace Chocopoi.DressingTools.Dresser
     }
 
     [Serializable]
-    internal enum DTDresserReportResult
+    public enum DTDresserReportResult
     {
         INVALID_SETTINGS = -2,
         INCOMPATIBLE = -1,
@@ -25,7 +25,7 @@ namespace Chocopoi.DressingTools.Dresser
     }
 
     [Serializable]
-    internal class DTDresserReportLogEntry
+    public class DTDresserReportLogEntry
     {
         public DTDresserReportLogType type;
         public int code;
@@ -33,7 +33,7 @@ namespace Chocopoi.DressingTools.Dresser
     }
 
     [Serializable]
-    internal class DTDresserReport
+    public class DTDresserReport
     {
         private List<DTDresserReportLogEntry> logEntries;
 

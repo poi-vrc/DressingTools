@@ -3,7 +3,7 @@ using Chocopoi.DressingTools.Cabinet;
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    internal class DTDefaultDresser : IDTDresser
+    public class DTDefaultDresser : IDTDresser
     {
         public DTBoneMapping[] Execute(DTDresserSettings settings, out DTDresserReport report)
         {

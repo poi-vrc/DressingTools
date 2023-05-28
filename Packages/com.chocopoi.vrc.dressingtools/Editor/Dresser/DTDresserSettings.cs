@@ -2,18 +2,18 @@
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    internal class DTDresserSettings
+    public class DTDresserSettings
     {
-        public GameObject activeAvatar;
+        public GameObject targetAvatar;
 
-        public GameObject clothesToDress;
+        public GameObject targetWearable;
 
         public bool removeExistingPrefixSuffix;
 
         public int dynamicBoneOption;
 
-        public string avatarArmatureObjectName;
+        public string avatarArmatureName;
 
-        public string clothesArmatureObjectName;
+        public string wearableArmatureName;
     }
 }

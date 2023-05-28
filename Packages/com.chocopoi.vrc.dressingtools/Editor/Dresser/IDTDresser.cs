@@ -2,7 +2,7 @@
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    internal interface IDTDresser
+    public interface IDTDresser
     {
         DTBoneMapping[] Execute(DTDresserSettings settings, out DTDresserReport report);
     }

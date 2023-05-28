@@ -1,0 +1,26 @@
+{
+    "name": "com.chocopoi.vrc.dressingtools.Editor.Tests",
+    "references": [
+        "com.chocopoi.vrc.dressingtools.Editor",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "com.chocopoi.vrc.dressingtools.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "VRC.Dynamics.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
