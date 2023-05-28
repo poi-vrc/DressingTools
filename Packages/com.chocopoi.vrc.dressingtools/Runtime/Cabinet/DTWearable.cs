@@ -12,13 +12,6 @@ namespace Chocopoi.DressingTools.Cabinet
     }
 
     [Serializable]
-    public class DTCabinetWearable : DTWearable
-    {
-        public new DTCabinetBoneMapping[] boneMapping;
-        public new DTCabinetRootObject[] rootObjects;
-    }
-
-    [Serializable]
     public class DTAnimationToggle
     {
         public string path;
@@ -43,10 +36,54 @@ namespace Chocopoi.DressingTools.Cabinet
         public bool inverted;
     }
 
-    public class DTWearable
+    [Serializable]
+    public class DTWearableAnimationPreset
+    {
+        public DTAnimationToggle[] toggles;
+        public DTAnimationBlendshapeValue[] blendshapes;
+    }
+
+    [Serializable]
+    public enum DTWearableCustomizableType
+    {
+        Toggle = 0,
+        Blendshape = 1,
+        HybridToggle = 2,
+        HybridBlendshape = 3,
+    }
+
+    [Serializable]
+    public class DTWearableCustomizable
+    {
+        public DTWearableCustomizableType type;
+        public DTAnimationToggle[] avatarRequiredToggles;
+        public DTAnimationToggle[] wearableToggles;
+        public DTAnimationBlendshapeValue[] avatarRequiredBlendshapes;
+        public DTAnimationBlendshapeValue[] wearableBlendshapes;
+    }
+
+    [Serializable]
+    public class DTAvatarConfig
+    {
+        public string guid;
+        public string name;
+        public string armatureName;
+        public Vector3 position;
+        public Vector3 rotation;
+        public Vector3 scale;
+    }
+
+    [Serializable]
+    public class DTCabinetWearable : DTWearableConfig
+    {
+        public DTGameObjectReference[] objectReferences;
+    }
+
+    [Serializable]
+    public class DTWearableConfig
     {
         public string name;
-        public string[] targetAvatarGuids;
+        public DTAvatarConfig[] targetAvatarConfigs;
         public DTWearableType wearableType;
 
         // Generic
@@ -55,14 +92,12 @@ namespace Chocopoi.DressingTools.Cabinet
         // Armature-based
         public string wearableArmatureName;
         public DTBoneMapping[] boneMapping;
-        public DTRootObject[] rootObjects;
+        public DTObjectMapping[] objectMapping;
 
         // Animation generation
-        public DTAnimationToggle[] avatarTogglesOnWear; // avatar items to toggle on being wore
-        public DTAnimationBlendshapeValue[] avatarBlendshapeValuesOnWear; // blendshapes to set on being wore
-
-        public DTAnimationToggle[] wearableToggles; // wearable items that the user wants to be able to be toggled
-        public DTAnimationBlendshapeValue[] wearableBlendshapeValues; // wearable items' blendshapes that want to be able to be changed (value is default value)
+        public DTWearableAnimationPreset avatarAnimationOnWear; // execute on wear
+        public DTWearableAnimationPreset wearableAnimationOnWear;
+        public DTWearableCustomizable[] wearableCustomizables; // items that show up in action menu for customization
         public DTAnimationBlendshapeSync[] blendshapeSyncs; // blendshapes to sync from avatar to wearables
     }
 }

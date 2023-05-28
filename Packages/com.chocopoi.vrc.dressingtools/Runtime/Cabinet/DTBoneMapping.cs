@@ -20,13 +20,13 @@ namespace Chocopoi.DressingTools.Cabinet
         CopyDynamics = 3
     }
 
-    [Serializable]
-    public class DTCabinetBoneMapping : DTBoneMapping
+    public class DTGameObjectReference
     {
-        public GameObject avatarBoneReference;
-        public GameObject wearableBoneReference;
+        public string path;
+        public GameObject reference;
     }
 
+    [Serializable]
     public class DTBoneMapping
     {
         public DTBoneMappingType mappingType;
