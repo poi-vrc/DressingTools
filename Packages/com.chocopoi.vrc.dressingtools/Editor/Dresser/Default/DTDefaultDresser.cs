@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
 using Chocopoi.DressingTools.Logging;
 
@@ -46,12 +47,21 @@ namespace Chocopoi.DressingTools.Dresser
         }
 
         public IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
-            new NoMissingScriptsHook()
+            new NoMissingScriptsHook(),
+            new ObjectPlacementHook(),
+
         };
 
         public DTBoneMapping[] Execute(DTDresserSettings settings, out DTReport report)
         {
             report = new DTReport();
+
+            if (!(settings is DTDefaultDresserSettings))
+            {
+                report.LogError(MessageCode.GenericError, "Settings is not an instance of DTDefaultDresserSettings");
+                report.Result = DTReportResult.InvalidSettings;
+                return null;
+            }
 
             // Reject null target avatar/wearable settings
             if (settings.targetAvatar == null || settings.targetWearable == null)

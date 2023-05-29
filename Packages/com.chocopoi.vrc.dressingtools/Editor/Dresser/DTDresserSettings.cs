@@ -8,10 +8,6 @@ namespace Chocopoi.DressingTools.Dresser
 
         public GameObject targetWearable;
 
-        public bool removeExistingPrefixSuffix;
-
-        public int dynamicBoneOption;
-
         public string avatarArmatureName;
 
         public string wearableArmatureName;
