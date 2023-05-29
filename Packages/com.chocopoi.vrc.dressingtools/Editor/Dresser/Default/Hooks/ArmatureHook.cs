@@ -77,8 +77,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    var avatarDynamics = DressingUtils.FindDynamicsWithRoot(null, avatarTrans);
-                    var wearableDynamics = DressingUtils.FindDynamicsWithRoot(null, child);
+                    var avatarDynamics = DressingUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
+                    var wearableDynamics = DressingUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
 
                     if (avatarDynamics != null)
                     {

@@ -49,7 +49,7 @@ namespace Chocopoi.DressingTools.Dresser
         public IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
             new NoMissingScriptsHook(),
             new ObjectPlacementHook(),
-
+            new ArmatureHook(),
         };
 
         public DTBoneMapping[] Execute(DTDresserSettings settings, out DTReport report)
