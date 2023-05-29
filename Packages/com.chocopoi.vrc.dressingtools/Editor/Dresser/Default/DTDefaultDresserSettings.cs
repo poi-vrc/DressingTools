@@ -4,10 +4,14 @@ namespace Chocopoi.DressingTools.Dresser.Default
 {
     public enum DTDefaultDresserDynamicsOption
     {
-        RemoveDynamicsAndParentConstraint = 0
+        RemoveDynamicsAndUseParentConstraint = 0,
+        KeepDynamicsAndUseParentConstraintIfNecessary = 1,
+        IgnoreTransform = 2,
+        CopyDynamics = 3,
+        IgnoreAll = 4,
     }
 
-    public class DTDefaultDresserSettings: DTDresserSettings
+    public class DTDefaultDresserSettings : DTDresserSettings
     {
         public bool removeExistingPrefixSuffix;
 
