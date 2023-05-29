@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using UnityEditor;
 using UnityEngine;
@@ -24,6 +25,35 @@ namespace Chocopoi.DressingTools
         public static bool IsDynamicsExists(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
         {
             return FindDynamicsWithRoot(avatarDynamics, dynamicsRoot) != null;
+        }
+
+        public static Transform GuessMatchingAvatarBone(Transform avatarBoneParent, string childBoneName)
+        {
+            // check if there is a prefix
+            if (childBoneName.StartsWith("("))
+            {
+                //find the first closing bracket
+                var prefixBracketEnd = childBoneName.IndexOf(")");
+                if (prefixBracketEnd != -1 && prefixBracketEnd != childBoneName.Length - 1) //remove it if there is
+                {
+                    childBoneName = childBoneName.Substring(prefixBracketEnd + 1).Trim();
+                }
+            }
+
+            // check if there is a suffix
+            if (childBoneName.EndsWith(")"))
+            {
+                //find the first closing bracket
+                var suffixBracketStart = childBoneName.LastIndexOf("(");
+                if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
+                {
+                    childBoneName = childBoneName.Substring(0, suffixBracketStart).Trim();
+                }
+            }
+
+            // TODO: Guess bone?
+
+            return avatarBoneParent.Find(childBoneName);
         }
 
         public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName, bool rename = false)

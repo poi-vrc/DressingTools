@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Dresser
             public const int AvatarInsideWearable = 0x200B;
         }
 
-        public IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
+        public static IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
             new NoMissingScriptsHook(),
             new ObjectPlacementHook(),
             new ArmatureHook(),

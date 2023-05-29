@@ -4,7 +4,6 @@ using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 {
@@ -58,8 +57,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     continue;
                 }
 
-                // TODO: detect/guess/remove prefix suffix in child bone here
-                var avatarTrans = avatarBoneParent.Find(child.name);
+                var avatarTrans = DressingUtils.GuessMatchingAvatarBone(avatarBoneParent, child.name);
 
                 if (avatarTrans == null)
                 {
