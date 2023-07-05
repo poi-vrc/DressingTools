@@ -7,9 +7,9 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Chocopoi.DressingTools.Tests
+namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
-    public class TestScript
+    public class ArmatureHookTest : DTTestBase
     {
         #region Test
         //
@@ -20,6 +20,7 @@ namespace Chocopoi.DressingTools.Tests
         public void Test()
         {
             DTDefaultDresser dt;
+
             Assert.AreEqual(true, true);
         }
         #endregion
