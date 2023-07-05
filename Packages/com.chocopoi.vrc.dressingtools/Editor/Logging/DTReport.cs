@@ -58,6 +58,30 @@ namespace Chocopoi.DressingTools.Logging
             return dict;
         }
 
+        public bool HasLogCode(int code)
+        {
+            foreach (var entry in LogEntries)
+            {
+                if (entry.code == code)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool HasLogCodeByType(DTReportLogType type, int code)
+        {
+            foreach (var entry in LogEntries)
+            {
+                if (entry.type == type && entry.code == code)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void Log(DTReportLogType type, int code, string message)
         {
             LogEntries.Add(new DTReportLogEntry() { type = type, code = code, message = message });
