@@ -15,13 +15,9 @@ namespace Chocopoi.DressingTools.Dresser
 
             public const int NonMatchingWearableBoneKeptUntouched = 0x0001;
             public const int DynamicBoneAllIgnored = 0x0002;
-            public const int ExistingPrefixDetectedNotRemoved = 0x0003;
-            public const int ExistingPrefixDetectedAndRemoved = 0x0004;
-            public const int ExistingSuffixDetectedNotRemoved = 0x0005;
-            public const int ExistingSuffixDetectedAndRemoved = 0x0006;
-            public const int AvatarArmatureObjectGuessed = 0x0007;
-            public const int WearableArmatureObjectGuessed = 0x0008;
-            public const int MultipleBonesInAvatarArmatureDetectedWarningRemoved = 0x0009; //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
+            public const int AvatarArmatureObjectGuessed = 0x0003;
+            public const int WearableArmatureObjectGuessed = 0x0004;
+            public const int MultipleBonesInAvatarArmatureDetectedWarningRemoved = 0x0005; //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
 
             //Warnings
             public const int GenericWarning = 0x1000;
@@ -38,12 +34,10 @@ namespace Chocopoi.DressingTools.Dresser
             public const int NullAvatarOrWearable = 0x2003;
             public const int NoBonesInAvatarArmatureFirstLevel = 0x2004;
             public const int NoBonesInWearableArmatureFirstLevel = 0x2005;
-            public const int WearableIsAPrefab = 0x2006;
-            public const int ExistingWearableDetected = 0x2007;
-            public const int MissingScriptsDetectedInAvatar = 0x2008;
-            public const int MissingScriptsDetectedInWearable = 0x2009;
-            public const int WearableInsideAvatar = 0x200A;
-            public const int AvatarInsideWearable = 0x200B;
+            public const int MissingScriptsDetectedInAvatar = 0x2006;
+            public const int MissingScriptsDetectedInWearable = 0x2007;
+            public const int WearableInsideAvatar = 0x2008;
+            public const int AvatarInsideWearable = 0x2009;
         }
 
         public static IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
