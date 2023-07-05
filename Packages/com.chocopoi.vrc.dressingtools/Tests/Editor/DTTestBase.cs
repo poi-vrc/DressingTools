@@ -22,11 +22,14 @@ namespace Chocopoi.DressingTools.Tests
             return obj;
         }
 
-        protected GameObject CreateChildGameObject(GameObject parent, string name)
+        protected GameObject CreateGameObject(string name, Transform parent = null)
         {
-            // create an object and bound it to the parent
+            // create an object and bound it to the parent (if any)
             var obj = new GameObject(name);
-            obj.transform.parent = parent.transform;
+            if (parent)
+            {
+                obj.transform.parent = parent.transform;
+            }
             instantiatedGameObjects.Add(obj);
             return obj;
         }
