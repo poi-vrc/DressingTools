@@ -8,21 +8,21 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
     // TODO: replace by reading missing scripts Unity files
     public class NoMissingScriptsHook : IDefaultDresserHook
     {
-        public bool ScanGameObject(GameObject gameObject)
+        public bool ScanGameObject(DTReport report, int errorCode, GameObject gameObject)
         {
             var components = gameObject.GetComponents<Component>();
             for (var i = 0; i < components.Length; i++)
             {
                 if (components[i] == null)
                 {
-                    Debug.LogError("[DressingTools] Missing script detected, make sure you have imported DynamicBones or related stuff.");
+                    report.LogError(errorCode, "Missing script detected, make sure you have imported DynamicBones or related stuff: " + gameObject.name);
                     return false;
                 }
             }
 
             foreach (Transform child in gameObject.transform)
             {
-                if (!ScanGameObject(child.gameObject))
+                if (!ScanGameObject(report, errorCode, child.gameObject))
                 {
                     return false;
                 }
@@ -33,25 +33,23 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
         public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings)
         {
-            var result = true;
-
             //scan avatar missing scripts
-            result &= ScanGameObject(settings.targetAvatar);
+            var avatarResult = ScanGameObject(report, DTDefaultDresser.MessageCode.MissingScriptsDetectedInAvatar, settings.targetAvatar);
 
-            if (!result)
+            if (!avatarResult)
             {
                 report.LogError(DTDefaultDresser.MessageCode.MissingScriptsDetectedInAvatar, "Missing scripts detected in avatar");
             }
 
             //scan wearable missing scripts
-            result &= ScanGameObject(settings.targetWearable);
+            var clothesResult = ScanGameObject(report, DTDefaultDresser.MessageCode.MissingScriptsDetectedInWearable, settings.targetWearable);
 
-            if (!result)
+            if (!clothesResult)
             {
                 report.LogError(DTDefaultDresser.MessageCode.MissingScriptsDetectedInWearable, "Missing scripts detected in wearable");
             }
 
-            return result;
+            return avatarResult && clothesResult;
         }
     }
 }
