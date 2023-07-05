@@ -8,5 +8,10 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         public string avatarObjectPath;
         public string wearableObjectPath;
+
+        public bool Equals(DTObjectMapping x)
+        {
+            return avatarObjectPath == x.avatarObjectPath && wearableObjectPath == x.wearableObjectPath;
+        }
     }
 }

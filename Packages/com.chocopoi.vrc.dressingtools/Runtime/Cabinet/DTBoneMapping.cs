@@ -34,5 +34,15 @@ namespace Chocopoi.DressingTools.Cabinet
         public DTDynamicsBindingType dynamicsBindingType;
         public string avatarBonePath;
         public string wearableBonePath;
+
+        public bool Equals(DTBoneMapping x)
+        {
+            return mappingType == x.mappingType && dynamicsBindingType == x.dynamicsBindingType && avatarBonePath == x.avatarBonePath && wearableBonePath == x.wearableBonePath;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}, {1}: {2} -> {3}", mappingType, dynamicsBindingType, wearableBonePath, avatarBonePath);
+        }
     }
 }

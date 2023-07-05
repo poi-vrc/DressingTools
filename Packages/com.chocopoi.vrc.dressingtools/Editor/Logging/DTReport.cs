@@ -84,6 +84,7 @@ namespace Chocopoi.DressingTools.Logging
 
         public void Log(DTReportLogType type, int code, string message)
         {
+            Debug.Log(string.Format("[{0}] ({1}) {2}", type, code.ToString("X4"), message));
             LogEntries.Add(new DTReportLogEntry() { type = type, code = code, message = message });
         }
 

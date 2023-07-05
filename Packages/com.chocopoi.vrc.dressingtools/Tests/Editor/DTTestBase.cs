@@ -13,10 +13,10 @@ namespace Chocopoi.DressingTools.Tests
     {
         private List<GameObject> instantiatedGameObjects;
 
-        protected T LoadTestAsset<T>(string relativePath) where T : Object
+        protected T LoadEditorTestAsset<T>(string relativePath) where T : Object
         {
             // load test asset from resources folder
-            var path = "Packages/com.chocopoi.vrc.dressingtools/Tests/Resources/" + GetType().Name + "/" + relativePath;
+            var path = "Packages/com.chocopoi.vrc.dressingtools/Tests/Editor/Resources/" + GetType().Name + "/" + relativePath;
             var obj = AssetDatabase.LoadAssetAtPath<T>(path);
             Assert.NotNull(obj, "Could not find test asset at path:" + path);
             return obj;
@@ -34,10 +34,10 @@ namespace Chocopoi.DressingTools.Tests
             return obj;
         }
 
-        protected GameObject InstantiateTestPrefab(string relativePath, Transform parent = null)
+        protected GameObject InstantiateEditorTestPrefab(string relativePath, Transform parent = null)
         {
             // load test prefab and instantiate it
-            var prefab = LoadTestAsset<GameObject>(relativePath);
+            var prefab = LoadEditorTestAsset<GameObject>(relativePath);
             var obj = Object.Instantiate(prefab);
             instantiatedGameObjects.Add(obj);
 

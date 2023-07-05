@@ -40,7 +40,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
         }
 
-        private static bool ProcessBone(DTReport report, DTDefaultDresserSettings settings, List<IDynamicsProxy> avatarDynamicsList, List<IDynamicsProxy> wearableDynamicsList, int level, Transform avatarBoneParent, Transform clothesBoneParent, List<DTBoneMapping> boneMappings)
+        private static void ProcessBone(DTReport report, DTDefaultDresserSettings settings, List<IDynamicsProxy> avatarDynamicsList, List<IDynamicsProxy> wearableDynamicsList, int level, Transform avatarBoneParent, Transform clothesBoneParent, List<DTBoneMapping> boneMappings)
         {
             var childs = new List<Transform>();
 
@@ -128,15 +128,10 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                             wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                         });
 
-                        if (!ProcessBone(report, settings, avatarDynamicsList, wearableDynamicsList, level + 1, avatarTrans, child, boneMappings))
-                        {
-                            return false;
-                        }
+                        ProcessBone(report, settings, avatarDynamicsList, wearableDynamicsList, level + 1, avatarTrans, child, boneMappings);
                     }
                 }
             }
-
-            return true;
         }
 
         private static bool IsOnlyOneEnabledChildBone(Transform armature)
@@ -250,11 +245,13 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             if (avatarArmature.childCount == 0)
             {
                 report.LogError(DTDefaultDresser.MessageCode.NoBonesInAvatarArmatureFirstLevel, "No bones in avatar armature first level.");
+                return false;
             }
 
             if (wearableArmature.childCount == 0)
             {
                 report.LogError(DTDefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel, "No bones in wearable armature first level.");
+                return false;
             }
 
             if (avatarArmature.childCount > 1)
@@ -280,7 +277,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             ScanAvatarDynamics(settings.targetAvatar, settings.targetWearable, out var avatarDynamicsList, out var wearableDynamicsList);
 
             // Process Armature
-            return ProcessBone(report, (DTDefaultDresserSettings)settings, avatarDynamicsList, wearableDynamicsList, 0, avatarArmature, wearableArmature, boneMappings);
+            ProcessBone(report, (DTDefaultDresserSettings)settings, avatarDynamicsList, wearableDynamicsList, 0, avatarArmature, wearableArmature, boneMappings);
+            return true;
         }
     }
 }
