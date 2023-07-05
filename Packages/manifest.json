@@ -7,6 +7,7 @@
     "com.unity.ide.vscode": "1.2.4",
     "com.unity.mathematics": "1.2.5",
     "com.unity.test-framework": "1.1.29",
+    "com.unity.testtools.codecoverage": "1.2.4",
     "com.unity.textmeshpro": "2.1.6",
     "com.unity.timeline": "1.2.18",
     "com.unity.ugui": "1.0.0",

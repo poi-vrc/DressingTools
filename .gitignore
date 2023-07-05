@@ -100,3 +100,6 @@ crashlytics-build.properties
 /[Aa]ssets/chocopoi/DressingTools/Resources/preferences.json.meta
 /[Aa]ssets/chocopoi/DressingTools/Resources
 /[Aa]ssets/chocopoi/DressingTools/Resources.meta
+
+# Ignore code coverage files
+CodeCoverage
