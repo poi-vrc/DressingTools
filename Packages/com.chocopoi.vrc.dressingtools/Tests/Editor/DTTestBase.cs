@@ -22,7 +22,7 @@ namespace Chocopoi.DressingTools.Tests
             return obj;
         }
 
-        protected GameObject CreateGameObject(string name, Transform parent = null)
+        protected GameObject CreateGameObject(string name = null, Transform parent = null)
         {
             // create an object and bound it to the parent (if any)
             var obj = new GameObject(name);
