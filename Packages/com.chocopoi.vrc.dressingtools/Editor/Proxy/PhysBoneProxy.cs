@@ -30,7 +30,13 @@ namespace Chocopoi.DressingTools.Proxy
 
         public Transform RootTransform
         {
-            get { return (Transform)PhysBoneType.GetField("rootTransform").GetValue(Component); }
+            get
+            {
+                // if physbone root transform field is null, it implies it is controlling the current transform
+                var rootTransform = (Transform)PhysBoneType.GetField("rootTransform").GetValue(Component);
+                // somehow this cannot be simplified using double question-mark, will cause unit test errors
+                return rootTransform != null ? rootTransform : Component.transform;
+            }
             set { PhysBoneType.GetField("rootTransform").SetValue(Component, value); }
         }
 
