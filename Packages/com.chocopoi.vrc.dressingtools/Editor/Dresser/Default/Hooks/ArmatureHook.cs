@@ -255,7 +255,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 report.LogError(DTDefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel, "No bones in wearable armature first level.");
             }
 
-            if (avatarArmature.childCount == 0 || avatarArmature.childCount == 0)
+            if (avatarArmature.childCount == 0 || wearableArmature.childCount == 0)
             {
                 return false;
             }
