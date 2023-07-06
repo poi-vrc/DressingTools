@@ -15,7 +15,7 @@ namespace Chocopoi.DressingTools.UI
         private IDressingSubView dressingSubView;
         private ISettingsSubView settingsSubView;
 
-        protected int selectedTab;
+        private int selectedTab;
 
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void ShowWindow()
@@ -28,9 +28,14 @@ namespace Chocopoi.DressingTools.UI
         public DTMainEditorWindow()
         {
             mainPresenter = new MainPresenter(this);
-            cabinetSubView = new CabinetSubView(this);
-            dressingSubView = new DressingSubView(this);
-            settingsSubView = new SettingsSubView(this);
+            cabinetSubView = new CabinetSubView(this, mainPresenter);
+            dressingSubView = new DressingSubView(this, mainPresenter);
+            settingsSubView = new SettingsSubView(this, mainPresenter);
+        }
+
+        public void SwitchTab(int tab)
+        {
+            selectedTab = tab;
         }
 
         public void OnGUI()

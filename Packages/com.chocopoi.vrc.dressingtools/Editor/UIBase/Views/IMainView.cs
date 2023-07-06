@@ -3,5 +3,6 @@
     internal interface IMainView
     {
         void OnGUI();
+        void SwitchTab(int tab);
     }
 }

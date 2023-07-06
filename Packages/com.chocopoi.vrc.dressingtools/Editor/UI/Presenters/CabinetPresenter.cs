@@ -44,7 +44,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinetGameObject = new GameObject("Cabinet_" + avatar.name);
             cabinetGameObject.transform.SetParent(container.transform);
 
-            return cabinetGameObject.AddComponent<DTCabinet>();
+            var newCabinet = cabinetGameObject.AddComponent<DTCabinet>();
+
+            // TODO: read default config, scan for armature names?
+            newCabinet.avatarGameObject = avatar;
+            newCabinet.avatarArmatureName = "Armature";
+
+            return newCabinet;
         }
 
         // TODO: Implement cabinet migration from v1

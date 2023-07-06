@@ -2,6 +2,6 @@
 {
     internal interface IMainPresenter
     {
-        void SwitchTab(int tab);
+        void StartDressingWizard();
     }
 }

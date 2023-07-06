@@ -10,7 +10,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public string avatarArmatureName;
 
-        public DTCabinetWearable[] wearables;
+        public List<DTCabinetWearable> wearables = new List<DTCabinetWearable>();
 
         // Start is called before the first frame update
         void Start()

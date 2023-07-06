@@ -5,14 +5,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class MainPresenter : IMainPresenter
     {
+        private IMainView mainView;
+
         public MainPresenter(IMainView mainView)
         {
-
+            this.mainView = mainView;
         }
 
-        public void SwitchTab(int tab)
+        public void StartDressingWizard()
         {
-            throw new System.NotImplementedException();
+            // TODO: reset dressing tab?
+            mainView.SwitchTab(1);
         }
     }
 }
