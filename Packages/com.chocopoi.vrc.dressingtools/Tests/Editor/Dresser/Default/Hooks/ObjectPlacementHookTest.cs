@@ -27,19 +27,11 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             return hook.Evaluate(report, settings, boneMappings);
         }
 
-        private GameObject CreateRootWithArmatureAndHipsBone(string name)
-        {
-            var root = CreateGameObject(name);
-            var armature = CreateGameObject("Armature", root.transform);
-            CreateGameObject("Hips", armature.transform);
-            return root;
-        }
-
         [Test]
         public void AvatarInWearable_ReturnsCorrectErrorCode()
         {
-            var avatarRoot = CreateRootWithArmatureAndHipsBone("Avatar");
-            var wearableRoot = CreateRootWithArmatureAndHipsBone("Wearable");
+            CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
+            CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
 
             avatarRoot.transform.parent = wearableRoot.transform;
 
@@ -51,8 +43,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         [Test]
         public void WearableInAvatar_ReturnsCorrectErrorCode()
         {
-            var avatarRoot = CreateRootWithArmatureAndHipsBone("Avatar");
-            var wearableRoot = CreateRootWithArmatureAndHipsBone("Wearable");
+            CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
+            CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
 
             wearableRoot.transform.parent = avatarRoot.transform;
 

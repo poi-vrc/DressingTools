@@ -220,7 +220,6 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 else
                 {
                     report.LogError(DTDefaultDresser.MessageCode.NoArmatureInAvatar, "No armature in avatar.");
-                    return false;
                 }
             }
 
@@ -236,8 +235,12 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 else
                 {
                     report.LogError(DTDefaultDresser.MessageCode.NoArmatureInWearable, "No armature in wearable.");
-                    return false;
                 }
+            }
+
+            if (!avatarArmature || !wearableArmature)
+            {
+                return false;
             }
 
             // Checking precautions
@@ -245,12 +248,15 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             if (avatarArmature.childCount == 0)
             {
                 report.LogError(DTDefaultDresser.MessageCode.NoBonesInAvatarArmatureFirstLevel, "No bones in avatar armature first level.");
-                return false;
             }
 
             if (wearableArmature.childCount == 0)
             {
                 report.LogError(DTDefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel, "No bones in wearable armature first level.");
+            }
+
+            if (avatarArmature.childCount == 0 || avatarArmature.childCount == 0)
+            {
                 return false;
             }
 

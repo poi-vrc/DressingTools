@@ -120,13 +120,6 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             Assert.True(report.HasLogCode(DTDefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel));
         }
 
-        private void CreateRootWithArmatureAndHipsBone(string name, out GameObject root, out GameObject armature, out GameObject hips)
-        {
-            root = CreateGameObject(name);
-            armature = CreateGameObject("Armature", root.transform);
-            hips = CreateGameObject("Hips", armature.transform);
-        }
-
         [Test]
         public void OnlyOneEnabledBoneInAvatarArmature_ReturnsCorrectLogCodes()
         {

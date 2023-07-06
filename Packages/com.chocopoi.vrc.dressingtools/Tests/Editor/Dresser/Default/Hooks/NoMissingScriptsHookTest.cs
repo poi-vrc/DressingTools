@@ -31,10 +31,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void AvatarMissingScripts_ReturnsCorrectErrorCode()
         {
             var avatarRoot = InstantiateEditorTestPrefab("MissingScriptsObject.prefab");
-
-            var wearableRoot = CreateGameObject("Wearable");
-            var wearableArmature = CreateGameObject("Armature", wearableRoot.transform);
-            CreateGameObject("Hips", wearableArmature.transform);
+            
+            CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
 
             var result = EvaluateHook(avatarRoot, wearableRoot, out var report);
             Assert.False(result, "Hook should return false");
@@ -46,9 +44,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         {
             var wearableRoot = InstantiateEditorTestPrefab("MissingScriptsObject.prefab");
 
-            var avatarRoot = CreateGameObject("Avatar");
-            var avatarArmature = CreateGameObject("Armature", avatarRoot.transform);
-            CreateGameObject("Hips", avatarArmature.transform);
+            CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
 
             var result = EvaluateHook(avatarRoot, wearableRoot, out var report);
             Assert.False(result, "Hook should return false");

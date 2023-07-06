@@ -40,7 +40,7 @@ namespace Chocopoi.DressingTools.Dresser
             public const int AvatarInsideWearable = 0x2009;
         }
 
-        public static IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
+        private static IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
             new NoMissingScriptsHook(),
             new ObjectPlacementHook(),
             new ArmatureHook(),
@@ -73,20 +73,16 @@ namespace Chocopoi.DressingTools.Dresser
                 if (!hook.Evaluate(report, settings, boneMappings))
                 {
                     // hook error and do not continue
-                    report.LogError(MessageCode.GenericError, string.Format("Dresser execution aborted as hook \"%s\" reported an error status.", hook.GetType().Name));
+                    report.LogError(MessageCode.GenericError, string.Format("Dresser execution aborted as hook \"{0}\" reported an error status.", hook.GetType().Name));
                     report.Result = DTReportResult.Incompatible;
                     return null;
                 }
             }
 
-            // check the log result to see if any errors and warnings
+            // check the log result to see if any warnings and infos
             var dict = report.GetLogEntriesAsDictionary();
 
-            if (dict.ContainsKey(DTReportLogType.Error))
-            {
-                report.Result = DTReportResult.Incompatible;
-            }
-            else if (dict.ContainsKey(DTReportLogType.Warning))
+            if (dict.ContainsKey(DTReportLogType.Warning))
             {
                 report.Result = DTReportResult.Compatible;
             }

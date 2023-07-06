@@ -22,6 +22,13 @@ namespace Chocopoi.DressingTools.Tests
             return obj;
         }
 
+        protected void CreateRootWithArmatureAndHipsBone(string name, out GameObject root, out GameObject armature, out GameObject hips)
+        {
+            root = CreateGameObject(name);
+            armature = CreateGameObject("Armature", root.transform);
+            hips = CreateGameObject("Hips", armature.transform);
+        }
+
         protected GameObject CreateGameObject(string name = null, Transform parent = null)
         {
             // create an object and bound it to the parent (if any)
