@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void AvatarMissingScripts_ReturnsCorrectErrorCode()
         {
             var avatarRoot = InstantiateEditorTestPrefab("MissingScriptsObject.prefab");
-            
+
             CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
 
             var result = EvaluateHook(avatarRoot, wearableRoot, out var report);
