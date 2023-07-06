@@ -79,6 +79,16 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
+        private void InitializeDTBoneMappingEditorSettings()
+        {
+            boneMappingEditorSettings = new DTBoneMappingEditorSettings()
+            {
+                dresserSettings = dresserSettings,
+                boneMappings = dresserBoneMappings,
+                wearableBoneMappingMode = DTWearableBoneMappingMode.Auto
+            };
+        }
+
         public void OnGUI()
         {
             // TODO: beautify UI
@@ -148,6 +158,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 if (GUILayout.Button("Generate Bone Mappings"))
                 {
                     dresserBoneMappings = dresser.Execute(dresserSettings, out dresserReport);
+                    InitializeDTBoneMappingEditorSettings();
                 }
 
                 if (dresserReport != null)
@@ -192,11 +203,10 @@ namespace Chocopoi.DressingTools.UI.Views
                     if (GUILayout.Button("View and Edit Bone Mappings"))
                     {
                         var boneMappingEditorWindow = (DTBoneMappingEditorWindow)EditorWindow.GetWindow(typeof(DTBoneMappingEditorWindow));
-                        boneMappingEditorSettings = new DTBoneMappingEditorSettings()
+                        if (boneMappingEditorSettings == null)
                         {
-                            dresserSettings = dresserSettings,
-                            boneMappings = dresserBoneMappings
-                        };
+                            InitializeDTBoneMappingEditorSettings();
+                        }
                         boneMappingEditorWindow.SetSettings(boneMappingEditorSettings);
                         boneMappingEditorWindow.titleContent = new GUIContent("Bone Mapping Editor");
                         boneMappingEditorWindow.Show();
