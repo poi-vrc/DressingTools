@@ -12,6 +12,14 @@ namespace Chocopoi.DressingTools.Cabinet
     }
 
     [Serializable]
+    public enum DTWearableBoneMappingMode
+    {
+        Auto = 0,
+        Override = 1,
+        Manual = 2
+    }
+
+    [Serializable]
     public class DTWearableConfig
     {
         public const int CurrentConfigVersion = 1;
@@ -26,6 +34,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
         // Armature-based
         public string wearableArmatureName;
+        public DTWearableBoneMappingMode boneMappingMode;
         public DTBoneMapping[] boneMapping;
         public DTObjectMapping[] objectMapping;
 
