@@ -49,7 +49,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
         }
 
-        private DTBoneMapping[] EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out DTReport report)
+        private List<DTBoneMapping> EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out DTReport report)
         {
             var dresser = new DTDefaultDresser();
             var settings = new DTDefaultDresserSettings()

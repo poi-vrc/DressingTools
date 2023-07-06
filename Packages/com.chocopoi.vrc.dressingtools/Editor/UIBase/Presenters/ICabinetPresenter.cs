@@ -6,8 +6,5 @@ namespace Chocopoi.DressingTools.UIBase.Presenters
 {
     internal interface ICabinetPresenter
     {
-        DTCabinet[] GetCabinets();
-
-        DTCabinet GetAvatarCabinet(GameObject avatar);
     }
 }

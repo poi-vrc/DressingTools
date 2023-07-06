@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Dresser
             new ArmatureHook(),
         };
 
-        public DTBoneMapping[] Execute(DTDresserSettings settings, out DTReport report)
+        public List<DTBoneMapping> Execute(DTDresserSettings settings, out DTReport report)
         {
             report = new DTReport();
 
@@ -91,8 +91,8 @@ namespace Chocopoi.DressingTools.Dresser
                 report.Result = DTReportResult.Ok;
             }
 
-            // return the mappings in an array
-            return boneMappings.ToArray();
+            // return the mappings
+            return boneMappings;
         }
     }
 }

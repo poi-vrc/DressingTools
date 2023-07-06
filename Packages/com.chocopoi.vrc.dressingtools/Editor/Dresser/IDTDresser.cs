@@ -1,10 +1,11 @@
-﻿using Chocopoi.DressingTools.Cabinet;
+﻿using System.Collections.Generic;
+using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
 
 namespace Chocopoi.DressingTools.Dresser
 {
     public interface IDTDresser
     {
-        DTBoneMapping[] Execute(DTDresserSettings settings, out DTReport report);
+        List<DTBoneMapping> Execute(DTDresserSettings settings, out DTReport report);
     }
 }

@@ -1,18 +1,15 @@
 ﻿using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
-    internal class CabinetPresenter : ICabinetPresenter
+    internal class DressingPresenter : IDressingPresenter
     {
-        public CabinetPresenter(ICabinetSubView cabinetSubView)
+        public DressingPresenter(IDressingSubView dressingSubView)
         {
 
         }
-
-        // TODO: Implement cabinet migration from v1
     }
 }
