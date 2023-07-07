@@ -144,8 +144,7 @@ namespace Chocopoi.DressingTools.UI
                     {
                         // TODO: implement editing
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.Popup((int)boneMapping.mappingType, new string[] { "Do Nothing Usually", "Move to Avatar Bone Usually", "ParentConstraint to Avatar Bone Usually" });
-                        EditorGUILayout.Popup((int)boneMapping.dynamicsBindingType, new string[] { "Do Nothing on Dynamics", "ParentConstraint on Dynamics", "IgnoreTransform on Dynamics", "Copy Avatar Data on Dynamics" });
+                        EditorGUILayout.Popup((int)boneMapping.mappingType, new string[] { "Do Nothing", "Move to Avatar Bone", "ParentConstraint to Avatar Bone", "IgnoreTransform on Dynamics", "Copy Avatar Data on Dynamics" });
                         EditorGUILayout.ObjectField(settings.dresserSettings.targetWearable.transform.Find(boneMapping.wearableBonePath)?.gameObject, typeof(GameObject), true);
                         GUILayout.Button("x", GUILayout.ExpandWidth(false));
                         EditorGUILayout.EndHorizontal();
@@ -156,7 +155,6 @@ namespace Chocopoi.DressingTools.UI
                     // empty mapping placeholder
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.Popup(0, new string[] { "---" });
                     EditorGUILayout.Popup(0, new string[] { "---" });
                     EditorGUILayout.ObjectField(null, typeof(GameObject), true);
                     GUILayout.Button("x", GUILayout.ExpandWidth(false));

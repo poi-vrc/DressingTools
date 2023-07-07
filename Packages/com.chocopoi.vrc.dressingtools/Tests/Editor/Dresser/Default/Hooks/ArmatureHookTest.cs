@@ -191,51 +191,51 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         // expected bone mappings
         private static readonly DTBoneMapping[] ExpectedRemoveDynamicsAndUseParentConstraintsBoneMapping =
         {
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
         private static readonly DTBoneMapping[] ExpectedKeepDynamicsAndUseParentConstraintIfNecessaryBoneMapping =
         {
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
         private static readonly DTBoneMapping[] ExpectedIgnoreTransformBoneMapping =
         {
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
         private static readonly DTBoneMapping[] ExpectedCopyDynamicsBoneMapping =
         {
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
         };
 
         private static readonly DTBoneMapping[] ExpectedIgnoreAllBoneMapping =
         {
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, dynamicsBindingType = DTDynamicsBindingType.DoNothing, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new DTBoneMapping() { mappingType = DTBoneMappingType.DoNothing, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
         };
         #endregion Expected Bone Mappings (Identical for either PhysBone or DynamicBones)
 

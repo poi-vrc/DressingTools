@@ -212,7 +212,7 @@ namespace Chocopoi.DressingTools.UI.Views
                             InitializeDTBoneMappingEditorSettings();
                         }
                         boneMappingEditorWindow.SetSettings(boneMappingEditorSettings);
-                        boneMappingEditorWindow.titleContent = new GUIContent("Bone Mapping Editor");
+                        boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
                         boneMappingEditorWindow.Show();
                     }
                 }

@@ -8,16 +8,9 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         DoNothing = 0,
         MoveToBone = 1,
-        ParentConstraint = 2
-    }
-
-    [Serializable]
-    public enum DTDynamicsBindingType
-    {
-        DoNothing = 0,
-        ParentConstraint = 1,
-        IgnoreTransform = 2,
-        CopyDynamics = 3
+        ParentConstraint = 2,
+        IgnoreTransform = 3,
+        CopyDynamics = 4
     }
 
     [Serializable]
@@ -31,18 +24,17 @@ namespace Chocopoi.DressingTools.Cabinet
     public class DTBoneMapping
     {
         public DTBoneMappingType mappingType;
-        public DTDynamicsBindingType dynamicsBindingType;
         public string avatarBonePath;
         public string wearableBonePath;
 
         public bool Equals(DTBoneMapping x)
         {
-            return mappingType == x.mappingType && dynamicsBindingType == x.dynamicsBindingType && avatarBonePath == x.avatarBonePath && wearableBonePath == x.wearableBonePath;
+            return mappingType == x.mappingType && avatarBonePath == x.avatarBonePath && wearableBonePath == x.wearableBonePath;
         }
 
         public override string ToString()
         {
-            return string.Format("{0}, {1}: {2} -> {3}", mappingType, dynamicsBindingType, wearableBonePath, avatarBonePath);
+            return string.Format("{0}: {1} -> {2}", mappingType, wearableBonePath, avatarBonePath);
         }
     }
 }

@@ -9,14 +9,13 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 {
     public class ArmatureHook : IDefaultDresserHook
     {
-        private static void AddRecursiveDynamicsBindings(Transform targetAvatarRoot, Transform targetWearableRoot, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot, List<DTBoneMapping> boneMappings, DTDynamicsBindingType dynamicsBindingType)
+        private static void AddRecursiveDynamicsBindings(Transform targetAvatarRoot, Transform targetWearableRoot, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot, List<DTBoneMapping> boneMappings, DTBoneMappingType bindingType)
         {
             // add bone mapping
 
             boneMappings.Add(new DTBoneMapping()
             {
-                mappingType = DTBoneMappingType.DoNothing,
-                dynamicsBindingType = dynamicsBindingType,
+                mappingType = bindingType,
                 avatarBonePath = AnimationUtils.GetRelativePath(avatarDynamicsRoot, targetAvatarRoot),
                 wearableBonePath = AnimationUtils.GetRelativePath(wearableDynamicsRoot, targetWearableRoot)
             });
@@ -35,7 +34,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 var avatarTrans = avatarDynamicsRoot.Find(child.name);
                 if (avatarTrans != null)
                 {
-                    AddRecursiveDynamicsBindings(targetAvatarRoot, targetWearableRoot, avatarTrans, child, boneMappings, dynamicsBindingType);
+                    AddRecursiveDynamicsBindings(targetAvatarRoot, targetWearableRoot, avatarTrans, child, boneMappings, bindingType);
                 }
             }
         }
@@ -82,25 +81,24 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     {
                         if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint) //remove and use parent constraints
                         {
-                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTDynamicsBindingType.ParentConstraint);
+                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTBoneMappingType.ParentConstraint);
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary) //keep dynbone and use parentconstraint if necessary
                         {
                             if (wearableDynamics == null)
                             {
-                                AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTDynamicsBindingType.ParentConstraint);
+                                AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTBoneMappingType.ParentConstraint);
                             }
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.IgnoreTransform) //use legacy child gameobject
                         {
-                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTDynamicsBindingType.IgnoreTransform);
+                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTBoneMappingType.IgnoreTransform);
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.CopyDynamics) //copy dyn bone to clothes bone
                         {
                             boneMappings.Add(new DTBoneMapping()
                             {
-                                mappingType = DTBoneMappingType.DoNothing,
-                                dynamicsBindingType = DTDynamicsBindingType.CopyDynamics,
+                                mappingType = DTBoneMappingType.CopyDynamics,
                                 avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                                 wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
@@ -111,7 +109,6 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                             boneMappings.Add(new DTBoneMapping()
                             {
                                 mappingType = DTBoneMappingType.DoNothing,
-                                dynamicsBindingType = DTDynamicsBindingType.DoNothing,
                                 avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                                 wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
@@ -123,7 +120,6 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                         boneMappings.Add(new DTBoneMapping()
                         {
                             mappingType = DTBoneMappingType.MoveToBone,
-                            dynamicsBindingType = DTDynamicsBindingType.DoNothing,
                             avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                             wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                         });
