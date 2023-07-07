@@ -40,10 +40,11 @@ namespace Chocopoi.DressingTools.Dresser
             public const int AvatarInsideWearable = 0x2009;
         }
 
-        private static IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
+        private static readonly IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
             new NoMissingScriptsHook(),
             new ObjectPlacementHook(),
             new ArmatureHook(),
+            new RootObjectsHook()
         };
 
         public DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)

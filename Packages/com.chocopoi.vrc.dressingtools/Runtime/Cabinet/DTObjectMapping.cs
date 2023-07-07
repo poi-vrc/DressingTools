@@ -13,5 +13,10 @@ namespace Chocopoi.DressingTools.Cabinet
         {
             return avatarObjectPath == x.avatarObjectPath && wearableObjectPath == x.wearableObjectPath;
         }
+
+        public override string ToString()
+        {
+            return string.Format("\"{0}\" -> \"{1}\"", wearableObjectPath, avatarObjectPath);
+        }
     }
 }

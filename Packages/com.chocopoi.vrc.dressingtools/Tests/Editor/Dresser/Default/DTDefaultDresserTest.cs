@@ -86,6 +86,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
 
             var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings, out var objectMappings);
             Assert.NotNull(boneMappings);
+            Assert.NotNull(objectMappings);
             Assert.AreEqual(report.Result, DTReportResult.Compatible);
         }
 
@@ -97,6 +98,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
 
             var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings, out var objectMappings);
             Assert.NotNull(boneMappings);
+            Assert.NotNull(objectMappings);
             Assert.AreEqual(report.Result, DTReportResult.Ok);
         }
     }
