@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private List<DTObjectMapping> dresserObjectMappings;
 
-        private DTBoneMappingEditorSettings boneMappingEditorSettings = null;
+        private DTMappingEditorSettings boneMappingEditorSettings = null;
 
         public DressingSubView(IMainView mainView, IMainPresenter mainPresenter)
         {
@@ -83,11 +83,13 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void InitializeDTBoneMappingEditorSettings()
         {
-            boneMappingEditorSettings = new DTBoneMappingEditorSettings()
+            boneMappingEditorSettings = new DTMappingEditorSettings()
             {
                 dresserSettings = dresserSettings,
                 boneMappings = dresserBoneMappings,
-                wearableBoneMappingMode = DTWearableBoneMappingMode.Auto
+                objectMappings = dresserObjectMappings,
+                boneMappingMode = DTWearableMappingMode.Auto,
+                objectMappingMode = DTWearableMappingMode.Auto
             };
         }
 
@@ -204,7 +206,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     if (GUILayout.Button("View and Edit Bone Mappings"))
                     {
-                        var boneMappingEditorWindow = (DTBoneMappingEditorWindow)EditorWindow.GetWindow(typeof(DTBoneMappingEditorWindow));
+                        var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
                         if (boneMappingEditorSettings == null)
                         {
                             InitializeDTBoneMappingEditorSettings();

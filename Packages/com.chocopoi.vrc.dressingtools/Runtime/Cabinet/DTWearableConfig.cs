@@ -12,7 +12,7 @@ namespace Chocopoi.DressingTools.Cabinet
     }
 
     [Serializable]
-    public enum DTWearableBoneMappingMode
+    public enum DTWearableMappingMode
     {
         Auto = 0,
         Override = 1,
@@ -34,8 +34,9 @@ namespace Chocopoi.DressingTools.Cabinet
 
         // Armature-based
         public string wearableArmatureName;
-        public DTWearableBoneMappingMode boneMappingMode;
+        public DTWearableMappingMode boneMappingMode;
         public DTBoneMapping[] boneMapping;
+        public DTWearableMappingMode objectMappingMode;
         public DTObjectMapping[] objectMapping;
 
         // Animation generation
