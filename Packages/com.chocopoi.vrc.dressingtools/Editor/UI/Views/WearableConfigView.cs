@@ -45,6 +45,10 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private DTMappingEditorContainer boneMappingEditorContainer = null;
 
+        private bool foldoutMetaInfo = false;
+
+        private bool foldoutMapping = true;
+
         public WearableConfigView(WearableConfigViewContainer container)
         {
             wearableConfigPresenter = new WearableConfigPresenter(this);
@@ -81,10 +85,9 @@ namespace Chocopoi.DressingTools.UI.Views
             };
         }
 
-        private bool foldoutMetaInfo = false;
-
         private void DrawMetaInfoGUI()
         {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutMetaInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMetaInfo, "Meta Information");
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutMetaInfo)
@@ -94,6 +97,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 GUILayout.Label("Description");
                 EditorGUILayout.TextArea("");
             }
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawTypeGenericGUI()
@@ -168,8 +172,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 EditorGUILayout.HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
             }
         }
-
-        private bool foldoutMapping = true;
 
         private void DrawTypeArmatureMappingFoldout()
         {
@@ -281,6 +283,8 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 DrawTypeArmatureGUI();
             }
+
+            DrawMetaInfoGUI();
         }
     }
 }
