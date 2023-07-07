@@ -6,6 +6,6 @@ namespace Chocopoi.DressingTools.Dresser
 {
     public interface IDTDresser
     {
-        List<DTBoneMapping> Execute(DTDresserSettings settings, out DTReport report);
+        DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings);
     }
 }

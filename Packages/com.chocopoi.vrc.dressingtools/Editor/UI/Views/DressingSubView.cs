@@ -36,6 +36,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private List<DTBoneMapping> dresserBoneMappings;
 
+        private List<DTObjectMapping> dresserObjectMappings;
+
         private DTBoneMappingEditorSettings boneMappingEditorSettings = null;
 
         public DressingSubView(IMainView mainView, IMainPresenter mainPresenter)
@@ -157,7 +159,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 // generate bone mappings
                 if (GUILayout.Button("Generate Bone Mappings"))
                 {
-                    dresserBoneMappings = dresser.Execute(dresserSettings, out dresserReport);
+                    dresserReport = dresser.Execute(dresserSettings, out dresserBoneMappings, out dresserObjectMappings);
                     InitializeDTBoneMappingEditorSettings();
                 }
 

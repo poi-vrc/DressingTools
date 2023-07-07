@@ -203,7 +203,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
         }
 
-        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings)
+        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings, List<DTObjectMapping> objectMappings)
         {
             var avatarArmature = settings.targetAvatar.transform.Find(settings.avatarArmatureName);
             var wearableArmature = settings.targetWearable.transform.Find(settings.wearableArmatureName);

@@ -46,15 +46,17 @@ namespace Chocopoi.DressingTools.Dresser
             new ArmatureHook(),
         };
 
-        public List<DTBoneMapping> Execute(DTDresserSettings settings, out DTReport report)
+        public DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
         {
-            report = new DTReport();
+            var report = new DTReport();
+            boneMappings = null;
+            objectMappings = null;
 
             if (!(settings is DTDefaultDresserSettings))
             {
                 report.LogError(MessageCode.GenericError, "Settings is not an instance of DTDefaultDresserSettings");
                 report.Result = DTReportResult.InvalidSettings;
-                return null;
+                return report;
             }
 
             // Reject null target avatar/wearable settings
@@ -62,20 +64,23 @@ namespace Chocopoi.DressingTools.Dresser
             {
                 report.LogError(MessageCode.NullAvatarOrWearable, "Target avatar or wearable is null.");
                 report.Result = DTReportResult.InvalidSettings;
-                return null;
+                return report;
             }
 
-            var boneMappings = new List<DTBoneMapping>();
+            boneMappings = new List<DTBoneMapping>();
+            objectMappings = new List<DTObjectMapping>();
 
             // evaluate each hooks to generate the bone mappings
             foreach (var hook in hooks)
             {
-                if (!hook.Evaluate(report, settings, boneMappings))
+                if (!hook.Evaluate(report, settings, boneMappings, objectMappings))
                 {
                     // hook error and do not continue
                     report.LogError(MessageCode.GenericError, string.Format("Dresser execution aborted as hook \"{0}\" reported an error status.", hook.GetType().Name));
                     report.Result = DTReportResult.Incompatible;
-                    return null;
+                    boneMappings = null;
+                    objectMappings = null;
+                    return report;
                 }
             }
 
@@ -91,8 +96,8 @@ namespace Chocopoi.DressingTools.Dresser
                 report.Result = DTReportResult.Ok;
             }
 
-            // return the mappings
-            return boneMappings;
+            // return the report
+            return report;
         }
     }
 }

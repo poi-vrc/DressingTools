@@ -27,7 +27,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return result;
         }
 
-        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings)
+        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings, List<DTObjectMapping> objectMappings)
         {
             // search is wearable inside the avatar
             if (SearchTarget(settings.targetAvatar.transform, settings.targetWearable.transform))
