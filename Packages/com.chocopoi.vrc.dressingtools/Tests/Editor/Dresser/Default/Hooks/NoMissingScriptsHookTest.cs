@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         [Test]
         public void AvatarMissingScripts_ReturnsCorrectErrorCode()
         {
-            var avatarRoot = InstantiateEditorTestPrefab("MissingScriptsObject.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_MissingScriptsObject.prefab");
 
             CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
 
@@ -43,7 +43,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         [Test]
         public void WearableMissingScripts_ReturnsCorrectErrorCode()
         {
-            var wearableRoot = InstantiateEditorTestPrefab("MissingScriptsObject.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_MissingScriptsObject.prefab");
 
             CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
 

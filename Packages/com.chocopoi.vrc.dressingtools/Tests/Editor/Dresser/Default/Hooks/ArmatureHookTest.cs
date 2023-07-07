@@ -271,8 +271,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // DynamicBone has to be imported to run this test
             Assert.NotNull(DTUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
-            var avatarRoot = InstantiateEditorTestPrefab("DynamicBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("DynamicBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
 
             AvatarDynamics_RemoveDynamicsAndUseParentConstraints_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -284,8 +284,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // VRCSDK3 has to be imported to run this test
             Assert.Fail("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
 #endif
-            var avatarRoot = InstantiateEditorTestPrefab("PhysBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("PhysBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearable.prefab");
 
             AvatarDynamics_RemoveDynamicsAndUseParentConstraints_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -321,8 +321,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // DynamicBone has to be imported to run this test
             Assert.NotNull(DTUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
-            var avatarRoot = InstantiateEditorTestPrefab("DynamicBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("DynamicBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
 
             AvatarDynamics_KeepDynamicsAndUseParentConstraintIfNecessary_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -334,8 +334,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // VRCSDK3 has to be imported to run this test
             Assert.Fail("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
 #endif
-            var avatarRoot = InstantiateEditorTestPrefab("PhysBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("PhysBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearable.prefab");
 
             AvatarDynamics_KeepDynamicsAndUseParentConstraintIfNecessary_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -371,8 +371,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // DynamicBone has to be imported to run this test
             Assert.NotNull(DTUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
-            var avatarRoot = InstantiateEditorTestPrefab("DynamicBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("DynamicBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
 
             AvatarDynamics_IgnoreTransform_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -384,8 +384,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // VRCSDK3 has to be imported to run this test
             Assert.Fail("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
 #endif
-            var avatarRoot = InstantiateEditorTestPrefab("PhysBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("PhysBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearable.prefab");
 
             AvatarDynamics_IgnoreTransform_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -421,8 +421,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // DynamicBone has to be imported to run this test
             Assert.NotNull(DTUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
-            var avatarRoot = InstantiateEditorTestPrefab("DynamicBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("DynamicBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
 
             AvatarDynamics_CopyDynamics_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -434,8 +434,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // VRCSDK3 has to be imported to run this test
             Assert.Fail("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
 #endif
-            var avatarRoot = InstantiateEditorTestPrefab("PhysBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("PhysBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearable.prefab");
 
             AvatarDynamics_CopyDynamics_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -471,8 +471,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // DynamicBone has to be imported to run this test
             Assert.NotNull(DTUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
-            var avatarRoot = InstantiateEditorTestPrefab("DynamicBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("DynamicBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
 
             AvatarDynamics_IgnoreAll_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
@@ -484,8 +484,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             // VRCSDK3 has to be imported to run this test
             Assert.Fail("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
 #endif
-            var avatarRoot = InstantiateEditorTestPrefab("PhysBoneAvatar.prefab");
-            var wearableRoot = InstantiateEditorTestPrefab("PhysBoneWearable.prefab");
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearable.prefab");
 
             AvatarDynamics_IgnoreAll_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
