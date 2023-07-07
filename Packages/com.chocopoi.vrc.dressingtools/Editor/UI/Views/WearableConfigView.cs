@@ -81,17 +81,103 @@ namespace Chocopoi.DressingTools.UI.Views
             };
         }
 
-        public void OnGUI()
-        {
-            selectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
+        private bool foldoutMetaInfo = false;
 
-            if (selectedWearableType == 0) // Generic
+        private void DrawMetaInfoGUI()
+        {
+            foldoutMetaInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMetaInfo, "Meta Information");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutMetaInfo)
             {
-                // TODO: object mapping
+                EditorGUILayout.TextField("Name", "");
+                EditorGUILayout.TextField("Author", "");
+                GUILayout.Label("Description");
+                EditorGUILayout.TextArea("");
             }
-            else if (selectedWearableType == 1) // Armature-based
+        }
+
+        private void DrawTypeGenericGUI()
+        {
+            // TODO: object mapping
+        }
+
+        private bool foldoutDresserReportLogEntries = false;
+
+        private void DrawDresserReportGUI()
+        {
+            if (dresserReport != null)
             {
-                // list all available dressers
+                //Result
+
+                switch (dresserReport.Result)
+                {
+                    case DTReportResult.InvalidSettings:
+                        EditorGUILayout.HelpBox(t._("helpbox_error_check_result_invalid_settings"), MessageType.Error);
+                        break;
+                    case DTReportResult.Incompatible:
+                        EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
+                        break;
+                    case DTReportResult.Ok:
+                        EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
+                        break;
+                    case DTReportResult.Compatible:
+                        EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
+                        break;
+                }
+
+                EditorGUILayout.Separator();
+
+                var logEntries = dresserReport.GetLogEntriesAsDictionary();
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("Errors: " + (logEntries.ContainsKey(DTReportLogType.Error) ? logEntries[DTReportLogType.Error].Count : 0));
+                GUILayout.Label("Warnings: " + (logEntries.ContainsKey(DTReportLogType.Warning) ? logEntries[DTReportLogType.Warning].Count : 0));
+                GUILayout.Label("Infos: " + (logEntries.ContainsKey(DTReportLogType.Info) ? logEntries[DTReportLogType.Info].Count : 0));
+                EditorGUILayout.EndHorizontal();
+
+                foldoutDresserReportLogEntries = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutDresserReportLogEntries, "Logs");
+                EditorGUILayout.EndFoldoutHeaderGroup();
+                if (foldoutDresserReportLogEntries)
+                {
+                    if (logEntries.ContainsKey(DTReportLogType.Error))
+                    {
+                        foreach (var logEntry in logEntries[DTReportLogType.Error])
+                        {
+                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Error);
+                        }
+                    }
+
+                    if (logEntries.ContainsKey(DTReportLogType.Warning))
+                    {
+                        foreach (var logEntry in logEntries[DTReportLogType.Warning])
+                        {
+                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Warning);
+                        }
+                    }
+
+                    if (logEntries.ContainsKey(DTReportLogType.Info))
+                    {
+                        foreach (var logEntry in logEntries[DTReportLogType.Info])
+                        {
+                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Info);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
+            }
+        }
+
+        private bool foldoutMapping = true;
+
+        private void DrawTypeArmatureMappingFoldout()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutMapping = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMapping, "Armature/Root Objects Mapping");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutMapping)
+            {// list all available dressers
                 string[] dresserKeys = new string[dressers.Keys.Count];
                 dressers.Keys.CopyTo(dresserKeys, 0);
                 selectedDresserIndex = EditorGUILayout.Popup("Dressers", selectedDresserIndex, dresserKeys);
@@ -119,89 +205,81 @@ namespace Chocopoi.DressingTools.UI.Views
                     defaultDresserSettings.wearableArmatureName = EditorGUILayout.TextField("Wearable Armature Name", dresserSettings.wearableArmatureName);
 
                     // Dynamics Option
-                    var radioStyle = new GUIStyle(EditorStyles.radioButton)
-                    {
-                        wordWrap = true
-                    };
-
-                    int dynamicsOption = (int)defaultDresserSettings.dynamicsOption;
-                    dynamicsOption = GUILayout.SelectionGrid(dynamicsOption, new string[] {
-                        " " + t._("radio_db_remove_and_parent_const"),
-                        " " + t._("radio_db_keep_clothes_and_parent_const_if_need"),
-                        " " + t._("radio_db_create_child_and_exclude"),
-                        " " + t._("radio_db_copy_dyn_bone_to_clothes"),
-                        " " + t._("radio_db_ignore_all")
-                    }, 1, radioStyle, GUILayout.ExpandHeight(true), GUILayout.MaxHeight(200));
-                    defaultDresserSettings.dynamicsOption = ConvertIntToDynamicsOption(dynamicsOption);
+                    defaultDresserSettings.dynamicsOption = ConvertIntToDynamicsOption(EditorGUILayout.Popup("Dynamics Option", (int)defaultDresserSettings.dynamicsOption, new string[] {
+                        "Remove wearable dynamics and ParentConstraint",
+                        "Keep wearable dynamics and ParentConstraint if needed",
+                        "Remove wearable dynamics and IgnoreTransform",
+                        "Copy avatar dynamics data to wearable",
+                        "Ignore all dynamics"
+                    }));
                 }
 
+                EditorGUILayout.Separator();
+
                 // generate bone mappings
-                if (GUILayout.Button("Generate Bone Mappings"))
+                var mappingBtnStyle = new GUIStyle(GUI.skin.button)
+                {
+                    fontSize = 16
+                };
+
+                if (GUILayout.Button("Auto-generate Mappings", mappingBtnStyle, GUILayout.Height(40)))
                 {
                     dresserReport = dresser.Execute(dresserSettings, out dresserBoneMappings, out dresserObjectMappings);
                     InitializeDTBoneMappingEditorSettings();
                 }
 
-                if (dresserReport != null)
+                EditorGUILayout.BeginHorizontal();
+                EditorGUI.BeginDisabledGroup(dresserBoneMappings == null || dresserObjectMappings == null);
+                if (GUILayout.Button("View/Edit Mappings", mappingBtnStyle, GUILayout.Height(40)))
                 {
-                    var logEntries = dresserReport.GetLogEntriesAsDictionary();
-                    GUILayout.Label("Errors: " + (logEntries.ContainsKey(DTReportLogType.Error) ? logEntries[DTReportLogType.Error].Count : 0));
-                    GUILayout.Label("Warnings: " + (logEntries.ContainsKey(DTReportLogType.Warning) ? logEntries[DTReportLogType.Warning].Count : 0));
-                    GUILayout.Label("Infos: " + (logEntries.ContainsKey(DTReportLogType.Info) ? logEntries[DTReportLogType.Info].Count : 0));
-
-                    if (logEntries.ContainsKey(DTReportLogType.Error))
+                    var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
+                    if (boneMappingEditorContainer == null)
                     {
-                        foreach (var logEntry in logEntries[DTReportLogType.Error])
-                        {
-                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code, logEntry.message), MessageType.Error);
-                        }
+                        InitializeDTBoneMappingEditorSettings();
                     }
-
-                    if (logEntries.ContainsKey(DTReportLogType.Warning))
-                    {
-                        foreach (var logEntry in logEntries[DTReportLogType.Warning])
-                        {
-                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code, logEntry.message), MessageType.Warning);
-                        }
-                    }
-
-                    if (logEntries.ContainsKey(DTReportLogType.Info))
-                    {
-                        foreach (var logEntry in logEntries[DTReportLogType.Info])
-                        {
-                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code, logEntry.message), MessageType.Info);
-                        }
-                    }
-
-                    if (GUILayout.Button("View Logs"))
-                    {
-                        // TODO: Report window
-                    }
+                    boneMappingEditorWindow.SetSettings(boneMappingEditorContainer);
+                    boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
+                    boneMappingEditorWindow.Show();
                 }
+                EditorGUI.EndDisabledGroup();
 
-                if (dresserBoneMappings != null)
+                EditorGUI.BeginDisabledGroup(dresserReport == null);
+                if (GUILayout.Button("View Report", mappingBtnStyle, GUILayout.Height(40)))
                 {
-                    if (GUILayout.Button("View and Edit Bone Mappings"))
-                    {
-                        var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
-                        if (boneMappingEditorContainer == null)
-                        {
-                            InitializeDTBoneMappingEditorSettings();
-                        }
-                        boneMappingEditorWindow.SetSettings(boneMappingEditorContainer);
-                        boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
-                        boneMappingEditorWindow.Show();
-                    }
                 }
+                EditorGUI.EndDisabledGroup();
 
-                EditorGUILayout.TextField("Name", "");
-                EditorGUILayout.TextField("Author", "");
-                GUILayout.Label("Description");
-                EditorGUILayout.TextArea("");
-                EditorGUILayout.TextField("Created Time", "");
-                EditorGUILayout.TextField("Updated Time", "");
+                EditorGUI.BeginDisabledGroup(true);
+                if (GUILayout.Button("Test Now", mappingBtnStyle, GUILayout.Height(40)))
+                {
+                }
+                EditorGUI.EndDisabledGroup();
 
+                EditorGUILayout.EndHorizontal();
 
+                DTUtils.DrawHorizontalLine();
+
+                DrawDresserReportGUI();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawTypeArmatureGUI()
+        {
+            DrawTypeArmatureMappingFoldout();
+        }
+
+        public void OnGUI()
+        {
+            selectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
+
+            if (selectedWearableType == 0) // Generic
+            {
+                DrawTypeGenericGUI();
+            }
+            else if (selectedWearableType == 1) // Armature-based
+            {
+                DrawTypeArmatureGUI();
             }
         }
     }
