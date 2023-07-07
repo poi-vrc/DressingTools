@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
-    public class DTMappingEditorSettings
+    public class DTMappingEditorContainer
     {
         public DTDresserSettings dresserSettings;
         public DTWearableMappingMode boneMappingMode;
@@ -18,7 +18,7 @@ namespace Chocopoi.DressingTools.UI
 
     public class DTMappingEditorWindow : EditorWindow
     {
-        private DTMappingEditorSettings settings;
+        private DTMappingEditorContainer container;
 
         private Vector2 scrollPos;
 
@@ -31,9 +31,9 @@ namespace Chocopoi.DressingTools.UI
         {
         }
 
-        public void SetSettings(DTMappingEditorSettings settings)
+        public void SetSettings(DTMappingEditorContainer container)
         {
-            this.settings = settings;
+            this.container = container;
         }
 
         private List<DTBoneMapping> GetAvatarBoneMapping(Transform avatarRoot, Transform targetAvatarBone)
@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.UI
 
             var boneMappings = new List<DTBoneMapping>();
 
-            foreach (var boneMapping in settings.boneMappings)
+            foreach (var boneMapping in container.boneMappings)
             {
                 if (boneMapping.avatarBonePath == path)
                 {
@@ -57,7 +57,7 @@ namespace Chocopoi.DressingTools.UI
         {
             var path = AnimationUtils.GetRelativePath(targetWearableObject, wearableRoot);
 
-            foreach (var objectMapping in settings.objectMappings)
+            foreach (var objectMapping in container.objectMappings)
             {
                 if (objectMapping.wearableObjectPath == path)
                 {
@@ -74,7 +74,7 @@ namespace Chocopoi.DressingTools.UI
             {
                 var child = parent.GetChild(i);
 
-                if (child.name == settings.dresserSettings.wearableArmatureName)
+                if (child.name == container.dresserSettings.wearableArmatureName)
                 {
                     // skips rendering the Armature object
                     continue;
@@ -95,11 +95,11 @@ namespace Chocopoi.DressingTools.UI
                     // the avatar root itself
                     if (objectMapping.avatarObjectPath == "" || objectMapping.avatarObjectPath == ".")
                     {
-                        EditorGUILayout.ObjectField(settings.dresserSettings.targetAvatar, typeof(GameObject), true);
+                        EditorGUILayout.ObjectField(container.dresserSettings.targetAvatar, typeof(GameObject), true);
                     }
                     else
                     {
-                        EditorGUILayout.ObjectField(settings.dresserSettings.targetAvatar.transform.Find(objectMapping.avatarObjectPath)?.gameObject, typeof(GameObject), true);
+                        EditorGUILayout.ObjectField(container.dresserSettings.targetAvatar.transform.Find(objectMapping.avatarObjectPath)?.gameObject, typeof(GameObject), true);
                     }
                 }
                 else
@@ -145,7 +145,7 @@ namespace Chocopoi.DressingTools.UI
                         // TODO: implement editing
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.Popup((int)boneMapping.mappingType, new string[] { "Do Nothing", "Move to Avatar Bone", "ParentConstraint to Avatar Bone", "IgnoreTransform on Dynamics", "Copy Avatar Data on Dynamics" });
-                        EditorGUILayout.ObjectField(settings.dresserSettings.targetWearable.transform.Find(boneMapping.wearableBonePath)?.gameObject, typeof(GameObject), true);
+                        EditorGUILayout.ObjectField(container.dresserSettings.targetWearable.transform.Find(boneMapping.wearableBonePath)?.gameObject, typeof(GameObject), true);
                         GUILayout.Button("x", GUILayout.ExpandWidth(false));
                         EditorGUILayout.EndHorizontal();
                     }
@@ -220,15 +220,15 @@ namespace Chocopoi.DressingTools.UI
             EditorGUILayout.BeginHorizontal();
 
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Left: Avatar", settings.dresserSettings.targetAvatar, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Left: Avatar", container.dresserSettings.targetAvatar, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
-            settings.boneMappingMode = ConvertIntToWearableMappingMode(EditorGUILayout.Popup("Mode", (int)settings.boneMappingMode, new string[] { "Auto", "Override", "Manual" }));
+            container.boneMappingMode = ConvertIntToWearableMappingMode(EditorGUILayout.Popup("Mode", (int)container.boneMappingMode, new string[] { "Auto", "Override", "Manual" }));
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Right: Wearable", settings.dresserSettings.targetWearable, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Right: Wearable", container.dresserSettings.targetWearable, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
 
-            DrawMappingHeaderHelpBoxes(settings.boneMappingMode);
+            DrawMappingHeaderHelpBoxes(container.boneMappingMode);
 
             DTUtils.DrawHorizontalLine();
 
@@ -240,8 +240,8 @@ namespace Chocopoi.DressingTools.UI
             // Bone Mappings
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-            EditorGUI.BeginDisabledGroup(settings.boneMappingMode == DTWearableMappingMode.Auto);
-            DrawAvatarHierarchy(settings.dresserSettings.targetAvatar.transform, settings.dresserSettings.targetAvatar.transform);
+            EditorGUI.BeginDisabledGroup(container.boneMappingMode == DTWearableMappingMode.Auto);
+            DrawAvatarHierarchy(container.dresserSettings.targetAvatar.transform, container.dresserSettings.targetAvatar.transform);
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndScrollView();
@@ -255,15 +255,15 @@ namespace Chocopoi.DressingTools.UI
             EditorGUILayout.BeginHorizontal();
 
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Left: Wearable", settings.dresserSettings.targetWearable, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Left: Wearable", container.dresserSettings.targetWearable, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
-            settings.objectMappingMode = ConvertIntToWearableMappingMode(EditorGUILayout.Popup("Mode", (int)settings.objectMappingMode, new string[] { "Auto", "Override", "Manual" }));
+            container.objectMappingMode = ConvertIntToWearableMappingMode(EditorGUILayout.Popup("Mode", (int)container.objectMappingMode, new string[] { "Auto", "Override", "Manual" }));
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Right: Avatar", settings.dresserSettings.targetAvatar, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Right: Avatar", container.dresserSettings.targetAvatar, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
 
-            DrawMappingHeaderHelpBoxes(settings.objectMappingMode);
+            DrawMappingHeaderHelpBoxes(container.objectMappingMode);
 
             DTUtils.DrawHorizontalLine();
 
@@ -275,8 +275,8 @@ namespace Chocopoi.DressingTools.UI
             // Object Mappings
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-            EditorGUI.BeginDisabledGroup(settings.objectMappingMode == DTWearableMappingMode.Auto);
-            DrawWearableHierarchy(settings.dresserSettings.targetWearable.transform, settings.dresserSettings.targetWearable.transform);
+            EditorGUI.BeginDisabledGroup(container.objectMappingMode == DTWearableMappingMode.Auto);
+            DrawWearableHierarchy(container.dresserSettings.targetWearable.transform, container.dresserSettings.targetWearable.transform);
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndScrollView();
@@ -285,7 +285,7 @@ namespace Chocopoi.DressingTools.UI
 
         public void OnGUI()
         {
-            if (settings == null)
+            if (container == null)
             {
                 Close();
                 return;

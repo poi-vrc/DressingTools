@@ -16,14 +16,14 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         private DressingPresenter dressingPresenter;
 
-        private WearableConfigViewSettings wearableConfigViewSettings;
+        private WearableConfigViewContainer wearableConfigViewSettings;
 
         private WearableConfigView wearableConfigView;
 
         public DressingSubView(IMainView mainView, IMainPresenter mainPresenter)
         {
             dressingPresenter = new DressingPresenter(this);
-            wearableConfigViewSettings = new WearableConfigViewSettings
+            wearableConfigViewSettings = new WearableConfigViewContainer
             {
                 config = new DTWearableConfig()
             };

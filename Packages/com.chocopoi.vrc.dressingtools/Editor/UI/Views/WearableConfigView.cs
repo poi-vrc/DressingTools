@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
-    internal class WearableConfigViewSettings
+    internal class WearableConfigViewContainer
     {
         public GameObject targetAvatar;
         public GameObject targetWearable;
@@ -29,7 +29,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private WearableConfigPresenter wearableConfigPresenter;
 
-        private WearableConfigViewSettings settings;
+        private WearableConfigViewContainer container;
 
         private int selectedWearableType;
 
@@ -43,12 +43,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private List<DTObjectMapping> dresserObjectMappings;
 
-        private DTMappingEditorSettings boneMappingEditorSettings = null;
+        private DTMappingEditorContainer boneMappingEditorContainer = null;
 
-        public WearableConfigView(WearableConfigViewSettings settings)
+        public WearableConfigView(WearableConfigViewContainer container)
         {
             wearableConfigPresenter = new WearableConfigPresenter(this);
-            this.settings = settings;
+            this.container = container;
         }
 
         private DTDefaultDresserDynamicsOption ConvertIntToDynamicsOption(int dynamicsOption)
@@ -71,7 +71,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void InitializeDTBoneMappingEditorSettings()
         {
-            boneMappingEditorSettings = new DTMappingEditorSettings()
+            boneMappingEditorContainer = new DTMappingEditorContainer()
             {
                 dresserSettings = dresserSettings,
                 boneMappings = dresserBoneMappings,
@@ -113,8 +113,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
                     var defaultDresserSettings = (DTDefaultDresserSettings)dresserSettings;
 
-                    defaultDresserSettings.targetAvatar = settings.targetAvatar;
-                    defaultDresserSettings.targetWearable = settings.targetWearable;
+                    defaultDresserSettings.targetAvatar = container.targetAvatar;
+                    defaultDresserSettings.targetWearable = container.targetWearable;
                     defaultDresserSettings.avatarArmatureName = EditorGUILayout.TextField("Avatar Armature Name", dresserSettings.avatarArmatureName);
                     defaultDresserSettings.wearableArmatureName = EditorGUILayout.TextField("Wearable Armature Name", dresserSettings.wearableArmatureName);
 
@@ -184,11 +184,11 @@ namespace Chocopoi.DressingTools.UI.Views
                     if (GUILayout.Button("View and Edit Bone Mappings"))
                     {
                         var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
-                        if (boneMappingEditorSettings == null)
+                        if (boneMappingEditorContainer == null)
                         {
                             InitializeDTBoneMappingEditorSettings();
                         }
-                        boneMappingEditorWindow.SetSettings(boneMappingEditorSettings);
+                        boneMappingEditorWindow.SetSettings(boneMappingEditorContainer);
                         boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
                         boneMappingEditorWindow.Show();
                     }
