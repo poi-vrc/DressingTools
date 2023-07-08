@@ -49,6 +49,18 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private bool foldoutMapping = true;
 
+        private bool foldoutDresserReportLogEntries = false;
+
+        private bool foldoutAnimationGeneration = false;
+
+        private bool foldoutAnimationGenerationAvatarOnWear = false;
+
+        private bool foldoutAnimationGenerationWearableOnWear = false;
+
+        private bool foldoutAnimationGenerationBlendshapeSync = false;
+
+        private bool foldoutTargetAvatarConfigs = false;
+
         public WearableConfigView(WearableConfigViewContainer container)
         {
             wearableConfigPresenter = new WearableConfigPresenter(this);
@@ -85,27 +97,10 @@ namespace Chocopoi.DressingTools.UI.Views
             };
         }
 
-        private void DrawMetaInfoGUI()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            foldoutMetaInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMetaInfo, "Meta Information");
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            if (foldoutMetaInfo)
-            {
-                EditorGUILayout.TextField("Name", "");
-                EditorGUILayout.TextField("Author", "");
-                GUILayout.Label("Description");
-                EditorGUILayout.TextArea("");
-            }
-            EditorGUILayout.EndVertical();
-        }
-
         private void DrawTypeGenericGUI()
         {
             // TODO: object mapping
         }
-
-        private bool foldoutDresserReportLogEntries = false;
 
         private void DrawDresserReportGUI()
         {
@@ -271,6 +266,140 @@ namespace Chocopoi.DressingTools.UI.Views
             DrawTypeArmatureMappingFoldout();
         }
 
+        private bool foldoutWearableAnimationPresetToggles = false;
+
+        private bool foldoutWearableAnimationPresetBlendshapes = false;
+
+        private void DrawWearableAnimationPresetToggles()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutWearableAnimationPresetToggles = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutWearableAnimationPresetToggles, "Toggles");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutWearableAnimationPresetToggles)
+            {
+                GUILayout.Button("+ Add", GUILayout.ExpandWidth(false));
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.Popup(0, new string[] { "Object1", "Object2" });
+                EditorGUILayout.ObjectField(null, typeof(GameObject), true);
+                EditorGUILayout.Toggle(false);
+                GUILayout.Button("x", GUILayout.ExpandWidth(false));
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawWearableAnimationPresetBlendshapes()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutWearableAnimationPresetBlendshapes = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutWearableAnimationPresetBlendshapes, "Blendshapes");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutWearableAnimationPresetBlendshapes)
+            {
+                GUILayout.Button("+ Add", GUILayout.ExpandWidth(false));
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.Popup(0, new string[] { "Blendshape1", "Blendshape2" });
+                EditorGUILayout.TextField("");
+                EditorGUILayout.Slider(0, 0, 100);
+                GUILayout.Button("x", GUILayout.ExpandWidth(false));
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawWearableAnimationPreset()
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Popup("Saved Presets", 0, new string[] { "---" });
+            GUILayout.Button("Save", GUILayout.ExpandWidth(false));
+            GUILayout.Button("Delete", GUILayout.ExpandWidth(false));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Separator();
+
+            DrawWearableAnimationPresetToggles();
+            DrawWearableAnimationPresetBlendshapes();
+        }
+
+        private void DrawAnimationGenerationAvatarOnWear()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutAnimationGenerationAvatarOnWear = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationGenerationAvatarOnWear, "Avatar Animation On Wear");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutAnimationGenerationAvatarOnWear)
+            {
+                DrawWearableAnimationPreset();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawAnimationGenerationWearableOnWear()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutAnimationGenerationWearableOnWear = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationGenerationWearableOnWear, "Wearable Animation On Wear");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutAnimationGenerationWearableOnWear)
+            {
+
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawAnimationGenerationBlendshapeSync()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutAnimationGenerationBlendshapeSync = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationGenerationBlendshapeSync, "Blendshape Sync");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutAnimationGenerationBlendshapeSync)
+            {
+
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawAnimationGenerationGUI()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutAnimationGeneration = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationGeneration, "Animation Generation");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutAnimationGeneration)
+            {
+                DrawAnimationGenerationAvatarOnWear();
+                DrawAnimationGenerationWearableOnWear();
+                DrawAnimationGenerationBlendshapeSync();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawAvatarConfigsGUI()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutTargetAvatarConfigs = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTargetAvatarConfigs, "Target Avatar Configurations");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutTargetAvatarConfigs)
+            {
+                EditorGUILayout.TextField("Name", "");
+                EditorGUILayout.TextField("Armature Name", "");
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawMetaInfoGUI()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutMetaInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMetaInfo, "Meta Information");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutMetaInfo)
+            {
+                EditorGUILayout.TextField("Name", "");
+                EditorGUILayout.TextField("Author", "");
+                GUILayout.Label("Description");
+                EditorGUILayout.TextArea("");
+            }
+            EditorGUILayout.EndVertical();
+        }
+
         public void OnGUI()
         {
             selectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
@@ -283,6 +412,10 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 DrawTypeArmatureGUI();
             }
+
+            DrawAnimationGenerationGUI();
+
+            DrawAvatarConfigsGUI();
 
             DrawMetaInfoGUI();
         }
