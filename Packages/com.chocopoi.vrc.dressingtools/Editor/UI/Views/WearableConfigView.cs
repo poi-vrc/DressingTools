@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
@@ -60,6 +62,10 @@ namespace Chocopoi.DressingTools.UI.Views
         private bool foldoutAnimationGenerationBlendshapeSync = false;
 
         private bool foldoutTargetAvatarConfigs = false;
+
+        private bool foldoutWearableAnimationPresetToggles = false;
+
+        private bool foldoutWearableAnimationPresetBlendshapes = false;
 
         public WearableConfigView(WearableConfigViewContainer container)
         {
@@ -266,49 +272,148 @@ namespace Chocopoi.DressingTools.UI.Views
             DrawTypeArmatureMappingFoldout();
         }
 
-        private bool foldoutWearableAnimationPresetToggles = false;
+        private bool isGrandParent(Transform grandParent, Transform grandChild)
+        {
+            var p = grandChild.parent;
+            while (p != null)
+            {
+                if (p == grandParent)
+                {
+                    return true;
+                }
+                p = p.parent;
+            }
+            return false;
+        }
 
-        private bool foldoutWearableAnimationPresetBlendshapes = false;
-
-        private void DrawWearableAnimationPresetToggles()
+        private void DrawWearableAnimationPresetToggles(Transform root, DTWearableAnimationPreset preset)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutWearableAnimationPresetToggles = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutWearableAnimationPresetToggles, "Toggles");
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutWearableAnimationPresetToggles)
             {
-                GUILayout.Button("+ Add", GUILayout.ExpandWidth(false));
+                EditorGUILayout.HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
 
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.Popup(0, new string[] { "Object1", "Object2" });
-                EditorGUILayout.ObjectField(null, typeof(GameObject), true);
-                EditorGUILayout.Toggle(false);
-                GUILayout.Button("x", GUILayout.ExpandWidth(false));
-                EditorGUILayout.EndHorizontal();
+                if (GUILayout.Button("+ Add", GUILayout.ExpandWidth(false)))
+                {
+                    var newArray = new DTAnimationToggle[preset.toggles.Length + 1];
+                    preset.toggles.CopyTo(newArray, 0);
+                    newArray[newArray.Length - 1] = new DTAnimationToggle();
+                    preset.toggles = newArray;
+                }
+
+                var toRemove = new List<DTAnimationToggle>();
+
+                foreach (var toggle in preset.toggles)
+                {
+                    EditorGUILayout.BeginHorizontal();
+
+                    var lastObj = toggle.path != null ? root.Find(toggle.path)?.gameObject : null;
+                    var newObj = (GameObject)EditorGUILayout.ObjectField(lastObj, typeof(GameObject), true);
+                    if (lastObj != newObj && isGrandParent(root, newObj.transform))
+                    {
+                        // renew path if changed
+                        toggle.path = AnimationUtils.GetRelativePath(newObj.transform, root);
+                    }
+
+                    toggle.state = EditorGUILayout.Toggle(toggle.state);
+                    if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                    {
+                        toRemove.Add(toggle);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                // remove the queued toggles
+                foreach (var toggle in toRemove)
+                {
+                    var list = new List<DTAnimationToggle>(preset.toggles);
+                    list.Remove(toggle);
+                    preset.toggles = list.ToArray();
+                }
             }
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawWearableAnimationPresetBlendshapes()
+        private void DrawWearableAnimationPresetBlendshapes(Transform root, DTWearableAnimationPreset preset)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutWearableAnimationPresetBlendshapes = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutWearableAnimationPresetBlendshapes, "Blendshapes");
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutWearableAnimationPresetBlendshapes)
             {
-                GUILayout.Button("+ Add", GUILayout.ExpandWidth(false));
+                EditorGUILayout.HelpBox("The object must be a child or grand-child of the root, and has a SkinnedMeshRenderer. Or it will not be selected.", MessageType.Info);
 
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.Popup(0, new string[] { "Blendshape1", "Blendshape2" });
-                EditorGUILayout.TextField("");
-                EditorGUILayout.Slider(0, 0, 100);
-                GUILayout.Button("x", GUILayout.ExpandWidth(false));
-                EditorGUILayout.EndHorizontal();
+                if (GUILayout.Button("+ Add", GUILayout.ExpandWidth(false)))
+                {
+                    var newArray = new DTAnimationBlendshapeValue[preset.blendshapes.Length + 1];
+                    preset.blendshapes.CopyTo(newArray, 0);
+                    newArray[newArray.Length - 1] = new DTAnimationBlendshapeValue();
+                    preset.blendshapes = newArray;
+                }
+
+                var toRemove = new List<DTAnimationBlendshapeValue>();
+
+                foreach (var blendshape in preset.blendshapes)
+                {
+                    EditorGUILayout.BeginHorizontal();
+
+                    var lastObj = blendshape.path != null ? root.Find(blendshape.path)?.gameObject : null;
+                    var newObj = (GameObject)EditorGUILayout.ObjectField(lastObj, typeof(GameObject), true);
+                    var mesh = newObj?.GetComponent<SkinnedMeshRenderer>()?.sharedMesh;
+                    if (newObj != null && lastObj != newObj && isGrandParent(root, newObj.transform) && mesh != null)
+                    {
+                        // renew path if changed
+                        blendshape.path = AnimationUtils.GetRelativePath(newObj.transform, root);
+                    }
+
+                    if (mesh == null || mesh.blendShapeCount == 0)
+                    {
+                        // empty placeholder
+                        EditorGUI.BeginDisabledGroup(true);
+                        EditorGUILayout.Popup(0, new string[] { "---" });
+                        EditorGUILayout.Slider(0, 0, 100);
+                        EditorGUI.EndDisabledGroup();
+                    }
+                    else
+                    {
+                        string[] names = new string[mesh.blendShapeCount];
+                        for (var i = 0; i < names.Length; i++)
+                        {
+                            names[i] = mesh.GetBlendShapeName(i);
+                        }
+
+                        var selectedBlendshapeIndex = Array.IndexOf(names, blendshape.blendshapeName);
+                        if (selectedBlendshapeIndex == -1)
+                        {
+                            selectedBlendshapeIndex = 0;
+                        }
+
+                        selectedBlendshapeIndex = EditorGUILayout.Popup(selectedBlendshapeIndex, names);
+                        blendshape.blendshapeName = names[selectedBlendshapeIndex];
+                        blendshape.value = EditorGUILayout.Slider(blendshape.value, 0, 100);
+                    }
+
+                    if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                    {
+                        toRemove.Add(blendshape);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                // remove the queued blendshapes
+                foreach (var blendshape in toRemove)
+                {
+                    var list = new List<DTAnimationBlendshapeValue>(preset.blendshapes);
+                    list.Remove(blendshape);
+                    preset.blendshapes = list.ToArray();
+                }
             }
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawWearableAnimationPreset()
+        private void DrawWearableAnimationPreset(Transform root, DTWearableAnimationPreset preset)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Popup("Saved Presets", 0, new string[] { "---" });
@@ -318,8 +423,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
             EditorGUILayout.Separator();
 
-            DrawWearableAnimationPresetToggles();
-            DrawWearableAnimationPresetBlendshapes();
+            DrawWearableAnimationPresetToggles(root, preset);
+            DrawWearableAnimationPresetBlendshapes(root, preset);
         }
 
         private void DrawAnimationGenerationAvatarOnWear()
@@ -329,7 +434,23 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGenerationAvatarOnWear)
             {
-                DrawWearableAnimationPreset();
+                if (container.config.avatarAnimationOnWear == null)
+                {
+                    container.config.avatarAnimationOnWear = new DTWearableAnimationPreset()
+                    {
+                        toggles = new DTAnimationToggle[0],
+                        blendshapes = new DTAnimationBlendshapeValue[0]
+                    };
+                }
+
+                if (container.targetAvatar != null)
+                {
+                    DrawWearableAnimationPreset(container.targetAvatar.transform, container.config.avatarAnimationOnWear);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("Cannot render preset without a target avatar selected.", MessageType.Error);
+                }
             }
             EditorGUILayout.EndVertical();
         }
@@ -341,7 +462,23 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGenerationWearableOnWear)
             {
+                if (container.config.wearableAnimationOnWear == null)
+                {
+                    container.config.wearableAnimationOnWear = new DTWearableAnimationPreset()
+                    {
+                        toggles = new DTAnimationToggle[0],
+                        blendshapes = new DTAnimationBlendshapeValue[0]
+                    };
+                }
 
+                if (container.targetWearable != null)
+                {
+                    DrawWearableAnimationPreset(container.targetWearable.transform, container.config.wearableAnimationOnWear);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("Cannot render preset without a target wearable selected.", MessageType.Error);
+                }
             }
             EditorGUILayout.EndVertical();
         }
