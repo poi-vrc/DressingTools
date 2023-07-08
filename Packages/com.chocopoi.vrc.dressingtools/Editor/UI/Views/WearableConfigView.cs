@@ -485,12 +485,122 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawAnimationGenerationBlendshapeSync()
         {
+            var avatarRoot = container.targetAvatar?.transform;
+            var wearableRoot = container.targetWearable?.transform;
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutAnimationGenerationBlendshapeSync = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationGenerationBlendshapeSync, "Blendshape Sync");
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGenerationBlendshapeSync)
             {
+                if (container.config.blendshapeSyncs == null)
+                {
+                    container.config.blendshapeSyncs = new DTAnimationBlendshapeSync[0];
+                }
 
+                if (avatarRoot == null || wearableRoot == null)
+                {
+                    EditorGUILayout.HelpBox("Cannot render blendshape sync editor without a target avatar and a target wearble selected.", MessageType.Error);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
+
+                    if (GUILayout.Button("+ Add", GUILayout.ExpandWidth(false)))
+                    {
+                        var newArray = new DTAnimationBlendshapeSync[container.config.blendshapeSyncs.Length + 1];
+                        container.config.blendshapeSyncs.CopyTo(newArray, 0);
+                        newArray[newArray.Length - 1] = new DTAnimationBlendshapeSync();
+                        container.config.blendshapeSyncs = newArray;
+                    }
+
+                    var toRemove = new List<DTAnimationBlendshapeSync>();
+
+                    foreach (var blendshapeSync in container.config.blendshapeSyncs)
+                    {
+                        EditorGUILayout.BeginHorizontal();
+
+                        var lastAvatarObj = blendshapeSync.avatarPath != null ? avatarRoot.Find(blendshapeSync.avatarPath)?.gameObject : null;
+                        GUILayout.Label("Avatar:");
+                        var newAvatarObj = (GameObject)EditorGUILayout.ObjectField(lastAvatarObj, typeof(GameObject), true);
+                        var avatarMesh = newAvatarObj?.GetComponent<SkinnedMeshRenderer>()?.sharedMesh;
+                        if (lastAvatarObj != newAvatarObj && isGrandParent(avatarRoot, newAvatarObj.transform) && avatarMesh != null)
+                        {
+                            // renew path if changed
+                            blendshapeSync.avatarPath = AnimationUtils.GetRelativePath(newAvatarObj.transform, avatarRoot);
+                        }
+
+                        if (avatarMesh == null || avatarMesh.blendShapeCount == 0)
+                        {
+                            // empty placeholder
+                            EditorGUI.BeginDisabledGroup(true);
+                            EditorGUILayout.Popup(0, new string[] { "---" });
+                            EditorGUI.EndDisabledGroup();
+                        }
+                        else
+                        {
+                            string[] avatarBlendshapeNames = new string[avatarMesh.blendShapeCount];
+                            for (var i = 0; i < avatarBlendshapeNames.Length; i++)
+                            {
+                                avatarBlendshapeNames[i] = avatarMesh.GetBlendShapeName(i);
+                            }
+                            var selectedAvatarBlendshapeIndex = Array.IndexOf(avatarBlendshapeNames, blendshapeSync.avatarBlendshapeName);
+                            if (selectedAvatarBlendshapeIndex == -1)
+                            {
+                                selectedAvatarBlendshapeIndex = 0;
+                            }
+                            selectedAvatarBlendshapeIndex = EditorGUILayout.Popup(selectedAvatarBlendshapeIndex, avatarBlendshapeNames);
+                            blendshapeSync.avatarBlendshapeName = avatarBlendshapeNames[selectedAvatarBlendshapeIndex];
+                        }
+
+                        var lastWearableObj = blendshapeSync.wearablePath != null ? wearableRoot.Find(blendshapeSync.wearablePath)?.gameObject : null;
+                        GUILayout.Label("Wearable:");
+                        var newWearableObj = (GameObject)EditorGUILayout.ObjectField(lastWearableObj, typeof(GameObject), true);
+                        var wearableMesh = newWearableObj?.GetComponent<SkinnedMeshRenderer>()?.sharedMesh;
+                        if (lastWearableObj != newWearableObj && isGrandParent(wearableRoot, newWearableObj.transform) && wearableMesh != null)
+                        {
+                            // renew path if changed
+                            blendshapeSync.wearablePath = AnimationUtils.GetRelativePath(newWearableObj.transform, wearableRoot);
+                        }
+
+                        if (wearableMesh == null || wearableMesh.blendShapeCount == 0)
+                        {
+                            // empty placeholder
+                            EditorGUI.BeginDisabledGroup(true);
+                            EditorGUILayout.Popup(0, new string[] { "---" });
+                            EditorGUI.EndDisabledGroup();
+                        }
+                        else
+                        {
+                            string[] wearableBlendshapeNames = new string[wearableMesh.blendShapeCount];
+                            for (var i = 0; i < wearableBlendshapeNames.Length; i++)
+                            {
+                                wearableBlendshapeNames[i] = wearableMesh.GetBlendShapeName(i);
+                            }
+                            var selectedWearableBlendshapeIndex = Array.IndexOf(wearableBlendshapeNames, blendshapeSync.wearableBlendshapeName);
+                            if (selectedWearableBlendshapeIndex == -1)
+                            {
+                                selectedWearableBlendshapeIndex = 0;
+                            }
+                            selectedWearableBlendshapeIndex = EditorGUILayout.Popup(selectedWearableBlendshapeIndex, wearableBlendshapeNames);
+                            blendshapeSync.wearableBlendshapeName = wearableBlendshapeNames[selectedWearableBlendshapeIndex];
+                        }
+
+                        if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                        {
+                            toRemove.Add(blendshapeSync);
+                        }
+                        EditorGUILayout.EndHorizontal();
+                    }
+
+                    // remove the queued toggles
+                    foreach (var blendshapeSync in toRemove)
+                    {
+                        var list = new List<DTAnimationBlendshapeSync>(container.config.blendshapeSyncs);
+                        list.Remove(blendshapeSync);
+                        container.config.blendshapeSyncs = list.ToArray();
+                    }
+                }
             }
             EditorGUILayout.EndVertical();
         }
