@@ -586,6 +586,26 @@ namespace Chocopoi.DressingTools.UI.Views
                             blendshapeSync.wearableBlendshapeName = wearableBlendshapeNames[selectedWearableBlendshapeIndex];
                         }
 
+                        // TODO: custom boundaries, now simply just invert 0-100 to 100-0
+
+                        var lastInvertedBoundaries = blendshapeSync.avatarFromValue == 0 && blendshapeSync.avatarToValue == 100 && blendshapeSync.wearableFromValue == 100 && blendshapeSync.wearableToValue == 0;
+                        var newInvertedBoundaries = GUILayout.Toggle(lastInvertedBoundaries, "Inverted");
+
+                        if (newInvertedBoundaries)
+                        {
+                            blendshapeSync.avatarFromValue = 0;
+                            blendshapeSync.avatarToValue = 100;
+                            blendshapeSync.wearableFromValue = 100;
+                            blendshapeSync.wearableToValue = 0;
+                        }
+                        else
+                        {
+                            blendshapeSync.avatarFromValue = 0;
+                            blendshapeSync.avatarToValue = 100;
+                            blendshapeSync.wearableFromValue = 0;
+                            blendshapeSync.wearableToValue = 100;
+                        }
+
                         if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                         {
                             toRemove.Add(blendshapeSync);
