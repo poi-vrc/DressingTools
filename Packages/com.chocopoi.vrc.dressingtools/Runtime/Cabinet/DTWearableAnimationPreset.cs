@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.Cabinet
 {
     [Serializable]
-    public class DTWearableAnimationPreset
+    public class DTAnimationPreset
     {
         public DTAnimationToggle[] toggles;
         public DTAnimationBlendshapeValue[] blendshapes;

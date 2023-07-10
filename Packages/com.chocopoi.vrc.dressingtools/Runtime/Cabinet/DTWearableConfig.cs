@@ -28,11 +28,13 @@ namespace Chocopoi.DressingTools.Cabinet
         public DTWearableInfo info;
         public DTAvatarConfig[] targetAvatarConfigs;
         public DTWearableType wearableType;
+        public string applierName;
 
         // Generic
         public string avatarPath;
 
         // Armature-based
+        public string dresserName;
         public string wearableArmatureName;
         public DTWearableMappingMode boneMappingMode;
         public DTBoneMapping[] boneMapping;
@@ -40,8 +42,8 @@ namespace Chocopoi.DressingTools.Cabinet
         public DTObjectMapping[] objectMapping;
 
         // Animation generation
-        public DTWearableAnimationPreset avatarAnimationOnWear; // execute on wear
-        public DTWearableAnimationPreset wearableAnimationOnWear;
+        public DTAnimationPreset avatarAnimationOnWear; // execute on wear
+        public DTAnimationPreset wearableAnimationOnWear;
         public DTWearableCustomizable[] wearableCustomizables; // items that show up in action menu for customization
         public DTAnimationBlendshapeSync[] blendshapeSyncs; // blendshapes to sync from avatar to wearables
     }

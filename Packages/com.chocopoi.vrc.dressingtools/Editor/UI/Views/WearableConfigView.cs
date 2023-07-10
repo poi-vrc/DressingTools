@@ -45,6 +45,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private bool foldoutMapping = true;
 
+        private bool foldoutGeneric = true;
+
         private bool foldoutDresserReportLogEntries = false;
 
         private bool foldoutAnimationGeneration = false;
@@ -56,6 +58,10 @@ namespace Chocopoi.DressingTools.UI.Views
         private bool foldoutAnimationGenerationBlendshapeSync = false;
 
         private bool foldoutTargetAvatarConfigs = false;
+
+        private bool foldoutAvatarAnimationPresetToggles = false;
+
+        private bool foldoutAvatarAnimationPresetBlendshapes = false;
 
         private bool foldoutWearableAnimationPresetToggles = false;
 
@@ -71,7 +77,29 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawTypeGenericGUI()
         {
-            // TODO: object mapping
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            foldoutGeneric = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutGeneric, "Move To Avatar");
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (foldoutGeneric)
+            {
+                var root = container.targetAvatar?.transform;
+
+                if (root != null)
+                {
+                    var lastObj = container.config.avatarPath != null ? root.Find(container.config.avatarPath)?.gameObject : null;
+                    var newObj = (GameObject)EditorGUILayout.ObjectField("Move To", lastObj, typeof(GameObject), true);
+                    if (lastObj != newObj && isGrandParent(root, newObj.transform))
+                    {
+                        // renew path if changed
+                        container.config.avatarPath = AnimationUtils.GetRelativePath(newObj.transform, root);
+                    }
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("Please select an avatar first.", MessageType.Error);
+                }
+            }
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawDresserReportGUI()
@@ -231,12 +259,12 @@ namespace Chocopoi.DressingTools.UI.Views
             return false;
         }
 
-        private void DrawWearableAnimationPresetToggles(Transform root, DTWearableAnimationPreset preset)
+        private void DrawAnimationPresetToggles(Transform root, DTAnimationPreset preset, ref bool foldoutAnimationPresetToggles)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            foldoutWearableAnimationPresetToggles = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutWearableAnimationPresetToggles, "Toggles");
+            foldoutAnimationPresetToggles = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationPresetToggles, "Toggles");
             EditorGUILayout.EndFoldoutHeaderGroup();
-            if (foldoutWearableAnimationPresetToggles)
+            if (foldoutAnimationPresetToggles)
             {
                 EditorGUILayout.HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
 
@@ -281,12 +309,12 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawWearableAnimationPresetBlendshapes(Transform root, DTWearableAnimationPreset preset)
+        private void DrawAnimationPresetBlendshapes(Transform root, DTAnimationPreset preset, ref bool foldoutAnimationPresetBlendshapes)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            foldoutWearableAnimationPresetBlendshapes = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutWearableAnimationPresetBlendshapes, "Blendshapes");
+            foldoutAnimationPresetBlendshapes = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAnimationPresetBlendshapes, "Blendshapes");
             EditorGUILayout.EndFoldoutHeaderGroup();
-            if (foldoutWearableAnimationPresetBlendshapes)
+            if (foldoutAnimationPresetBlendshapes)
             {
                 EditorGUILayout.HelpBox("The object must be a child or grand-child of the root, and has a SkinnedMeshRenderer. Or it will not be selected.", MessageType.Info);
 
@@ -358,7 +386,7 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawWearableAnimationPreset(Transform root, DTWearableAnimationPreset preset)
+        private void DrawAnimationPreset(Transform root, DTAnimationPreset preset, ref bool foldoutAnimationPresetToggles, ref bool foldoutAnimationPresetBlendshapes)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Popup("Saved Presets", 0, new string[] { "---" });
@@ -368,8 +396,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
             EditorGUILayout.Separator();
 
-            DrawWearableAnimationPresetToggles(root, preset);
-            DrawWearableAnimationPresetBlendshapes(root, preset);
+            DrawAnimationPresetToggles(root, preset, ref foldoutAnimationPresetToggles);
+            DrawAnimationPresetBlendshapes(root, preset, ref foldoutAnimationPresetBlendshapes);
         }
 
         private void DrawAnimationGenerationAvatarOnWear()
@@ -381,7 +409,7 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 if (container.config.avatarAnimationOnWear == null)
                 {
-                    container.config.avatarAnimationOnWear = new DTWearableAnimationPreset()
+                    container.config.avatarAnimationOnWear = new DTAnimationPreset()
                     {
                         toggles = new DTAnimationToggle[0],
                         blendshapes = new DTAnimationBlendshapeValue[0]
@@ -390,7 +418,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 if (container.targetAvatar != null)
                 {
-                    DrawWearableAnimationPreset(container.targetAvatar.transform, container.config.avatarAnimationOnWear);
+                    DrawAnimationPreset(container.targetAvatar.transform, container.config.avatarAnimationOnWear, ref foldoutAvatarAnimationPresetToggles, ref foldoutAvatarAnimationPresetBlendshapes);
                 }
                 else
                 {
@@ -409,7 +437,7 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 if (container.config.wearableAnimationOnWear == null)
                 {
-                    container.config.wearableAnimationOnWear = new DTWearableAnimationPreset()
+                    container.config.wearableAnimationOnWear = new DTAnimationPreset()
                     {
                         toggles = new DTAnimationToggle[0],
                         blendshapes = new DTAnimationBlendshapeValue[0]
@@ -418,7 +446,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 if (container.targetWearable != null)
                 {
-                    DrawWearableAnimationPreset(container.targetWearable.transform, container.config.wearableAnimationOnWear);
+                    DrawAnimationPreset(container.targetWearable.transform, container.config.wearableAnimationOnWear, ref foldoutWearableAnimationPresetToggles, ref foldoutWearableAnimationPresetBlendshapes);
                 }
                 else
                 {
