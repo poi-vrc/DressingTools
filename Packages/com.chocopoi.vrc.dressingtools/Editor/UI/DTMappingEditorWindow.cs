@@ -291,6 +291,12 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
+            if (container.dresserSettings == null || container.boneMappings == null || container.objectMappings == null)
+            {
+                EditorGUILayout.HelpBox("Bone and object mapping not available.", MessageType.Error);
+                return;
+            }
+
             // Bone/Object editor switch
             DrawBoneObjectEditorSwitch();
 

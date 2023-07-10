@@ -24,11 +24,6 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         private static readonly I18n t = I18n.GetInstance();
 
-        private static readonly Dictionary<string, IDTDresser> dressers = new Dictionary<string, IDTDresser>()
-        {
-            { "Default", new DTDefaultDresser() }
-        };
-
         private WearableConfigPresenter wearableConfigPresenter;
 
         private WearableConfigViewContainer container;
@@ -40,12 +35,6 @@ namespace Chocopoi.DressingTools.UI.Views
         private DTDresserSettings dresserSettings = null;
 
         private DTReport dresserReport = null;
-
-        private List<DTBoneMapping> dresserBoneMappings;
-
-        private List<DTObjectMapping> dresserObjectMappings;
-
-        private DTMappingEditorContainer boneMappingEditorContainer = null;
 
         private bool foldoutMetaInfo = false;
 
@@ -89,18 +78,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 case 0:
                     return DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
             }
-        }
-
-        private void InitializeDTBoneMappingEditorSettings()
-        {
-            boneMappingEditorContainer = new DTMappingEditorContainer()
-            {
-                dresserSettings = dresserSettings,
-                boneMappings = dresserBoneMappings,
-                objectMappings = dresserObjectMappings,
-                boneMappingMode = DTWearableMappingMode.Auto,
-                objectMappingMode = DTWearableMappingMode.Auto
-            };
         }
 
         private void DrawTypeGenericGUI()
@@ -180,11 +157,11 @@ namespace Chocopoi.DressingTools.UI.Views
             foldoutMapping = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMapping, "Armature/Root Objects Mapping");
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutMapping)
-            {// list all available dressers
-                string[] dresserKeys = new string[dressers.Keys.Count];
-                dressers.Keys.CopyTo(dresserKeys, 0);
+            {
+                // list all available dressers
+                string[] dresserKeys = wearableConfigPresenter.GetAvailableDresserKeys();
                 selectedDresserIndex = EditorGUILayout.Popup("Dressers", selectedDresserIndex, dresserKeys);
-                var dresser = dressers[dresserKeys[selectedDresserIndex]];
+                var dresser = wearableConfigPresenter.GetDresserByName(dresserKeys[selectedDresserIndex]);
 
                 // list dresser settings
                 if (dresser is DTDefaultDresser)
@@ -227,22 +204,14 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 if (GUILayout.Button("Auto-generate Mappings", mappingBtnStyle, GUILayout.Height(40)))
                 {
-                    dresserReport = dresser.Execute(dresserSettings, out dresserBoneMappings, out dresserObjectMappings);
-                    InitializeDTBoneMappingEditorSettings();
+                    dresserReport = wearableConfigPresenter.GenerateDresserMappings(dresser, dresserSettings);
                 }
 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUI.BeginDisabledGroup(dresserBoneMappings == null || dresserObjectMappings == null);
+                EditorGUI.BeginDisabledGroup(dresserReport == null);
                 if (GUILayout.Button("View/Edit Mappings", mappingBtnStyle, GUILayout.Height(40)))
                 {
-                    var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
-                    if (boneMappingEditorContainer == null)
-                    {
-                        InitializeDTBoneMappingEditorSettings();
-                    }
-                    boneMappingEditorWindow.SetSettings(boneMappingEditorContainer);
-                    boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
-                    boneMappingEditorWindow.Show();
+                    wearableConfigPresenter.StartMappingEditor();
                 }
                 EditorGUI.EndDisabledGroup();
 
