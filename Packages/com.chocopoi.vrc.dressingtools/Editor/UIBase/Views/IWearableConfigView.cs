@@ -2,6 +2,7 @@
 {
     internal interface IWearableConfigView
     {
+        bool IsConfigReady();
         void OnGUI();
     }
 }

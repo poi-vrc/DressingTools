@@ -36,14 +36,42 @@ namespace Chocopoi.DressingTools.Cabinet
         public string dresserName;
         public string wearableArmatureName;
         public DTWearableMappingMode boneMappingMode;
-        public DTBoneMapping[] boneMapping;
+        public DTBoneMapping[] boneMappings;
         public DTWearableMappingMode objectMappingMode;
-        public DTObjectMapping[] objectMapping;
+        public DTObjectMapping[] objectMappings;
 
         // Animation generation
         public DTAnimationPreset avatarAnimationOnWear; // execute on wear
         public DTAnimationPreset wearableAnimationOnWear;
         public DTWearableCustomizable[] wearableCustomizables; // items that show up in action menu for customization
         public DTAnimationBlendshapeSync[] blendshapeSyncs; // blendshapes to sync from avatar to wearables
+
+        public DTWearableConfig()
+        {
+
+        }
+
+        // copy constructor
+        public DTWearableConfig(DTWearableConfig toCopy)
+        {
+            configVersion = toCopy.configVersion;
+            info = toCopy.info;
+            targetAvatarConfigs = toCopy.targetAvatarConfigs;
+            wearableType = toCopy.wearableType;
+
+            avatarPath = toCopy.avatarPath;
+
+            dresserName = toCopy.dresserName;
+            wearableArmatureName = toCopy.wearableArmatureName;
+            boneMappingMode = toCopy.boneMappingMode;
+            boneMappings = toCopy.boneMappings;
+            objectMappingMode = toCopy.objectMappingMode;
+            objectMappings = toCopy.objectMappings;
+
+            avatarAnimationOnWear = toCopy.avatarAnimationOnWear;
+            wearableAnimationOnWear = toCopy.wearableAnimationOnWear;
+            wearableCustomizables = toCopy.wearableCustomizables;
+            blendshapeSyncs = toCopy.blendshapeSyncs;
+        }
     }
 }

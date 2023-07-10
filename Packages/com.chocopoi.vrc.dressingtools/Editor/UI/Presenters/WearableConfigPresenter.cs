@@ -18,22 +18,27 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private IWearableConfigView wearableConfigView;
 
-        private DTMappingEditorContainer boneMappingEditorContainer;
+        private DTMappingEditorContainer mappingEditorContainer;
 
         public WearableConfigPresenter(IWearableConfigView wearableConfigView)
         {
             this.wearableConfigView = wearableConfigView;
-            boneMappingEditorContainer = new DTMappingEditorContainer();
+            mappingEditorContainer = new DTMappingEditorContainer();
             ResetMappingEditorContainer();
+        }
+
+        public DTMappingEditorContainer GetMappingEditorContainer()
+        {
+            return mappingEditorContainer;
         }
 
         private void ResetMappingEditorContainer()
         {
-            boneMappingEditorContainer.dresserSettings = null;
-            boneMappingEditorContainer.boneMappings = null;
-            boneMappingEditorContainer.objectMappings = null;
-            boneMappingEditorContainer.boneMappingMode = DTWearableMappingMode.Auto;
-            boneMappingEditorContainer.objectMappingMode = DTWearableMappingMode.Auto;
+            mappingEditorContainer.dresserSettings = null;
+            mappingEditorContainer.boneMappings = null;
+            mappingEditorContainer.objectMappings = null;
+            mappingEditorContainer.boneMappingMode = DTWearableMappingMode.Auto;
+            mappingEditorContainer.objectMappingMode = DTWearableMappingMode.Auto;
         }
 
         public string[] GetAvailableDresserKeys()
@@ -66,10 +71,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             // reset mapping editor container
             ResetMappingEditorContainer();
-            boneMappingEditorContainer.dresserSettings = dresserSettings;
+            mappingEditorContainer.dresserSettings = dresserSettings;
 
             // execute dresser
-            var dresserReport = dresser.Execute(dresserSettings, out boneMappingEditorContainer.boneMappings, out boneMappingEditorContainer.objectMappings);
+            var dresserReport = dresser.Execute(dresserSettings, out mappingEditorContainer.boneMappings, out mappingEditorContainer.objectMappings);
 
             return dresserReport;
         }
@@ -78,7 +83,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
 
-            boneMappingEditorWindow.SetSettings(boneMappingEditorContainer);
+            boneMappingEditorWindow.SetSettings(mappingEditorContainer);
             boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
             boneMappingEditorWindow.Show();
         }

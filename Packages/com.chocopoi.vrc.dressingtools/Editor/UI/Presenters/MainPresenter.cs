@@ -1,5 +1,7 @@
-﻿using Chocopoi.DressingTools.UIBase.Presenters;
+﻿using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
+using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -16,6 +18,23 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             // TODO: reset dressing tab?
             mainView.SwitchTab(1);
+        }
+
+        public void AddToCabinet(DTCabinet cabinet, DTWearableConfig config)
+        {
+            var cabinetWearable = new DTCabinetWearable(config)
+            {
+                // empty references
+                objectReferences = new DTGameObjectReference[0]
+            };
+
+            // serialize a json copy for backward compatibility backup 
+            cabinetWearable.serializedJson = JsonConvert.SerializeObject(cabinetWearable);
+            cabinet.wearables.Add(cabinetWearable);
+
+            // TODO: reset dressing tab?
+            // return to cabinet page
+            mainView.SwitchTab(0);
         }
     }
 }

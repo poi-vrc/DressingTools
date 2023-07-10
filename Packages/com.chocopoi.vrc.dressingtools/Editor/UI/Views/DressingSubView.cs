@@ -14,6 +14,8 @@ namespace Chocopoi.DressingTools.UI.Views
 {
     internal class DressingSubView : IDressingSubView
     {
+        private IMainPresenter mainPresenter;
+
         private DressingPresenter dressingPresenter;
 
         private WearableConfigViewContainer wearableConfigViewSettings;
@@ -22,6 +24,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public DressingSubView(IMainView mainView, IMainPresenter mainPresenter)
         {
+            this.mainPresenter = mainPresenter;
             dressingPresenter = new DressingPresenter(this);
             wearableConfigViewSettings = new WearableConfigViewContainer
             {
@@ -44,6 +47,21 @@ namespace Chocopoi.DressingTools.UI.Views
             wearableConfigViewSettings.targetWearable = (GameObject)EditorGUILayout.ObjectField("Wearable", wearableConfigViewSettings.targetWearable, typeof(GameObject), true);
 
             wearableConfigView.OnGUI();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(!wearableConfigView.IsConfigReady());
+            EditorGUI.BeginDisabledGroup(cabinet == null);
+            if (GUILayout.Button("Add to cabinet"))
+            {
+                mainPresenter.AddToCabinet(cabinet, wearableConfigViewSettings.config);
+            }
+            EditorGUI.EndDisabledGroup();
+            if (GUILayout.Button("Save to file"))
+            {
+
+            }
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

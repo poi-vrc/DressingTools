@@ -679,5 +679,31 @@ namespace Chocopoi.DressingTools.UI.Views
 
             DrawMetaInfoGUI();
         }
+
+        public void PrepareConfig()
+        {
+            // update values from mapping editor container
+            var mappingEditorContainer = wearableConfigPresenter.GetMappingEditorContainer();
+            container.config.boneMappings = mappingEditorContainer.boneMappings?.ToArray();
+            container.config.boneMappingMode = mappingEditorContainer.boneMappingMode;
+            container.config.objectMappings = mappingEditorContainer.objectMappings?.ToArray();
+            container.config.objectMappingMode = mappingEditorContainer.objectMappingMode;
+        }
+
+        public bool IsConfigReady()
+        {
+            // prepare the config first
+            PrepareConfig();
+
+            var ready = true;
+
+            if (selectedWearableType == 1)
+            {
+                // armature mode
+                ready |= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null && container.config.objectMappings != null;
+            }
+
+            return ready;
+        }
     }
 }

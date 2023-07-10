@@ -7,5 +7,9 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         public DTGameObjectReference[] objectReferences;
         public string serializedJson;
+
+        public DTCabinetWearable(DTWearableConfig toCopy) : base(toCopy)
+        {
+        }
     }
 }
