@@ -28,9 +28,14 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private WearableConfigViewContainer container;
 
+        // used to detect changes and regenerate mappings
+        private GameObject lastTargetAvatar;
+
+        private GameObject lastTargetWearable;
+
         private int selectedWearableType;
 
-        private int selectedDresserIndex;
+        private string selectedDresserName = "Default";
 
         private DTDresserSettings dresserSettings = null;
 
@@ -55,6 +60,8 @@ namespace Chocopoi.DressingTools.UI.Views
         private bool foldoutWearableAnimationPresetToggles = false;
 
         private bool foldoutWearableAnimationPresetBlendshapes = false;
+
+        private bool regenerateMappingsNeeded = false;
 
         public WearableConfigView(WearableConfigViewContainer container)
         {
@@ -160,8 +167,16 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 // list all available dressers
                 string[] dresserKeys = wearableConfigPresenter.GetAvailableDresserKeys();
-                selectedDresserIndex = EditorGUILayout.Popup("Dressers", selectedDresserIndex, dresserKeys);
-                var dresser = wearableConfigPresenter.GetDresserByName(dresserKeys[selectedDresserIndex]);
+                var selectedDresserIndex = EditorGUILayout.Popup("Dressers", Array.IndexOf(dresserKeys, selectedDresserName), dresserKeys);
+
+                if (dresserKeys[selectedDresserIndex] != selectedDresserName)
+                {
+                    // regenerate on dresser change
+                    regenerateMappingsNeeded = true;
+                }
+                selectedDresserName = dresserKeys[selectedDresserIndex];
+
+                var dresser = wearableConfigPresenter.GetDresserByName(selectedDresserName);
 
                 // list dresser settings
                 if (dresser is DTDefaultDresser)
@@ -179,54 +194,63 @@ namespace Chocopoi.DressingTools.UI.Views
 
                     var defaultDresserSettings = (DTDefaultDresserSettings)dresserSettings;
 
+                    var newAvatarArmatureName = EditorGUILayout.DelayedTextField("Avatar Armature Name", dresserSettings.avatarArmatureName);
+                    var newWearableArmatureName = EditorGUILayout.DelayedTextField("Wearable Armature Name", dresserSettings.wearableArmatureName);
+
+                    if (dresserSettings.avatarArmatureName != newAvatarArmatureName || dresserSettings.wearableArmatureName != newWearableArmatureName)
+                    {
+                        // regenerate on armature name change
+                        regenerateMappingsNeeded = true;
+                    }
+
                     defaultDresserSettings.targetAvatar = container.targetAvatar;
                     defaultDresserSettings.targetWearable = container.targetWearable;
-                    defaultDresserSettings.avatarArmatureName = EditorGUILayout.TextField("Avatar Armature Name", dresserSettings.avatarArmatureName);
-                    defaultDresserSettings.wearableArmatureName = EditorGUILayout.TextField("Wearable Armature Name", dresserSettings.wearableArmatureName);
+                    defaultDresserSettings.avatarArmatureName = newAvatarArmatureName;
+                    defaultDresserSettings.wearableArmatureName = newWearableArmatureName;
 
                     // Dynamics Option
-                    defaultDresserSettings.dynamicsOption = ConvertIntToDynamicsOption(EditorGUILayout.Popup("Dynamics Option", (int)defaultDresserSettings.dynamicsOption, new string[] {
+                    var newDynamicsOption = ConvertIntToDynamicsOption(EditorGUILayout.Popup("Dynamics Option", (int)defaultDresserSettings.dynamicsOption, new string[] {
                         "Remove wearable dynamics and ParentConstraint",
                         "Keep wearable dynamics and ParentConstraint if needed",
                         "Remove wearable dynamics and IgnoreTransform",
                         "Copy avatar dynamics data to wearable",
                         "Ignore all dynamics"
                     }));
+
+                    if (defaultDresserSettings.dynamicsOption != newDynamicsOption)
+                    {
+                        // regenerate on dynamics option change
+                        regenerateMappingsNeeded = true;
+                    }
+                    defaultDresserSettings.dynamicsOption = newDynamicsOption;
                 }
 
                 EditorGUILayout.Separator();
 
                 // generate bone mappings
-                var mappingBtnStyle = new GUIStyle(GUI.skin.button)
-                {
-                    fontSize = 16
-                };
-
-                if (GUILayout.Button("Auto-generate Mappings", mappingBtnStyle, GUILayout.Height(40)))
-                {
-                    dresserReport = wearableConfigPresenter.GenerateDresserMappings(dresser, dresserSettings);
-                }
 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUI.BeginDisabledGroup(dresserReport == null);
-                if (GUILayout.Button("View/Edit Mappings", mappingBtnStyle, GUILayout.Height(40)))
+                if (GUILayout.Button("Regenerate Mappings"))
+                {
+                    regenerateMappingsNeeded = true;
+                }
+                if (GUILayout.Button("View/Edit Mappings"))
                 {
                     wearableConfigPresenter.StartMappingEditor();
                 }
-                EditorGUI.EndDisabledGroup();
+                EditorGUILayout.EndHorizontal();
 
+                EditorGUILayout.BeginHorizontal();
                 EditorGUI.BeginDisabledGroup(dresserReport == null);
-                if (GUILayout.Button("View Report", mappingBtnStyle, GUILayout.Height(40)))
+                if (GUILayout.Button("View Report"))
                 {
                 }
                 EditorGUI.EndDisabledGroup();
-
                 EditorGUI.BeginDisabledGroup(true);
-                if (GUILayout.Button("Test Now", mappingBtnStyle, GUILayout.Height(40)))
+                if (GUILayout.Button("Test Now"))
                 {
                 }
                 EditorGUI.EndDisabledGroup();
-
                 EditorGUILayout.EndHorizontal();
 
                 DTUtils.DrawHorizontalLine();
@@ -638,16 +662,34 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void OnGUI()
         {
-            selectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
+            var newSelectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
 
-            if (selectedWearableType == 0) // Generic
+            if (newSelectedWearableType == 0) // Generic
             {
                 DrawTypeGenericGUI();
             }
-            else if (selectedWearableType == 1) // Armature-based
+            else if (newSelectedWearableType == 1) // Armature-based
             {
                 DrawTypeArmatureGUI();
+
+                // detect object reference change or wearable type change
+                if (newSelectedWearableType != selectedWearableType || lastTargetAvatar != container.targetAvatar || lastTargetWearable != container.targetWearable)
+                {
+                    // regenerate on object reference change
+                    regenerateMappingsNeeded = true;
+                    lastTargetAvatar = container.targetAvatar;
+                    lastTargetWearable = container.targetWearable;
+                }
+
+                // regenerate on flag
+                if (regenerateMappingsNeeded)
+                {
+                    var dresser = wearableConfigPresenter.GetDresserByName(selectedDresserName);
+                    dresserReport = wearableConfigPresenter.GenerateDresserMappings(dresser, dresserSettings);
+                    regenerateMappingsNeeded = false;
+                }
             }
+            selectedWearableType = newSelectedWearableType;
 
             DrawAnimationGenerationGUI();
 
