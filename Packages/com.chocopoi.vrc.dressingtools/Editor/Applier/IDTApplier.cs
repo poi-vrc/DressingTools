@@ -1,9 +1,10 @@
 ﻿using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Logging;
 
 namespace Chocopoi.DressingTools.Applier
 {
-    internal interface IDTApplier
+    public interface IDTApplier
     {
-        ApplierReport ApplyWearable(ApplierSettings settings, DTWearableConfig config);
+        DTReport ApplyWearable(ApplierSettings settings, DTWearableConfig config);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Chocopoi.DressingTools.Applier
 {
-    internal class ApplierReport
+    public class ApplierReport
     {
     }
 }
