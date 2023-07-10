@@ -188,6 +188,9 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 var dresser = wearableConfigPresenter.GetDresserByName(selectedDresserName);
 
+                // set the type name to config
+                container.config.dresserName = dresser.GetType().FullName;
+
                 // Initialize dresser settings
                 if (dresser is DTDefaultDresser && !(dresserSettings is DTDefaultDresserSettings))
                 {
