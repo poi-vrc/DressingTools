@@ -69,24 +69,6 @@ namespace Chocopoi.DressingTools.UI.Views
             this.container = container;
         }
 
-        private DTDefaultDresserDynamicsOption ConvertIntToDynamicsOption(int dynamicsOption)
-        {
-            switch (dynamicsOption)
-            {
-                case 1:
-                    return DTDefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
-                case 2:
-                    return DTDefaultDresserDynamicsOption.IgnoreTransform;
-                case 3:
-                    return DTDefaultDresserDynamicsOption.CopyDynamics;
-                case 4:
-                    return DTDefaultDresserDynamicsOption.IgnoreAll;
-                default:
-                case 0:
-                    return DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
-            }
-        }
-
         private void DrawTypeGenericGUI()
         {
             // TODO: object mapping
@@ -178,52 +160,22 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 var dresser = wearableConfigPresenter.GetDresserByName(selectedDresserName);
 
-                // list dresser settings
-                if (dresser is DTDefaultDresser)
+                // Initialize dresser settings
+                if (dresser is DTDefaultDresser && !(dresserSettings is DTDefaultDresserSettings))
                 {
-                    if (!(dresserSettings is DTDefaultDresserSettings))
+                    dresserSettings = new DTDefaultDresserSettings
                     {
-                        dresserSettings = new DTDefaultDresserSettings
-                        {
-                            // TODO: constant defaults?
-                            avatarArmatureName = "Armature",
-                            wearableArmatureName = "Armature",
-                            dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
-                        };
-                    }
-
-                    var defaultDresserSettings = (DTDefaultDresserSettings)dresserSettings;
-
-                    var newAvatarArmatureName = EditorGUILayout.DelayedTextField("Avatar Armature Name", dresserSettings.avatarArmatureName);
-                    var newWearableArmatureName = EditorGUILayout.DelayedTextField("Wearable Armature Name", dresserSettings.wearableArmatureName);
-
-                    if (dresserSettings.avatarArmatureName != newAvatarArmatureName || dresserSettings.wearableArmatureName != newWearableArmatureName)
-                    {
-                        // regenerate on armature name change
-                        regenerateMappingsNeeded = true;
-                    }
-
-                    defaultDresserSettings.targetAvatar = container.targetAvatar;
-                    defaultDresserSettings.targetWearable = container.targetWearable;
-                    defaultDresserSettings.avatarArmatureName = newAvatarArmatureName;
-                    defaultDresserSettings.wearableArmatureName = newWearableArmatureName;
-
-                    // Dynamics Option
-                    var newDynamicsOption = ConvertIntToDynamicsOption(EditorGUILayout.Popup("Dynamics Option", (int)defaultDresserSettings.dynamicsOption, new string[] {
-                        "Remove wearable dynamics and ParentConstraint",
-                        "Keep wearable dynamics and ParentConstraint if needed",
-                        "Remove wearable dynamics and IgnoreTransform",
-                        "Copy avatar dynamics data to wearable",
-                        "Ignore all dynamics"
-                    }));
-
-                    if (defaultDresserSettings.dynamicsOption != newDynamicsOption)
-                    {
-                        // regenerate on dynamics option change
-                        regenerateMappingsNeeded = true;
-                    }
-                    defaultDresserSettings.dynamicsOption = newDynamicsOption;
+                        // TODO: constant defaults?
+                        avatarArmatureName = "Armature",
+                        wearableArmatureName = "Armature",
+                        dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
+                    };
                 }
+
+                // draw the dresser settings GUI and regenerate if modified
+                dresserSettings.targetAvatar = container.targetAvatar;
+                dresserSettings.targetWearable = container.targetWearable;
+                regenerateMappingsNeeded |= dresserSettings.DrawEditorGUI();
 
                 EditorGUILayout.Separator();
 

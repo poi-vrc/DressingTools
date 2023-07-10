@@ -7,6 +7,7 @@ namespace Chocopoi.DressingTools.UIBase.Presenters
     {
         string[] GetAvailableDresserKeys();
         IDTDresser GetDresserByName(string name);
+        IDTDresser GetDresserByTypeName(string name);
         DTReport GenerateDresserMappings(IDTDresser dresser, DTDresserSettings dresserSettings);
         void StartMappingEditor();
     }

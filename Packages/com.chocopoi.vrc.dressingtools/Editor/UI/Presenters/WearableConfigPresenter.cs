@@ -49,6 +49,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
             return dresser;
         }
 
+        public IDTDresser GetDresserByTypeName(string name)
+        {
+            foreach (var dresser in dressers.Values)
+            {
+                var type = dresser.GetType();
+                if (name == type.FullName || name == type.Name)
+                {
+                    return dresser;
+                }
+            }
+            return null;
+        }
+
         public DTReport GenerateDresserMappings(IDTDresser dresser, DTDresserSettings dresserSettings)
         {
             // reset mapping editor container
