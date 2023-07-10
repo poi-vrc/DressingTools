@@ -600,7 +600,6 @@ namespace Chocopoi.DressingTools.UI.Views
             }
             EditorGUILayout.EndVertical();
         }
-
         private void DrawAnimationGenerationGUI()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);

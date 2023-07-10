@@ -28,7 +28,6 @@ namespace Chocopoi.DressingTools.Cabinet
         public DTWearableInfo info;
         public DTAvatarConfig[] targetAvatarConfigs;
         public DTWearableType wearableType;
-        public string applierName;
 
         // Generic
         public string avatarPath;
