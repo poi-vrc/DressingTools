@@ -5,7 +5,7 @@ namespace Chocopoi.DressingTools.Applier.Default
 {
     public class DTDefaultApplier : IDTApplier
     {
-        public DTReport ApplyWearable(ApplierSettings settings, DTWearableConfig config)
+        public DTReport ApplyWearable(DTApplierSettings settings, DTWearableConfig config)
         {
             throw new System.NotImplementedException();
         }

@@ -5,6 +5,6 @@ namespace Chocopoi.DressingTools.Applier
 {
     public interface IDTApplier
     {
-        DTReport ApplyWearable(ApplierSettings settings, DTWearableConfig config);
+        DTReport ApplyWearable(DTApplierSettings settings, DTWearableConfig config);
     }
 }
