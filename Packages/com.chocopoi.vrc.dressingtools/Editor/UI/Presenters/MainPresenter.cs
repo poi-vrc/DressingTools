@@ -27,7 +27,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 // empty references
                 objectReferences = new DTGameObjectReference[0],
                 // serialize a json copy for backward compatibility backup 
-                serializedJson = JsonConvert.SerializeObject(config)
+                serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                })
             };
 
             cabinet.wearables.Add(cabinetWearable);

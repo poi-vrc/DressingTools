@@ -71,6 +71,10 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private bool metaInfoUseWearableName = true;
 
+        private bool targetAvatarConfigUseAvatarName = true;
+
+        private GameObject guidReferencePrefab = null;
+
         public WearableConfigView(WearableConfigViewContainer container)
         {
             wearableConfigPresenter = new WearableConfigPresenter(this);
@@ -80,6 +84,21 @@ namespace Chocopoi.DressingTools.UI.Views
             if (container.targetWearable != null && container.config.info.name != container.targetWearable.name)
             {
                 metaInfoUseWearableName = false;
+            }
+
+            // check if target avatar name is customized
+            if (container.targetAvatar != null)
+            {
+                var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(container.targetAvatar));
+                var guid = AssetDatabase.AssetPathToGUID(assetPath);
+                if (guid != null && guid != "")
+                {
+                    var avatarConfig = FindAvatarConfigByGuid(guid);
+                    if (avatarConfig != null)
+                    {
+                        targetAvatarConfigUseAvatarName = avatarConfig.name == container.targetAvatar.name;
+                    }
+                }
             }
         }
 
@@ -599,6 +618,18 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
+        private DTAvatarConfig FindAvatarConfigByGuid(string guid)
+        {
+            foreach (var avatarConfig in container.config.targetAvatarConfigs)
+            {
+                if (avatarConfig.guid == guid)
+                {
+                    return avatarConfig;
+                }
+            }
+            return null;
+        }
+
         private void DrawAvatarConfigsGUI()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -606,8 +637,86 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutTargetAvatarConfigs)
             {
-                EditorGUILayout.TextField("Name", "");
-                EditorGUILayout.TextField("Armature Name", "");
+                EditorGUILayout.HelpBox("This allows other users to be able to find your configuration for their avatars and wearables once uploaded.", MessageType.Info);
+
+                if (container.targetAvatar == null || container.targetWearable == null)
+                {
+                    EditorGUILayout.HelpBox("Target avatar and wearable cannot be empty to access this editor.", MessageType.Error);
+                }
+                else
+                {
+                    guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
+
+                    var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(guidReferencePrefab ?? container.targetAvatar));
+                    var guid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var invalidGuid = guid == null || guid == "";
+                    if (invalidGuid)
+                    {
+                        EditorGUILayout.HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
+                    }
+                    else
+                    {
+                        ReadOnlyTextField("GUID", guid);
+
+                        var avatarConfig = FindAvatarConfigByGuid(guid);
+
+                        if (avatarConfig == null)
+                        {
+                            avatarConfig = new DTAvatarConfig()
+                            {
+                                guid = guid
+                            };
+                            var newArray = new DTAvatarConfig[container.config.targetAvatarConfigs.Length + 1];
+                            container.config.targetAvatarConfigs.CopyTo(newArray, 0);
+                            container.config.targetAvatarConfigs = newArray;
+                            newArray[newArray.Length - 1] = avatarConfig;
+                        }
+
+                        targetAvatarConfigUseAvatarName = EditorGUILayout.ToggleLeft("Use avatar object's name", targetAvatarConfigUseAvatarName);
+                        if (targetAvatarConfigUseAvatarName)
+                        {
+                            container.targetAvatar.name = container.targetAvatar.name;
+                        }
+                        EditorGUI.BeginDisabledGroup(targetAvatarConfigUseAvatarName);
+                        container.targetAvatar.name = EditorGUILayout.TextField("Name", container.targetAvatar.name);
+                        EditorGUI.EndDisabledGroup();
+
+                        // try obtain armature name from cabinet
+                        var cabinet = DTUtils.GetAvatarCabinet(container.targetAvatar);
+                        if (cabinet == null)
+                        {
+                            // attempt to get from dress settings if in armature mode
+                            if (selectedWearableType == 1 && dresserSettings != null)
+                            {
+                                avatarConfig.armatureName = dresserSettings.avatarArmatureName;
+                                ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
+                            }
+                            else
+                            {
+                                // leave it empty
+                                avatarConfig.armatureName = "";
+                            }
+                        }
+                        else
+                        {
+                            avatarConfig.armatureName = cabinet.avatarArmatureName;
+                            ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
+                        }
+
+                        var deltaPos = container.targetWearable.transform.position - container.targetAvatar.transform.position;
+                        var deltaRotation = container.targetWearable.transform.rotation * Quaternion.Inverse(container.targetAvatar.transform.rotation);
+                        avatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
+                        avatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
+                        avatarConfig.avatarLossyScale = new DTAvatarConfigVector3(container.targetAvatar.transform.lossyScale);
+                        avatarConfig.wearableLossyScale = new DTAvatarConfigVector3(container.targetWearable.transform.lossyScale);
+                        ReadOnlyTextField("Delta World Position", deltaPos.ToString());
+                        ReadOnlyTextField("Delta World Rotation", deltaRotation.ToString());
+                        ReadOnlyTextField("Avatar Lossy Scale", container.targetAvatar.transform.localScale.ToString());
+                        ReadOnlyTextField("Wearable Lossy Scale", container.targetWearable.transform.localScale.ToString());
+
+                        EditorGUILayout.HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
+                    }
+                }
             }
             EditorGUILayout.EndVertical();
         }
