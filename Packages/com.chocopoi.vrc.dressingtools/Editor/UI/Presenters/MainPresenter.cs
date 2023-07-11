@@ -25,11 +25,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinetWearable = new DTCabinetWearable(config)
             {
                 // empty references
-                objectReferences = new DTGameObjectReference[0]
+                objectReferences = new DTGameObjectReference[0],
+                // serialize a json copy for backward compatibility backup 
+                serializedJson = JsonConvert.SerializeObject(config)
             };
 
-            // serialize a json copy for backward compatibility backup 
-            cabinetWearable.serializedJson = JsonConvert.SerializeObject(cabinetWearable);
             cabinet.wearables.Add(cabinetWearable);
 
             // TODO: reset dressing tab?
