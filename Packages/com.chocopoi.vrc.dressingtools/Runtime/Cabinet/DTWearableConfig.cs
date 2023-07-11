@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
@@ -48,7 +49,28 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public DTWearableConfig()
         {
+            // initialize some fields
+            var isoTimeStr = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+            info = new DTWearableInfo
+            {
+                uuid = Guid.NewGuid().ToString(),
+                createdTime = isoTimeStr,
+                updatedTime = isoTimeStr
+            };
 
+            targetAvatarConfigs = new DTAvatarConfig[0];
+            avatarAnimationOnWear = new DTAnimationPreset()
+            {
+                toggles = new DTAnimationToggle[0],
+                blendshapes = new DTAnimationBlendshapeValue[0]
+            };
+            wearableAnimationOnWear = new DTAnimationPreset()
+            {
+                toggles = new DTAnimationToggle[0],
+                blendshapes = new DTAnimationBlendshapeValue[0]
+            };
+            wearableCustomizables = new DTWearableCustomizable[0];
+            blendshapeSyncs = new DTAnimationBlendshapeSync[0];
         }
 
         // copy constructor

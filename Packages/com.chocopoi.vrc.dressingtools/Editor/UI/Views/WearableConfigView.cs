@@ -69,10 +69,18 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private bool regenerateMappingsNeeded = false;
 
+        private bool metaInfoUseWearableName = true;
+
         public WearableConfigView(WearableConfigViewContainer container)
         {
             wearableConfigPresenter = new WearableConfigPresenter(this);
             this.container = container;
+
+            // check if meta info name is customized
+            if (container.targetWearable != null && container.config.info.name != container.targetWearable.name)
+            {
+                metaInfoUseWearableName = false;
+            }
         }
 
         private void DrawTypeGenericGUI()
@@ -410,15 +418,6 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGenerationAvatarOnWear)
             {
-                if (container.config.avatarAnimationOnWear == null)
-                {
-                    container.config.avatarAnimationOnWear = new DTAnimationPreset()
-                    {
-                        toggles = new DTAnimationToggle[0],
-                        blendshapes = new DTAnimationBlendshapeValue[0]
-                    };
-                }
-
                 if (container.targetAvatar != null)
                 {
                     DrawAnimationPreset(container.targetAvatar.transform, container.config.avatarAnimationOnWear, ref foldoutAvatarAnimationPresetToggles, ref foldoutAvatarAnimationPresetBlendshapes);
@@ -438,15 +437,6 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGenerationWearableOnWear)
             {
-                if (container.config.wearableAnimationOnWear == null)
-                {
-                    container.config.wearableAnimationOnWear = new DTAnimationPreset()
-                    {
-                        toggles = new DTAnimationToggle[0],
-                        blendshapes = new DTAnimationBlendshapeValue[0]
-                    };
-                }
-
                 if (container.targetWearable != null)
                 {
                     DrawAnimationPreset(container.targetWearable.transform, container.config.wearableAnimationOnWear, ref foldoutWearableAnimationPresetToggles, ref foldoutWearableAnimationPresetBlendshapes);
@@ -469,11 +459,6 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGenerationBlendshapeSync)
             {
-                if (container.config.blendshapeSyncs == null)
-                {
-                    container.config.blendshapeSyncs = new DTAnimationBlendshapeSync[0];
-                }
-
                 if (avatarRoot == null || wearableRoot == null)
                 {
                     EditorGUILayout.HelpBox("Cannot render blendshape sync editor without a target avatar and a target wearble selected.", MessageType.Error);
@@ -627,6 +612,16 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
+        private void ReadOnlyTextField(string label, string text)
+        {
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth - 4));
+                EditorGUILayout.SelectableLabel(text, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
         private void DrawMetaInfoGUI()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -634,10 +629,40 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutMetaInfo)
             {
-                EditorGUILayout.TextField("Name", "");
-                EditorGUILayout.TextField("Author", "");
+                ReadOnlyTextField("UUID", container.config.info.uuid);
+
+                metaInfoUseWearableName = EditorGUILayout.ToggleLeft("Use wearable object's name", metaInfoUseWearableName);
+                if (metaInfoUseWearableName)
+                {
+                    container.config.info.name = container.targetWearable?.name;
+                }
+                EditorGUI.BeginDisabledGroup(metaInfoUseWearableName);
+                container.config.info.name = EditorGUILayout.TextField("Name", container.config.info.name);
+                EditorGUI.EndDisabledGroup();
+                container.config.info.author = EditorGUILayout.TextField("Author", container.config.info.author);
+
+                // attempts to parse and display the created time
+                if (DateTime.TryParse(container.config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
+                {
+                    ReadOnlyTextField("Created Time", createdTimeDt.ToLocalTime().ToString());
+                }
+                else
+                {
+                    ReadOnlyTextField("Created Time", "(Unable to parse date)");
+                }
+
+                // attempts to parse and display the updated time
+                if (DateTime.TryParse(container.config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
+                {
+                    ReadOnlyTextField("Updated Time", updatedTimeDt.ToLocalTime().ToString());
+                }
+                else
+                {
+                    ReadOnlyTextField("Updated Time", "(Unable to parse date)");
+                }
+
                 GUILayout.Label("Description");
-                EditorGUILayout.TextArea("");
+                container.config.info.description = EditorGUILayout.TextArea(container.config.info.description);
             }
             EditorGUILayout.EndVertical();
         }
@@ -682,12 +707,14 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void PrepareConfig()
         {
+            container.config.configVersion = DTWearableConfig.CurrentConfigVersion;
+
             // update values from mapping editor container
             var mappingEditorContainer = wearableConfigPresenter.GetMappingEditorContainer();
-            container.config.boneMappings = mappingEditorContainer.boneMappings?.ToArray();
             container.config.boneMappingMode = mappingEditorContainer.boneMappingMode;
-            container.config.objectMappings = mappingEditorContainer.objectMappings?.ToArray();
+            container.config.boneMappings = container.config.boneMappingMode != DTWearableMappingMode.Auto ? mappingEditorContainer.boneMappings?.ToArray() : new DTBoneMapping[0];
             container.config.objectMappingMode = mappingEditorContainer.objectMappingMode;
+            container.config.objectMappings = container.config.objectMappingMode != DTWearableMappingMode.Auto ? mappingEditorContainer.objectMappings?.ToArray() : new DTObjectMapping[0];
         }
 
         public bool IsConfigReady()
@@ -700,7 +727,7 @@ namespace Chocopoi.DressingTools.UI.Views
             if (selectedWearableType == 1)
             {
                 // armature mode
-                ready |= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null && container.config.objectMappings != null;
+                ready &= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null && container.config.objectMappings != null;
             }
 
             return ready;
