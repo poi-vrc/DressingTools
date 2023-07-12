@@ -6,6 +6,7 @@ namespace Chocopoi.DressingTools.Dresser
 {
     public interface IDTDresser
     {
+        DTDresserSettings DeserializeSettings(string serializedJson);
         DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings);
     }
 }

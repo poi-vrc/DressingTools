@@ -76,6 +76,8 @@ namespace Chocopoi.DressingTools
             // TODO: read default config, scan for armature names?
             newCabinet.avatarGameObject = avatar;
             newCabinet.avatarArmatureName = "Armature";
+            newCabinet.applierMode = DTCabinetApplierMode.LateApply;
+            newCabinet.serializedApplierSettings = "{}";
 
             return newCabinet;
         }

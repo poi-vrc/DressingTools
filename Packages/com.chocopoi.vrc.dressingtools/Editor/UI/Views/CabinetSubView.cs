@@ -90,9 +90,13 @@ namespace Chocopoi.DressingTools.UI.Views
                 // initialize applier settings
                 if (applier is DTDefaultApplier)
                 {
-                    if (applierSettings == null)
+                    if (applierSettings == null || !(applierSettings is DTDefaultApplierSettings))
                     {
                         applierSettings = applier.DeserializeSettings(cabinet.serializedApplierSettings ?? "{}");
+                        if (applierSettings == null)
+                        {
+                            applierSettings = new DTDefaultApplierSettings();
+                        }
                     }
                 }
 

@@ -3,6 +3,7 @@ using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
 using Chocopoi.DressingTools.Logging;
+using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Dresser
 {
@@ -99,6 +100,11 @@ namespace Chocopoi.DressingTools.Dresser
 
             // return the report
             return report;
+        }
+
+        public DTDresserSettings DeserializeSettings(string serializedJson)
+        {
+            return JsonConvert.DeserializeObject<DTDefaultDresserSettings>(serializedJson);
         }
     }
 }

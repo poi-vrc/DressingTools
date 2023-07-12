@@ -8,6 +8,7 @@ using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -218,21 +219,30 @@ namespace Chocopoi.DressingTools.UI.Views
                 container.config.dresserName = dresser.GetType().FullName;
 
                 // Initialize dresser settings
-                if (dresser is DTDefaultDresser && !(dresserSettings is DTDefaultDresserSettings))
+                if (dresser is DTDefaultDresser)
                 {
-                    dresserSettings = new DTDefaultDresserSettings
+                    if (dresserSettings == null || !(dresserSettings is DTDefaultDresserSettings))
                     {
-                        // TODO: constant defaults?
-                        avatarArmatureName = "Armature",
-                        wearableArmatureName = "Armature",
-                        dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
-                    };
+                        dresserSettings = dresser.DeserializeSettings(container.config.serializedDresserConfig ?? "{}");
+                        if (dresserSettings == null)
+                        {
+                            dresserSettings = new DTDefaultDresserSettings();
+                        }
+                        dresserSettings.avatarArmatureName = "Armature";
+                        dresserSettings.wearableArmatureName = "Armature";
+                    }
                 }
 
                 // draw the dresser settings GUI and regenerate if modified
                 dresserSettings.targetAvatar = container.targetAvatar;
                 dresserSettings.targetWearable = container.targetWearable;
-                regenerateMappingsNeeded |= dresserSettings.DrawEditorGUI();
+                if (dresserSettings.DrawEditorGUI())
+                {
+                    regenerateMappingsNeeded = true;
+
+                    // serialize if modified
+                    container.config.serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings);
+                }
 
                 EditorGUILayout.Separator();
 
@@ -794,6 +804,8 @@ namespace Chocopoi.DressingTools.UI.Views
         public void PrepareConfig()
         {
             container.config.configVersion = DTWearableConfig.CurrentConfigVersion;
+
+            container.config.serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings);
 
             // update values from mapping editor container
             var mappingEditorContainer = wearableConfigPresenter.GetMappingEditorContainer();

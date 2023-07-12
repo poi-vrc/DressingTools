@@ -1,16 +1,21 @@
-﻿using UnityEditor;
+﻿using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser
 {
     public class DTDresserSettings
     {
+        [JsonIgnore]
         public GameObject targetAvatar;
 
+        [JsonIgnore]
         public GameObject targetWearable;
 
+        [JsonIgnore]
         public string avatarArmatureName;
 
+        [JsonIgnore]
         public string wearableArmatureName;
 
         public virtual bool DrawEditorGUI()
