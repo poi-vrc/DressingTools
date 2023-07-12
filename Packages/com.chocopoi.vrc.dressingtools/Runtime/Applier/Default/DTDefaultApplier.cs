@@ -74,20 +74,62 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // apply wearable scale
                 wearableObj.transform.localScale = avatarConfig.wearableLossyScale.ToVector3();
 
-                var boneMappings = new List<DTBoneMapping>();
-                switch (wearableConfig.boneMappingMode)
+                // execute dresser
+                var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
+                var dresserSettings = dresser.DeserializeSettings(wearableConfig.serializedDresserConfig);
+                if (dresserSettings == null)
                 {
-                    case DTWearableMappingMode.Auto:
-                        var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
-                        var dresserSettings = dresser.DeserializeSettings(wearableConfig.serializedDresserConfig);
-                        if (dresserSettings == null)
-                        {
-                            // fallback to become a empty
-                            dresserSettings = dresser.NewSettings();
-                        }
-                        break;
+                    // fallback to become a empty
+                    dresserSettings = dresser.NewSettings();
+                }
+                var dresserReport = dresser.Execute(dresserSettings, out var boneMappings, out var objectMappings);
+
+                // abort on error
+                if (dresserReport.Result != DTReportResult.Compatible && dresserReport.Result != DTReportResult.Ok)
+                {
+                    report.LogError(0, string.Format("Unable to wear \"{0}\" with dresser report errors!", wearableConfig.info.name));
+                    continue;
                 }
 
+                // handle bone overrides
+                if (wearableConfig.boneMappingMode == DTWearableMappingMode.Manual)
+                {
+                    boneMappings = new List<DTBoneMapping>(wearableConfig.boneMappings);
+                }
+                else if (wearableConfig.boneMappingMode == DTWearableMappingMode.Override)
+                {
+                    foreach (var mappingOverride in wearableConfig.boneMappings)
+                    {
+                        foreach (var originalMapping in boneMappings)
+                        {
+                            // override on match
+                            if (originalMapping.avatarBonePath == mappingOverride.avatarBonePath && originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
+                            {
+                                originalMapping.mappingType = mappingOverride.mappingType;
+                            }
+                        }
+                    }
+                }
+
+                // handle object overrides
+                if (wearableConfig.objectMappingMode == DTWearableMappingMode.Manual)
+                {
+                    objectMappings = new List<DTObjectMapping>(wearableConfig.objectMappings);
+                }
+                else if (wearableConfig.objectMappingMode == DTWearableMappingMode.Override)
+                {
+                    foreach (var mappingOverride in wearableConfig.objectMappings)
+                    {
+                        foreach (var originalMapping in objectMappings)
+                        {
+                            // override on match
+                            if (originalMapping.wearableObjectPath == mappingOverride.wearableObjectPath)
+                            {
+                                originalMapping.avatarObjectPath = mappingOverride.avatarObjectPath;
+                            }
+                        }
+                    }
+                }
 
                 // restore avatar scale
                 if (lastAvatarParent != null)
