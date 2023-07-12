@@ -143,6 +143,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 if (!GenerateMappings(report, wearableConfig, out var boneMappings, out var objectMappings))
                 {
                     // abort on error
+                    RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                     continue;
                 }
 
