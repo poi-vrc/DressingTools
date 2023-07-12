@@ -106,5 +106,10 @@ namespace Chocopoi.DressingTools.Dresser
         {
             return JsonConvert.DeserializeObject<DTDefaultDresserSettings>(serializedJson);
         }
+
+        public DTDresserSettings NewSettings()
+        {
+            return new DTDefaultDresserSettings();
+        }
     }
 }

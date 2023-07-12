@@ -226,7 +226,7 @@ namespace Chocopoi.DressingTools.UI.Views
                         dresserSettings = dresser.DeserializeSettings(container.config.serializedDresserConfig ?? "{}");
                         if (dresserSettings == null)
                         {
-                            dresserSettings = new DTDefaultDresserSettings();
+                            dresserSettings = dresser.NewSettings();
                         }
                         dresserSettings.avatarArmatureName = "Armature";
                         dresserSettings.wearableArmatureName = "Armature";

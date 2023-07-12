@@ -79,6 +79,12 @@ namespace Chocopoi.DressingTools.Applier.Default
                 {
                     case DTWearableMappingMode.Auto:
                         var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
+                        var dresserSettings = dresser.DeserializeSettings(wearableConfig.serializedDresserConfig);
+                        if (dresserSettings == null)
+                        {
+                            // fallback to become a empty
+                            dresserSettings = dresser.NewSettings();
+                        }
                         break;
                 }
 
@@ -97,6 +103,11 @@ namespace Chocopoi.DressingTools.Applier.Default
         public DTApplierSettings DeserializeSettings(string serializedJson)
         {
             return JsonConvert.DeserializeObject<DTDefaultApplierSettings>(serializedJson);
+        }
+
+        public DTApplierSettings NewSettings()
+        {
+            return new DTDefaultApplierSettings();
         }
     }
 }
