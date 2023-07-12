@@ -9,6 +9,103 @@ namespace Chocopoi.DressingTools.Applier.Default
 {
     public class DTDefaultApplier : IDTApplier
     {
+        private void ApplyTransforms(DTReport report, DTAvatarConfig avatarConfig, GameObject targetAvatar, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
+        {
+            // check position delta and adjust
+            {
+                var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
+                if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
+                {
+                    report.LogInfo(0, "Position delta mismatch, adjusting wearable position: " + wearableWorldPos.ToString());
+                    targetWearable.transform.position += wearableWorldPos;
+                }
+            }
+
+            // check rotation delta and adjust
+            {
+                var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
+                if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
+                {
+                    report.LogInfo(0, "Rotation delta mismatch, adjusting wearable rotation: " + wearableWorldRot.ToString());
+                    targetWearable.transform.rotation *= wearableWorldRot;
+                }
+            }
+
+            // apply avatar scale
+            lastAvatarParent = targetAvatar.transform.parent;
+            lastAvatarScale = Vector3.zero + targetAvatar.transform.localScale;
+            if (lastAvatarParent != null)
+            {
+                // tricky workaround to apply lossy world scale is to unparent
+                targetAvatar.transform.SetParent(null);
+            }
+            targetAvatar.transform.localScale = avatarConfig.avatarLossyScale.ToVector3();
+
+            // apply wearable scale
+            targetWearable.transform.localScale = avatarConfig.wearableLossyScale.ToVector3();
+        }
+
+        private bool GenerateMappings(DTReport report, DTWearableConfig wearableConfig, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
+        {
+            // execute dresser
+            var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
+            var dresserSettings = dresser.DeserializeSettings(wearableConfig.serializedDresserConfig);
+            if (dresserSettings == null)
+            {
+                // fallback to become a empty
+                dresserSettings = dresser.NewSettings();
+            }
+            var dresserReport = dresser.Execute(dresserSettings, out boneMappings, out objectMappings);
+
+            // abort on error
+            if (dresserReport.Result != DTReportResult.Compatible && dresserReport.Result != DTReportResult.Ok)
+            {
+                report.LogError(0, string.Format("Unable to wear \"{0}\" with dresser report errors!", wearableConfig.info.name));
+                return false;
+            }
+
+            // handle bone overrides
+            if (wearableConfig.boneMappingMode == DTWearableMappingMode.Manual)
+            {
+                boneMappings = new List<DTBoneMapping>(wearableConfig.boneMappings);
+            }
+            else if (wearableConfig.boneMappingMode == DTWearableMappingMode.Override)
+            {
+                foreach (var mappingOverride in wearableConfig.boneMappings)
+                {
+                    foreach (var originalMapping in boneMappings)
+                    {
+                        // override on match
+                        if (originalMapping.avatarBonePath == mappingOverride.avatarBonePath && originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
+                        {
+                            originalMapping.mappingType = mappingOverride.mappingType;
+                        }
+                    }
+                }
+            }
+
+            // handle object overrides
+            if (wearableConfig.objectMappingMode == DTWearableMappingMode.Manual)
+            {
+                objectMappings = new List<DTObjectMapping>(wearableConfig.objectMappings);
+            }
+            else if (wearableConfig.objectMappingMode == DTWearableMappingMode.Override)
+            {
+                foreach (var mappingOverride in wearableConfig.objectMappings)
+                {
+                    foreach (var originalMapping in objectMappings)
+                    {
+                        // override on match
+                        if (originalMapping.wearableObjectPath == mappingOverride.wearableObjectPath)
+                        {
+                            originalMapping.avatarObjectPath = mappingOverride.avatarObjectPath;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
 
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
         {
@@ -41,105 +138,28 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // instantiate wearable prefab
                 var wearableObj = Object.Instantiate(wearableConfig.wearableGameObject);
 
-                // check position delta and adjust
-                {
-                    var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
-                    if (wearableObj.transform.position - cabinet.avatarGameObject.transform.position != wearableWorldPos)
-                    {
-                        report.LogInfo(0, "Position delta mismatch, adjusting wearable position: " + wearableWorldPos.ToString());
-                        wearableObj.transform.position += wearableWorldPos;
-                    }
-                }
+                ApplyTransforms(report, avatarConfig, cabinet.avatarGameObject, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
-                // check rotation delta and adjust
+                if (!GenerateMappings(report, wearableConfig, out var boneMappings, out var objectMappings))
                 {
-                    var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
-                    if (wearableObj.transform.rotation * Quaternion.Inverse(cabinet.avatarGameObject.transform.rotation) != wearableWorldRot)
-                    {
-                        report.LogInfo(0, "Rotation delta mismatch, adjusting wearable rotation: " + wearableWorldRot.ToString());
-                        wearableObj.transform.rotation *= wearableWorldRot;
-                    }
-                }
-
-                // apply avatar scale
-                var lastAvatarParent = cabinet.avatarGameObject.transform.parent;
-                var lastAvatarScale = Vector3.zero + cabinet.avatarGameObject.transform.localScale;
-                if (lastAvatarParent != null)
-                {
-                    // tricky workaround to apply lossy world scale is to unparent
-                    cabinet.avatarGameObject.transform.SetParent(null);
-                }
-                cabinet.avatarGameObject.transform.localScale = avatarConfig.avatarLossyScale.ToVector3();
-
-                // apply wearable scale
-                wearableObj.transform.localScale = avatarConfig.wearableLossyScale.ToVector3();
-
-                // execute dresser
-                var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
-                var dresserSettings = dresser.DeserializeSettings(wearableConfig.serializedDresserConfig);
-                if (dresserSettings == null)
-                {
-                    // fallback to become a empty
-                    dresserSettings = dresser.NewSettings();
-                }
-                var dresserReport = dresser.Execute(dresserSettings, out var boneMappings, out var objectMappings);
-
-                // abort on error
-                if (dresserReport.Result != DTReportResult.Compatible && dresserReport.Result != DTReportResult.Ok)
-                {
-                    report.LogError(0, string.Format("Unable to wear \"{0}\" with dresser report errors!", wearableConfig.info.name));
+                    // abort on error
                     continue;
                 }
 
-                // handle bone overrides
-                if (wearableConfig.boneMappingMode == DTWearableMappingMode.Manual)
-                {
-                    boneMappings = new List<DTBoneMapping>(wearableConfig.boneMappings);
-                }
-                else if (wearableConfig.boneMappingMode == DTWearableMappingMode.Override)
-                {
-                    foreach (var mappingOverride in wearableConfig.boneMappings)
-                    {
-                        foreach (var originalMapping in boneMappings)
-                        {
-                            // override on match
-                            if (originalMapping.avatarBonePath == mappingOverride.avatarBonePath && originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
-                            {
-                                originalMapping.mappingType = mappingOverride.mappingType;
-                            }
-                        }
-                    }
-                }
-
-                // handle object overrides
-                if (wearableConfig.objectMappingMode == DTWearableMappingMode.Manual)
-                {
-                    objectMappings = new List<DTObjectMapping>(wearableConfig.objectMappings);
-                }
-                else if (wearableConfig.objectMappingMode == DTWearableMappingMode.Override)
-                {
-                    foreach (var mappingOverride in wearableConfig.objectMappings)
-                    {
-                        foreach (var originalMapping in objectMappings)
-                        {
-                            // override on match
-                            if (originalMapping.wearableObjectPath == mappingOverride.wearableObjectPath)
-                            {
-                                originalMapping.avatarObjectPath = mappingOverride.avatarObjectPath;
-                            }
-                        }
-                    }
-                }
-
-                // restore avatar scale
-                if (lastAvatarParent != null)
-                {
-                    cabinet.avatarGameObject.transform.SetParent(lastAvatarParent);
-                }
-                cabinet.avatarGameObject.transform.localScale = lastAvatarScale;
+                RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
             }
 
             return report;
+        }
+
+        private void RollbackTransform(GameObject targetAvatar, Transform lastAvatarParent, Vector3 lastAvatarScale)
+        {
+            // restore avatar scale
+            if (lastAvatarParent != null)
+            {
+                targetAvatar.transform.SetParent(lastAvatarParent);
+            }
+            targetAvatar.transform.localScale = lastAvatarScale;
         }
 
         public DTApplierSettings DeserializeSettings(string serializedJson)
