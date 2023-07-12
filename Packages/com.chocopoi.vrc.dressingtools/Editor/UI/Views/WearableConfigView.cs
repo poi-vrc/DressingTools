@@ -656,7 +656,7 @@ namespace Chocopoi.DressingTools.UI.Views
                     }
                     else
                     {
-                        ReadOnlyTextField("GUID", guid);
+                        DTUtils.ReadOnlyTextField("GUID", guid);
 
                         var avatarConfig = FindAvatarConfigByGuid(guid);
 
@@ -689,7 +689,7 @@ namespace Chocopoi.DressingTools.UI.Views
                             if (selectedWearableType == 1 && dresserSettings != null)
                             {
                                 avatarConfig.armatureName = dresserSettings.avatarArmatureName;
-                                ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
+                                DTUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
                             }
                             else
                             {
@@ -700,7 +700,7 @@ namespace Chocopoi.DressingTools.UI.Views
                         else
                         {
                             avatarConfig.armatureName = cabinet.avatarArmatureName;
-                            ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
+                            DTUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
                         }
 
                         var deltaPos = container.targetWearable.transform.position - container.targetAvatar.transform.position;
@@ -709,26 +709,16 @@ namespace Chocopoi.DressingTools.UI.Views
                         avatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
                         avatarConfig.avatarLossyScale = new DTAvatarConfigVector3(container.targetAvatar.transform.lossyScale);
                         avatarConfig.wearableLossyScale = new DTAvatarConfigVector3(container.targetWearable.transform.lossyScale);
-                        ReadOnlyTextField("Delta World Position", deltaPos.ToString());
-                        ReadOnlyTextField("Delta World Rotation", deltaRotation.ToString());
-                        ReadOnlyTextField("Avatar Lossy Scale", container.targetAvatar.transform.localScale.ToString());
-                        ReadOnlyTextField("Wearable Lossy Scale", container.targetWearable.transform.localScale.ToString());
+                        DTUtils.ReadOnlyTextField("Delta World Position", deltaPos.ToString());
+                        DTUtils.ReadOnlyTextField("Delta World Rotation", deltaRotation.ToString());
+                        DTUtils.ReadOnlyTextField("Avatar Lossy Scale", container.targetAvatar.transform.localScale.ToString());
+                        DTUtils.ReadOnlyTextField("Wearable Lossy Scale", container.targetWearable.transform.localScale.ToString());
 
                         EditorGUILayout.HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
                     }
                 }
             }
             EditorGUILayout.EndVertical();
-        }
-
-        private void ReadOnlyTextField(string label, string text)
-        {
-            EditorGUILayout.BeginHorizontal();
-            {
-                EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth - 4));
-                EditorGUILayout.SelectableLabel(text, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-            }
-            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawMetaInfoGUI()
@@ -738,7 +728,7 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutMetaInfo)
             {
-                ReadOnlyTextField("UUID", container.config.info.uuid);
+                DTUtils.ReadOnlyTextField("UUID", container.config.info.uuid);
 
                 metaInfoUseWearableName = EditorGUILayout.ToggleLeft("Use wearable object's name", metaInfoUseWearableName);
                 if (metaInfoUseWearableName)
@@ -753,21 +743,21 @@ namespace Chocopoi.DressingTools.UI.Views
                 // attempts to parse and display the created time
                 if (DateTime.TryParse(container.config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
                 {
-                    ReadOnlyTextField("Created Time", createdTimeDt.ToLocalTime().ToString());
+                    DTUtils.ReadOnlyTextField("Created Time", createdTimeDt.ToLocalTime().ToString());
                 }
                 else
                 {
-                    ReadOnlyTextField("Created Time", "(Unable to parse date)");
+                    DTUtils.ReadOnlyTextField("Created Time", "(Unable to parse date)");
                 }
 
                 // attempts to parse and display the updated time
                 if (DateTime.TryParse(container.config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
                 {
-                    ReadOnlyTextField("Updated Time", updatedTimeDt.ToLocalTime().ToString());
+                    DTUtils.ReadOnlyTextField("Updated Time", updatedTimeDt.ToLocalTime().ToString());
                 }
                 else
                 {
-                    ReadOnlyTextField("Updated Time", "(Unable to parse date)");
+                    DTUtils.ReadOnlyTextField("Updated Time", "(Unable to parse date)");
                 }
 
                 GUILayout.Label("Description");

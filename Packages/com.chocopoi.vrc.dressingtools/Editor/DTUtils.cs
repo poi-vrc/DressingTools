@@ -125,6 +125,16 @@ namespace Chocopoi.DressingTools
             return Object.FindObjectsOfType<DTCabinet>();
         }
 
+        public static void ReadOnlyTextField(string label, string text)
+        {
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth - 4));
+                EditorGUILayout.SelectableLabel(text, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
         public static DTCabinet GetAvatarCabinet(GameObject avatar, bool createIfNotExists = false)
         {
             // Find DTContainer in the scene, if not, create one
