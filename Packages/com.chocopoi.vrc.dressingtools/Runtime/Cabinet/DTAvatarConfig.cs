@@ -26,6 +26,11 @@ namespace Chocopoi.DressingTools.Cabinet
             y = vec.y;
             z = vec.z;
         }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3(x, y, z);
+        }
     }
 
     [Serializable]
@@ -50,6 +55,11 @@ namespace Chocopoi.DressingTools.Cabinet
             y = q.y;
             z = q.z;
             w = q.w;
+        }
+
+        public Quaternion ToQuaternion()
+        {
+            return new Quaternion(x, y, z, w);
         }
     }
 
