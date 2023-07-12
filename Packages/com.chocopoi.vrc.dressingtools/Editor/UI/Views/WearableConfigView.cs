@@ -202,7 +202,7 @@ namespace Chocopoi.DressingTools.UI.Views
             if (foldoutMapping)
             {
                 // list all available dressers
-                string[] dresserKeys = wearableConfigPresenter.GetAvailableDresserKeys();
+                string[] dresserKeys = DresserRegistry.GetAvailableDresserKeys();
                 var selectedDresserIndex = EditorGUILayout.Popup("Dressers", Array.IndexOf(dresserKeys, selectedDresserName), dresserKeys);
 
                 if (dresserKeys[selectedDresserIndex] != selectedDresserName)
@@ -212,7 +212,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 }
                 selectedDresserName = dresserKeys[selectedDresserIndex];
 
-                var dresser = wearableConfigPresenter.GetDresserByName(selectedDresserName);
+                var dresser = DresserRegistry.GetDresserByName(selectedDresserName);
 
                 // set the type name to config
                 container.config.dresserName = dresser.GetType().FullName;
@@ -777,7 +777,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 // regenerate on flag
                 if (regenerateMappingsNeeded)
                 {
-                    var dresser = wearableConfigPresenter.GetDresserByName(selectedDresserName);
+                    var dresser = DresserRegistry.GetDresserByName(selectedDresserName);
                     dresserReport = wearableConfigPresenter.GenerateDresserMappings(dresser, dresserSettings);
                     regenerateMappingsNeeded = false;
                 }

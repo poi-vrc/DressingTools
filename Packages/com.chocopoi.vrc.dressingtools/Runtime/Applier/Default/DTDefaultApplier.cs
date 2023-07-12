@@ -1,4 +1,6 @@
-﻿using Chocopoi.DressingTools.Cabinet;
+﻿using System.Collections.Generic;
+using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -7,7 +9,6 @@ namespace Chocopoi.DressingTools.Applier.Default
 {
     public class DTDefaultApplier : IDTApplier
     {
-        public object DTUtils { get; private set; }
 
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
         {
@@ -72,6 +73,15 @@ namespace Chocopoi.DressingTools.Applier.Default
 
                 // apply wearable scale
                 wearableObj.transform.localScale = avatarConfig.wearableLossyScale.ToVector3();
+
+                var boneMappings = new List<DTBoneMapping>();
+                switch (wearableConfig.boneMappingMode)
+                {
+                    case DTWearableMappingMode.Auto:
+                        var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
+                        break;
+                }
+
 
                 // restore avatar scale
                 if (lastAvatarParent != null)

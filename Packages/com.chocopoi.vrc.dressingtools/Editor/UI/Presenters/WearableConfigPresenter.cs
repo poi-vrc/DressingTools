@@ -11,11 +11,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class WearableConfigPresenter : IWearableConfigPresenter
     {
-        private static readonly Dictionary<string, IDTDresser> dressers = new Dictionary<string, IDTDresser>()
-        {
-            { "Default", new DTDefaultDresser() }
-        };
-
         private IWearableConfigView wearableConfigView;
 
         private DTMappingEditorContainer mappingEditorContainer;
@@ -39,32 +34,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             mappingEditorContainer.objectMappings = null;
             mappingEditorContainer.boneMappingMode = DTWearableMappingMode.Auto;
             mappingEditorContainer.objectMappingMode = DTWearableMappingMode.Auto;
-        }
-
-        public string[] GetAvailableDresserKeys()
-        {
-            string[] dresserKeys = new string[dressers.Keys.Count];
-            dressers.Keys.CopyTo(dresserKeys, 0);
-            return dresserKeys;
-        }
-
-        public IDTDresser GetDresserByName(string name)
-        {
-            dressers.TryGetValue(name, out var dresser);
-            return dresser;
-        }
-
-        public IDTDresser GetDresserByTypeName(string name)
-        {
-            foreach (var dresser in dressers.Values)
-            {
-                var type = dresser.GetType();
-                if (name == type.FullName || name == type.Name)
-                {
-                    return dresser;
-                }
-            }
-            return null;
         }
 
         public DTReport GenerateDresserMappings(IDTDresser dresser, DTDresserSettings dresserSettings)
