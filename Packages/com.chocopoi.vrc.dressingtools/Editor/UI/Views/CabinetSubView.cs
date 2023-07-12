@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             // TODO: beautify UI, now it's so simplified for functionality development
 
-            var cabinets = DTUtils.GetAllCabinets();
+            var cabinets = DTEditorUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -54,7 +54,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 selectedCreateCabinetGameObject = (GameObject)EditorGUILayout.ObjectField("Avatar", selectedCreateCabinetGameObject, typeof(GameObject), true);
                 if (GUILayout.Button("Create cabinet") && selectedCreateCabinetGameObject != null)
                 {
-                    DTUtils.GetAvatarCabinet(selectedCreateCabinetGameObject, true);
+                    DTEditorUtils.GetAvatarCabinet(selectedCreateCabinetGameObject, true);
                 }
                 return;
             }

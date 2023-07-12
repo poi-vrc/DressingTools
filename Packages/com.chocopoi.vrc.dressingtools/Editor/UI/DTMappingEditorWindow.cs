@@ -230,7 +230,7 @@ namespace Chocopoi.DressingTools.UI
 
             DrawMappingHeaderHelpBoxes(container.boneMappingMode);
 
-            DTUtils.DrawHorizontalLine();
+            DTEditorUtils.DrawHorizontalLine();
 
             // TODO: implement final result mapping preview
             GUILayout.Toolbar(0, new string[] { "Your Mappings", "Result Mappings" });
@@ -265,7 +265,7 @@ namespace Chocopoi.DressingTools.UI
 
             DrawMappingHeaderHelpBoxes(container.objectMappingMode);
 
-            DTUtils.DrawHorizontalLine();
+            DTEditorUtils.DrawHorizontalLine();
 
             // TODO: implement final result mapping preview
             GUILayout.Toolbar(0, new string[] { "Your Mappings", "Result Mappings" });

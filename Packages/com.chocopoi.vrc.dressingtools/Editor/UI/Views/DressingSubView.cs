@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.UI.Views
             // TODO: beautify UI
             wearableConfigViewSettings.targetAvatar = (GameObject)EditorGUILayout.ObjectField("Avatar", wearableConfigViewSettings.targetAvatar, typeof(GameObject), true);
 
-            var cabinet = DTUtils.GetAvatarCabinet(wearableConfigViewSettings.targetAvatar);
+            var cabinet = DTEditorUtils.GetAvatarCabinet(wearableConfigViewSettings.targetAvatar);
             if (cabinet == null)
             {
                 EditorGUILayout.HelpBox("The selected avatar has no existing cabinet.", MessageType.Error);

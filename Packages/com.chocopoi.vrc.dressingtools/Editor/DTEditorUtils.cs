@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class DTUtils
+    public class DTEditorUtils
     {
         private static Dictionary<string, System.Type> reflectionTypeCache = new Dictionary<string, System.Type>();
 

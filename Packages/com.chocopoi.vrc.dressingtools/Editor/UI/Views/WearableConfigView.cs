@@ -89,11 +89,10 @@ namespace Chocopoi.DressingTools.UI.Views
             // check if target avatar name is customized
             if (container.targetAvatar != null)
             {
-                var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(container.targetAvatar));
-                var guid = AssetDatabase.AssetPathToGUID(assetPath);
+                var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(container.targetAvatar);
                 if (guid != null && guid != "")
                 {
-                    var avatarConfig = FindAvatarConfigByGuid(guid);
+                    var avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(container.config.targetAvatarConfigs, guid);
                     if (avatarConfig != null)
                     {
                         targetAvatarConfigUseAvatarName = avatarConfig.name == container.targetAvatar.name;
@@ -263,7 +262,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 EditorGUI.EndDisabledGroup();
                 EditorGUILayout.EndHorizontal();
 
-                DTUtils.DrawHorizontalLine();
+                DTEditorUtils.DrawHorizontalLine();
 
                 DrawDresserReportGUI();
             }
@@ -604,6 +603,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
             EditorGUILayout.EndVertical();
         }
+
         private void DrawAnimationGenerationGUI()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -616,18 +616,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 DrawAnimationGenerationBlendshapeSync();
             }
             EditorGUILayout.EndVertical();
-        }
-
-        private DTAvatarConfig FindAvatarConfigByGuid(string guid)
-        {
-            foreach (var avatarConfig in container.config.targetAvatarConfigs)
-            {
-                if (avatarConfig.guid == guid)
-                {
-                    return avatarConfig;
-                }
-            }
-            return null;
         }
 
         private void DrawAvatarConfigsGUI()
@@ -647,8 +635,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
 
-                    var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(guidReferencePrefab ?? container.targetAvatar));
-                    var guid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
                     var invalidGuid = guid == null || guid == "";
                     if (invalidGuid)
                     {
@@ -656,9 +643,9 @@ namespace Chocopoi.DressingTools.UI.Views
                     }
                     else
                     {
-                        DTUtils.ReadOnlyTextField("GUID", guid);
+                        DTEditorUtils.ReadOnlyTextField("GUID", guid);
 
-                        var avatarConfig = FindAvatarConfigByGuid(guid);
+                        var avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(container.config.targetAvatarConfigs, guid);
 
                         if (avatarConfig == null)
                         {
@@ -682,14 +669,14 @@ namespace Chocopoi.DressingTools.UI.Views
                         EditorGUI.EndDisabledGroup();
 
                         // try obtain armature name from cabinet
-                        var cabinet = DTUtils.GetAvatarCabinet(container.targetAvatar);
+                        var cabinet = DTEditorUtils.GetAvatarCabinet(container.targetAvatar);
                         if (cabinet == null)
                         {
                             // attempt to get from dress settings if in armature mode
                             if (selectedWearableType == 1 && dresserSettings != null)
                             {
                                 avatarConfig.armatureName = dresserSettings.avatarArmatureName;
-                                DTUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
+                                DTEditorUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
                             }
                             else
                             {
@@ -700,7 +687,7 @@ namespace Chocopoi.DressingTools.UI.Views
                         else
                         {
                             avatarConfig.armatureName = cabinet.avatarArmatureName;
-                            DTUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
+                            DTEditorUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
                         }
 
                         var deltaPos = container.targetWearable.transform.position - container.targetAvatar.transform.position;
@@ -709,10 +696,10 @@ namespace Chocopoi.DressingTools.UI.Views
                         avatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
                         avatarConfig.avatarLossyScale = new DTAvatarConfigVector3(container.targetAvatar.transform.lossyScale);
                         avatarConfig.wearableLossyScale = new DTAvatarConfigVector3(container.targetWearable.transform.lossyScale);
-                        DTUtils.ReadOnlyTextField("Delta World Position", deltaPos.ToString());
-                        DTUtils.ReadOnlyTextField("Delta World Rotation", deltaRotation.ToString());
-                        DTUtils.ReadOnlyTextField("Avatar Lossy Scale", container.targetAvatar.transform.localScale.ToString());
-                        DTUtils.ReadOnlyTextField("Wearable Lossy Scale", container.targetWearable.transform.localScale.ToString());
+                        DTEditorUtils.ReadOnlyTextField("Delta World Position", deltaPos.ToString());
+                        DTEditorUtils.ReadOnlyTextField("Delta World Rotation", deltaRotation.ToString());
+                        DTEditorUtils.ReadOnlyTextField("Avatar Lossy Scale", container.targetAvatar.transform.localScale.ToString());
+                        DTEditorUtils.ReadOnlyTextField("Wearable Lossy Scale", container.targetWearable.transform.localScale.ToString());
 
                         EditorGUILayout.HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
                     }
@@ -728,7 +715,7 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutMetaInfo)
             {
-                DTUtils.ReadOnlyTextField("UUID", container.config.info.uuid);
+                DTEditorUtils.ReadOnlyTextField("UUID", container.config.info.uuid);
 
                 metaInfoUseWearableName = EditorGUILayout.ToggleLeft("Use wearable object's name", metaInfoUseWearableName);
                 if (metaInfoUseWearableName)
@@ -743,21 +730,21 @@ namespace Chocopoi.DressingTools.UI.Views
                 // attempts to parse and display the created time
                 if (DateTime.TryParse(container.config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
                 {
-                    DTUtils.ReadOnlyTextField("Created Time", createdTimeDt.ToLocalTime().ToString());
+                    DTEditorUtils.ReadOnlyTextField("Created Time", createdTimeDt.ToLocalTime().ToString());
                 }
                 else
                 {
-                    DTUtils.ReadOnlyTextField("Created Time", "(Unable to parse date)");
+                    DTEditorUtils.ReadOnlyTextField("Created Time", "(Unable to parse date)");
                 }
 
                 // attempts to parse and display the updated time
                 if (DateTime.TryParse(container.config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
                 {
-                    DTUtils.ReadOnlyTextField("Updated Time", updatedTimeDt.ToLocalTime().ToString());
+                    DTEditorUtils.ReadOnlyTextField("Updated Time", updatedTimeDt.ToLocalTime().ToString());
                 }
                 else
                 {
-                    DTUtils.ReadOnlyTextField("Updated Time", "(Unable to parse date)");
+                    DTEditorUtils.ReadOnlyTextField("Updated Time", "(Unable to parse date)");
                 }
 
                 GUILayout.Label("Description");

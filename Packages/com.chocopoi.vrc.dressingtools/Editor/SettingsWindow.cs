@@ -150,7 +150,7 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            DTUtils.DrawHorizontalLine();
+            DTEditorUtils.DrawHorizontalLine();
 
             DrawUpdateBranchSelectorGUI();
 
