@@ -1,10 +1,12 @@
 ﻿using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Applier
 {
     public interface IDTApplier
     {
-        DTReport ApplyWearable(DTApplierSettings settings, DTWearableConfig config);
+        DTApplierSettings DeserializeSettings(string serializedJson);
+        DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet);
     }
 }

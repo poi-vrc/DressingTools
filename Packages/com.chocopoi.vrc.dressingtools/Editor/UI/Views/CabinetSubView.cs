@@ -14,11 +14,6 @@ namespace Chocopoi.DressingTools.UI.Views
 {
     internal class CabinetSubView : ICabinetSubView
     {
-        private static readonly Dictionary<string, IDTApplier> appliers = new Dictionary<string, IDTApplier>
-        {
-            { "Default", new DTDefaultApplier() }
-        };
-
         private CabinetPresenter cabinetPresenter;
 
         private IMainPresenter mainPresenter;
@@ -35,29 +30,14 @@ namespace Chocopoi.DressingTools.UI.Views
             this.mainPresenter = mainPresenter;
         }
 
-        private string GetApplierKeyByTypeName(string typeName)
-        {
-            foreach (var applier in appliers)
-            {
-                var type = applier.Value.GetType();
-                if (type.Name == typeName || type.FullName == typeName)
-                {
-                    return applier.Key;
-                }
-            }
-            return null;
-        }
-
         private DTCabinetApplierMode ConvertIntToApplierMode(int applierMode)
         {
             switch (applierMode)
             {
                 default:
                 case 0:
-                    return DTCabinetApplierMode.LateApplyFullyIsolated;
+                    return DTCabinetApplierMode.LateApply;
                 case 1:
-                    return DTCabinetApplierMode.LateApplyEmbedScripts;
-                case 2:
                     return DTCabinetApplierMode.ApplyImmediately;
             }
         }
@@ -94,12 +74,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
             {
                 // list all appliers
-                string[] applierKeys = new string[appliers.Count];
-                appliers.Keys.CopyTo(applierKeys, 0);
-                string selectedApplierKey = GetApplierKeyByTypeName(cabinet.applierName);
+                string[] applierKeys = DTCabinet.GetApplierKeys();
+                string selectedApplierKey = DTCabinet.GetApplierKeyByTypeName(cabinet.applierName);
                 int selectedApplierIndex = EditorGUILayout.Popup("Appliers", selectedApplierKey != null ? Array.IndexOf(applierKeys, selectedApplierKey) : 0, applierKeys);
                 string newSelectedApplierKey = applierKeys[selectedApplierIndex];
-                var applier = appliers[newSelectedApplierKey];
+                var applier = DTCabinet.GetApplierByKey(newSelectedApplierKey);
                 cabinet.applierName = applier.GetType().FullName;
                 if (newSelectedApplierKey != selectedApplierKey)
                 {
@@ -113,7 +92,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     if (applierSettings == null)
                     {
-                        applierSettings = JsonConvert.DeserializeObject<DTDefaultApplierSettings>(cabinet.serializedApplierSettings ?? "{}");
+                        applierSettings = applier.DeserializeSettings(cabinet.serializedApplierSettings ?? "{}");
                     }
                 }
 
@@ -125,7 +104,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 }
             }
 
-            cabinet.applierMode = ConvertIntToApplierMode(EditorGUILayout.Popup("Applier Mode", (int)cabinet.applierMode, new string[] { "Late apply (Fully isolated)", "Late apply (Embed scripts to avatar)", "Apply immediately" }));
+            cabinet.applierMode = ConvertIntToApplierMode(EditorGUILayout.Popup("Applier Mode", (int)cabinet.applierMode, new string[] { "Late apply", "Apply immediately" }));
 
             var wearablesToRemove = new List<DTCabinetWearable>();
 

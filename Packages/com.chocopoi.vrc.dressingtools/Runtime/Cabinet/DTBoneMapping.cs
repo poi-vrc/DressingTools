@@ -14,13 +14,6 @@ namespace Chocopoi.DressingTools.Cabinet
     }
 
     [Serializable]
-    public class DTGameObjectReference
-    {
-        public string path;
-        public GameObject reference;
-    }
-
-    [Serializable]
     public class DTBoneMapping
     {
         public DTBoneMappingType mappingType;

@@ -1,7 +1,9 @@
-﻿using Chocopoi.DressingTools.Cabinet;
+﻿using System.Collections.Generic;
+using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -25,7 +27,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinetWearable = new DTCabinetWearable(config)
             {
                 // empty references
-                objectReferences = new DTGameObjectReference[0],
+                appliedObjects = new List<GameObject>(),
                 // serialize a json copy for backward compatibility backup 
                 serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
                 {
