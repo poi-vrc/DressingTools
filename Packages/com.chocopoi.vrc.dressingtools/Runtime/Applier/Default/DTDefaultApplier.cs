@@ -9,18 +9,6 @@ namespace Chocopoi.DressingTools.Applier.Default
     {
         public object DTUtils { get; private set; }
 
-        private DTAvatarConfig FindAvatarConfigByGuid(DTAvatarConfig[] configs, string guid)
-        {
-            foreach (var avatarConfig in configs)
-            {
-                if (avatarConfig.guid == guid)
-                {
-                    return avatarConfig;
-                }
-            }
-            return null;
-        }
-
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
         {
             var report = new DTReport();
@@ -40,7 +28,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                     else
                     {
-                        avatarConfig = FindAvatarConfigByGuid(wearable.targetAvatarConfigs, guid);
+                        avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(wearable.targetAvatarConfigs, guid);
                         if (avatarConfig == null)
                         {
                             report.LogWarn(0, string.Format("Wearable does not contain avatar config for the avatar GUID (\"{0}\") Using the first found avatar config instead.", guid));
