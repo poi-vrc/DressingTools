@@ -7,6 +7,7 @@ namespace Chocopoi.DressingTools.Cabinet
     [Serializable]
     public class DTCabinetWearable : DTWearableConfig
     {
+        public GameObject wearableGameObject;
         public List<GameObject> appliedObjects;
         public string serializedJson;
 

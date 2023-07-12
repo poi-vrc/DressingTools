@@ -22,10 +22,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             mainView.SwitchTab(1);
         }
 
-        public void AddToCabinet(DTCabinet cabinet, DTWearableConfig config)
+        public void AddToCabinet(DTCabinet cabinet, GameObject wearableGameObject, DTWearableConfig config)
         {
             var cabinetWearable = new DTCabinetWearable(config)
             {
+                wearableGameObject = wearableGameObject,
                 // empty references
                 appliedObjects = new List<GameObject>(),
                 // serialize a json copy for backward compatibility backup 
