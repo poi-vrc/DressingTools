@@ -56,7 +56,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     continue;
                 }
 
-                var avatarTrans = DTEditorUtils.GuessMatchingAvatarBone(avatarBoneParent, child.name);
+                var avatarTrans = DTRuntimeUtils.GuessMatchingAvatarBone(avatarBoneParent, child.name);
 
                 if (avatarTrans == null)
                 {
@@ -74,8 +74,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    var avatarDynamics = DTEditorUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
-                    var wearableDynamics = DTEditorUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
+                    var avatarDynamics = DTRuntimeUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
+                    var wearableDynamics = DTRuntimeUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
 
                     if (avatarDynamics != null)
                     {
@@ -151,8 +151,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             // TODO: replace by reading YAML
 
             // get the dynbone type
-            var DynamicBoneType = DTEditorUtils.FindType("DynamicBone");
-            var PhysBoneType = DTEditorUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+            var DynamicBoneType = DTRuntimeUtils.FindType("DynamicBone");
+            var PhysBoneType = DTRuntimeUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
             // scan avatar dynbones
 
@@ -207,7 +207,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             if (!avatarArmature)
             {
                 //guess the armature object by finding if the object name contains settings.avatarArmatureObjectName, but don't rename it
-                avatarArmature = DTEditorUtils.GuessArmature(settings.targetAvatar, settings.avatarArmatureName, false);
+                avatarArmature = DTRuntimeUtils.GuessArmature(settings.targetAvatar, settings.avatarArmatureName, false);
 
                 if (avatarArmature)
                 {
@@ -222,7 +222,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             if (!wearableArmature)
             {
                 //guess the armature object by finding if the object name contains settings.clothesArmatureObjectName and do not rename it
-                wearableArmature = DTEditorUtils.GuessArmature(settings.targetWearable, settings.wearableArmatureName, false);
+                wearableArmature = DTRuntimeUtils.GuessArmature(settings.targetWearable, settings.wearableArmatureName, false);
 
                 if (wearableArmature)
                 {

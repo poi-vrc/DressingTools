@@ -269,7 +269,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void DynamicBone_RemoveDynamicsAndUseParentConstraints_ReturnsCorrectBoneMappingAndLogCodes()
         {
             // DynamicBone has to be imported to run this test
-            Assert.NotNull(DTEditorUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
+            Assert.NotNull(DTRuntimeUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
             var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
@@ -319,7 +319,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void DynamicBone_KeepDynamicsAndUseParentConstraintIfNecessary_ReturnsCorrectBoneMappingAndLogCodes()
         {
             // DynamicBone has to be imported to run this test
-            Assert.NotNull(DTEditorUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
+            Assert.NotNull(DTRuntimeUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
             var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
@@ -369,7 +369,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void DynamicBone_IgnoreTransform_ReturnsCorrectBoneMappingAndLogCodes()
         {
             // DynamicBone has to be imported to run this test
-            Assert.NotNull(DTEditorUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
+            Assert.NotNull(DTRuntimeUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
             var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
@@ -419,7 +419,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void DynamicBone_CopyDynamics_ReturnsCorrectBoneMappingAndLogCodes()
         {
             // DynamicBone has to be imported to run this test
-            Assert.NotNull(DTEditorUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
+            Assert.NotNull(DTRuntimeUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
             var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
@@ -469,7 +469,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
         public void DynamicBone_IgnoreAll_ReturnsCorrectBoneMappingAndLogCodes()
         {
             // DynamicBone has to be imported to run this test
-            Assert.NotNull(DTEditorUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
+            Assert.NotNull(DTRuntimeUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
 
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
             var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearable.prefab");
