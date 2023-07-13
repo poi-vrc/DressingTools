@@ -54,6 +54,38 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
+        public static List<IDynamicsProxy> ScanDynamics(GameObject obj)
+        {
+            var dynamicsList = new List<IDynamicsProxy>();
+
+            // TODO: replace by reading YAML
+
+            // get the dynbone type
+            var DynamicBoneType = FindType("DynamicBone");
+            var PhysBoneType = FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+
+            // scan dynbones
+            if (DynamicBoneType != null)
+            {
+                var dynBones = obj.GetComponentsInChildren(DynamicBoneType);
+                foreach (var dynBone in dynBones)
+                {
+                    dynamicsList.Add(new DynamicBoneProxy(dynBone));
+                }
+            }
+
+            // scan physbones
+            if (PhysBoneType != null)
+            {
+                var physBones = obj.GetComponentsInChildren(PhysBoneType);
+                foreach (var physBone in physBones)
+                {
+                    dynamicsList.Add(new PhysBoneProxy(physBone));
+                }
+            }
+
+            return dynamicsList;
+        }
 
         public static IDynamicsProxy FindDynamicsWithRoot(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
         {

@@ -143,62 +143,6 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return count == 1;
         }
 
-        private static void ScanAvatarDynamics(GameObject targetAvatar, GameObject targetWearable, out List<IDynamicsProxy> avatarDynamicsList, out List<IDynamicsProxy> wearableDynamicsList)
-        {
-            avatarDynamicsList = new List<IDynamicsProxy>();
-            wearableDynamicsList = new List<IDynamicsProxy>();
-
-            // TODO: replace by reading YAML
-
-            // get the dynbone type
-            var DynamicBoneType = DTRuntimeUtils.FindType("DynamicBone");
-            var PhysBoneType = DTRuntimeUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
-
-            // scan avatar dynbones
-
-            if (DynamicBoneType != null)
-            {
-                var avatarDynBones = targetAvatar.GetComponentsInChildren(DynamicBoneType);
-                foreach (var dynBone in avatarDynBones)
-                {
-                    avatarDynamicsList.Add(new DynamicBoneProxy(dynBone));
-                }
-            }
-
-            // scan avatar physbones
-
-            if (PhysBoneType != null)
-            {
-                var avatarPhysBones = targetAvatar.GetComponentsInChildren(PhysBoneType);
-                foreach (var physBone in avatarPhysBones)
-                {
-                    avatarDynamicsList.Add(new PhysBoneProxy(physBone));
-                }
-            }
-
-            // scan original clothes dynbones
-
-            if (DynamicBoneType != null)
-            {
-                var wearableDynBones = targetWearable.GetComponentsInChildren(DynamicBoneType);
-                foreach (var dynBone in wearableDynBones)
-                {
-                    wearableDynamicsList.Add(new DynamicBoneProxy(dynBone));
-                }
-            }
-
-            // scan original clothes physbones
-
-            if (PhysBoneType != null)
-            {
-                var wearablePhysBones = targetWearable.GetComponentsInChildren(PhysBoneType);
-                foreach (var physBone in wearablePhysBones)
-                {
-                    wearableDynamicsList.Add(new PhysBoneProxy(physBone));
-                }
-            }
-        }
-
         public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings, List<DTObjectMapping> objectMappings)
         {
             var avatarArmature = settings.targetAvatar.transform.Find(settings.avatarArmatureName);
@@ -276,7 +220,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
 
             // Scan dynamics
-            ScanAvatarDynamics(settings.targetAvatar, settings.targetWearable, out var avatarDynamicsList, out var wearableDynamicsList);
+            var avatarDynamicsList = DTRuntimeUtils.ScanDynamics(settings.targetAvatar);
+            var wearableDynamicsList = DTRuntimeUtils.ScanDynamics(settings.targetWearable);
 
             // Process Armature
             ProcessBone(report, (DTDefaultDresserSettings)settings, avatarDynamicsList, wearableDynamicsList, 0, avatarArmature, wearableArmature, boneMappings);
