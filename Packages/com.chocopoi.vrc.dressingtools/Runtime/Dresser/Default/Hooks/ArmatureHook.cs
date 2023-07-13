@@ -92,7 +92,12 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.IgnoreTransform) //use legacy child gameobject
                         {
-                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, DTBoneMappingType.IgnoreTransform);
+                            boneMappings.Add(new DTBoneMapping()
+                            {
+                                mappingType = DTBoneMappingType.IgnoreTransform,
+                                avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
+                                wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
+                            });
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.CopyDynamics) //copy dyn bone to clothes bone
                         {

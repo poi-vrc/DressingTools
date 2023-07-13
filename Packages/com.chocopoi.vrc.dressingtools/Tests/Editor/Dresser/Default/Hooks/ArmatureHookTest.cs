@@ -215,11 +215,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
             new DTBoneMapping() { mappingType = DTBoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
             new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
             new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
-            new DTBoneMapping() { mappingType = DTBoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
         private static readonly DTBoneMapping[] ExpectedCopyDynamicsBoneMapping =
