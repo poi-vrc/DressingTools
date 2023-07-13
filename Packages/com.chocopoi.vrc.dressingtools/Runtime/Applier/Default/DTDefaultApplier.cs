@@ -45,6 +45,16 @@ namespace Chocopoi.DressingTools.Applier.Default
             targetWearable.transform.localScale = avatarConfig.wearableLossyScale.ToVector3();
         }
 
+        private void RollbackTransform(GameObject targetAvatar, Transform lastAvatarParent, Vector3 lastAvatarScale)
+        {
+            // restore avatar scale
+            if (lastAvatarParent != null)
+            {
+                targetAvatar.transform.SetParent(lastAvatarParent);
+            }
+            targetAvatar.transform.localScale = lastAvatarScale;
+        }
+
         private bool GenerateMappings(DTReport report, DTWearableConfig wearableConfig, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
         {
             // execute dresser
@@ -151,16 +161,6 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
 
             return report;
-        }
-
-        private void RollbackTransform(GameObject targetAvatar, Transform lastAvatarParent, Vector3 lastAvatarScale)
-        {
-            // restore avatar scale
-            if (lastAvatarParent != null)
-            {
-                targetAvatar.transform.SetParent(lastAvatarParent);
-            }
-            targetAvatar.transform.localScale = lastAvatarScale;
         }
 
         public DTApplierSettings DeserializeSettings(string serializedJson)
