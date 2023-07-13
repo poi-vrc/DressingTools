@@ -5,7 +5,7 @@ namespace Chocopoi.DressingTools.Proxy
 {
     public class PhysBoneProxy : IDynamicsProxy
     {
-        private static System.Type PhysBoneType = DTRuntimeUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+        public static readonly System.Type PhysBoneType = DTRuntimeUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
 
         public PhysBoneProxy(Component component)
         {

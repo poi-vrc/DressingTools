@@ -5,7 +5,7 @@ namespace Chocopoi.DressingTools.Proxy
 {
     public class DynamicBoneProxy : IDynamicsProxy
     {
-        private static System.Type DynamicBoneType = DTRuntimeUtils.FindType("DynamicBone");
+        public static readonly System.Type DynamicBoneType = DTRuntimeUtils.FindType("DynamicBone");
 
         public DynamicBoneProxy(Component component)
         {

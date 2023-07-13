@@ -3,6 +3,7 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -156,7 +157,49 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        private void ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTBoneMapping> boneMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        private void ApplyIgnoreTransforms(string wearableName, IDynamicsProxy avatarDynamics, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot)
+        {
+            string name = avatarDynamicsRoot.name + "_DBExcluded";
+            var dynBoneChild = avatarDynamicsRoot.Find(name);
+
+            if (dynBoneChild == null)
+            {
+                var obj = new GameObject(name);
+                obj.transform.SetParent(avatarDynamicsRoot);
+                dynBoneChild = obj.transform;
+            }
+
+            // check if it is excluded
+
+            if (avatarDynamics != null && !avatarDynamics.IgnoreTransforms.Contains(dynBoneChild))
+            {
+                avatarDynamics.IgnoreTransforms.Add(dynBoneChild);
+            }
+
+            wearableDynamicsRoot.name = string.Format("{0} ({1})", wearableDynamicsRoot.name, wearableName);
+            wearableDynamicsRoot.SetParent(dynBoneChild);
+
+            // scan for other child bones
+
+            var childs = new List<Transform>();
+
+            for (int i = 0; i < wearableDynamicsRoot.childCount; i++)
+            {
+                childs.Add(wearableDynamicsRoot.GetChild(i));
+            }
+
+            foreach (var child in childs)
+            {
+                var avatarTrans = avatarDynamicsRoot.Find(child.name);
+                if (avatarTrans != null)
+                {
+                    // continue to add IgnoreTransform if having matching avatar bone
+                    ApplyIgnoreTransforms(wearableName, avatarDynamics, avatarTrans, child);
+                }
+            }
+        }
+
+        private void ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarBoneParent, Transform wearableBoneParent)
         {
             var wearableChilds = new List<Transform>();
 
@@ -181,6 +224,9 @@ namespace Chocopoi.DressingTools.Applier.Default
 
                     if (avatarBone != null)
                     {
+                        var avatarBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(avatarDynamics, avatarBone);
+                        var wearableBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(wearableDynamics, wearableChild);
+
                         if (mapping.mappingType == DTBoneMappingType.MoveToBone)
                         {
                             Transform wearableBoneContainer = null;
@@ -209,6 +255,12 @@ namespace Chocopoi.DressingTools.Applier.Default
                         }
                         else if (mapping.mappingType == DTBoneMappingType.ParentConstraint)
                         {
+                            if (wearableBoneDynamics != null)
+                            {
+                                // remove wearable dynamics if exist
+                                Object.DestroyImmediate(wearableBoneDynamics.Component);
+                            }
+
                             // add parent constraint
 
                             var comp = wearableChild.gameObject.AddComponent<ParentConstraint>();
@@ -229,6 +281,45 @@ namespace Chocopoi.DressingTools.Applier.Default
                                 report.LogError(0, string.Format("Cannot create ParentConstraint to \"{0}\" because an existing ParentConstraint is already on the wearable bone: {1}", mapping.avatarBonePath, mapping.wearableBonePath));
                             }
                         }
+                        else if (mapping.mappingType == DTBoneMappingType.IgnoreTransform)
+                        {
+                            if (wearableBoneDynamics != null)
+                            {
+                                // remove wearable dynamics if exist
+                                Object.DestroyImmediate(wearableBoneDynamics.Component);
+                            }
+
+                            ApplyIgnoreTransforms(wearableName, avatarBoneDynamics, avatarBone, wearableChild);
+                        }
+                        else if (mapping.mappingType == DTBoneMappingType.CopyDynamics)
+                        {
+                            if (wearableBoneDynamics != null)
+                            {
+                                // remove wearable dynamics if exist
+                                Object.DestroyImmediate(wearableBoneDynamics.Component);
+                            }
+
+                            // copy component using unityeditor internal method (easiest way)
+
+                            UnityEditorInternal.ComponentUtility.CopyComponent(avatarBoneDynamics.Component);
+                            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(wearableChild.gameObject);
+
+                            // set root transform
+                            if (avatarBoneDynamics is DynamicBoneProxy)
+                            {
+                                new DynamicBoneProxy(wearableChild.GetComponent(DynamicBoneProxy.DynamicBoneType))
+                                {
+                                    RootTransform = wearableChild
+                                };
+                            }
+                            else if (avatarBoneDynamics is PhysBoneProxy)
+                            {
+                                new PhysBoneProxy(wearableChild.GetComponent(PhysBoneProxy.PhysBoneType))
+                                {
+                                    RootTransform = wearableChild
+                                };
+                            }
+                        }
                     }
                     else
                     {
@@ -236,13 +327,16 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                 }
 
-                ApplyBoneMappings(report, settings, wearableName, boneMappings, avatarBoneParent, wearableBoneParent);
+                ApplyBoneMappings(report, settings, wearableName, avatarDynamics, wearableDynamics, boneMappings, avatarBoneParent, wearableBoneParent);
             }
         }
 
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
         {
             var report = new DTReport();
+
+            // scan for avatar dynamics
+            var avatarDynamics = DTRuntimeUtils.ScanDynamics(cabinet.avatarGameObject);
 
             foreach (var wearableConfig in cabinet.wearables)
             {
@@ -271,6 +365,10 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // instantiate wearable prefab
                 var wearableObj = Object.Instantiate(wearableConfig.wearableGameObject);
 
+                // scan for wearable dynamics
+                var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj);
+
+                // apply translation and scaling
                 ApplyTransforms(report, avatarConfig, cabinet.avatarGameObject, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
                 if (!GenerateMappings(report, wearableConfig, out var boneMappings, out var objectMappings))
@@ -283,9 +381,10 @@ namespace Chocopoi.DressingTools.Applier.Default
                 if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
                 {
                     // apply bone mappings
-                    ApplyBoneMappings(report, settings, wearableConfig.info.name, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform);
+                    ApplyBoneMappings(report, settings, wearableConfig.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform);
                 }
 
+                // rollback parents and scaling
                 RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
             }
 
