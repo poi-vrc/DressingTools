@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.Applier.Default
 {
@@ -117,6 +119,127 @@ namespace Chocopoi.DressingTools.Applier.Default
             return true;
         }
 
+        private DTBoneMapping GetBoneMappingByWearableBonePath(List<DTBoneMapping> boneMappings, string wearableBonePath)
+        {
+            foreach (var mapping in boneMappings)
+            {
+                if (mapping.wearableBonePath == wearableBonePath)
+                {
+                    return mapping;
+                }
+            }
+            return null;
+        }
+
+        private void RemoveExistingPrefixSuffix(Transform wearableChild)
+        {
+            // check if there is a prefix
+            if (wearableChild.name.StartsWith("("))
+            {
+                //find the first closing bracket
+                int prefixBracketEnd = wearableChild.name.IndexOf(")");
+                if (prefixBracketEnd != -1 && prefixBracketEnd != wearableChild.name.Length - 1) //remove it if there is
+                {
+                    wearableChild.name = wearableChild.name.Substring(prefixBracketEnd + 1).Trim();
+                }
+            }
+
+            // check if there is a suffix
+            if (wearableChild.name.EndsWith(")"))
+            {
+                //find the first closing bracket
+                int suffixBracketStart = wearableChild.name.LastIndexOf("(");
+                if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
+                {
+                    wearableChild.name = wearableChild.name.Substring(0, suffixBracketStart).Trim();
+                }
+            }
+        }
+
+        private void ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTBoneMapping> boneMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        {
+            var wearableChilds = new List<Transform>();
+
+            for (int i = 0; i < wearableBoneParent.childCount; i++)
+            {
+                wearableChilds.Add(wearableBoneParent.GetChild(i));
+            }
+
+            foreach (var wearableChild in wearableChilds)
+            {
+                if (settings.removeExistingPrefixSuffix)
+                {
+                    RemoveExistingPrefixSuffix(wearableChild);
+                }
+
+                var path = AnimationUtils.GetRelativePath(wearableChild, wearableBoneParent);
+                var mapping = GetBoneMappingByWearableBonePath(boneMappings, path);
+
+                if (mapping != null)
+                {
+                    var avatarBone = avatarBoneParent.Find(mapping.avatarBonePath);
+
+                    if (avatarBone != null)
+                    {
+                        if (mapping.mappingType == DTBoneMappingType.MoveToBone)
+                        {
+                            Transform wearableBoneContainer = null;
+
+                            if (settings.groupBones)
+                            {
+                                // group bones in a {boneName}_DT container
+                                string name = avatarBone.name + "_DT";
+                                wearableBoneContainer = avatarBone.Find(name);
+                                if (wearableBoneContainer == null)
+                                {
+                                    // create container if not exist
+                                    var obj = new GameObject(name);
+                                    obj.transform.SetParent(avatarBone);
+                                    wearableBoneContainer = obj.transform;
+                                }
+                            }
+                            else
+                            {
+                                wearableBoneContainer = avatarBone;
+                            }
+
+                            wearableChild.transform.SetParent(wearableBoneContainer);
+                            // TODO: handle custom prefixes?
+                            wearableChild.name = string.Format("{0} ({1})", wearableChild.name, wearableName);
+                        }
+                        else if (mapping.mappingType == DTBoneMappingType.ParentConstraint)
+                        {
+                            // add parent constraint
+
+                            var comp = wearableChild.gameObject.AddComponent<ParentConstraint>();
+
+                            if (comp != null)
+                            {
+                                comp.constraintActive = true;
+
+                                var source = new ConstraintSource
+                                {
+                                    sourceTransform = avatarBone,
+                                    weight = 1
+                                };
+                                comp.AddSource(source);
+                            }
+                            else
+                            {
+                                report.LogError(0, string.Format("Cannot create ParentConstraint to \"{0}\" because an existing ParentConstraint is already on the wearable bone: {1}", mapping.avatarBonePath, mapping.wearableBonePath));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        report.LogWarn(0, string.Format("Avatar bone path \"{0}\" in mapping not found, ignoring mapping", mapping.avatarBonePath));
+                    }
+                }
+
+                ApplyBoneMappings(report, settings, wearableName, boneMappings, avatarBoneParent, wearableBoneParent);
+            }
+        }
+
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
         {
             var report = new DTReport();
@@ -155,6 +278,12 @@ namespace Chocopoi.DressingTools.Applier.Default
                     // abort on error
                     RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                     continue;
+                }
+
+                if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
+                {
+                    // apply bone mappings
+                    ApplyBoneMappings(report, settings, wearableConfig.info.name, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform);
                 }
 
                 RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
