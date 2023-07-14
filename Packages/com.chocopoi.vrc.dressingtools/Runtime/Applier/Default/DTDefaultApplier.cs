@@ -132,6 +132,18 @@ namespace Chocopoi.DressingTools.Applier.Default
             return null;
         }
 
+        private DTObjectMapping GetObjectMappingByWearableBonePath(List<DTObjectMapping> objectMappings, string wearableObjectPath)
+        {
+            foreach (var mapping in objectMappings)
+            {
+                if (mapping.wearableObjectPath == wearableObjectPath)
+                {
+                    return mapping;
+                }
+            }
+            return null;
+        }
+
         private void RemoveExistingPrefixSuffix(Transform wearableChild)
         {
             // check if there is a prefix
@@ -199,7 +211,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        private void ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarBoneParent, Transform wearableBoneParent)
         {
             var wearableChilds = new List<Transform>();
 
@@ -279,6 +291,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                             else
                             {
                                 report.LogError(0, string.Format("Cannot create ParentConstraint to \"{0}\" because an existing ParentConstraint is already on the wearable bone: {1}", mapping.avatarBonePath, mapping.wearableBonePath));
+                                return false;
                             }
                         }
                         else if (mapping.mappingType == DTBoneMappingType.IgnoreTransform)
@@ -323,12 +336,53 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                     else
                     {
-                        report.LogWarn(0, string.Format("Avatar bone path \"{0}\" in mapping not found, ignoring mapping", mapping.avatarBonePath));
+                        report.LogError(0, string.Format("Avatar bone path \"{0}\" in mapping not found", mapping.avatarBonePath));
+                        return false;
                     }
                 }
 
                 ApplyBoneMappings(report, settings, wearableName, avatarDynamics, wearableDynamics, boneMappings, avatarBoneParent, wearableBoneParent);
             }
+
+            return true;
+        }
+
+        private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        {
+            var wearableChilds = new List<Transform>();
+
+            for (int i = 0; i < wearableBoneParent.childCount; i++)
+            {
+                wearableChilds.Add(wearableBoneParent.GetChild(i));
+            }
+
+            foreach (var wearableChild in wearableChilds)
+            {
+                if (settings.removeExistingPrefixSuffix)
+                {
+                    RemoveExistingPrefixSuffix(wearableChild);
+                }
+
+                var path = AnimationUtils.GetRelativePath(wearableChild, wearableBoneParent);
+                var mapping = GetObjectMappingByWearableBonePath(objectMappings, path);
+
+                if (mapping != null)
+                {
+                    var avatarObject = mapping.avatarObjectPath == "" || mapping.avatarObjectPath == "." ? avatarBoneParent : avatarBoneParent.Find(mapping.avatarObjectPath);
+
+                    if (avatarObject != null)
+                    {
+                        wearableChild.SetParent(avatarObject);
+                    }
+                    else
+                    {
+                        report.LogError(0, string.Format("Avatar object path \"{0}\" in mapping not found", mapping.avatarObjectPath));
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
@@ -381,7 +435,20 @@ namespace Chocopoi.DressingTools.Applier.Default
                 if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
                 {
                     // apply bone mappings
-                    ApplyBoneMappings(report, settings, wearableConfig.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform);
+                    if (!ApplyBoneMappings(report, settings, wearableConfig.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
+                    {
+                        // abort on error
+                        RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
+                        continue;
+                    }
+
+                    // apply object mappings
+                    if (!ApplyObjectMappings(report, settings, wearableConfig.info.name, objectMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
+                    {
+                        // abort on error
+                        RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
+                        continue;
+                    }
                 }
 
                 // rollback parents and scaling
