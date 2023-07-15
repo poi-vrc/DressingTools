@@ -195,8 +195,24 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        private void DrawTypeArmatureMappingFoldout()
+        private void InitializeDresserSettings()
         {
+            var dresser = DresserRegistry.GetDresserByName(selectedDresserName);
+            dresserSettings = dresser.DeserializeSettings(container.config.serializedDresserConfig ?? "{}");
+            if (dresserSettings == null)
+            {
+                dresserSettings = dresser.NewSettings();
+            }
+        }
+
+        private void DrawTypeArmatureMappingFoldout(DTCabinet cabinet)
+        {
+            // initial dresser settings if null
+            if (dresserSettings == null)
+            {
+                InitializeDresserSettings();
+            }
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutMapping = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMapping, "Armature/Root Objects Mapping");
             EditorGUILayout.EndFoldoutHeaderGroup();
@@ -218,24 +234,26 @@ namespace Chocopoi.DressingTools.UI.Views
                 // set the type name to config
                 container.config.dresserName = dresser.GetType().FullName;
 
-                // Initialize dresser settings
-                if (dresser is DTDefaultDresser)
+                // reinitialize dresser settings if not correct type
+                if (dresser is DTDefaultDresser && !(dresserSettings is DTDefaultDresserSettings))
                 {
-                    if (dresserSettings == null || !(dresserSettings is DTDefaultDresserSettings))
-                    {
-                        dresserSettings = dresser.DeserializeSettings(container.config.serializedDresserConfig ?? "{}");
-                        if (dresserSettings == null)
-                        {
-                            dresserSettings = dresser.NewSettings();
-                        }
-                        dresserSettings.avatarArmatureName = "Armature";
-                        dresserSettings.wearableArmatureName = "Armature";
-                    }
+                    InitializeDresserSettings();
                 }
 
                 // draw the dresser settings GUI and regenerate if modified
                 dresserSettings.targetAvatar = container.targetAvatar;
                 dresserSettings.targetWearable = container.targetWearable;
+                if (cabinet != null)
+                {
+                    EditorGUILayout.HelpBox("The avatar is associated with a cabinet. To change the avatar Armature name, please use the cabinet editor.", MessageType.Info);
+                    dresserSettings.avatarArmatureName = cabinet.avatarArmatureName;
+                }
+                EditorGUI.BeginDisabledGroup(cabinet != null);
+                var newAvatarArmatureName = EditorGUILayout.DelayedTextField("Avatar Armature Name", dresserSettings.avatarArmatureName);
+                regenerateMappingsNeeded |= newAvatarArmatureName != dresserSettings.avatarArmatureName;
+                dresserSettings.avatarArmatureName = newAvatarArmatureName;
+                EditorGUI.EndDisabledGroup();
+
                 if (dresserSettings.DrawEditorGUI())
                 {
                     regenerateMappingsNeeded = true;
@@ -279,9 +297,9 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawTypeArmatureGUI()
+        private void DrawTypeArmatureGUI(DTCabinet cabinet)
         {
-            DrawTypeArmatureMappingFoldout();
+            DrawTypeArmatureMappingFoldout(cabinet);
         }
 
         private bool isGrandParent(Transform grandParent, Transform grandChild)
@@ -628,7 +646,7 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawAvatarConfigsGUI()
+        private void DrawAvatarConfigsGUI(DTCabinet cabinet)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutTargetAvatarConfigs = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTargetAvatarConfigs, "Target Avatar Configurations");
@@ -643,18 +661,16 @@ namespace Chocopoi.DressingTools.UI.Views
                 }
                 else
                 {
-                    guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
-
                     var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
                     var invalidGuid = guid == null || guid == "";
+
                     if (invalidGuid)
                     {
                         EditorGUILayout.HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
+                        guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
                     }
                     else
                     {
-                        DTEditorUtils.ReadOnlyTextField("GUID", guid);
-
                         var avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(container.config.targetAvatarConfigs, guid);
 
                         if (avatarConfig == null)
@@ -669,6 +685,8 @@ namespace Chocopoi.DressingTools.UI.Views
                             newArray[newArray.Length - 1] = avatarConfig;
                         }
 
+                        DTEditorUtils.ReadOnlyTextField("GUID", guid);
+
                         targetAvatarConfigUseAvatarName = EditorGUILayout.ToggleLeft("Use avatar object's name", targetAvatarConfigUseAvatarName);
                         if (targetAvatarConfigUseAvatarName)
                         {
@@ -679,7 +697,6 @@ namespace Chocopoi.DressingTools.UI.Views
                         EditorGUI.EndDisabledGroup();
 
                         // try obtain armature name from cabinet
-                        var cabinet = DTEditorUtils.GetAvatarCabinet(container.targetAvatar);
                         if (cabinet == null)
                         {
                             // attempt to get from dress settings if in armature mode
@@ -765,6 +782,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void OnGUI()
         {
+            var cabinet = DTEditorUtils.GetAvatarCabinet(container.targetAvatar);
+
             var newSelectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
 
             if (newSelectedWearableType == 0) // Generic
@@ -773,7 +792,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
             else if (newSelectedWearableType == 1) // Armature-based
             {
-                DrawTypeArmatureGUI();
+                DrawTypeArmatureGUI(cabinet);
 
                 // detect object reference change or wearable type change
                 if (newSelectedWearableType != selectedWearableType || lastTargetAvatar != container.targetAvatar || lastTargetWearable != container.targetWearable)
@@ -796,7 +815,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             DrawAnimationGenerationGUI();
 
-            DrawAvatarConfigsGUI();
+            DrawAvatarConfigsGUI(cabinet);
 
             DrawMetaInfoGUI();
         }
@@ -805,6 +824,10 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             container.config.configVersion = DTWearableConfig.CurrentConfigVersion;
 
+            if (dresserSettings != null)
+            {
+                container.config.wearableArmatureName = dresserSettings.wearableArmatureName;
+            }
             container.config.serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings);
 
             // update values from mapping editor container

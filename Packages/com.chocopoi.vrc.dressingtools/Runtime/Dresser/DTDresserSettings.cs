@@ -18,16 +18,19 @@ namespace Chocopoi.DressingTools.Dresser
         [JsonIgnore]
         public string wearableArmatureName;
 
+        public DTDresserSettings()
+        {
+            // default settings
+            avatarArmatureName = "Armature";
+            wearableArmatureName = "Armature";
+        }
+
         public virtual bool DrawEditorGUI()
         {
             // draws the editor GUI and returns whether it is modified or not
-
-            var newAvatarArmatureName = EditorGUILayout.DelayedTextField("Avatar Armature Name", avatarArmatureName);
             var newWearableArmatureName = EditorGUILayout.DelayedTextField("Wearable Armature Name", wearableArmatureName);
 
-            var modified = avatarArmatureName != newAvatarArmatureName || wearableArmatureName != newWearableArmatureName;
-
-            avatarArmatureName = newAvatarArmatureName;
+            var modified = wearableArmatureName != newWearableArmatureName;
             wearableArmatureName = newWearableArmatureName;
 
             return modified;

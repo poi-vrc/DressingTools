@@ -13,9 +13,13 @@ namespace Chocopoi.DressingTools.Dresser.Default
 
     public class DTDefaultDresserSettings : DTDresserSettings
     {
-        public bool removeExistingPrefixSuffix;
-
         public DTDefaultDresserDynamicsOption dynamicsOption;
+
+        public DTDefaultDresserSettings()
+        {
+            // default settings
+            dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
+        }
 
         private DTDefaultDresserDynamicsOption ConvertIntToDynamicsOption(int dynamicsOption)
         {
