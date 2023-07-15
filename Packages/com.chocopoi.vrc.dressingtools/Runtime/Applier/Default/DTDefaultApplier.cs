@@ -58,7 +58,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             targetAvatar.transform.localScale = lastAvatarScale;
         }
 
-        private bool GenerateMappings(DTReport report, DTWearableConfig wearableConfig, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
+        private bool GenerateMappings(DTReport report, string avatarArmatureName, DTWearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
         {
             // execute dresser
             var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
@@ -68,6 +68,10 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // fallback to become a empty
                 dresserSettings = dresser.NewSettings();
             }
+            dresserSettings.targetAvatar = targetAvatar;
+            dresserSettings.targetWearable = targetWearable;
+            dresserSettings.avatarArmatureName = avatarArmatureName;
+            dresserSettings.wearableArmatureName = wearableConfig.wearableArmatureName;
             var dresserReport = dresser.Execute(dresserSettings, out boneMappings, out objectMappings);
 
             // abort on error
@@ -211,7 +215,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
         {
             var wearableChilds = new List<Transform>();
 
@@ -227,12 +231,14 @@ namespace Chocopoi.DressingTools.Applier.Default
                     RemoveExistingPrefixSuffix(wearableChild);
                 }
 
-                var path = AnimationUtils.GetRelativePath(wearableChild, wearableBoneParent);
+                // we have to backup the boneName here for constructing a path later
+                var boneName = wearableChild.name;
+                var path = previousPath + boneName;
                 var mapping = GetBoneMappingByWearableBonePath(boneMappings, path);
 
                 if (mapping != null)
                 {
-                    var avatarBone = avatarBoneParent.Find(mapping.avatarBonePath);
+                    var avatarBone = avatarRoot.Find(mapping.avatarBonePath);
 
                     if (avatarBone != null)
                     {
@@ -261,7 +267,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                                 wearableBoneContainer = avatarBone;
                             }
 
-                            wearableChild.transform.SetParent(wearableBoneContainer);
+                            wearableChild.SetParent(wearableBoneContainer);
                             // TODO: handle custom prefixes?
                             wearableChild.name = string.Format("{0} ({1})", wearableChild.name, wearableName);
                         }
@@ -341,7 +347,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                 }
 
-                ApplyBoneMappings(report, settings, wearableName, avatarDynamics, wearableDynamics, boneMappings, avatarBoneParent, wearableBoneParent);
+                ApplyBoneMappings(report, settings, wearableName, avatarDynamics, wearableDynamics, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/");
             }
 
             return true;
@@ -425,8 +431,9 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // apply translation and scaling
                 ApplyTransforms(report, avatarConfig, cabinet.avatarGameObject, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
-                if (!GenerateMappings(report, wearableConfig, out var boneMappings, out var objectMappings))
+                if (!GenerateMappings(report, cabinet.avatarArmatureName, wearableConfig, cabinet.avatarGameObject, wearableObj, out var boneMappings, out var objectMappings))
                 {
+                    Debug.Log("Generate mapping error");
                     // abort on error
                     RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                     continue;
@@ -435,8 +442,9 @@ namespace Chocopoi.DressingTools.Applier.Default
                 if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
                 {
                     // apply bone mappings
-                    if (!ApplyBoneMappings(report, settings, wearableConfig.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
+                    if (!ApplyBoneMappings(report, settings, wearableConfig.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform, wearableObj.transform, ""))
                     {
+                        Debug.Log("Bone mapping error");
                         // abort on error
                         RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                         continue;
@@ -445,6 +453,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                     // apply object mappings
                     if (!ApplyObjectMappings(report, settings, wearableConfig.info.name, objectMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
                     {
+                        Debug.Log("Object mapping error");
                         // abort on error
                         RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                         continue;
@@ -453,6 +462,9 @@ namespace Chocopoi.DressingTools.Applier.Default
 
                 // rollback parents and scaling
                 RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
+
+                // destroy instantiated object
+                Object.DestroyImmediate(wearableObj);
             }
 
             return report;
