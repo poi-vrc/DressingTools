@@ -725,6 +725,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawMetaInfoGUI()
         {
+            // write info name
+            if (metaInfoUseWearableName)
+            {
+                container.config.info.name = container.targetWearable?.name;
+            }
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldoutMetaInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMetaInfo, "Meta Information");
             EditorGUILayout.EndFoldoutHeaderGroup();
@@ -733,10 +739,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 DTEditorUtils.ReadOnlyTextField("UUID", container.config.info.uuid);
 
                 metaInfoUseWearableName = EditorGUILayout.ToggleLeft("Use wearable object's name", metaInfoUseWearableName);
-                if (metaInfoUseWearableName)
-                {
-                    container.config.info.name = container.targetWearable?.name;
-                }
                 EditorGUI.BeginDisabledGroup(metaInfoUseWearableName);
                 container.config.info.name = EditorGUILayout.TextField("Name", container.config.info.name);
                 EditorGUI.EndDisabledGroup();
