@@ -83,7 +83,10 @@ namespace Chocopoi.DressingTools.Cabinet
             {
                 foreach (var obj in wearable.appliedObjects)
                 {
-                    DestroyImmediate(obj);
+                    if (obj != null)
+                    {
+                        DestroyImmediate(obj);
+                    }
                 }
                 wearable.appliedObjects.Clear();
             }
@@ -91,7 +94,10 @@ namespace Chocopoi.DressingTools.Cabinet
             // clean up bone containers
             foreach (var boneContainer in appliedBoneContainers)
             {
-                DestroyImmediate(boneContainer);
+                if (boneContainer != null)
+                {
+                    DestroyImmediate(boneContainer);
+                }
             }
             appliedBoneContainers.Clear();
         }
