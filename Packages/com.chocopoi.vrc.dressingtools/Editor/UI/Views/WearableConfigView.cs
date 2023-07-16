@@ -34,8 +34,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private GameObject lastTargetWearable;
 
-        private int selectedWearableType;
-
         private string selectedDresserName = "Default";
 
         private DTDresserSettings dresserSettings = null;
@@ -655,7 +653,7 @@ namespace Chocopoi.DressingTools.UI.Views
             if (cabinet == null)
             {
                 // attempt to get from dress settings if in armature mode
-                if (selectedWearableType == 1 && dresserSettings != null)
+                if (container.config.wearableType == DTWearableType.ArmatureBased && dresserSettings != null)
                 {
                     container.config.targetAvatarConfig.armatureName = dresserSettings.avatarArmatureName;
                 }
@@ -770,22 +768,34 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
+        private DTWearableType ConvertIntToWearableType(int wearableType)
+        {
+            switch (wearableType)
+            {
+                default:
+                case 0:
+                    return DTWearableType.Generic;
+                case 1:
+                    return DTWearableType.ArmatureBased;
+            }
+        }
+
         public void OnGUI()
         {
             var cabinet = DTEditorUtils.GetAvatarCabinet(container.targetAvatar);
 
-            var newSelectedWearableType = EditorGUILayout.Popup("Wearable Type", selectedWearableType, new string[] { "Generic", "Armature-based" });
+            var newSelectedWearableType = ConvertIntToWearableType(EditorGUILayout.Popup("Wearable Type", (int)container.config.wearableType, new string[] { "Generic", "Armature-based" }));
 
-            if (newSelectedWearableType == 0) // Generic
+            if (newSelectedWearableType == DTWearableType.Generic) // Generic
             {
                 DrawTypeGenericGUI();
             }
-            else if (newSelectedWearableType == 1) // Armature-based
+            else if (newSelectedWearableType == DTWearableType.ArmatureBased) // Armature-based
             {
                 DrawTypeArmatureGUI(cabinet);
 
                 // detect object reference change or wearable type change
-                if (newSelectedWearableType != selectedWearableType || lastTargetAvatar != container.targetAvatar || lastTargetWearable != container.targetWearable)
+                if (newSelectedWearableType != container.config.wearableType || lastTargetAvatar != container.targetAvatar || lastTargetWearable != container.targetWearable)
                 {
                     // regenerate on object reference change
                     regenerateMappingsNeeded = true;
@@ -801,7 +811,7 @@ namespace Chocopoi.DressingTools.UI.Views
                     regenerateMappingsNeeded = false;
                 }
             }
-            selectedWearableType = newSelectedWearableType;
+            container.config.wearableType = newSelectedWearableType;
 
             DrawAnimationGenerationGUI();
 
@@ -820,6 +830,25 @@ namespace Chocopoi.DressingTools.UI.Views
             }
             container.config.serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings);
 
+            // TODO: multiple GUIDs
+            var avatarPrefabGuid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
+            var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
+            if (invalidAvatarPrefabGuid)
+            {
+                if (container.config.targetAvatarConfig.guids.Length != 0)
+                {
+                    container.config.targetAvatarConfig.guids = new string[0];
+                }
+            }
+            else
+            {
+                if (container.config.targetAvatarConfig.guids.Length != 1)
+                {
+                    container.config.targetAvatarConfig.guids = new string[1];
+                }
+                container.config.targetAvatarConfig.guids[0] = avatarPrefabGuid;
+            }
+
             // update values from mapping editor container
             var mappingEditorContainer = wearableConfigPresenter.GetMappingEditorContainer();
             container.config.boneMappingMode = mappingEditorContainer.boneMappingMode;
@@ -835,7 +864,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             var ready = true;
 
-            if (selectedWearableType == 1)
+            if (container.config.wearableType == DTWearableType.ArmatureBased)
             {
                 // armature mode
                 ready &= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null && container.config.objectMappings != null;
