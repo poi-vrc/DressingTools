@@ -242,12 +242,12 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        public bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable)
+        public bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable)
         {
-            return ApplyBoneMappings(report, settings, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, targetWearable.transform, targetWearable.transform, "", null);
+            return ApplyBoneMappings(report, settings, null, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, targetWearable.transform, targetWearable.transform, "", null);
         }
 
-        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath, DTCabinet cabinet = null)
+        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath, DTWearableConfig wearableConfig = null, DTCabinet cabinet = null)
         {
             var wearableChilds = new List<Transform>();
 
@@ -304,7 +304,7 @@ namespace Chocopoi.DressingTools.Applier.Default
 
                             wearableChild.SetParent(wearableBoneContainer);
                             // TODO: handle custom prefixes?
-                            wearableChild.name = string.Format("{0} ({1})", wearableChild.name, wearableConfig.info.name);
+                            wearableChild.name = string.Format("{0} ({1})", wearableChild.name, wearableName);
                         }
                         else if (mapping.mappingType == DTBoneMappingType.ParentConstraint)
                         {
@@ -382,13 +382,18 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                 }
 
-                ApplyBoneMappings(report, settings, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/", cabinet);
+                ApplyBoneMappings(report, settings, wearableName, avatarDynamics, wearableDynamics, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/", wearableConfig, cabinet);
             }
 
             return true;
         }
 
-        private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        public bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, GameObject targetAvatar, GameObject targetWearable)
+        {
+            return ApplyObjectMappings(report, settings, wearableName, objectMappings, targetAvatar, targetWearable);
+        }
+
+        private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent, DTWearableConfig wearableConfig = null)
         {
             var wearableChilds = new List<Transform>();
 
@@ -401,7 +406,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             Transform wearableContainer;
             if (settings.groupRootObjects)
             {
-                string name = "DT_" + wearableConfig.info.name;
+                string name = "DT_" + wearableName;
                 wearableContainer = avatarBoneParent.Find(name);
 
                 if (wearableContainer != null)
@@ -451,7 +456,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             return true;
         }
 
-        public bool ApplyWearable(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, DTCabinet cabinet = null, GameObject targetAvatar = null, GameObject targetWearable = null)
+        private bool ApplyWearable(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, DTCabinet cabinet = null, GameObject targetAvatar = null, GameObject targetWearable = null)
         {
             // TODO: check config version and do migration here
 
@@ -500,7 +505,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
             {
                 // apply bone mappings
-                if (!ApplyBoneMappings(report, settings, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, wearableObj.transform, wearableObj.transform, "", cabinet))
+                if (!ApplyBoneMappings(report, settings, wearableConfig.info.name, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, wearableObj.transform, wearableObj.transform, "", wearableConfig, cabinet))
                 {
                     Debug.Log("Bone mapping error");
                     // abort on error
@@ -509,7 +514,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 }
 
                 // apply object mappings
-                if (!ApplyObjectMappings(report, settings, wearableConfig, objectMappings, targetAvatar.transform, wearableObj.transform))
+                if (!ApplyObjectMappings(report, settings, wearableConfig.info.name, objectMappings, targetAvatar.transform, wearableObj.transform, wearableConfig))
                 {
                     Debug.Log("Object mapping error");
                     // abort on error
