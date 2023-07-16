@@ -402,24 +402,14 @@ namespace Chocopoi.DressingTools.Applier.Default
             {
                 // TODO: check config version and do migration here
 
-                // obtain avatar config
-                DTAvatarConfig avatarConfig = null;
+                var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(cabinet.avatarGameObject);
+                if (guid == null || guid == "")
                 {
-                    var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(cabinet.avatarGameObject);
-                    if (guid == null || guid == "")
-                    {
-                        report.LogWarn(0, "Cannot find GUID of avatar, maybe not a prefab? Using the first found avatar config instead.");
-                        avatarConfig = wearableConfig.targetAvatarConfigs[0];
-                    }
-                    else
-                    {
-                        avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(wearableConfig.targetAvatarConfigs, guid);
-                        if (avatarConfig == null)
-                        {
-                            report.LogWarn(0, string.Format("Wearable does not contain avatar config for the avatar GUID (\"{0}\") Using the first found avatar config instead.", guid));
-                            avatarConfig = wearableConfig.targetAvatarConfigs[0];
-                        }
-                    }
+                    report.LogWarn(0, "Cannot find GUID of avatar, maybe not a prefab? We cannot check the compatibility of the configuration.");
+                }
+                else if (System.Array.IndexOf(wearableConfig.targetAvatarConfig.guids, guid) == -1)
+                {
+                    report.LogWarn(0, "The configuration does not contain the avatar's GUID! It might not be compatibile with the avatar!");
                 }
 
                 // instantiate wearable prefab
@@ -429,7 +419,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj);
 
                 // apply translation and scaling
-                ApplyTransforms(report, avatarConfig, cabinet.avatarGameObject, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
+                ApplyTransforms(report, wearableConfig.targetAvatarConfig, cabinet.avatarGameObject, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
                 if (!GenerateMappings(report, cabinet.avatarArmatureName, wearableConfig, cabinet.avatarGameObject, wearableObj, out var boneMappings, out var objectMappings))
                 {

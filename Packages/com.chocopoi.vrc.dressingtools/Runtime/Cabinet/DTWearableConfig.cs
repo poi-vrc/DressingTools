@@ -27,7 +27,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public int configVersion;
         public DTWearableInfo info;
-        public DTAvatarConfig[] targetAvatarConfigs;
+        public DTAvatarConfig targetAvatarConfig;
         public DTWearableType wearableType;
 
         // Generic
@@ -59,7 +59,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 updatedTime = isoTimeStr
             };
 
-            targetAvatarConfigs = new DTAvatarConfig[0];
+            targetAvatarConfig = new DTAvatarConfig();
             avatarAnimationOnWear = new DTAnimationPreset()
             {
                 toggles = new DTAnimationToggle[0],
@@ -77,9 +77,10 @@ namespace Chocopoi.DressingTools.Cabinet
         // copy constructor
         public DTWearableConfig(DTWearableConfig toCopy)
         {
+            // shallow copy
             configVersion = toCopy.configVersion;
             info = toCopy.info;
-            targetAvatarConfigs = toCopy.targetAvatarConfigs;
+            targetAvatarConfig = toCopy.targetAvatarConfig;
             wearableType = toCopy.wearableType;
 
             avatarPath = toCopy.avatarPath;

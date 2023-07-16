@@ -90,15 +90,7 @@ namespace Chocopoi.DressingTools.UI.Views
             // check if target avatar name is customized
             if (container.targetAvatar != null)
             {
-                var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(container.targetAvatar);
-                if (guid != null && guid != "")
-                {
-                    var avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(container.config.targetAvatarConfigs, guid);
-                    if (avatarConfig != null)
-                    {
-                        targetAvatarConfigUseAvatarName = avatarConfig.name == container.targetAvatar.name;
-                    }
-                }
+                targetAvatarConfigUseAvatarName = container.config.targetAvatarConfig.name == container.targetAvatar.name;
             }
         }
 
@@ -646,10 +638,53 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
+        private void UpdateTargetAvatarConfig(DTCabinet cabinet)
+        {
+            if (container.targetAvatar == null || container.targetWearable == null)
+            {
+                // we cannot do anything with target avatar and wearable null
+                return;
+            }
+
+            if (targetAvatarConfigUseAvatarName)
+            {
+                container.config.targetAvatarConfig.name = container.targetAvatar.name;
+            }
+
+            // try obtain armature name from cabinet
+            if (cabinet == null)
+            {
+                // attempt to get from dress settings if in armature mode
+                if (selectedWearableType == 1 && dresserSettings != null)
+                {
+                    container.config.targetAvatarConfig.armatureName = dresserSettings.avatarArmatureName;
+                }
+                else
+                {
+                    // leave it empty
+                    container.config.targetAvatarConfig.armatureName = "";
+                }
+            }
+            else
+            {
+                container.config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
+            }
+
+            var deltaPos = container.targetWearable.transform.position - container.targetAvatar.transform.position;
+            var deltaRotation = container.targetWearable.transform.rotation * Quaternion.Inverse(container.targetAvatar.transform.rotation);
+            container.config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
+            container.config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
+            container.config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(container.targetAvatar.transform.lossyScale);
+            container.config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(container.targetWearable.transform.lossyScale);
+        }
+
         private void DrawAvatarConfigsGUI(DTCabinet cabinet)
         {
+            UpdateTargetAvatarConfig(cabinet);
+
+            // GUI
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            foldoutTargetAvatarConfigs = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTargetAvatarConfigs, "Target Avatar Configurations");
+            foldoutTargetAvatarConfigs = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTargetAvatarConfigs, "Target Avatar Configuration");
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutTargetAvatarConfigs)
             {
@@ -661,75 +696,30 @@ namespace Chocopoi.DressingTools.UI.Views
                 }
                 else
                 {
-                    var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
-                    var invalidGuid = guid == null || guid == "";
+                    guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
 
-                    if (invalidGuid)
+                    var avatarPrefabGuid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
+                    var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
+
+                    if (invalidAvatarPrefabGuid)
                     {
                         EditorGUILayout.HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
-                        guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
                     }
-                    else
-                    {
-                        var avatarConfig = DTRuntimeUtils.FindAvatarConfigByGuid(container.config.targetAvatarConfigs, guid);
 
-                        if (avatarConfig == null)
-                        {
-                            avatarConfig = new DTAvatarConfig()
-                            {
-                                guid = guid
-                            };
-                            var newArray = new DTAvatarConfig[container.config.targetAvatarConfigs.Length + 1];
-                            container.config.targetAvatarConfigs.CopyTo(newArray, 0);
-                            container.config.targetAvatarConfigs = newArray;
-                            newArray[newArray.Length - 1] = avatarConfig;
-                        }
+                    DTEditorUtils.ReadOnlyTextField("GUID", invalidAvatarPrefabGuid ? "(Not available)" : avatarPrefabGuid);
 
-                        DTEditorUtils.ReadOnlyTextField("GUID", guid);
+                    targetAvatarConfigUseAvatarName = EditorGUILayout.ToggleLeft("Use avatar object's name", targetAvatarConfigUseAvatarName);
+                    EditorGUI.BeginDisabledGroup(targetAvatarConfigUseAvatarName);
+                    container.config.targetAvatarConfig.name = EditorGUILayout.TextField("Name", container.config.targetAvatarConfig.name);
+                    EditorGUI.EndDisabledGroup();
 
-                        targetAvatarConfigUseAvatarName = EditorGUILayout.ToggleLeft("Use avatar object's name", targetAvatarConfigUseAvatarName);
-                        if (targetAvatarConfigUseAvatarName)
-                        {
-                            container.targetAvatar.name = container.targetAvatar.name;
-                        }
-                        EditorGUI.BeginDisabledGroup(targetAvatarConfigUseAvatarName);
-                        container.targetAvatar.name = EditorGUILayout.TextField("Name", container.targetAvatar.name);
-                        EditorGUI.EndDisabledGroup();
+                    DTEditorUtils.ReadOnlyTextField("Armature Name", container.config.targetAvatarConfig.armatureName);
+                    DTEditorUtils.ReadOnlyTextField("Delta World Position", container.config.targetAvatarConfig.worldPosition.ToString());
+                    DTEditorUtils.ReadOnlyTextField("Delta World Rotation", container.config.targetAvatarConfig.worldRotation.ToString());
+                    DTEditorUtils.ReadOnlyTextField("Avatar Lossy Scale", container.config.targetAvatarConfig.avatarLossyScale.ToString());
+                    DTEditorUtils.ReadOnlyTextField("Wearable Lossy Scale", container.config.targetAvatarConfig.wearableLossyScale.ToString());
 
-                        // try obtain armature name from cabinet
-                        if (cabinet == null)
-                        {
-                            // attempt to get from dress settings if in armature mode
-                            if (selectedWearableType == 1 && dresserSettings != null)
-                            {
-                                avatarConfig.armatureName = dresserSettings.avatarArmatureName;
-                                DTEditorUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
-                            }
-                            else
-                            {
-                                // leave it empty
-                                avatarConfig.armatureName = "";
-                            }
-                        }
-                        else
-                        {
-                            avatarConfig.armatureName = cabinet.avatarArmatureName;
-                            DTEditorUtils.ReadOnlyTextField("Armature Name", avatarConfig.armatureName);
-                        }
-
-                        var deltaPos = container.targetWearable.transform.position - container.targetAvatar.transform.position;
-                        var deltaRotation = container.targetWearable.transform.rotation * Quaternion.Inverse(container.targetAvatar.transform.rotation);
-                        avatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
-                        avatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
-                        avatarConfig.avatarLossyScale = new DTAvatarConfigVector3(container.targetAvatar.transform.lossyScale);
-                        avatarConfig.wearableLossyScale = new DTAvatarConfigVector3(container.targetWearable.transform.lossyScale);
-                        DTEditorUtils.ReadOnlyTextField("Delta World Position", deltaPos.ToString());
-                        DTEditorUtils.ReadOnlyTextField("Delta World Rotation", deltaRotation.ToString());
-                        DTEditorUtils.ReadOnlyTextField("Avatar Lossy Scale", container.targetAvatar.transform.localScale.ToString());
-                        DTEditorUtils.ReadOnlyTextField("Wearable Lossy Scale", container.targetWearable.transform.localScale.ToString());
-
-                        EditorGUILayout.HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
-                    }
+                    EditorGUILayout.HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
                 }
             }
             EditorGUILayout.EndVertical();

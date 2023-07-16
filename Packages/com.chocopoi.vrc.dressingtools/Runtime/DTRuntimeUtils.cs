@@ -42,18 +42,6 @@ namespace Chocopoi.DressingTools
             return guid;
         }
 
-        public static DTAvatarConfig FindAvatarConfigByGuid(DTAvatarConfig[] configs, string guid)
-        {
-            foreach (var avatarConfig in configs)
-            {
-                if (avatarConfig.guid == guid)
-                {
-                    return avatarConfig;
-                }
-            }
-            return null;
-        }
-
         public static List<IDynamicsProxy> ScanDynamics(GameObject obj)
         {
             var dynamicsList = new List<IDynamicsProxy>();
