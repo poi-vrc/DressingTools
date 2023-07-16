@@ -30,7 +30,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public string serializedApplierSettings;
 
-        public List<GameObject> appliedBoneContainers = new List<GameObject>();
+        public List<GameObject> appliedContainers = new List<GameObject>();
 
         public List<DTCabinetWearable> wearables = new List<DTCabinetWearable>();
 
@@ -92,14 +92,14 @@ namespace Chocopoi.DressingTools.Cabinet
             }
 
             // clean up bone containers
-            foreach (var boneContainer in appliedBoneContainers)
+            foreach (var boneContainer in appliedContainers)
             {
                 if (boneContainer != null)
                 {
                     DestroyImmediate(boneContainer);
                 }
             }
-            appliedBoneContainers.Clear();
+            appliedContainers.Clear();
         }
 
         public DTReport Apply()

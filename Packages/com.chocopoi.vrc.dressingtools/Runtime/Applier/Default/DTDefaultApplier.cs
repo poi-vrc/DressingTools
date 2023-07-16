@@ -184,7 +184,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 obj.transform.SetParent(avatarDynamicsRoot);
                 dynBoneChild = obj.transform;
             }
-            RecordAppliedBoneContainer(cabinet, dynBoneChild);
+            RecordAppliedContainer(cabinet, dynBoneChild);
 
             // check if it is excluded
 
@@ -230,14 +230,14 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        private void RecordAppliedBoneContainer(DTCabinet cabinet, Transform wearableBoneContainer)
+        private void RecordAppliedContainer(DTCabinet cabinet, Transform wearableContainer)
         {
             // add bone container to cabinet (if any)
             if (cabinet != null)
             {
-                if (!cabinet.appliedBoneContainers.Contains(wearableBoneContainer.gameObject))
+                if (!cabinet.appliedContainers.Contains(wearableContainer.gameObject))
                 {
-                    cabinet.appliedBoneContainers.Add(wearableBoneContainer.gameObject);
+                    cabinet.appliedContainers.Add(wearableContainer.gameObject);
                 }
             }
         }
@@ -290,7 +290,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                                     obj.transform.SetParent(avatarBone);
                                     wearableBoneContainer = obj.transform;
                                 }
-                                RecordAppliedBoneContainer(cabinet, wearableBoneContainer);
+                                RecordAppliedContainer(cabinet, wearableBoneContainer);
                             }
                             else
                             {
@@ -383,13 +383,37 @@ namespace Chocopoi.DressingTools.Applier.Default
             return true;
         }
 
-        private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent)
+        private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent)
         {
             var wearableChilds = new List<Transform>();
 
             for (int i = 0; i < wearableBoneParent.childCount; i++)
             {
                 wearableChilds.Add(wearableBoneParent.GetChild(i));
+            }
+
+            // create wearable container
+            Transform wearableContainer;
+            if (settings.groupRootObjects)
+            {
+                string name = "DT_" + wearableConfig.info.name;
+                wearableContainer = avatarBoneParent.Find(name);
+
+                if (wearableContainer != null)
+                {
+                    report.LogError(0, "Existing wearable detected! Aborting operation.");
+                    return false;
+                }
+
+                var obj = new GameObject(name);
+                obj.transform.SetParent(avatarBoneParent);
+                wearableContainer = obj.transform;
+
+                RecordAppliedObject(wearableConfig, wearableContainer);
+            }
+            else
+            {
+                wearableContainer = avatarBoneParent;
             }
 
             foreach (var wearableChild in wearableChilds)
@@ -408,7 +432,8 @@ namespace Chocopoi.DressingTools.Applier.Default
 
                     if (avatarObject != null)
                     {
-                        wearableChild.SetParent(avatarObject);
+                        wearableChild.SetParent(wearableContainer);
+                        RecordAppliedObject(wearableConfig, wearableChild);
                     }
                     else
                     {
@@ -471,7 +496,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
 
                     // apply object mappings
-                    if (!ApplyObjectMappings(report, settings, wearableConfig.info.name, objectMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
+                    if (!ApplyObjectMappings(report, settings, wearableConfig, objectMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
                     {
                         Debug.Log("Object mapping error");
                         // abort on error
