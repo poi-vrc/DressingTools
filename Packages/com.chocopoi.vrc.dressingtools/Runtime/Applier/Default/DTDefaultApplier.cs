@@ -242,9 +242,9 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        public bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable)
+        public bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable)
         {
-            return ApplyBoneMappings(report, settings, null, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, targetWearable.transform, targetWearable.transform, "", null);
+            return ApplyBoneMappings(report, settings, wearableName, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, targetWearable.transform, targetWearable.transform, "", null);
         }
 
         private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath, DTWearableConfig wearableConfig = null, DTCabinet cabinet = null)

@@ -10,7 +10,7 @@ namespace Chocopoi.DressingTools.Applier
     {
         DTApplierSettings DeserializeSettings(string serializedJson);
         DTApplierSettings NewSettings();
-        bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable);
+        bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable);
         bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, GameObject targetAvatar, GameObject targetWearable);
         DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet);
     }
