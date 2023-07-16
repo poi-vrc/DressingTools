@@ -831,22 +831,25 @@ namespace Chocopoi.DressingTools.UI.Views
             container.config.serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings);
 
             // TODO: multiple GUIDs
-            var avatarPrefabGuid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
-            var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
-            if (invalidAvatarPrefabGuid)
+            if (guidReferencePrefab != null || container.targetAvatar != null)
             {
-                if (container.config.targetAvatarConfig.guids.Length != 0)
+                var avatarPrefabGuid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
+                var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
+                if (invalidAvatarPrefabGuid)
                 {
-                    container.config.targetAvatarConfig.guids = new string[0];
+                    if (container.config.targetAvatarConfig.guids.Length != 0)
+                    {
+                        container.config.targetAvatarConfig.guids = new string[0];
+                    }
                 }
-            }
-            else
-            {
-                if (container.config.targetAvatarConfig.guids.Length != 1)
+                else
                 {
-                    container.config.targetAvatarConfig.guids = new string[1];
+                    if (container.config.targetAvatarConfig.guids.Length != 1)
+                    {
+                        container.config.targetAvatarConfig.guids = new string[1];
+                    }
+                    container.config.targetAvatarConfig.guids[0] = avatarPrefabGuid;
                 }
-                container.config.targetAvatarConfig.guids[0] = avatarPrefabGuid;
             }
 
             // update values from mapping editor container
