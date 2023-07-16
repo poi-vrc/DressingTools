@@ -390,7 +390,7 @@ namespace Chocopoi.DressingTools.Applier.Default
 
         public bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, GameObject targetAvatar, GameObject targetWearable)
         {
-            return ApplyObjectMappings(report, settings, wearableName, objectMappings, targetAvatar, targetWearable);
+            return ApplyObjectMappings(report, settings, wearableName, objectMappings, targetAvatar.transform, targetWearable.transform, null);
         }
 
         private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent, DTWearableConfig wearableConfig = null)
