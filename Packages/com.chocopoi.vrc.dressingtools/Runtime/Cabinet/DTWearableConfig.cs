@@ -60,16 +60,8 @@ namespace Chocopoi.DressingTools.Cabinet
             };
 
             targetAvatarConfig = new DTAvatarConfig();
-            avatarAnimationOnWear = new DTAnimationPreset()
-            {
-                toggles = new DTAnimationToggle[0],
-                blendshapes = new DTAnimationBlendshapeValue[0]
-            };
-            wearableAnimationOnWear = new DTAnimationPreset()
-            {
-                toggles = new DTAnimationToggle[0],
-                blendshapes = new DTAnimationBlendshapeValue[0]
-            };
+            avatarAnimationOnWear = new DTAnimationPreset();
+            wearableAnimationOnWear = new DTAnimationPreset();
             wearableCustomizables = new DTWearableCustomizable[0];
             blendshapeSyncs = new DTAnimationBlendshapeSync[0];
         }
