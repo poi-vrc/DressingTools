@@ -253,15 +253,15 @@ namespace Chocopoi.DressingTools.Applier.Default
 
             foreach (var wearableChild in wearableChilds)
             {
-                if (settings.removeExistingPrefixSuffix)
-                {
-                    RemoveExistingPrefixSuffix(wearableChild);
-                }
-
                 // we have to backup the boneName here for constructing a path later
                 var boneName = wearableChild.name;
                 var path = previousPath + boneName;
                 var mapping = GetBoneMappingByWearableBonePath(boneMappings, path);
+
+                if (settings.removeExistingPrefixSuffix)
+                {
+                    RemoveExistingPrefixSuffix(wearableChild);
+                }
 
                 if (mapping != null)
                 {
@@ -418,13 +418,13 @@ namespace Chocopoi.DressingTools.Applier.Default
 
             foreach (var wearableChild in wearableChilds)
             {
+                var path = AnimationUtils.GetRelativePath(wearableChild, wearableBoneParent);
+                var mapping = GetObjectMappingByWearableBonePath(objectMappings, path);
+
                 if (settings.removeExistingPrefixSuffix)
                 {
                     RemoveExistingPrefixSuffix(wearableChild);
                 }
-
-                var path = AnimationUtils.GetRelativePath(wearableChild, wearableBoneParent);
-                var mapping = GetObjectMappingByWearableBonePath(objectMappings, path);
 
                 if (mapping != null)
                 {
