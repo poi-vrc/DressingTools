@@ -242,7 +242,12 @@ namespace Chocopoi.DressingTools.Applier.Default
             }
         }
 
-        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, DTCabinet cabinet, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
+        public bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, GameObject targetAvatar, GameObject targetWearable)
+        {
+            return ApplyBoneMappings(report, settings, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, targetWearable.transform, targetWearable.transform, "", null);
+        }
+
+        private bool ApplyBoneMappings(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath, DTCabinet cabinet = null)
         {
             var wearableChilds = new List<Transform>();
 
@@ -377,7 +382,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                 }
 
-                ApplyBoneMappings(report, settings, cabinet, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/");
+                ApplyBoneMappings(report, settings, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/", cabinet);
             }
 
             return true;
@@ -446,6 +451,82 @@ namespace Chocopoi.DressingTools.Applier.Default
             return true;
         }
 
+        public bool ApplyWearable(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, DTCabinet cabinet = null, GameObject targetAvatar = null, GameObject targetWearable = null)
+        {
+            // TODO: check config version and do migration here
+
+            if (targetAvatar == null)
+            {
+                // obtain from cabinet
+                targetAvatar = cabinet.avatarGameObject;
+            }
+
+            var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
+            if (guid == null || guid == "")
+            {
+                report.LogWarn(0, "Cannot find GUID of avatar, maybe not a prefab? We cannot check the compatibility of the configuration.");
+            }
+            else if (System.Array.IndexOf(wearableConfig.targetAvatarConfig.guids, guid) == -1)
+            {
+                report.LogWarn(0, "The configuration does not contain the avatar's GUID! It might not be compatibile with the avatar!");
+            }
+
+            if (targetWearable == null)
+            {
+                // obtain from wearable
+                if (wearableConfig is DTCabinetWearable cabinetWearable)
+                {
+                    targetWearable = cabinetWearable.wearableGameObject;
+                }
+            }
+
+            // instantiate wearable prefab
+            var wearableObj = Object.Instantiate(targetWearable);
+
+            // scan for wearable dynamics
+            var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj);
+
+            // apply translation and scaling
+            ApplyTransforms(report, wearableConfig.targetAvatarConfig, targetAvatar, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
+
+            if (!GenerateMappings(report, cabinet.avatarArmatureName, wearableConfig, targetAvatar, wearableObj, out var boneMappings, out var objectMappings))
+            {
+                Debug.Log("Generate mapping error");
+                // abort on error
+                RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+                return false;
+            }
+
+            if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
+            {
+                // apply bone mappings
+                if (!ApplyBoneMappings(report, settings, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, targetAvatar.transform, wearableObj.transform, wearableObj.transform, "", cabinet))
+                {
+                    Debug.Log("Bone mapping error");
+                    // abort on error
+                    RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+                    return false;
+                }
+
+                // apply object mappings
+                if (!ApplyObjectMappings(report, settings, wearableConfig, objectMappings, targetAvatar.transform, wearableObj.transform))
+                {
+                    Debug.Log("Object mapping error");
+                    // abort on error
+                    RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+                    return false;
+                }
+            }
+
+            // rollback parents and scaling
+            RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+
+            // destroy instantiated object
+            Object.DestroyImmediate(wearableObj);
+
+            return true;
+        }
+
         public DTReport ApplyCabinet(DTApplierSettings settings, DTCabinet cabinet)
         {
             var report = new DTReport();
@@ -455,61 +536,11 @@ namespace Chocopoi.DressingTools.Applier.Default
 
             foreach (var wearableConfig in cabinet.wearables)
             {
-                // TODO: check config version and do migration here
-
-                var guid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(cabinet.avatarGameObject);
-                if (guid == null || guid == "")
+                if (!ApplyWearable(report, settings, wearableConfig, avatarDynamics, cabinet))
                 {
-                    report.LogWarn(0, "Cannot find GUID of avatar, maybe not a prefab? We cannot check the compatibility of the configuration.");
+                    report.LogError(0, "Error applying wearable, aborting: " + wearableConfig.info.name);
+                    break;
                 }
-                else if (System.Array.IndexOf(wearableConfig.targetAvatarConfig.guids, guid) == -1)
-                {
-                    report.LogWarn(0, "The configuration does not contain the avatar's GUID! It might not be compatibile with the avatar!");
-                }
-
-                // instantiate wearable prefab
-                var wearableObj = Object.Instantiate(wearableConfig.wearableGameObject);
-
-                // scan for wearable dynamics
-                var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj);
-
-                // apply translation and scaling
-                ApplyTransforms(report, wearableConfig.targetAvatarConfig, cabinet.avatarGameObject, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
-
-                if (!GenerateMappings(report, cabinet.avatarArmatureName, wearableConfig, cabinet.avatarGameObject, wearableObj, out var boneMappings, out var objectMappings))
-                {
-                    Debug.Log("Generate mapping error");
-                    // abort on error
-                    RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
-                    continue;
-                }
-
-                if (wearableConfig.wearableType == DTWearableType.ArmatureBased)
-                {
-                    // apply bone mappings
-                    if (!ApplyBoneMappings(report, settings, cabinet, wearableConfig, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform, wearableObj.transform, ""))
-                    {
-                        Debug.Log("Bone mapping error");
-                        // abort on error
-                        RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
-                        continue;
-                    }
-
-                    // apply object mappings
-                    if (!ApplyObjectMappings(report, settings, wearableConfig, objectMappings, cabinet.avatarGameObject.transform, wearableObj.transform))
-                    {
-                        Debug.Log("Object mapping error");
-                        // abort on error
-                        RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
-                        continue;
-                    }
-                }
-
-                // rollback parents and scaling
-                RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
-
-                // destroy instantiated object
-                Object.DestroyImmediate(wearableObj);
             }
 
             return report;
