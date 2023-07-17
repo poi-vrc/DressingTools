@@ -6,6 +6,7 @@ using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.Logging;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
@@ -22,9 +23,11 @@ namespace Chocopoi.DressingTools.UI
 
         private static readonly DTDefaultApplier DefaultApplier = new DTDefaultApplier();
 
+        private static AnimatorController testModeAnimationController;
+
         private int dynamicBoneOption = 0;
 
-        private VRC.SDKBase.VRC_AvatarDescriptor activeAvatar;
+        private GameObject activeAvatar;
 
         private GameObject clothesToDress;
 
@@ -32,11 +35,11 @@ namespace Chocopoi.DressingTools.UI
 
         private string newClothesName;
 
-        private bool useDefaultGeneratedPrefixSuffix = true;
+        //private bool useDefaultGeneratedPrefixSuffix = true;
 
-        private string prefixToBeAdded;
+        //private string prefixToBeAdded;
 
-        private string suffixToBeAdded;
+        //private string suffixToBeAdded;
 
         private bool useCustomArmatureObjectNames = false;
 
@@ -60,17 +63,14 @@ namespace Chocopoi.DressingTools.UI
 
         private DTReport applierReport = null;
 
-        private bool showStatisticsFoldout = false;
+        //private bool showStatisticsFoldout = false;
 
         private Vector2 scrollPos;
 
         private bool needClearDirty = false;
 
-        private bool updateAvailableFoldout = false;
+        //private bool updateAvailableFoldout = false;
 
-        /// <summary>
-        /// Initialize the Dressing Tool window
-        /// </summary>
         [MenuItem("Tools/chocopoi/Legacy v1 Editor", false, 0)]
         public static void Init()
         {
@@ -79,15 +79,19 @@ namespace Chocopoi.DressingTools.UI
             window.Show();
         }
 
+        public void OnEnable()
+        {
+            testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Packages/com.chocopoi.vrc.dressingtools/Animations/TestModeAnimationController.controller");
+
+            if (testModeAnimationController == null)
+            {
+                Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
+            }
+        }
+
         private void DrawToolHeaderGUI()
         {
-            var titleLabelStyle = new GUIStyle(GUI.skin.label)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 16
-            };
             DTLogo.Show();
-            EditorGUILayout.LabelField("Legacy v1 Editor", titleLabelStyle, GUILayout.ExpandWidth(true), GUILayout.Height(25));
 
             EditorGUILayout.Separator();
 
@@ -189,7 +193,7 @@ namespace Chocopoi.DressingTools.UI
             }
         }
 
-        private void DrawDressReportResult()
+        private void DrawReportResult()
         {
             if (dresserReport == null || applierReport == null)
             {
@@ -237,7 +241,6 @@ namespace Chocopoi.DressingTools.UI
         {
             if (logEntries.Count == 0)
             {
-                EditorGUILayout.Separator();
                 EditorGUILayout.LabelField(t._("label_no_problems_found"));
                 return;
             }
@@ -328,7 +331,7 @@ namespace Chocopoi.DressingTools.UI
 
             return new DTDefaultDresserSettings()
             {
-                targetAvatar = activeAvatar.gameObject,
+                targetAvatar = activeAvatar,
                 targetWearable = clothesToDress,
                 dynamicsOption = dynamicsOption,
                 avatarArmatureName = avatarArmatureObjectName,
@@ -401,6 +404,7 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
 
+#if VRC_SDK_VRCSDK3
             if (activeAvatar == null)
             {
                 VRC.SDKBase.VRC_AvatarDescriptor[] avatars = FindObjectsOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
@@ -408,11 +412,12 @@ namespace Chocopoi.DressingTools.UI
                 {
                     if (!avatar.name.StartsWith("DressingToolsPreview_"))
                     {
-                        activeAvatar = avatar;
+                        activeAvatar = avatar.gameObject;
                     }
                 }
             }
-            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+#endif
+            activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(GameObject), true);
 
             clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
 
@@ -428,13 +433,13 @@ namespace Chocopoi.DressingTools.UI
 
             // simple mode defaults to use generated prefix
 
-            useDefaultGeneratedPrefixSuffix = true;
+            //useDefaultGeneratedPrefixSuffix = true;
 
-            if (clothesToDress != null)
-            {
-                prefixToBeAdded = "";
-                suffixToBeAdded = " (" + clothesToDress.name + ")";
-            }
+            //if (clothesToDress != null)
+            //{
+            //    prefixToBeAdded = "";
+            //    suffixToBeAdded = " (" + clothesToDress.name + ")";
+            //}
 
             EditorGUILayout.Separator();
 
@@ -454,11 +459,20 @@ namespace Chocopoi.DressingTools.UI
         {
             GUILayout.Label(t._("label_select_avatar"), EditorStyles.boldLabel);
 
+#if VRC_SDK_VRCSDK3
             if (activeAvatar == null)
             {
-                activeAvatar = FindObjectOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
+                VRC.SDKBase.VRC_AvatarDescriptor[] avatars = FindObjectsOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
+                foreach (var avatar in avatars)
+                {
+                    if (!avatar.name.StartsWith("DressingToolsPreview_"))
+                    {
+                        activeAvatar = avatar.gameObject;
+                    }
+                }
             }
-            activeAvatar = (VRC.SDKBase.VRC_AvatarDescriptor)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(VRC.SDKBase.VRC_AvatarDescriptor), true);
+#endif
+            activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(GameObject), true);
 
             EditorGUILayout.Separator();
 
@@ -490,20 +504,20 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.HelpBox(t._("helpbox_info_prefix_suffix"), MessageType.Info);
 
-            useDefaultGeneratedPrefixSuffix = GUILayout.Toggle(useDefaultGeneratedPrefixSuffix, t._("toggle_use_default_generated_prefix_suffix"));
+            //useDefaultGeneratedPrefixSuffix = GUILayout.Toggle(useDefaultGeneratedPrefixSuffix, t._("toggle_use_default_generated_prefix_suffix"));
 
-            if (useDefaultGeneratedPrefixSuffix && clothesToDress != null)
-            {
-                prefixToBeAdded = "";
-                suffixToBeAdded = " (" + clothesToDress.name + ")";
-            }
+            //if (useDefaultGeneratedPrefixSuffix && clothesToDress != null)
+            //{
+            //    prefixToBeAdded = "";
+            //    suffixToBeAdded = " (" + clothesToDress.name + ")";
+            //}
 
-            EditorGUI.BeginDisabledGroup(useDefaultGeneratedPrefixSuffix);
-            EditorGUI.indentLevel = 1;
-            prefixToBeAdded = EditorGUILayout.TextField(t._("text_prefix_to_be_added"), prefixToBeAdded);
-            suffixToBeAdded = EditorGUILayout.TextField(t._("text_suffix_to_be_added"), suffixToBeAdded);
-            EditorGUI.indentLevel = 0;
-            EditorGUI.EndDisabledGroup();
+            //EditorGUI.BeginDisabledGroup(useDefaultGeneratedPrefixSuffix);
+            //EditorGUI.indentLevel = 1;
+            //prefixToBeAdded = EditorGUILayout.TextField(t._("text_prefix_to_be_added"), prefixToBeAdded);
+            //suffixToBeAdded = EditorGUILayout.TextField(t._("text_suffix_to_be_added"), suffixToBeAdded);
+            //EditorGUI.indentLevel = 0;
+            //EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Separator();
 
@@ -547,7 +561,7 @@ namespace Chocopoi.DressingTools.UI
             }
 
             // replicate the v1 behaviour to generate a preview GameObject
-            string avatarNewName = "DressingToolsPreview_" + activeAvatar.gameObject.name;
+            string avatarNewName = "DressingToolsPreview_" + activeAvatar.name;
             string clothesNewName = "DressingToolsPreview_" + clothesToDress.name;
 
             GameObject targetAvatar;
@@ -555,12 +569,12 @@ namespace Chocopoi.DressingTools.UI
 
             if (write)
             {
-                targetAvatar = activeAvatar.gameObject;
+                targetAvatar = activeAvatar;
                 targetWearable = clothesToDress;
             }
             else
             {
-                targetAvatar = Instantiate(activeAvatar.gameObject);
+                targetAvatar = Instantiate(activeAvatar);
                 targetAvatar.name = avatarNewName;
 
                 var newAvatarPosition = targetAvatar.transform.position;
@@ -579,7 +593,7 @@ namespace Chocopoi.DressingTools.UI
                 //add animation controller
                 if (animator != null)
                 {
-                    //animator.runtimeAnimatorController = testModeAnimationController;
+                    animator.runtimeAnimatorController = testModeAnimationController;
                 }
 
                 //add dummy focus sceneview script
@@ -649,7 +663,7 @@ namespace Chocopoi.DressingTools.UI
                 fontSize = 16
             };
 
-            DrawDressReportResult();
+            DrawReportResult();
 
             EditorGUILayout.BeginHorizontal();
 
@@ -688,8 +702,6 @@ namespace Chocopoi.DressingTools.UI
                     clothesToDress = clonedPrefab;
                 }
 
-                // evaluate dressreport
-
                 GenerateMappingsAndApply(false);
                 dressNowConfirm = false;
                 Debug.Log("[DressingTools] Dress report generated with result " + dresserReport.Result);
@@ -699,7 +711,6 @@ namespace Chocopoi.DressingTools.UI
             EditorGUI.BeginDisabledGroup(dresserReport == null || dresserReport.Result < 0);
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
-                //EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_test_mode_not_implemented", activeAvatar?.name), "OK");
                 EditorApplication.EnterPlaymode();
             }
             EditorGUILayout.EndHorizontal();
@@ -738,6 +749,7 @@ namespace Chocopoi.DressingTools.UI
         void DrawHeaderButtonsGUI()
         {
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Legacy v1 Editor", GUILayout.ExpandWidth(false));
             GUILayout.FlexibleSpace();
 
             if (GUILayout.Button("Settings 設定"))
