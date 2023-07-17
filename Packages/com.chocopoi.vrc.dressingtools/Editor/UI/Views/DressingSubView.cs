@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUI.BeginDisabledGroup(cabinet == null);
             if (GUILayout.Button("Add to cabinet"))
             {
-                mainPresenter.AddToCabinet(cabinet, wearableConfigViewSettings.targetWearable, wearableConfigViewSettings.config);
+                mainPresenter.AddToCabinet(cabinet, wearableConfigViewSettings.config, wearableConfigViewSettings.targetWearable);
             }
             EditorGUI.EndDisabledGroup();
             if (GUILayout.Button("Save to file"))

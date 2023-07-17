@@ -456,6 +456,15 @@ namespace Chocopoi.DressingTools.Applier.Default
             return true;
         }
 
+        private void CleanUp(GameObject targetAvatar, Transform lastAvatarParent, Vector3 lastAvatarScale, GameObject wearableObj)
+        {
+            // rollback parents and scaling
+            RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+
+            // destroy instantiated object
+            Object.DestroyImmediate(wearableObj);
+        }
+
         private bool ApplyWearable(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, DTCabinet cabinet = null, GameObject targetAvatar = null, GameObject targetWearable = null)
         {
             // TODO: check config version and do migration here
@@ -498,7 +507,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             {
                 Debug.Log("Generate mapping error");
                 // abort on error
-                RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+                CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
                 return false;
             }
 
@@ -509,7 +518,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 {
                     Debug.Log("Bone mapping error");
                     // abort on error
-                    RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+                    CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
                     return false;
                 }
 
@@ -518,16 +527,12 @@ namespace Chocopoi.DressingTools.Applier.Default
                 {
                     Debug.Log("Object mapping error");
                     // abort on error
-                    RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
+                    CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
                     return false;
                 }
             }
 
-            // rollback parents and scaling
-            RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
-
-            // destroy instantiated object
-            Object.DestroyImmediate(wearableObj);
+            CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
 
             return true;
         }

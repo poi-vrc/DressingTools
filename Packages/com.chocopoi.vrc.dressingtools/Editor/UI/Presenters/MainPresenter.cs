@@ -3,6 +3,7 @@ using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -22,21 +23,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
             mainView.SwitchTab(1);
         }
 
-        public void AddToCabinet(DTCabinet cabinet, GameObject wearableGameObject, DTWearableConfig config)
+        public void AddToCabinet(DTCabinet cabinet, DTWearableConfig config, GameObject wearableGameObject)
         {
-            var cabinetWearable = new DTCabinetWearable(config)
-            {
-                wearableGameObject = wearableGameObject,
-                // empty references
-                appliedObjects = new List<GameObject>(),
-                // serialize a json copy for backward compatibility backup 
-                serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                })
-            };
+            cabinet.AddWearable(config, wearableGameObject);
 
-            cabinet.wearables.Add(cabinetWearable);
+            EditorUtility.DisplayProgressBar("DressingTools", "Refreshing cabinet...", 0);
+            cabinet.RefreshCabinet();
+            EditorUtility.ClearProgressBar();
 
             // TODO: reset dressing tab?
             // return to cabinet page

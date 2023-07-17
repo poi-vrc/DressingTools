@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Chocopoi.DressingTools.Applier;
 using Chocopoi.DressingTools.Applier.Default;
 using Chocopoi.DressingTools.Logging;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
@@ -76,6 +77,36 @@ namespace Chocopoi.DressingTools.Cabinet
             return null;
         }
 
+        public void AddWearable(DTWearableConfig config, GameObject wearableGameObject)
+        {
+            var cabinetWearable = new DTCabinetWearable(config)
+            {
+                wearableGameObject = wearableGameObject,
+                // empty references
+                appliedObjects = new List<GameObject>(),
+                // serialize a json copy for backward compatibility backup 
+                serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                })
+            };
+
+            wearables.Add(cabinetWearable);
+        }
+
+        public void RemoveWearable(DTCabinetWearable wearable)
+        {
+            if (!wearables.Contains(wearable))
+            {
+                return;
+            }
+
+            // we have to clean up first before removing
+            CleanUp();
+
+            wearables.Remove(wearable);
+        }
+
         public void CleanUp()
         {
             // clean up applied objects
@@ -107,6 +138,18 @@ namespace Chocopoi.DressingTools.Cabinet
             var applier = GetApplierByTypeName(applierName);
             var settings = applier.DeserializeSettings(serializedApplierSettings);
             return applier.ApplyCabinet(settings, this);
+        }
+
+        public DTReport RefreshCabinet()
+        {
+            CleanUp();
+
+            if (applierMode == DTCabinetApplierMode.ApplyImmediately)
+            {
+                return Apply();
+            }
+
+            return null;
         }
 
         // Start is called before the first frame update

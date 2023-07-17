@@ -72,6 +72,8 @@ namespace Chocopoi.DressingTools.UI.Views
             cabinet.avatarGameObject = (GameObject)EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
             cabinet.avatarArmatureName = EditorGUILayout.TextField("Armature Name", cabinet.avatarArmatureName);
 
+            var refreshCabinetNeeded = false;
+
             {
                 // list all appliers
                 string[] applierKeys = DTCabinet.GetApplierKeys();
@@ -97,6 +99,7 @@ namespace Chocopoi.DressingTools.UI.Views
                         {
                             applierSettings = new DTDefaultApplierSettings();
                         }
+                        refreshCabinetNeeded = true;
                     }
                 }
 
@@ -105,10 +108,16 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     // serialize if modified
                     cabinet.serializedApplierSettings = JsonConvert.SerializeObject(applierSettings);
+                    refreshCabinetNeeded = true;
                 }
             }
 
-            cabinet.applierMode = ConvertIntToApplierMode(EditorGUILayout.Popup("Applier Mode", (int)cabinet.applierMode, new string[] { "Late apply", "Apply immediately" }));
+            var newApplierMode = ConvertIntToApplierMode(EditorGUILayout.Popup("Applier Mode", (int)cabinet.applierMode, new string[] { "Late apply", "Apply immediately" }));
+            if (newApplierMode != cabinet.applierMode)
+            {
+                refreshCabinetNeeded = true;
+            }
+            cabinet.applierMode = newApplierMode;
 
             var wearablesToRemove = new List<DTCabinetWearable>();
 
@@ -124,13 +133,27 @@ namespace Chocopoi.DressingTools.UI.Views
             // remove all pending wearable in list
             foreach (var wearable in wearablesToRemove)
             {
-                cabinet.wearables.Remove(wearable);
+                cabinet.RemoveWearable(wearable);
+            }
+
+            // refresh the cabinet if any removed
+            if (wearablesToRemove.Count > 0)
+            {
+                refreshCabinetNeeded = true;
             }
 
             if (GUILayout.Button("Add Wearable"))
             {
                 // start dressing
                 mainPresenter.StartDressingWizard();
+            }
+
+            if (refreshCabinetNeeded)
+            {
+                // refresh cabinet if needed
+                EditorUtility.DisplayProgressBar("DressingTools", "Refreshing cabinet...", 0);
+                cabinet.RefreshCabinet();
+                EditorUtility.ClearProgressBar();
             }
         }
     }
