@@ -602,6 +602,20 @@ namespace Chocopoi.DressingTools.UI
                 targetAvatar.AddComponent<DummyFocusSceneViewScript>();
             }
 
+            // check if it's a prefab
+            if (PrefabUtility.IsPartOfAnyPrefab(targetWearable))
+            {
+                if (PrefabUtility.GetPrefabInstanceStatus(clothesToDress) == PrefabInstanceStatus.NotAPrefab)
+                {
+                    // if not in scene, we cannot just unpack it but need to instantiate first
+                    targetWearable = (GameObject)PrefabUtility.InstantiatePrefab(targetWearable);
+                    targetWearable.name = clothesToDress.name;
+                }
+
+                // unpack completely the prefab
+                PrefabUtility.UnpackPrefabInstance(targetWearable, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            }
+
             // parent to avatar
             targetWearable.name = clothesToDress.name;
             targetWearable.transform.SetParent(targetAvatar.transform);
