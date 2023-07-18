@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return true;
         }
 
-        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings, List<DTObjectMapping> objectMappings)
+        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings)
         {
             //scan avatar missing scripts
             var avatarResult = ScanGameObject(report, DTDefaultDresser.MessageCode.MissingScriptsDetectedInAvatar, settings.targetAvatar);

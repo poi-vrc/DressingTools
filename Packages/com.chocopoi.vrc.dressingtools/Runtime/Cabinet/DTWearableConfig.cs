@@ -38,8 +38,6 @@ namespace Chocopoi.DressingTools.Cabinet
         public string wearableArmatureName;
         public DTWearableMappingMode boneMappingMode;
         public DTBoneMapping[] boneMappings;
-        public DTWearableMappingMode objectMappingMode;
-        public DTObjectMapping[] objectMappings;
         public string serializedDresserConfig;
 
         // Animation generation
@@ -81,8 +79,6 @@ namespace Chocopoi.DressingTools.Cabinet
             wearableArmatureName = toCopy.wearableArmatureName;
             boneMappingMode = toCopy.boneMappingMode;
             boneMappings = toCopy.boneMappings;
-            objectMappingMode = toCopy.objectMappingMode;
-            objectMappings = toCopy.objectMappings;
 
             avatarAnimationOnWear = toCopy.avatarAnimationOnWear;
             wearableAnimationOnWear = toCopy.wearableAnimationOnWear;

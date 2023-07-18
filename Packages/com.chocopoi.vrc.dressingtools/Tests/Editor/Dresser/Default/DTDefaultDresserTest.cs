@@ -15,7 +15,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
         public void NotDTDefaultDresserSettings_ReturnsCorrectErrorCode()
         {
             var dresser = new DTDefaultDresser();
-            var report = dresser.Execute(new DTDresserSettings(), out var boneMappings, out var objectMappings);
+            var report = dresser.Execute(new DTDresserSettings(), out var boneMappings);
             Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
         }
 
@@ -30,7 +30,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 targetAvatar = null,
                 targetWearable = wearableRoot
             };
-            var report = dresser.Execute(settings, out var boneMappings, out var objectMappings);
+            var report = dresser.Execute(settings, out var boneMappings);
             Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
         }
 
@@ -45,11 +45,11 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 targetAvatar = avatarRoot,
                 targetWearable = null
             };
-            var report = dresser.Execute(settings, out var boneMappings, out var objectMappings);
+            var report = dresser.Execute(settings, out var boneMappings);
             Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
         }
 
-        private DTReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
+        private DTReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<DTBoneMapping> boneMappings)
         {
             var dresser = new DTDefaultDresser();
             var settings = new DTDefaultDresserSettings()
@@ -60,7 +60,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 wearableArmatureName = "Armature",
                 dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
             };
-            return dresser.Execute(settings, out boneMappings, out objectMappings);
+            return dresser.Execute(settings, out boneMappings);
         }
 
         [Test]
@@ -69,9 +69,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             // we create roots with no armature to simulate an error
             var avatarRoot = CreateGameObject("Avatar");
             var wearableRoot = CreateGameObject("Wearable");
-            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings, out var objectMappings);
+            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
             Assert.Null(boneMappings);
-            Assert.Null(objectMappings);
             Assert.AreEqual(report.Result, DTReportResult.Incompatible);
         }
 
@@ -84,9 +83,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             // an extra object in armature introduces the warnings
             CreateGameObject("MyObject", avatarArmature.transform);
 
-            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings, out var objectMappings);
+            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
             Assert.NotNull(boneMappings);
-            Assert.NotNull(objectMappings);
             Assert.AreEqual(report.Result, DTReportResult.Compatible);
         }
 
@@ -96,9 +94,8 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
             CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
 
-            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings, out var objectMappings);
+            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
             Assert.NotNull(boneMappings);
-            Assert.NotNull(objectMappings);
             Assert.AreEqual(report.Result, DTReportResult.Ok);
         }
     }

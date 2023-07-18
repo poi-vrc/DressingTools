@@ -105,7 +105,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     var lastObj = container.config.avatarPath != null ? root.Find(container.config.avatarPath)?.gameObject : null;
                     var newObj = (GameObject)EditorGUILayout.ObjectField("Move To", lastObj, typeof(GameObject), true);
-                    if (lastObj != newObj && isGrandParent(root, newObj.transform))
+                    if (lastObj != newObj && DTRuntimeUtils.IsGrandParent(root, newObj.transform))
                     {
                         // renew path if changed
                         container.config.avatarPath = AnimationUtils.GetRelativePath(newObj.transform, root);
@@ -292,20 +292,6 @@ namespace Chocopoi.DressingTools.UI.Views
             DrawTypeArmatureMappingFoldout(cabinet);
         }
 
-        private bool isGrandParent(Transform grandParent, Transform grandChild)
-        {
-            var p = grandChild.parent;
-            while (p != null)
-            {
-                if (p == grandParent)
-                {
-                    return true;
-                }
-                p = p.parent;
-            }
-            return false;
-        }
-
         private void DrawAnimationPresetToggles(Transform root, DTAnimationPreset preset, ref bool foldoutAnimationPresetToggles)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -331,7 +317,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
                     var lastObj = toggle.path != null ? root.Find(toggle.path)?.gameObject : null;
                     var newObj = (GameObject)EditorGUILayout.ObjectField(lastObj, typeof(GameObject), true);
-                    if (lastObj != newObj && isGrandParent(root, newObj.transform))
+                    if (lastObj != newObj && DTRuntimeUtils.IsGrandParent(root, newObj.transform))
                     {
                         // renew path if changed
                         toggle.path = AnimationUtils.GetRelativePath(newObj.transform, root);
@@ -382,7 +368,7 @@ namespace Chocopoi.DressingTools.UI.Views
                     var lastObj = blendshape.path != null ? root.Find(blendshape.path)?.gameObject : null;
                     var newObj = (GameObject)EditorGUILayout.ObjectField(lastObj, typeof(GameObject), true);
                     var mesh = newObj?.GetComponent<SkinnedMeshRenderer>()?.sharedMesh;
-                    if (newObj != null && lastObj != newObj && isGrandParent(root, newObj.transform) && mesh != null)
+                    if (newObj != null && lastObj != newObj && DTRuntimeUtils.IsGrandParent(root, newObj.transform) && mesh != null)
                     {
                         // renew path if changed
                         blendshape.path = AnimationUtils.GetRelativePath(newObj.transform, root);
@@ -521,7 +507,7 @@ namespace Chocopoi.DressingTools.UI.Views
                         GUILayout.Label("Avatar:");
                         var newAvatarObj = (GameObject)EditorGUILayout.ObjectField(lastAvatarObj, typeof(GameObject), true);
                         var avatarMesh = newAvatarObj?.GetComponent<SkinnedMeshRenderer>()?.sharedMesh;
-                        if (lastAvatarObj != newAvatarObj && isGrandParent(avatarRoot, newAvatarObj.transform) && avatarMesh != null)
+                        if (lastAvatarObj != newAvatarObj && DTRuntimeUtils.IsGrandParent(avatarRoot, newAvatarObj.transform) && avatarMesh != null)
                         {
                             // renew path if changed
                             blendshapeSync.avatarPath = AnimationUtils.GetRelativePath(newAvatarObj.transform, avatarRoot);
@@ -554,7 +540,7 @@ namespace Chocopoi.DressingTools.UI.Views
                         GUILayout.Label("Wearable:");
                         var newWearableObj = (GameObject)EditorGUILayout.ObjectField(lastWearableObj, typeof(GameObject), true);
                         var wearableMesh = newWearableObj?.GetComponent<SkinnedMeshRenderer>()?.sharedMesh;
-                        if (lastWearableObj != newWearableObj && isGrandParent(wearableRoot, newWearableObj.transform) && wearableMesh != null)
+                        if (lastWearableObj != newWearableObj && DTRuntimeUtils.IsGrandParent(wearableRoot, newWearableObj.transform) && wearableMesh != null)
                         {
                             // renew path if changed
                             blendshapeSync.wearablePath = AnimationUtils.GetRelativePath(newWearableObj.transform, wearableRoot);
@@ -858,8 +844,6 @@ namespace Chocopoi.DressingTools.UI.Views
             var mappingEditorContainer = wearableConfigPresenter.GetMappingEditorContainer();
             container.config.boneMappingMode = mappingEditorContainer.boneMappingMode;
             container.config.boneMappings = container.config.boneMappingMode != DTWearableMappingMode.Auto ? mappingEditorContainer.boneMappings?.ToArray() : new DTBoneMapping[0];
-            container.config.objectMappingMode = mappingEditorContainer.objectMappingMode;
-            container.config.objectMappings = container.config.objectMappingMode != DTWearableMappingMode.Auto ? mappingEditorContainer.objectMappings?.ToArray() : new DTObjectMapping[0];
         }
 
         public bool IsConfigReady()
@@ -872,7 +856,7 @@ namespace Chocopoi.DressingTools.UI.Views
             if (container.config.wearableType == DTWearableType.ArmatureBased)
             {
                 // armature mode
-                ready &= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null && container.config.objectMappings != null;
+                ready &= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null;
             }
 
             return ready;

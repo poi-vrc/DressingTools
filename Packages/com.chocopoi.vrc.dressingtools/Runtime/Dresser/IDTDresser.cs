@@ -8,6 +8,6 @@ namespace Chocopoi.DressingTools.Dresser
     {
         DTDresserSettings DeserializeSettings(string serializedJson);
         DTDresserSettings NewSettings();
-        DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings);
+        DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings);
     }
 }

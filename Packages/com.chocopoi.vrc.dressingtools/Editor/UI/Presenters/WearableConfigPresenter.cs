@@ -31,7 +31,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             mappingEditorContainer.dresserSettings = null;
             mappingEditorContainer.boneMappings = null;
-            mappingEditorContainer.objectMappings = null;
             mappingEditorContainer.boneMappingMode = DTWearableMappingMode.Auto;
             mappingEditorContainer.objectMappingMode = DTWearableMappingMode.Auto;
         }
@@ -43,7 +42,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             mappingEditorContainer.dresserSettings = dresserSettings;
 
             // execute dresser
-            var dresserReport = dresser.Execute(dresserSettings, out mappingEditorContainer.boneMappings, out mappingEditorContainer.objectMappings);
+            var dresserReport = dresser.Execute(dresserSettings, out mappingEditorContainer.boneMappings);
 
             return dresserReport;
         }

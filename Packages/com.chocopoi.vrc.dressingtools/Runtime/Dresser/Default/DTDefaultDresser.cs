@@ -43,16 +43,13 @@ namespace Chocopoi.DressingTools.Dresser
 
         private static readonly IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
             new NoMissingScriptsHook(),
-            new ObjectPlacementHook(),
-            new ArmatureHook(),
-            new RootObjectsHook()
+            new ArmatureHook()
         };
 
-        public DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
+        public DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings)
         {
             var report = new DTReport();
             boneMappings = null;
-            objectMappings = null;
 
             if (!(settings is DTDefaultDresserSettings))
             {
@@ -70,18 +67,16 @@ namespace Chocopoi.DressingTools.Dresser
             }
 
             boneMappings = new List<DTBoneMapping>();
-            objectMappings = new List<DTObjectMapping>();
 
             // evaluate each hooks to generate the bone mappings
             foreach (var hook in hooks)
             {
-                if (!hook.Evaluate(report, settings, boneMappings, objectMappings))
+                if (!hook.Evaluate(report, settings, boneMappings))
                 {
                     // hook error and do not continue
                     report.LogError(MessageCode.GenericError, string.Format("Dresser execution aborted as hook \"{0}\" reported an error status.", hook.GetType().Name));
                     report.Result = DTReportResult.Incompatible;
                     boneMappings = null;
-                    objectMappings = null;
                     return report;
                 }
             }

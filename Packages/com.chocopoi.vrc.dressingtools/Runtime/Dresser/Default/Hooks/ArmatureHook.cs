@@ -148,7 +148,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return count == 1;
         }
 
-        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings, List<DTObjectMapping> objectMappings)
+        public bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings)
         {
             var avatarArmature = settings.targetAvatar.transform.Find(settings.avatarArmatureName);
             var wearableArmature = settings.targetWearable.transform.Find(settings.wearableArmatureName);

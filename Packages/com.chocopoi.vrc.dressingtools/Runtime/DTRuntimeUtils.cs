@@ -35,6 +35,20 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
+        public static bool IsGrandParent(Transform grandParent, Transform grandChild)
+        {
+            var p = grandChild.parent;
+            while (p != null)
+            {
+                if (p == grandParent)
+                {
+                    return true;
+                }
+                p = p.parent;
+            }
+            return false;
+        }
+
         public static string GetGameObjectOriginalPrefabGuid(GameObject obj)
         {
             var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj));

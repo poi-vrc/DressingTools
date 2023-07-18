@@ -5,6 +5,7 @@ using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -58,7 +59,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             targetAvatar.transform.localScale = lastAvatarScale;
         }
 
-        private bool GenerateMappings(DTReport report, string avatarArmatureName, DTWearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable, out List<DTBoneMapping> boneMappings, out List<DTObjectMapping> objectMappings)
+        private bool GenerateMappings(DTReport report, string avatarArmatureName, DTWearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable, out List<DTBoneMapping> boneMappings)
         {
             // execute dresser
             var dresser = DresserRegistry.GetDresserByTypeName(wearableConfig.dresserName);
@@ -72,7 +73,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             dresserSettings.targetWearable = targetWearable;
             dresserSettings.avatarArmatureName = avatarArmatureName;
             dresserSettings.wearableArmatureName = wearableConfig.wearableArmatureName;
-            var dresserReport = dresser.Execute(dresserSettings, out boneMappings, out objectMappings);
+            var dresserReport = dresser.Execute(dresserSettings, out boneMappings);
 
             // abort on error
             if (dresserReport.Result != DTReportResult.Compatible && dresserReport.Result != DTReportResult.Ok)
@@ -101,26 +102,6 @@ namespace Chocopoi.DressingTools.Applier.Default
                 }
             }
 
-            // handle object overrides
-            if (wearableConfig.objectMappingMode == DTWearableMappingMode.Manual)
-            {
-                objectMappings = new List<DTObjectMapping>(wearableConfig.objectMappings);
-            }
-            else if (wearableConfig.objectMappingMode == DTWearableMappingMode.Override)
-            {
-                foreach (var mappingOverride in wearableConfig.objectMappings)
-                {
-                    foreach (var originalMapping in objectMappings)
-                    {
-                        // override on match
-                        if (originalMapping.wearableObjectPath == mappingOverride.wearableObjectPath)
-                        {
-                            originalMapping.avatarObjectPath = mappingOverride.avatarObjectPath;
-                        }
-                    }
-                }
-            }
-
             return true;
         }
 
@@ -129,18 +110,6 @@ namespace Chocopoi.DressingTools.Applier.Default
             foreach (var mapping in boneMappings)
             {
                 if (mapping.wearableBonePath == wearableBonePath)
-                {
-                    return mapping;
-                }
-            }
-            return null;
-        }
-
-        private DTObjectMapping GetObjectMappingByWearableBonePath(List<DTObjectMapping> objectMappings, string wearableObjectPath)
-        {
-            foreach (var mapping in objectMappings)
-            {
-                if (mapping.wearableObjectPath == wearableObjectPath)
                 {
                     return mapping;
                 }
@@ -388,83 +357,6 @@ namespace Chocopoi.DressingTools.Applier.Default
             return true;
         }
 
-        public bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, GameObject targetAvatar, GameObject targetWearable)
-        {
-            return ApplyObjectMappings(report, settings, wearableName, objectMappings, targetAvatar.transform, targetWearable.transform, null);
-        }
-
-        private bool ApplyObjectMappings(DTReport report, DTApplierSettings settings, string wearableName, List<DTObjectMapping> objectMappings, Transform avatarBoneParent, Transform wearableBoneParent, DTWearableConfig wearableConfig = null)
-        {
-            var wearableChilds = new List<Transform>();
-
-            for (int i = 0; i < wearableBoneParent.childCount; i++)
-            {
-                wearableChilds.Add(wearableBoneParent.GetChild(i));
-            }
-
-            // create wearable container
-            Transform wearableContainer;
-            if (settings.groupRootObjects)
-            {
-                string name = "DT_" + wearableName;
-                wearableContainer = avatarBoneParent.Find(name);
-
-                if (wearableContainer != null)
-                {
-                    report.LogError(0, "Existing wearable detected! Aborting operation.");
-                    return false;
-                }
-
-                var obj = new GameObject(name);
-                obj.transform.SetParent(avatarBoneParent);
-                wearableContainer = obj.transform;
-
-                RecordAppliedObject(wearableConfig, wearableContainer);
-            }
-            else
-            {
-                wearableContainer = avatarBoneParent;
-            }
-
-            foreach (var wearableChild in wearableChilds)
-            {
-                var path = AnimationUtils.GetRelativePath(wearableChild, wearableBoneParent);
-                var mapping = GetObjectMappingByWearableBonePath(objectMappings, path);
-
-                if (settings.removeExistingPrefixSuffix)
-                {
-                    RemoveExistingPrefixSuffix(wearableChild);
-                }
-
-                if (mapping != null)
-                {
-                    var avatarObject = mapping.avatarObjectPath == "" || mapping.avatarObjectPath == "." ? avatarBoneParent : avatarBoneParent.Find(mapping.avatarObjectPath);
-
-                    if (avatarObject != null)
-                    {
-                        wearableChild.SetParent(wearableContainer);
-                        RecordAppliedObject(wearableConfig, wearableChild);
-                    }
-                    else
-                    {
-                        report.LogError(0, string.Format("Avatar object path \"{0}\" in mapping not found", mapping.avatarObjectPath));
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        private void CleanUp(GameObject targetAvatar, Transform lastAvatarParent, Vector3 lastAvatarScale, GameObject wearableObj)
-        {
-            // rollback parents and scaling
-            RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
-
-            // destroy instantiated object
-            Object.DestroyImmediate(wearableObj);
-        }
-
         private bool ApplyWearable(DTReport report, DTApplierSettings settings, DTWearableConfig wearableConfig, List<IDynamicsProxy> avatarDynamics, DTCabinet cabinet = null, GameObject targetAvatar = null, GameObject targetWearable = null)
         {
             // TODO: check config version and do migration here
@@ -494,8 +386,23 @@ namespace Chocopoi.DressingTools.Applier.Default
                 }
             }
 
-            // instantiate wearable prefab
-            var wearableObj = Object.Instantiate(targetWearable);
+            GameObject wearableObj;
+            if (DTRuntimeUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform))
+            {
+                // check if it's a prefab
+                if (PrefabUtility.IsPartOfAnyPrefab(targetWearable))
+                {
+                    // unpack completely the prefab
+                    PrefabUtility.UnpackPrefabInstance(targetWearable, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+                }
+                wearableObj = targetWearable;
+            }
+            else
+            {
+                // instantiate wearable prefab and parent to avatar
+                wearableObj = Object.Instantiate(targetWearable, targetAvatar.transform);
+            }
+            RecordAppliedObject(wearableConfig, wearableObj.transform);
 
             // scan for wearable dynamics
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj);
@@ -503,11 +410,11 @@ namespace Chocopoi.DressingTools.Applier.Default
             // apply translation and scaling
             ApplyTransforms(report, wearableConfig.targetAvatarConfig, targetAvatar, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
-            if (!GenerateMappings(report, cabinet.avatarArmatureName, wearableConfig, targetAvatar, wearableObj, out var boneMappings, out var objectMappings))
+            if (!GenerateMappings(report, cabinet.avatarArmatureName, wearableConfig, targetAvatar, wearableObj, out var boneMappings))
             {
                 Debug.Log("Generate mapping error");
                 // abort on error
-                CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
+                RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
                 return false;
             }
 
@@ -518,21 +425,12 @@ namespace Chocopoi.DressingTools.Applier.Default
                 {
                     Debug.Log("Bone mapping error");
                     // abort on error
-                    CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
-                    return false;
-                }
-
-                // apply object mappings
-                if (!ApplyObjectMappings(report, settings, wearableConfig.info.name, objectMappings, targetAvatar.transform, wearableObj.transform, wearableConfig))
-                {
-                    Debug.Log("Object mapping error");
-                    // abort on error
-                    CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
+                    RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
                     return false;
                 }
             }
 
-            CleanUp(targetAvatar, lastAvatarParent, lastAvatarScale, wearableObj);
+            RollbackTransform(targetAvatar, lastAvatarParent, lastAvatarScale);
 
             return true;
         }

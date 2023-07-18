@@ -13,7 +13,6 @@ namespace Chocopoi.DressingTools.UI
         public DTWearableMappingMode boneMappingMode;
         public List<DTBoneMapping> boneMappings;
         public DTWearableMappingMode objectMappingMode;
-        public List<DTObjectMapping> objectMappings;
     }
 
     public class DTMappingEditorWindow : EditorWindow
@@ -51,71 +50,6 @@ namespace Chocopoi.DressingTools.UI
             }
 
             return boneMappings;
-        }
-
-        private DTObjectMapping GetWearableObjectMapping(Transform wearableRoot, Transform targetWearableObject)
-        {
-            var path = AnimationUtils.GetRelativePath(targetWearableObject, wearableRoot);
-
-            foreach (var objectMapping in container.objectMappings)
-            {
-                if (objectMapping.wearableObjectPath == path)
-                {
-                    return objectMapping;
-                }
-            }
-
-            return null;
-        }
-
-        public void DrawWearableHierarchy(Transform wearableRoot, Transform parent)
-        {
-            for (var i = 0; i < parent.childCount; i++)
-            {
-                var child = parent.GetChild(i);
-
-                if (child.name == container.dresserSettings.wearableArmatureName)
-                {
-                    // skips rendering the Armature object
-                    continue;
-                }
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.ObjectField(child.gameObject, typeof(GameObject), true);
-                GUILayout.Label("-->", GUILayout.ExpandWidth(false));
-
-                // backup and set indent level to zero
-                var lastIndentLevel = EditorGUI.indentLevel;
-                EditorGUI.indentLevel = 0;
-
-                var objectMapping = GetWearableObjectMapping(wearableRoot, child);
-
-                if (objectMapping != null)
-                {
-                    // the avatar root itself
-                    if (objectMapping.avatarObjectPath == "" || objectMapping.avatarObjectPath == ".")
-                    {
-                        EditorGUILayout.ObjectField(container.dresserSettings.targetAvatar, typeof(GameObject), true);
-                    }
-                    else
-                    {
-                        EditorGUILayout.ObjectField(container.dresserSettings.targetAvatar.transform.Find(objectMapping.avatarObjectPath)?.gameObject, typeof(GameObject), true);
-                    }
-                }
-                else
-                {
-                    EditorGUILayout.ObjectField(null, typeof(GameObject), true);
-                }
-
-                // restore to the previous indent level
-                EditorGUI.indentLevel = lastIndentLevel;
-
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUI.indentLevel += 1;
-                DrawWearableHierarchy(wearableRoot, child);
-                EditorGUI.indentLevel -= 1;
-            }
         }
 
         public void DrawAvatarHierarchy(Transform avatarRoot, Transform parent)
@@ -188,15 +122,6 @@ namespace Chocopoi.DressingTools.UI
             }
         }
 
-        private void DrawBoneObjectEditorSwitch()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Label("Mapping Editor:");
-            selectedBoneObjectEditor = GUILayout.Toolbar(selectedBoneObjectEditor, new string[] { "Armature", "Root Objects" });
-            GUILayout.EndHorizontal();
-        }
-
         private void DrawMappingHeaderHelpBoxes(DTWearableMappingMode mappingMode)
         {
             if (mappingMode == DTWearableMappingMode.Auto)
@@ -248,41 +173,6 @@ namespace Chocopoi.DressingTools.UI
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawObjectMappingEditor()
-        {
-            // Header
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.BeginHorizontal();
-
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Left: Wearable", container.dresserSettings.targetWearable, typeof(GameObject), true);
-            EditorGUI.EndDisabledGroup();
-            container.objectMappingMode = ConvertIntToWearableMappingMode(EditorGUILayout.Popup("Mode", (int)container.objectMappingMode, new string[] { "Auto", "Override", "Manual" }));
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Right: Avatar", container.dresserSettings.targetAvatar, typeof(GameObject), true);
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndHorizontal();
-
-            DrawMappingHeaderHelpBoxes(container.objectMappingMode);
-
-            DTEditorUtils.DrawHorizontalLine();
-
-            // TODO: implement final result mapping preview
-            GUILayout.Toolbar(0, new string[] { "Your Mappings", "Result Mappings" });
-
-            EditorGUILayout.Separator();
-
-            // Object Mappings
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-
-            EditorGUI.BeginDisabledGroup(container.objectMappingMode == DTWearableMappingMode.Auto);
-            DrawWearableHierarchy(container.dresserSettings.targetWearable.transform, container.dresserSettings.targetWearable.transform);
-            EditorGUI.EndDisabledGroup();
-
-            EditorGUILayout.EndScrollView();
-            EditorGUILayout.EndVertical();
-        }
-
         public void OnGUI()
         {
             if (container == null)
@@ -291,24 +181,14 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
-            if (container.dresserSettings == null || container.boneMappings == null || container.objectMappings == null)
+            if (container.dresserSettings == null || container.boneMappings == null)
             {
-                EditorGUILayout.HelpBox("Bone and object mapping not available.", MessageType.Error);
+                EditorGUILayout.HelpBox("Bone mapping not available.", MessageType.Error);
                 return;
             }
 
-            // Bone/Object editor switch
-            DrawBoneObjectEditorSwitch();
-
             // Bone editor
-            if (selectedBoneObjectEditor == 0)
-            {
-                DrawBoneMappingEditor();
-            }
-            else
-            {
-                DrawObjectMappingEditor();
-            }
+            DrawBoneMappingEditor();
 
             EditorGUILayout.Separator();
         }

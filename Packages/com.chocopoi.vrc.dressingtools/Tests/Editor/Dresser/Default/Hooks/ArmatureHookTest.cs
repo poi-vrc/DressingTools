@@ -16,7 +16,6 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             report = new DTReport();
             var settings = new DTDefaultDresserSettings();
             boneMappings = new List<DTBoneMapping>();
-            var objectMappings = new List<DTObjectMapping>();
             var hook = new ArmatureHook();
 
             settings.targetAvatar = avatarRoot;
@@ -25,7 +24,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             settings.wearableArmatureName = "Armature";
             settings.dynamicsOption = dynamicsOption;
 
-            return hook.Evaluate(report, settings, boneMappings, objectMappings);
+            return hook.Evaluate(report, settings, boneMappings);
         }
 
         #region Log Code Tests

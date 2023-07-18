@@ -51,8 +51,6 @@ namespace Chocopoi.DressingTools.UI
 
         private bool groupBones = true;
 
-        private bool groupRootObjects = true;
-
         private bool groupDynamics = true;
 
         private bool dressNowConfirm = false;
@@ -345,7 +343,6 @@ namespace Chocopoi.DressingTools.UI
             {
                 removeExistingPrefixSuffix = removeExistingPrefixSuffix,
                 groupBones = groupBones,
-                groupRootObjects = groupRootObjects,
                 groupDynamics = groupDynamics
             };
         }
@@ -423,8 +420,6 @@ namespace Chocopoi.DressingTools.UI
 
             DrawNewClothesNameGUI();
 
-            groupBones = groupRootObjects = GUILayout.Toggle(groupBones | groupRootObjects, t._("toggle_group_bones_and_root_objects"));
-
             DrawCustomArmatureNameGUI();
 
             // simple mode defaults to group dynamics
@@ -493,8 +488,6 @@ namespace Chocopoi.DressingTools.UI
             EditorGUILayout.Separator();
 
             groupBones = GUILayout.Toggle(groupBones, t._("toggle_group_bones"));
-
-            groupRootObjects = GUILayout.Toggle(groupRootObjects, t._("toggle_group_root_objects"));
 
             groupDynamics = GUILayout.Toggle(groupDynamics, t._("toggle_group_dynamics"));
 
@@ -600,7 +593,7 @@ namespace Chocopoi.DressingTools.UI
                 targetAvatar.AddComponent<DummyFocusSceneViewScript>();
             }
 
-            dresserReport = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings, out var objectMappings);
+            dresserReport = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
 
             var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar);
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable);
@@ -608,11 +601,6 @@ namespace Chocopoi.DressingTools.UI
 
             applierReport = new DTReport();
             if (!DefaultApplier.ApplyBoneMappings(applierReport, applierSettings, clothesToDress.name, avatarDynamics, wearableDynamics, boneMappings, targetAvatar, targetWearable))
-            {
-                Debug.Log("Error applying bone mappings!");
-            }
-
-            if (!DefaultApplier.ApplyObjectMappings(applierReport, applierSettings, clothesToDress.name, objectMappings, targetAvatar, targetWearable))
             {
                 Debug.Log("Error applying bone mappings!");
             }
