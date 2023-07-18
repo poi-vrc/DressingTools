@@ -555,18 +555,19 @@ namespace Chocopoi.DressingTools.UI
 
             // replicate the v1 behaviour to generate a preview GameObject
             string avatarNewName = "DressingToolsPreview_" + activeAvatar.name;
-            string clothesNewName = "DressingToolsPreview_" + clothesToDress.name;
 
             GameObject targetAvatar;
             GameObject targetWearable;
 
             if (write)
             {
+                // write directly
                 targetAvatar = activeAvatar;
                 targetWearable = clothesToDress;
             }
             else
             {
+                // create a copy of the avatar and wearable
                 targetAvatar = Instantiate(activeAvatar);
                 targetAvatar.name = avatarNewName;
 
@@ -574,12 +575,20 @@ namespace Chocopoi.DressingTools.UI
                 newAvatarPosition.x -= 20;
                 targetAvatar.transform.position = newAvatarPosition;
 
-                targetWearable = Instantiate(clothesToDress);
-                targetWearable.name = clothesNewName;
+                // if clothes is not inside avatar, we instantiate a new copy
+                if (!DTRuntimeUtils.IsGrandParent(activeAvatar.transform, clothesToDress.transform))
+                {
+                    targetWearable = Instantiate(clothesToDress);
 
-                var newClothesPosition = targetWearable.transform.position;
-                newClothesPosition.x -= 20;
-                targetWearable.transform.position = newClothesPosition;
+                    var newClothesPosition = targetWearable.transform.position;
+                    newClothesPosition.x -= 20;
+                    targetWearable.transform.position = newClothesPosition;
+                }
+                else
+                {
+                    // otherwise, we find the inner wearable and use it
+                    targetWearable = targetAvatar.transform.Find(clothesToDress.name).gameObject;
+                }
 
                 var animator = targetAvatar.GetComponent<Animator>();
 
@@ -592,6 +601,10 @@ namespace Chocopoi.DressingTools.UI
                 //add dummy focus sceneview script
                 targetAvatar.AddComponent<DummyFocusSceneViewScript>();
             }
+
+            // parent to avatar
+            targetWearable.name = clothesToDress.name;
+            targetWearable.transform.SetParent(targetAvatar.transform);
 
             dresserReport = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
 
@@ -658,38 +671,6 @@ namespace Chocopoi.DressingTools.UI
             EditorGUI.BeginDisabledGroup(clothesToDress == null || clothesToDress.name == ""); //|| illegalCharactersRegex.IsMatch(clothesToDress.name));
             if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
-                // clone if prefab
-
-                if (PrefabUtility.IsPartOfAnyPrefab(clothesToDress))
-                {
-                    // clone the prefab
-                    GameObject clonedPrefab = null;
-
-                    // check if in scene or not
-                    if (PrefabUtility.GetPrefabInstanceStatus(clothesToDress) != PrefabInstanceStatus.NotAPrefab)
-                    {
-                        // if in scene, we cannot clone with prefab connection or the overrides will be gone
-                        clonedPrefab = Instantiate(clothesToDress);
-
-                        // rename and disable original
-                        clonedPrefab.name = clothesToDress.name;
-                        clothesToDress.name += "-Prefab";
-                        clothesToDress.SetActive(false);
-                    }
-                    else
-                    {
-                        // create prefab connection
-                        clonedPrefab = (GameObject)PrefabUtility.InstantiatePrefab(clothesToDress);
-                        clonedPrefab.name = clothesToDress.name;
-
-                        // unpack the outermost root of the prefab
-                        PrefabUtility.UnpackPrefabInstance(clonedPrefab, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
-                    }
-
-                    // set the clone to be the target clothes to dress
-                    clothesToDress = clonedPrefab;
-                }
-
                 GenerateMappingsAndApply(false);
                 dressNowConfirm = false;
                 Debug.Log("[DressingTools] Dress report generated with result " + dresserReport.Result);
