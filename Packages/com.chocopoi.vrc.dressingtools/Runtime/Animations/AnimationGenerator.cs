@@ -57,9 +57,10 @@ namespace Chocopoi.DressingTools.Animations
             return true;
         }
 
-        public AnimationClip GenerateWearAnimation(bool invertStates, bool writeDefaults)
+        public System.Tuple<AnimationClip, AnimationClip> GenerateWearAnimations(bool writeDefaults)
         {
-            var clip = new AnimationClip();
+            var enableClip = new AnimationClip();
+            var disableClip = new AnimationClip();
 
             // prevent unexpected behaviour
             if (!DTRuntimeUtils.IsGrandParent(avatarObject.transform, wearableObject.transform))
@@ -67,59 +68,66 @@ namespace Chocopoi.DressingTools.Animations
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
 
-            // if write defaults, write enabled=true once
-            // if not write defaults, write enabled=true and false for both
-            if (!invertStates || (invertStates && !writeDefaults))
+            // avatar toggles
+            foreach (var toggle in config.avatarAnimationOnWear.toggles)
             {
-                // avatar toggles
-                foreach (var toggle in config.avatarAnimationOnWear.toggles)
+                var obj = avatarObject.transform.Find(toggle.path);
+                if (obj == null)
                 {
-                    var obj = avatarObject.transform.Find(toggle.path);
-                    if (obj == null)
+                    report.LogWarn(0, "Could not find avatar toggle GameObject at path, ignoring: " + toggle.path);
+                }
+                else
+                {
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, toggle.path, toggle.state);
+                    if (!writeDefaults)
                     {
-                        report.LogWarn(0, "Could not find avatar toggle GameObject at path, ignoring: " + toggle.path);
-                    }
-                    else
-                    {
-                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(clip, toggle.path, toggle.state ^ invertStates);
+                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, toggle.path, !toggle.state);
                     }
                 }
+            }
 
-                // wearable toggles
-                foreach (var toggle in config.wearableAnimationOnWear.toggles)
+            // wearable toggles
+            foreach (var toggle in config.wearableAnimationOnWear.toggles)
+            {
+                var obj = wearableObject.transform.Find(toggle.path);
+                if (obj == null)
                 {
-                    var obj = wearableObject.transform.Find(toggle.path);
-                    if (obj == null)
+                    report.LogWarn(0, "Could not find wearable toggle GameObject at path, ignoring: " + toggle.path);
+                }
+                else
+                {
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), toggle.state);
+                    if (!writeDefaults)
                     {
-                        report.LogWarn(0, "Could not find wearable toggle GameObject at path, ignoring: " + toggle.path);
-                    }
-                    else
-                    {
-                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(clip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), toggle.state ^ invertStates);
+                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), !toggle.state);
                     }
                 }
+            }
 
-                // dynamics
-                var visitedDynamicsTransforms = new List<Transform>();
-                foreach (var dynamics in wearableDynamics)
+            // dynamics
+            var visitedDynamicsTransforms = new List<Transform>();
+            foreach (var dynamics in wearableDynamics)
+            {
+                if (!DTRuntimeUtils.IsGrandParent(avatarObject.transform, dynamics.Transform))
                 {
-                    if (!DTRuntimeUtils.IsGrandParent(avatarObject.transform, dynamics.Transform))
-                    {
-                        throw new System.Exception(string.Format("Dynamics {0} is not inside avatar {1}, aborting", dynamics.Transform.name, avatarObject.name));
-                    }
-
-                    if (visitedDynamicsTransforms.Contains(dynamics.Transform))
-                    {
-                        // skip duplicates since it's meaningless
-                        continue;
-                    }
-
-                    // enable/disable dynamics object
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(clip, AnimationUtils.GetRelativePath(dynamics.Transform, avatarObject.transform), !invertStates);
-
-                    // mark as visited
-                    visitedDynamicsTransforms.Add(dynamics.Transform);
+                    throw new System.Exception(string.Format("Dynamics {0} is not inside avatar {1}, aborting", dynamics.Transform.name, avatarObject.name));
                 }
+
+                if (visitedDynamicsTransforms.Contains(dynamics.Transform))
+                {
+                    // skip duplicates since it's meaningless
+                    continue;
+                }
+
+                // enable/disable dynamics object
+                AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(dynamics.Transform, avatarObject.transform), true);
+                if (!writeDefaults)
+                {
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(dynamics.Transform, avatarObject.transform), false);
+                }
+
+                // mark as visited
+                visitedDynamicsTransforms.Add(dynamics.Transform);
             }
 
             // avatar blendshapes
@@ -138,17 +146,11 @@ namespace Chocopoi.DressingTools.Animations
                     continue;
                 }
 
-                if (invertStates)
+                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, blendshape.path, blendshape.blendshapeName, blendshape.value);
+                if (!writeDefaults)
                 {
-                    if (!writeDefaults)
-                    {
-                        // write the original value if not write defaults
-                        AnimationUtils.SetSingleFrameBlendshapeCurve(clip, blendshape.path, blendshape.blendshapeName, originalValue);
-                    }
-                }
-                else
-                {
-                    AnimationUtils.SetSingleFrameBlendshapeCurve(clip, blendshape.path, blendshape.blendshapeName, blendshape.value);
+                    // write the original value if not write defaults
+                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, blendshape.path, blendshape.blendshapeName, originalValue);
                 }
             }
 
@@ -167,21 +169,15 @@ namespace Chocopoi.DressingTools.Animations
                     continue;
                 }
 
-                if (invertStates)
+                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), blendshape.blendshapeName, blendshape.value);
+                if (!writeDefaults)
                 {
-                    if (!writeDefaults)
-                    {
-                        // write the original value if not write defaults
-                        AnimationUtils.SetSingleFrameBlendshapeCurve(clip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), blendshape.blendshapeName, originalValue);
-                    }
-                }
-                else
-                {
-                    AnimationUtils.SetSingleFrameBlendshapeCurve(clip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), blendshape.blendshapeName, blendshape.value);
+                    // write the original value if not write defaults
+                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), blendshape.blendshapeName, originalValue);
                 }
             }
 
-            return clip;
+            return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
     }
 }
