@@ -23,4 +23,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run dotnet format
-        run: dotnet format "./" --folder --check --verbosity diagnostic
+        run: dotnet format "Packages/com.chocopoi.vrc.dressingtools" --folder --check --verbosity diagnostic

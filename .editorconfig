@@ -3,7 +3,7 @@
 ###############################
 root = true
 # All files
-[*]
+[Packages/com.chocopoi.vrc.dressingtools/*]
 indent_style = space
 
 # XML project files
