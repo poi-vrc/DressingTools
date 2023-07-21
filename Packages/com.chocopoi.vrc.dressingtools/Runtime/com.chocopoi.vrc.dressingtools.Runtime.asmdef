@@ -1,10 +1,9 @@
 {
     "name": "com.chocopoi.vrc.dressingtools.Runtime",
-    "references": [
-        "GUID:97650872dc498bb4597e0bbf23109900"
-    ],
+    "references": [],
     "includePlatforms": [
-        "Editor"
+        "Editor",
+        "WindowsStandalone64"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

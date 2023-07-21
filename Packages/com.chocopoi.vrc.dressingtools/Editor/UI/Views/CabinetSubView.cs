@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Applier;
 using Chocopoi.DressingTools.Applier.Default;
 using Chocopoi.DressingTools.Cabinet;
@@ -72,13 +71,11 @@ namespace Chocopoi.DressingTools.UI.Views
             cabinet.avatarGameObject = (GameObject)EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
             cabinet.avatarArmatureName = EditorGUILayout.TextField("Armature Name", cabinet.avatarArmatureName);
 
-            var refreshCabinetNeeded = false;
-
             {
                 // list all appliers
                 string[] applierKeys = DTCabinet.GetApplierKeys();
                 string selectedApplierKey = DTCabinet.GetApplierKeyByTypeName(cabinet.applierName);
-                int selectedApplierIndex = EditorGUILayout.Popup("Appliers", selectedApplierKey != null ? Array.IndexOf(applierKeys, selectedApplierKey) : 0, applierKeys);
+                int selectedApplierIndex = EditorGUILayout.Popup("Appliers", selectedApplierKey != null ? System.Array.IndexOf(applierKeys, selectedApplierKey) : 0, applierKeys);
                 string newSelectedApplierKey = applierKeys[selectedApplierIndex];
                 var applier = DTCabinet.GetApplierByKey(newSelectedApplierKey);
                 cabinet.applierName = applier.GetType().FullName;
@@ -99,7 +96,6 @@ namespace Chocopoi.DressingTools.UI.Views
                         {
                             applierSettings = new DTDefaultApplierSettings();
                         }
-                        refreshCabinetNeeded = true;
                     }
                 }
 
@@ -108,22 +104,15 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     // serialize if modified
                     cabinet.serializedApplierSettings = JsonConvert.SerializeObject(applierSettings);
-                    refreshCabinetNeeded = true;
                 }
             }
 
-            var newApplierMode = ConvertIntToApplierMode(EditorGUILayout.Popup("Applier Mode", (int)cabinet.applierMode, new string[] { "Late apply", "Apply immediately" }));
-            if (newApplierMode != cabinet.applierMode)
-            {
-                refreshCabinetNeeded = true;
-            }
-            cabinet.applierMode = newApplierMode;
-
             var wearablesToRemove = new List<DTCabinetWearable>();
+            var wearables = cabinet.GetWearables();
 
-            foreach (var wearable in cabinet.wearables)
+            foreach (var wearable in wearables)
             {
-                GUILayout.Label(string.Format("{0} ({1})", wearable.info.name, wearable.info.uuid));
+                GUILayout.Label(string.Format("{0} ({1})", wearable.config.info.name, wearable.config.info.uuid));
                 if (GUILayout.Button("Remove"))
                 {
                     wearablesToRemove.Add(wearable);
@@ -133,27 +122,13 @@ namespace Chocopoi.DressingTools.UI.Views
             // remove all pending wearable in list
             foreach (var wearable in wearablesToRemove)
             {
-                cabinet.RemoveWearable(wearable);
-            }
-
-            // refresh the cabinet if any removed
-            if (wearablesToRemove.Count > 0)
-            {
-                refreshCabinetNeeded = true;
+                DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);
             }
 
             if (GUILayout.Button("Add Wearable"))
             {
                 // start dressing
                 mainPresenter.StartDressingWizard();
-            }
-
-            if (refreshCabinetNeeded)
-            {
-                // refresh cabinet if needed
-                EditorUtility.DisplayProgressBar("DressingTools", "Refreshing cabinet...", 0);
-                cabinet.RefreshCabinet();
-                EditorUtility.ClearProgressBar();
             }
         }
     }

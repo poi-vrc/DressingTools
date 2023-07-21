@@ -21,13 +21,6 @@ namespace Chocopoi.DressingTools
 
             EditorGUILayout.Separator();
 
-            if (GUILayout.Button("Refresh Cabinet"))
-            {
-                EditorUtility.DisplayProgressBar("DressingTools", "Refreshing cabinet...", 0);
-                cabinet.RefreshCabinet();
-                EditorUtility.ClearProgressBar();
-            }
-
             if (GUILayout.Button("Open in Editor", GUILayout.Height(40)))
             {
                 // TODO: select cabinet in editor

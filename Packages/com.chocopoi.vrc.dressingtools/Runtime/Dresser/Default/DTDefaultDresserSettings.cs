@@ -39,6 +39,7 @@ namespace Chocopoi.DressingTools.Dresser.Default
             }
         }
 
+#if UNITY_EDITOR
         public override bool DrawEditorGUI()
         {
             var modified = base.DrawEditorGUI();
@@ -57,5 +58,6 @@ namespace Chocopoi.DressingTools.Dresser.Default
 
             return modified;
         }
+#endif 
     }
 }

@@ -2,6 +2,7 @@
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +10,6 @@ namespace Chocopoi.DressingTools
 {
     public class DTEditorUtils
     {
-
         //Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
         public static void DrawHorizontalLine(int i_height = 1)
         {
@@ -35,51 +35,77 @@ namespace Chocopoi.DressingTools
             EditorGUILayout.EndHorizontal();
         }
 
+        public static string GetGameObjectOriginalPrefabGuid(GameObject obj)
+        {
+            var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj));
+            var guid = AssetDatabase.AssetPathToGUID(assetPath);
+            return guid;
+        }
+
         public static DTCabinet GetAvatarCabinet(GameObject avatar, bool createIfNotExists = false)
         {
-            // Find DTContainer in the scene, if not, create one
-            var container = Object.FindObjectOfType<DTContainer>();
-
-            if (container == null)
-            {
-                if (!createIfNotExists)
-                {
-                    return null;
-                }
-
-                var gameObject = new GameObject("DressingTools");
-                container = gameObject.AddComponent<DTContainer>();
-            }
-
-            // Find cabinets in the container
-            DTCabinet[] cabinets = container.gameObject.GetComponentsInChildren<DTCabinet>();
-
-            foreach (var cabinet in cabinets)
-            {
-                if (cabinet.avatarGameObject == avatar)
-                {
-                    return cabinet;
-                }
-            }
-
-            if (!createIfNotExists)
+            if (avatar == null)
             {
                 return null;
             }
 
-            // create new cabinet if not exist
-            var cabinetGameObject = new GameObject("Cabinet_" + avatar.name);
-            cabinetGameObject.transform.SetParent(container.transform);
+            var comp = avatar.GetComponent<DTCabinet>();
 
-            var newCabinet = cabinetGameObject.AddComponent<DTCabinet>();
+            if (comp == null && createIfNotExists)
+            {
+                // create new cabinet if not exist
+                comp = avatar.AddComponent<DTCabinet>();
 
-            // TODO: read default config, scan for armature names?
-            newCabinet.avatarGameObject = avatar;
-            newCabinet.avatarArmatureName = "Armature";
-            newCabinet.applierMode = DTCabinetApplierMode.LateApply;
-            newCabinet.serializedApplierSettings = "{}";
+                // TODO: read default config, scan for armature names?
+                comp.avatarGameObject = avatar;
+                comp.avatarArmatureName = "Armature";
+                comp.serializedApplierSettings = "{}";
+            }
 
-            return newCabinet;
+            return comp;
+        }
+
+        public static void AddCabinetWearable(DTCabinet cabinet, DTWearableConfig config, GameObject wearableGameObject)
+        {
+            if (PrefabUtility.IsPartOfAnyPrefab(wearableGameObject) && PrefabUtility.GetPrefabInstanceStatus(wearableGameObject) == PrefabInstanceStatus.NotAPrefab)
+            {
+                // if not in scene, we instantiate it with a prefab connection
+                wearableGameObject = (GameObject)PrefabUtility.InstantiatePrefab(wearableGameObject);
+            }
+
+            // parent to avatar
+            wearableGameObject.transform.SetParent(cabinet.transform);
+
+            if (wearableGameObject.GetComponent<DTCabinetWearable>() == null)
+            {
+                // add cabinet wearable component
+                var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
+
+                cabinetWearable.wearableGameObject = wearableGameObject;
+                cabinetWearable.config = config;
+                cabinetWearable.serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+            }
+        }
+
+        public static void RemoveCabinetWearable(DTCabinet cabinet, DTCabinetWearable wearable)
+        {
+            var cabinetWearables = cabinet.avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
+            foreach (var cabinetWearable in cabinetWearables)
+            {
+                if (cabinetWearable == wearable)
+                {
+                    if (!PrefabUtility.IsOutermostPrefabInstanceRoot(cabinetWearable.gameObject))
+                    {
+                        Debug.Log("Prefab is not outermost. Aborting");
+                        return;
+                    }
+                    Object.DestroyImmediate(cabinetWearable.gameObject);
+                    break;
+                }
+            }
         }
     }
 }

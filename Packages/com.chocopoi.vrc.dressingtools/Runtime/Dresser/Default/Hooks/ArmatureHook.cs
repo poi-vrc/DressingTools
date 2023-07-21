@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
@@ -16,8 +15,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             boneMappings.Add(new DTBoneMapping()
             {
                 mappingType = bindingType,
-                avatarBonePath = AnimationUtils.GetRelativePath(avatarDynamicsRoot, targetAvatarRoot),
-                wearableBonePath = AnimationUtils.GetRelativePath(wearableDynamicsRoot, targetWearableRoot)
+                avatarBonePath = DTRuntimeUtils.GetRelativePath(avatarDynamicsRoot, targetAvatarRoot),
+                wearableBonePath = DTRuntimeUtils.GetRelativePath(wearableDynamicsRoot, targetWearableRoot)
             });
 
             // scan for other child bones
@@ -95,8 +94,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                             boneMappings.Add(new DTBoneMapping()
                             {
                                 mappingType = DTBoneMappingType.IgnoreTransform,
-                                avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
-                                wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
+                                avatarBonePath = DTRuntimeUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
+                                wearableBonePath = DTRuntimeUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.CopyDynamics) //copy dyn bone to clothes bone
@@ -104,8 +103,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                             boneMappings.Add(new DTBoneMapping()
                             {
                                 mappingType = DTBoneMappingType.CopyDynamics,
-                                avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
-                                wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
+                                avatarBonePath = DTRuntimeUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
+                                wearableBonePath = DTRuntimeUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.IgnoreAll) //ignore all
@@ -114,8 +113,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                             boneMappings.Add(new DTBoneMapping()
                             {
                                 mappingType = DTBoneMappingType.DoNothing,
-                                avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
-                                wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
+                                avatarBonePath = DTRuntimeUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
+                                wearableBonePath = DTRuntimeUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
                             //do nothing
                         }
@@ -125,8 +124,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                         boneMappings.Add(new DTBoneMapping()
                         {
                             mappingType = DTBoneMappingType.MoveToBone,
-                            avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
-                            wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
+                            avatarBonePath = DTRuntimeUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
+                            wearableBonePath = DTRuntimeUtils.GetRelativePath(child, settings.targetWearable.transform)
                         });
 
                         ProcessBone(report, settings, avatarDynamicsList, wearableDynamicsList, level + 1, avatarTrans, child, boneMappings);

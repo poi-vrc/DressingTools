@@ -682,7 +682,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
 
-                    var avatarPrefabGuid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
+                    var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
                     var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
                     if (invalidAvatarPrefabGuid)
@@ -821,7 +821,7 @@ namespace Chocopoi.DressingTools.UI.Views
             // TODO: multiple GUIDs
             if (guidReferencePrefab != null || container.targetAvatar != null)
             {
-                var avatarPrefabGuid = DTRuntimeUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
+                var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
                 var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
                 if (invalidAvatarPrefabGuid)
                 {

@@ -25,6 +25,7 @@ namespace Chocopoi.DressingTools.Dresser
             wearableArmatureName = "Armature";
         }
 
+#if UNITY_EDITOR
         public virtual bool DrawEditorGUI()
         {
             // draws the editor GUI and returns whether it is modified or not
@@ -35,5 +36,6 @@ namespace Chocopoi.DressingTools.Dresser
 
             return modified;
         }
+#endif
     }
 }

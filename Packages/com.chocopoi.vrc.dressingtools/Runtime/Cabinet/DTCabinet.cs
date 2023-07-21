@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Applier;
 using Chocopoi.DressingTools.Applier.Default;
 using Chocopoi.DressingTools.Logging;
@@ -14,7 +13,8 @@ namespace Chocopoi.DressingTools.Cabinet
         ApplyImmediately = 1
     }
 
-    public class DTCabinet : MonoBehaviour
+    [AddComponentMenu("DressingTools/DT Cabinet")]
+    public class DTCabinet : DTBaseComponent
     {
         private static readonly Dictionary<string, IDTApplier> appliers = new Dictionary<string, IDTApplier>
         {
@@ -25,15 +25,9 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public string avatarArmatureName;
 
-        public DTCabinetApplierMode applierMode;
-
         public string applierName;
 
         public string serializedApplierSettings;
-
-        public List<GameObject> appliedContainers = new List<GameObject>();
-
-        public List<DTCabinetWearable> wearables = new List<DTCabinetWearable>();
 
         public static string[] GetApplierKeys()
         {
@@ -53,6 +47,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public static IDTApplier GetApplierByTypeName(string typeName)
         {
+            Debug.Log(appliers.Count);
             foreach (var applier in appliers.Values)
             {
                 var type = applier.GetType();
@@ -77,60 +72,9 @@ namespace Chocopoi.DressingTools.Cabinet
             return null;
         }
 
-        public void AddWearable(DTWearableConfig config, GameObject wearableGameObject)
+        public DTCabinetWearable[] GetWearables()
         {
-            var cabinetWearable = new DTCabinetWearable(config)
-            {
-                wearableGameObject = wearableGameObject,
-                // empty references
-                appliedObjects = new List<GameObject>(),
-                // serialize a json copy for backward compatibility backup 
-                serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                })
-            };
-
-            wearables.Add(cabinetWearable);
-        }
-
-        public void RemoveWearable(DTCabinetWearable wearable)
-        {
-            if (!wearables.Contains(wearable))
-            {
-                return;
-            }
-
-            // we have to clean up first before removing
-            CleanUp();
-
-            wearables.Remove(wearable);
-        }
-
-        public void CleanUp()
-        {
-            // clean up applied objects
-            foreach (var wearable in wearables)
-            {
-                foreach (var obj in wearable.appliedObjects)
-                {
-                    if (obj != null)
-                    {
-                        DestroyImmediate(obj);
-                    }
-                }
-                wearable.appliedObjects.Clear();
-            }
-
-            // clean up bone containers
-            foreach (var boneContainer in appliedContainers)
-            {
-                if (boneContainer != null)
-                {
-                    DestroyImmediate(boneContainer);
-                }
-            }
-            appliedContainers.Clear();
+            return avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
         }
 
         public DTReport Apply()
@@ -138,18 +82,6 @@ namespace Chocopoi.DressingTools.Cabinet
             var applier = GetApplierByTypeName(applierName);
             var settings = applier.DeserializeSettings(serializedApplierSettings);
             return applier.ApplyCabinet(settings, this);
-        }
-
-        public DTReport RefreshCabinet()
-        {
-            CleanUp();
-
-            if (applierMode == DTCabinetApplierMode.ApplyImmediately)
-            {
-                return Apply();
-            }
-
-            return null;
         }
 
         // Start is called before the first frame update

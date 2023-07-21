@@ -19,6 +19,7 @@ namespace Chocopoi.DressingTools.Applier
             groupDynamics = true;
         }
 
+#if UNITY_EDITOR
         public virtual bool DrawEditorGUI()
         {
             var newRemoveExistingPrefixSuffix = EditorGUILayout.ToggleLeft("Remove existing prefixes and suffixes", removeExistingPrefixSuffix);
@@ -33,5 +34,6 @@ namespace Chocopoi.DressingTools.Applier
 
             return modified;
         }
+#endif
     }
 }

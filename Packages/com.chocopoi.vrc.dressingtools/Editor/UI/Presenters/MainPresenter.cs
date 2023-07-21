@@ -25,11 +25,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public void AddToCabinet(DTCabinet cabinet, DTWearableConfig config, GameObject wearableGameObject)
         {
-            cabinet.AddWearable(config, wearableGameObject);
-
-            EditorUtility.DisplayProgressBar("DressingTools", "Refreshing cabinet...", 0);
-            cabinet.RefreshCabinet();
-            EditorUtility.ClearProgressBar();
+            DTEditorUtils.AddCabinetWearable(cabinet, config, wearableGameObject);
 
             // TODO: reset dressing tab?
             // return to cabinet page

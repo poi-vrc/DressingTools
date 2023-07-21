@@ -35,6 +35,24 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
+        // TODO: copied from AvatarLib because of the Runtime/Editor assembly problem, create a Runtime one there soon?
+        public static string GetRelativePath(Transform transform, Transform untilTransform = null, string prefix = "", string suffix = "")
+        {
+            string path = transform.name;
+            while (true)
+            {
+                transform = transform.parent;
+
+                if (transform.parent == null || (untilTransform != null && transform == untilTransform))
+                {
+                    break;
+                }
+
+                path = transform.name + "/" + path;
+            }
+            return prefix + path + suffix;
+        }
+
         public static bool IsGrandParent(Transform grandParent, Transform grandChild)
         {
             var p = grandChild.parent;
@@ -47,13 +65,6 @@ namespace Chocopoi.DressingTools
                 p = p.parent;
             }
             return false;
-        }
-
-        public static string GetGameObjectOriginalPrefabGuid(GameObject obj)
-        {
-            var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj));
-            var guid = AssetDatabase.AssetPathToGUID(assetPath);
-            return guid;
         }
 
         public static List<IDynamicsProxy> ScanDynamics(GameObject obj)
