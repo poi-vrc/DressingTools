@@ -47,7 +47,6 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public static IDTApplier GetApplierByTypeName(string typeName)
         {
-            Debug.Log(appliers.Count);
             foreach (var applier in appliers.Values)
             {
                 var type = applier.GetType();
