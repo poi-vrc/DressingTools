@@ -608,6 +608,98 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndVertical();
         }
 
+        private string[] GetBlendshapeNames(SkinnedMeshRenderer smr)
+        {
+            if (smr.sharedMesh == null)
+            {
+                return new string[0];
+            }
+
+            var names = new List<string>();
+            for (var i = 0; i < smr.sharedMesh.blendShapeCount; i++)
+            {
+                names.Add(smr.sharedMesh.GetBlendShapeName(i));
+            }
+
+            return names.ToArray();
+        }
+
+        private void AutoSetupAnimationGeneration()
+        {
+            // generate wearable toggles
+            var wearableToggles = new List<DTAnimationToggle>();
+            if (container.config.wearableType == DTWearableType.ArmatureBased)
+            {
+                var wearableArmature = DTRuntimeUtils.GuessArmature(container.targetWearable, dresserSettings.wearableArmatureName);
+                for (var i = 0; i < container.targetWearable.transform.childCount; i++)
+                {
+                    var child = container.targetWearable.transform.GetChild(i);
+                    if (child != wearableArmature)
+                    {
+                        wearableToggles.Add(new DTAnimationToggle()
+                        {
+                            path = DTRuntimeUtils.GetRelativePath(child, container.targetWearable.transform),
+                            state = true
+                        });
+                    }
+                }
+            }
+            container.config.wearableAnimationOnWear.toggles = wearableToggles.ToArray();
+            container.config.wearableAnimationOnWear.blendshapes = new DTAnimationBlendshapeValue[0];
+
+            // generate blendshape syncs
+            var wearableSyncs = new List<DTAnimationBlendshapeSync>();
+
+            var avatarSmrs = container.targetAvatar.GetComponentsInChildren<SkinnedMeshRenderer>();
+            var avatarSmrCache = new Dictionary<SkinnedMeshRenderer, string[]>();
+            foreach (var avatarSmr in avatarSmrs)
+            {
+                avatarSmrCache.Add(avatarSmr, GetBlendshapeNames(avatarSmr));
+            }
+
+            var wearableSmrs = container.targetWearable.GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach (var wearableSmr in wearableSmrs)
+            {
+                var wearableBlendshapes = GetBlendshapeNames(wearableSmr);
+
+                if (wearableBlendshapes.Length == 0)
+                {
+                    continue;
+                }
+
+                var found = false;
+                foreach (var avatarSmr in avatarSmrs)
+                {
+                    var avatarBlendshapes = avatarSmrCache[avatarSmr];
+                    foreach (var wearableBlendshape in wearableBlendshapes)
+                    {
+                        if (System.Array.IndexOf(avatarBlendshapes, wearableBlendshape) != -1)
+                        {
+                            wearableSyncs.Add(new DTAnimationBlendshapeSync()
+                            {
+                                avatarBlendshapeName = wearableBlendshape,
+                                avatarFromValue = 0,
+                                avatarToValue = 100,
+                                wearableFromValue = 0,
+                                wearableToValue = 100,
+                                wearableBlendshapeName = wearableBlendshape,
+                                avatarPath = DTRuntimeUtils.GetRelativePath(avatarSmr.transform, container.targetAvatar.transform),
+                                wearablePath = DTRuntimeUtils.GetRelativePath(wearableSmr.transform, container.targetWearable.transform)
+                            });
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        break;
+                    }
+                }
+            }
+            container.config.blendshapeSyncs = wearableSyncs.ToArray();
+        }
+
         private void DrawAnimationGenerationGUI()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -615,6 +707,10 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (foldoutAnimationGeneration)
             {
+                if (GUILayout.Button("Auto-setup"))
+                {
+                    AutoSetupAnimationGeneration();
+                }
                 DrawAnimationGenerationAvatarOnWear();
                 DrawAnimationGenerationWearableOnWear();
                 DrawAnimationGenerationBlendshapeSync();
