@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using VRC.SDKBase;
-using Chocopoi.DressingTools.Logging;
 
 namespace Chocopoi.DressingTools.Integrations.VRC
 {
@@ -18,21 +17,44 @@ namespace Chocopoi.DressingTools.Integrations.VRC
         public bool OnPreprocessAvatar(GameObject avatarGameObject)
         {
             Debug.Log("Preprocess avatar");
+
             var cabinet = DTEditorUtils.GetAvatarCabinet(avatarGameObject);
-            if (cabinet != null)
+            if (cabinet == null)
             {
-                EditorUtility.DisplayProgressBar("DressingTools", "Applying cabinet...", 0);
-                var report = cabinet.Apply();
-                EditorUtility.ClearProgressBar();
-                
-                // TODO: show report frame if != OK
-                if (report.Result != DTReportResult.Ok && report.Result != DTReportResult.Compatible)
-                {
-                    EditorUtility.DisplayDialog("DressingTools", "Apply result is " + report.Result + ", aborting", "OK");
-                    return false;
-                }
+                // avatar has no cabinet, skipping
+                return true;
             }
-            return true;
+
+            // display progress bar
+            EditorUtility.DisplayProgressBar("DressingTools", "Preparing to process avatar...", 0);
+
+            try
+            {
+                // create hook instances
+                var hooks = new IBuildDTCabinetHook[]
+                {
+                    new ApplyCabinetHook(cabinet)
+                };
+
+                // execute hooks
+                foreach (var hook in hooks)
+                {
+                    if (!hook.OnPreprocessAvatar(avatarGameObject))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            } catch (System.Exception ex)
+            {
+                EditorUtility.DisplayDialog("DressingTools", "Error processing avatar: " + ex.Message, "OK");
+                return false;
+            } finally
+            {
+                // hide the progress bar
+                EditorUtility.ClearProgressBar();
+            }
         }
 
         public void OnPostprocessAvatar()
