@@ -33,7 +33,8 @@ namespace Chocopoi.DressingTools.Integrations.VRC
                 // create hook instances
                 var hooks = new IBuildDTCabinetHook[]
                 {
-                    new ApplyCabinetHook(cabinet)
+                    new ApplyCabinetHook(cabinet),
+                    new GenerateAnimationsHook(cabinet),
                 };
 
                 // execute hooks

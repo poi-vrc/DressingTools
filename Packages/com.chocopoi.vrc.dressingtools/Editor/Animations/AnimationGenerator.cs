@@ -163,7 +163,7 @@ namespace Chocopoi.DressingTools.Animations
             GenerateAvatarToggleAnimations(enableClip, disableClip, config.avatarAnimationOnWear.toggles, writeDefaults);
 
             // wearable toggles
-            GenerateAvatarToggleAnimations(enableClip, disableClip, config.wearableAnimationOnWear.toggles, writeDefaults);
+            GenerateWearableToggleAnimations(enableClip, disableClip, config.wearableAnimationOnWear.toggles, writeDefaults);
 
             // dynamics
             var visitedDynamicsTransforms = new List<Transform>();
