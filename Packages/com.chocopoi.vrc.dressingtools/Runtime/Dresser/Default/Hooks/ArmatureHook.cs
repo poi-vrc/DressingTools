@@ -61,12 +61,12 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 {
                     if (level == 0)
                     {
-                        report.LogWarn(DTDefaultDresser.MessageCode.BonesNotMatchingInArmatureFirstLevel, "Bones not matching in armature first level.");
+                        report.LogWarn(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.BonesNotMatchingInArmatureFirstLevel);
                         continue;
                     }
                     else
                     {
-                        report.LogInfo(DTDefaultDresser.MessageCode.NonMatchingWearableBoneKeptUntouched, "Non-matching wearable bone kept untouched");
+                        report.LogInfoLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.NonMatchingWearableBoneKeptUntouched);
                     }
                 }
                 else
@@ -109,7 +109,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                         }
                         else if (settings.dynamicsOption == DTDefaultDresserDynamicsOption.IgnoreAll) //ignore all
                         {
-                            report.LogInfo(DTDefaultDresser.MessageCode.DynamicBoneAllIgnored, "Dynamics all ignored.");
+                            report.LogInfoLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.DynamicBoneAllIgnored);
                             boneMappings.Add(new DTBoneMapping()
                             {
                                 mappingType = DTBoneMappingType.DoNothing,
@@ -159,11 +159,11 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
                 if (avatarArmature)
                 {
-                    report.LogInfo(DTDefaultDresser.MessageCode.AvatarArmatureObjectGuessed, "Avatar armature object guessed.");
+                    report.LogInfoLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.AvatarArmatureObjectGuessed);
                 }
                 else
                 {
-                    report.LogError(DTDefaultDresser.MessageCode.NoArmatureInAvatar, "No armature in avatar.");
+                    report.LogErrorLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.NoArmatureInAvatar);
                 }
             }
 
@@ -174,11 +174,11 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
                 if (wearableArmature)
                 {
-                    report.LogInfo(DTDefaultDresser.MessageCode.WearableArmatureObjectGuessed, "Wearable armature object guessed.");
+                    report.LogInfoLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.WearableArmatureObjectGuessed);
                 }
                 else
                 {
-                    report.LogError(DTDefaultDresser.MessageCode.NoArmatureInWearable, "No armature in wearable.");
+                    report.LogErrorLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.NoArmatureInWearable);
                 }
             }
 
@@ -191,12 +191,12 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (avatarArmature.childCount == 0)
             {
-                report.LogError(DTDefaultDresser.MessageCode.NoBonesInAvatarArmatureFirstLevel, "No bones in avatar armature first level.");
+                report.LogErrorLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.NoBonesInAvatarArmatureFirstLevel);
             }
 
             if (wearableArmature.childCount == 0)
             {
-                report.LogError(DTDefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel, "No bones in wearable armature first level.");
+                report.LogErrorLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel);
             }
 
             if (avatarArmature.childCount == 0 || wearableArmature.childCount == 0)
@@ -210,17 +210,17 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 //otherwise the UI will always just say Compatible but not OK
                 if (IsOnlyOneEnabledChildBone(avatarArmature))
                 {
-                    report.LogInfo(DTDefaultDresser.MessageCode.MultipleBonesInAvatarArmatureDetectedWarningRemoved, "Multiple bones in avatar armature first level detected.");
+                    report.LogInfoLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.MultipleBonesInAvatarArmatureDetectedWarningRemoved);
                 }
                 else
                 {
-                    report.LogWarn(DTDefaultDresser.MessageCode.MultipleBonesInAvatarArmatureFirstLevel, "Multiple bones in avatar armature first level detected.");
+                    report.LogWarnLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.MultipleBonesInAvatarArmatureFirstLevel);
                 }
             }
 
             if (wearableArmature.childCount > 1)
             {
-                report.LogWarn(DTDefaultDresser.MessageCode.MultipleBonesInWearableArmatureFirstLevel, "Multiple bones in wearable armature first level detected.");
+                report.LogWarnLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.MultipleBonesInWearableArmatureFirstLevel);
             }
 
             // Scan dynamics

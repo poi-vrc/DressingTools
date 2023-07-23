@@ -9,36 +9,39 @@ namespace Chocopoi.DressingTools.Dresser
 {
     public class DTDefaultDresser : IDTDresser
     {
+        public const string LogLabel = "DTDefaultDresser";
+
         public static class MessageCode
         {
             //Infos
-            public const int GenericInfo = 0x0000;
+            public const string GenericInfo = "dressers.default.msgCode.info.generic";
 
-            public const int NonMatchingWearableBoneKeptUntouched = 0x0001;
-            public const int DynamicBoneAllIgnored = 0x0002;
-            public const int AvatarArmatureObjectGuessed = 0x0003;
-            public const int WearableArmatureObjectGuessed = 0x0004;
-            public const int MultipleBonesInAvatarArmatureDetectedWarningRemoved = 0x0005; //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
+            public const string NonMatchingWearableBoneKeptUntouched = "dressers.default.msgCode.info.nonMatchingWearableBoneKeptUntouched";
+            public const string DynamicBoneAllIgnored = "dressers.default.msgCode.info.dynamicBoneAllIgnored";
+            public const string AvatarArmatureObjectGuessed = "dressers.default.msgCode.info.avatarArmatureObjectGuessed";
+            public const string WearableArmatureObjectGuessed = "dressers.default.msgCode.info.wearableArmatureObjectGuessed";
+            public const string MultipleBonesInAvatarArmatureDetectedWarningRemoved = "dressers.default.msgCode.info.multipleBonesInAvatarArmatureDetectedWarningRemoved";
+            //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
 
             //Warnings
-            public const int GenericWarning = 0x1000;
+            public const string GenericWarning = "dressers.default.msgCode.warn.generic";
 
-            public const int MultipleBonesInAvatarArmatureFirstLevel = 0x1001;
-            public const int MultipleBonesInWearableArmatureFirstLevel = 0x1002;
-            public const int BonesNotMatchingInArmatureFirstLevel = 0x1003;
+            public const string MultipleBonesInAvatarArmatureFirstLevel = "dressers.default.msgCode.warn.multipleBonesInAvatarArmatureFirstLevel";
+            public const string MultipleBonesInWearableArmatureFirstLevel = "dressers.default.msgCode.warn.multipleBonesInWearableArmatureFirstLevel";
+            public const string BonesNotMatchingInArmatureFirstLevel = "dressers.default.msgCode.warn.bonesNotMatchingInArmatureFirstLevel";
 
             //Errors
-            public const int GenericError = 0x2000;
+            public const string GenericError = "dressers.default.msgCode.error.generic";
 
-            public const int NoArmatureInAvatar = 0x2001;
-            public const int NoArmatureInWearable = 0x2002;
-            public const int NullAvatarOrWearable = 0x2003;
-            public const int NoBonesInAvatarArmatureFirstLevel = 0x2004;
-            public const int NoBonesInWearableArmatureFirstLevel = 0x2005;
-            public const int MissingScriptsDetectedInAvatar = 0x2006;
-            public const int MissingScriptsDetectedInWearable = 0x2007;
-            public const int WearableInsideAvatar = 0x2008;
-            public const int AvatarInsideWearable = 0x2009;
+            public const string NotDefaultSettingsSettings = "dressers.default.msgCode.error.notDefaultSettingsSettings";
+            public const string NoArmatureInAvatar = "dressers.default.msgCode.error.noArmatureInAvatar";
+            public const string NoArmatureInWearable = "dressers.default.msgCode.error.noArmatureInWearable";
+            public const string NullAvatarOrWearable = "dressers.default.msgCode.error.nullAvatarOrWearable";
+            public const string NoBonesInAvatarArmatureFirstLevel = "dressers.default.msgCode.error.noBonesInAvatarArmatureFirstLevel";
+            public const string NoBonesInWearableArmatureFirstLevel = "dressers.default.msgCode.error.noBonesInWearableArmatureFirstLevel";
+            public const string MissingScriptsDetectedInAvatar = "dressers.default.msgCode.error.missingScriptsDetectedInAvatar";
+            public const string MissingScriptsDetectedInWearable = "dressers.default.msgCode.error.missingScriptsDetectedInWearable";
+            public const string HookHasErrors = "dressers.default.msgCode.error.hookHasErrors";
         }
 
         private static readonly IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
@@ -53,16 +56,14 @@ namespace Chocopoi.DressingTools.Dresser
 
             if (!(settings is DTDefaultDresserSettings))
             {
-                report.LogError(MessageCode.GenericError, "Settings is not an instance of DTDefaultDresserSettings");
-                report.Result = DTReportResult.InvalidSettings;
+                report.LogErrorLocalized(LogLabel, MessageCode.NotDefaultSettingsSettings);
                 return report;
             }
 
             // Reject null target avatar/wearable settings
             if (settings.targetAvatar == null || settings.targetWearable == null)
             {
-                report.LogError(MessageCode.NullAvatarOrWearable, "Target avatar or wearable is null.");
-                report.Result = DTReportResult.InvalidSettings;
+                report.LogErrorLocalized(LogLabel, MessageCode.NullAvatarOrWearable);
                 return report;
             }
 
@@ -74,23 +75,10 @@ namespace Chocopoi.DressingTools.Dresser
                 if (!hook.Evaluate(report, settings, boneMappings))
                 {
                     // hook error and do not continue
-                    report.LogError(MessageCode.GenericError, string.Format("Dresser execution aborted as hook \"{0}\" reported an error status.", hook.GetType().Name));
-                    report.Result = DTReportResult.Incompatible;
+                    report.LogErrorLocalized(LogLabel, MessageCode.HookHasErrors, hook.GetType().Name);
                     boneMappings = null;
                     return report;
                 }
-            }
-
-            // check the log result to see if any warnings and infos
-            var dict = report.GetLogEntriesAsDictionary();
-
-            if (dict.ContainsKey(DTReportLogType.Warning))
-            {
-                report.Result = DTReportResult.Compatible;
-            }
-            else
-            {
-                report.Result = DTReportResult.Ok;
             }
 
             // return the report

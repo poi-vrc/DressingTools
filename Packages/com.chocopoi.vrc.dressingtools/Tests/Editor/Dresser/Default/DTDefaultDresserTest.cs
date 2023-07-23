@@ -16,7 +16,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
         {
             var dresser = new DTDefaultDresser();
             var report = dresser.Execute(new DTDresserSettings(), out var boneMappings);
-            Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.NotDefaultSettingsSettings));
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 targetWearable = wearableRoot
             };
             var report = dresser.Execute(settings, out var boneMappings);
-            Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.NullAvatarOrWearable));
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 targetWearable = null
             };
             var report = dresser.Execute(settings, out var boneMappings);
-            Assert.AreEqual(report.Result, DTReportResult.InvalidSettings);
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.NullAvatarOrWearable));
         }
 
         private DTReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<DTBoneMapping> boneMappings)
@@ -71,32 +71,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             var wearableRoot = CreateGameObject("Wearable");
             var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
             Assert.Null(boneMappings);
-            Assert.AreEqual(report.Result, DTReportResult.Incompatible);
-        }
-
-        [Test]
-        public void SetResultToCompatibleIfReportHasWarnings()
-        {
-            CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
-            CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
-
-            // an extra object in armature introduces the warnings
-            CreateGameObject("MyObject", avatarArmature.transform);
-
-            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
-            Assert.NotNull(boneMappings);
-            Assert.AreEqual(report.Result, DTReportResult.Compatible);
-        }
-
-        [Test]
-        public void SetResultToOkIfReportHasNoWarnings()
-        {
-            CreateRootWithArmatureAndHipsBone("Avatar", out var avatarRoot, out var avatarArmature, out var avatarHips);
-            CreateRootWithArmatureAndHipsBone("Wearable", out var wearableRoot, out var wearableArmature, out var wearableHips);
-
-            var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
-            Assert.NotNull(boneMappings);
-            Assert.AreEqual(report.Result, DTReportResult.Ok);
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.HookHasErrors));
         }
     }
 }

@@ -125,20 +125,17 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 //Result
 
-                switch (dresserReport.Result)
+                if (dresserReport.HasLogType(DTReportLogType.Error))
                 {
-                    case DTReportResult.InvalidSettings:
-                        EditorGUILayout.HelpBox(t._("helpbox_error_check_result_invalid_settings"), MessageType.Error);
-                        break;
-                    case DTReportResult.Incompatible:
-                        EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
-                        break;
-                    case DTReportResult.Ok:
-                        EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
-                        break;
-                    case DTReportResult.Compatible:
-                        EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
-                        break;
+                    EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
+                }
+                else if (dresserReport.HasLogType(DTReportLogType.Warning))
+                {
+                    EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
                 }
 
                 EditorGUILayout.Separator();
@@ -158,7 +155,7 @@ namespace Chocopoi.DressingTools.UI.Views
                     {
                         foreach (var logEntry in logEntries[DTReportLogType.Error])
                         {
-                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Error);
+                            EditorGUILayout.HelpBox(logEntry.message, MessageType.Error);
                         }
                     }
 
@@ -166,7 +163,7 @@ namespace Chocopoi.DressingTools.UI.Views
                     {
                         foreach (var logEntry in logEntries[DTReportLogType.Warning])
                         {
-                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Warning);
+                            EditorGUILayout.HelpBox(logEntry.message, MessageType.Warning);
                         }
                     }
 
@@ -174,7 +171,7 @@ namespace Chocopoi.DressingTools.UI.Views
                     {
                         foreach (var logEntry in logEntries[DTReportLogType.Info])
                         {
-                            EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Info);
+                            EditorGUILayout.HelpBox(logEntry.message, MessageType.Info);
                         }
                     }
                 }
@@ -952,7 +949,7 @@ namespace Chocopoi.DressingTools.UI.Views
             if (container.config.wearableType == DTWearableType.ArmatureBased)
             {
                 // armature mode
-                ready &= dresserReport != null && (dresserReport.Result == DTReportResult.Ok || dresserReport.Result == DTReportResult.Compatible) && container.config.boneMappings != null;
+                ready &= dresserReport != null && !dresserReport.HasLogType(DTReportLogType.Error) && container.config.boneMappings != null;
             }
 
             return ready;

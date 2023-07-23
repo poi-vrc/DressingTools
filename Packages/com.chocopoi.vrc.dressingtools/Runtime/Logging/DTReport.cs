@@ -16,28 +16,20 @@ namespace Chocopoi.DressingTools.Logging
     }
 
     [Serializable]
-    public enum DTReportResult
-    {
-        InvalidSettings = -2,
-        Incompatible = -1,
-        Ok = 0,
-        Compatible = 1
-    }
-
-    [Serializable]
     public class DTReportLogEntry
     {
         public DTReportLogType type;
-        public int code;
+        public string label;
         public string message;
+        public string code;
     }
 
     [Serializable]
     public class DTReport
     {
-        public List<DTReportLogEntry> LogEntries { get; private set; }
+        private static readonly Localization.I18n t = Localization.I18n.GetInstance();
 
-        public DTReportResult Result { get; set; }
+        public List<DTReportLogEntry> LogEntries { get; private set; }
 
         public DTReport()
         {
@@ -58,7 +50,7 @@ namespace Chocopoi.DressingTools.Logging
             return dict;
         }
 
-        public bool HasLogCode(int code)
+        public bool HasLogCode(string code)
         {
             foreach (var entry in LogEntries)
             {
@@ -70,7 +62,7 @@ namespace Chocopoi.DressingTools.Logging
             return false;
         }
 
-        public bool HasLogCodeByType(DTReportLogType type, int code)
+        public bool HasLogCodeByType(DTReportLogType type, string code)
         {
             foreach (var entry in LogEntries)
             {
@@ -82,30 +74,105 @@ namespace Chocopoi.DressingTools.Logging
             return false;
         }
 
-        public void Log(DTReportLogType type, int code, string message)
+        public bool HasLogType(DTReportLogType type)
         {
-            Debug.Log(string.Format("[{0}] ({1}) {2}", type, code.ToString("X4"), message));
-            LogEntries.Add(new DTReportLogEntry() { type = type, code = code, message = message });
+            foreach (var entry in LogEntries)
+            {
+                if (entry.type == type)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public void LogError(int code, string message)
+        public void Log(DTReportLogType type, string label, string message, string code = null)
         {
-            Log(DTReportLogType.Error, code, message);
+            // TODO: do not output debug, trace unless specified in settings
+            if (code != null)
+            {
+                Debug.Log(string.Format("[DressingTools] [{0}] [{1}] ({2}) {3}", label, type, code, message));
+            }
+            else
+            {
+                Debug.Log(string.Format("[DressingTools] [{0}] [{1}] {2}", label, type, message));
+            }
+            LogEntries.Add(new DTReportLogEntry() { type = type, label = label, code = code, message = message });
         }
 
-        public void LogInfo(int code, string message)
+        public void LogLocalized(DTReportLogType type, string label, string code, params object[] args)
         {
-            Log(DTReportLogType.Info, code, message);
+            Log(type, label, t._(code, args));
         }
 
-        public void LogWarn(int code, string message)
+        public void AppendReport(DTReport report)
         {
-            Log(DTReportLogType.Warning, code, message);
+            LogEntries.AddRange(new List<DTReportLogEntry>(report.LogEntries));
         }
 
-        public void LogDebug(int code, string message)
+        public void LogException(Exception exception)
         {
-            Log(DTReportLogType.Debug, code, message);
+            LogFatal("Exception", exception.ToString());
+        }
+
+        public void LogFatal(string label, string message, string code = null)
+        {
+            Log(DTReportLogType.Fatal, label, message, code);
+        }
+
+        public void LogFatalLocalized(string label, string code, params object[] args)
+        {
+            LogLocalized(DTReportLogType.Fatal, label, code, args);
+        }
+
+        public void LogError(string label, string message, string code = null)
+        {
+            Log(DTReportLogType.Error, label, message, code);
+        }
+
+        public void LogErrorLocalized(string label, string code, params object[] args)
+        {
+            LogLocalized(DTReportLogType.Error, label, code, args);
+        }
+
+        public void LogInfo(string label, string message, string code = null)
+        {
+            Log(DTReportLogType.Info, label, message, code);
+        }
+
+        public void LogInfoLocalized(string label, string code, params object[] args)
+        {
+            LogLocalized(DTReportLogType.Info, label, code, args);
+        }
+
+        public void LogWarn(string label, string message, string code = null)
+        {
+            Log(DTReportLogType.Warning, label, message, code);
+        }
+
+        public void LogWarnLocalized(string label, string code, params object[] args)
+        {
+            LogLocalized(DTReportLogType.Warning, label, code, args);
+        }
+
+        public void LogDebug(string label, string message, string code = null)
+        {
+            Log(DTReportLogType.Debug, label, message, code);
+        }
+
+        public void LogDebugLocalized(string label, string code, params object[] args)
+        {
+            LogLocalized(DTReportLogType.Debug, label, code, args);
+        }
+
+        public void LogTrace(string label, string message, string code = null)
+        {
+            Log(DTReportLogType.Trace, label, message, code);
+        }
+
+        public void LogTraceLocalized(string label, string code, params object[] args)
+        {
+            LogLocalized(DTReportLogType.Trace, label, code, args);
         }
     }
 }

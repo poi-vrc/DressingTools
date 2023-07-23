@@ -74,6 +74,20 @@ namespace Chocopoi.DressingTools.Localization
             return Translate(key, null, args);
         }
 
+        private string JoinArrayToString(object[] arr)
+        {
+            string output = "";
+            for (var i = 0; i < arr.Length; i++)
+            {
+                output += arr[i].ToString();
+                if (i != arr.Length - 1)
+                {
+                    output += ", ";
+                }
+            }
+            return output;
+        }
+
         public string Translate(string key, string fallback = null, params object[] args)
         {
             string value;
@@ -88,7 +102,7 @@ namespace Chocopoi.DressingTools.Localization
                 return value;
             }
 
-            return fallback ?? key;
+            return fallback ?? string.Format("{0} ({1})", key, JoinArrayToString(args));
         }
 
         public string TranslateByLocale(string locale, string key, params object[] args)

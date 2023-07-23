@@ -57,9 +57,7 @@ namespace Chocopoi.DressingTools.UI
 
         private int selectedInterface = 0;
 
-        private DTReport dresserReport = null;
-
-        private DTReport applierReport = null;
+        private DTReport report = null;
 
         //private bool showStatisticsFoldout = false;
 
@@ -175,25 +173,9 @@ namespace Chocopoi.DressingTools.UI
             EditorGUILayout.SelectableLabel("https://github.com/poi-vrc/DressingTools");
         }
 
-        private DTReportResult ConvertIntToDTReportResult(int result)
-        {
-            switch (result)
-            {
-                case -2:
-                    return DTReportResult.InvalidSettings;
-                case -1:
-                    return DTReportResult.Incompatible;
-                default:
-                case 0:
-                    return DTReportResult.Ok;
-                case 1:
-                    return DTReportResult.Compatible;
-            }
-        }
-
         private void DrawReportResult()
         {
-            if (dresserReport == null || applierReport == null)
+            if (report == null)
             {
                 EditorGUILayout.HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
                 return;
@@ -201,37 +183,17 @@ namespace Chocopoi.DressingTools.UI
 
             //Result
 
-            var min = System.Math.Min((int)dresserReport.Result, (int)applierReport.Result);
-            var max = System.Math.Max((int)dresserReport.Result, (int)applierReport.Result);
-
-            DTReportResult displayResult;
-            if (min < 0)
+            if (report.HasLogType(DTReportLogType.Error))
             {
-                displayResult = ConvertIntToDTReportResult(min);
+                EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
             }
-            else if (max > 0)
+            else if (report.HasLogType(DTReportLogType.Warning))
             {
-                displayResult = ConvertIntToDTReportResult(max);
+                EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
             }
             else
             {
-                displayResult = DTReportResult.Ok;
-            }
-
-            switch (displayResult)
-            {
-                case DTReportResult.InvalidSettings:
-                    EditorGUILayout.HelpBox(t._("helpbox_error_check_result_invalid_settings"), MessageType.Error);
-                    break;
-                case DTReportResult.Incompatible:
-                    EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
-                    break;
-                case DTReportResult.Ok:
-                    EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
-                    break;
-                case DTReportResult.Compatible:
-                    EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
-                    break;
+                EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
             }
         }
 
@@ -247,7 +209,7 @@ namespace Chocopoi.DressingTools.UI
             {
                 foreach (var logEntry in logEntries[DTReportLogType.Error])
                 {
-                    EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Error);
+                    EditorGUILayout.HelpBox(logEntry.message, MessageType.Error);
                 }
             }
 
@@ -255,7 +217,7 @@ namespace Chocopoi.DressingTools.UI
             {
                 foreach (var logEntry in logEntries[DTReportLogType.Warning])
                 {
-                    EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Warning);
+                    EditorGUILayout.HelpBox(logEntry.message, MessageType.Warning);
                 }
             }
 
@@ -263,14 +225,14 @@ namespace Chocopoi.DressingTools.UI
             {
                 foreach (var logEntry in logEntries[DTReportLogType.Info])
                 {
-                    EditorGUILayout.HelpBox(string.Format("({0}) {1}", logEntry.code.ToString("X4"), logEntry.message), MessageType.Info);
+                    EditorGUILayout.HelpBox(logEntry.message, MessageType.Info);
                 }
             }
         }
 
         private void DrawDressReportDetails()
         {
-            if (dresserReport == null)
+            if (report == null)
             {
                 return;
             }
@@ -295,13 +257,9 @@ namespace Chocopoi.DressingTools.UI
 
             //EditorGUILayout.Separator();
 
-            EditorGUILayout.LabelField("Dresser", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Logs", EditorStyles.boldLabel);
 
-            DrawLogEntries(dresserReport.GetLogEntriesAsDictionary());
-
-            EditorGUILayout.LabelField("Applier", EditorStyles.boldLabel);
-
-            DrawLogEntries(applierReport.GetLogEntriesAsDictionary());
+            DrawLogEntries(report.GetLogEntriesAsDictionary());
         }
 
         private DTDefaultDresserSettings MakeDressSettings()
@@ -620,32 +578,15 @@ namespace Chocopoi.DressingTools.UI
             targetWearable.name = clothesToDress.name;
             targetWearable.transform.SetParent(targetAvatar.transform);
 
-            dresserReport = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
+            report = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
 
             var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar);
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable);
             var applierSettings = MakeApplierSettings();
 
-            applierReport = new DTReport();
-            if (!DefaultApplier.ApplyBoneMappings(applierReport, applierSettings, clothesToDress.name, avatarDynamics, wearableDynamics, boneMappings, targetAvatar, targetWearable))
+            if (!DefaultApplier.ApplyBoneMappings(report, applierSettings, clothesToDress.name, avatarDynamics, wearableDynamics, boneMappings, targetAvatar, targetWearable))
             {
                 Debug.Log("Error applying bone mappings!");
-            }
-
-            // finalize the report
-            // TODO: move this to the getter of Result?
-            var applierReportLogEntries = applierReport.GetLogEntriesAsDictionary();
-            if (applierReportLogEntries.ContainsKey(DTReportLogType.Error))
-            {
-                applierReport.Result = DTReportResult.Incompatible;
-            }
-            else if (applierReportLogEntries.ContainsKey(DTReportLogType.Warning))
-            {
-                applierReport.Result = DTReportResult.Compatible;
-            }
-            else
-            {
-                applierReport.Result = DTReportResult.Ok;
             }
 
             Selection.activeGameObject = targetAvatar;
@@ -687,11 +628,11 @@ namespace Chocopoi.DressingTools.UI
             {
                 GenerateMappingsAndApply(false);
                 dressNowConfirm = false;
-                Debug.Log("[DressingTools] Dress report generated with result " + dresserReport.Result);
+                Debug.Log("[DressingToolsLegacy] Dress report generated with " + report.LogEntries.Count + " log entries");
             }
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.BeginDisabledGroup(dresserReport == null || dresserReport.Result < 0);
+            EditorGUI.BeginDisabledGroup(report == null || report.HasLogType(DTReportLogType.Error));
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
                 EditorApplication.EnterPlaymode();
@@ -700,24 +641,24 @@ namespace Chocopoi.DressingTools.UI
             dressNowConfirm = GUILayout.Toggle(dressNowConfirm, t._("toggle_dress_declaration"));
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.BeginDisabledGroup(dresserReport == null || applierReport == null || dresserReport.Result < 0 || applierReport.Result < 0 || !dressNowConfirm);
+            EditorGUI.BeginDisabledGroup(report == null || report.HasLogType(DTReportLogType.Error) || !dressNowConfirm);
             if (GUILayout.Button(t._("button_dress_now"), checkBtnStyle, GUILayout.Height(40)) &&
                 EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_confirmation_content"), t._("dialog_button_yes"), t._("dialog_button_no")))
             {
                 GenerateMappingsAndApply(true);
-                Debug.Log("[DressingTools] Executed with result " + dresserReport.Result);
+                Debug.Log("[DressingToolsLegacy] Executed with " + report.LogEntries.Count + " log entries");
 
-                if (dresserReport.Result >= 0 && applierReport.Result >= 0)
+                if (!report.HasLogType(DTReportLogType.Error))
                 {
                     EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_completed_content"), t._("dialog_button_ok"));
 
                     // reset
                     clothesToDress = null;
-                    dresserReport = null;
+                    report = null;
                 }
                 else
                 {
-                    EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_failed_content", dresserReport.Result), t._("dialog_button_ok"));
+                    EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_failed_content"), t._("dialog_button_ok"));
                 }
             }
             EditorGUI.EndDisabledGroup();

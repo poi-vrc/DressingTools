@@ -12,6 +12,25 @@ namespace Chocopoi.DressingTools.Applier.Default
 {
     public class DTDefaultApplier : IDTApplier
     {
+        public const string LogLabel = "DTDefaultApplier";
+
+        public static class MessageCode
+        {
+            // Info
+            public const string AdjustedWearablePositionFromDelta = "appliers.default.msgCode.info.adjustedWearablePositionFromDelta";
+            public const string AdjustedWearableRotationFromDelta = "appliers.default.msgCode.info.adjustedWearableRotationFromDelta";
+            public const string AdjustedAvatarScale = "appliers.default.msgCode.info.adjustedAvatarScale";
+            public const string AdjustedWearableScale = "appliers.default.msgCode.info.adjustedWearableScale";
+
+            // Error
+            public const string DresserHasErrors = "appliers.default.msgCode.error.dresserHasErrors";
+            public const string CannotCreateParentConstraintWithExisting = "appliers.default.msgCode.error.cannotCreateParentConstraintWithExisting";
+            public const string AvatarBonePathNotFound = "appliers.default.msgCode.error.avatarBonePathNotFound";
+            public const string ApplyingWearableHasErrors = "appliers.default.msgCode.error.applyingWearableHasErrors";
+            public const string MappingGenerationHasErrors = "appliers.default.msgCode.error.mappingGenerationHasErrors";
+            public const string ApplyingBoneMappingHasErrors = "appliers.default.msgCode.error.applyingBoneMappingHasErrors";
+        }
+
         private void ApplyTransforms(DTReport report, DTAvatarConfig avatarConfig, GameObject targetAvatar, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
         {
             // check position delta and adjust
@@ -19,7 +38,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
                 if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
                 {
-                    report.LogInfo(0, "Position delta mismatch, adjusting wearable position: " + wearableWorldPos.ToString());
+                    report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
                     targetWearable.transform.position += wearableWorldPos;
                 }
             }
@@ -29,7 +48,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
                 if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
                 {
-                    report.LogInfo(0, "Rotation delta mismatch, adjusting wearable rotation: " + wearableWorldRot.ToString());
+                    report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
                     targetWearable.transform.rotation *= wearableWorldRot;
                 }
             }
@@ -42,10 +61,21 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // tricky workaround to apply lossy world scale is to unparent
                 targetAvatar.transform.SetParent(null);
             }
-            targetAvatar.transform.localScale = avatarConfig.avatarLossyScale.ToVector3();
+
+            var avatarScaleVec = avatarConfig.avatarLossyScale.ToVector3();
+            if (targetAvatar.transform.localScale != avatarScaleVec)
+            {
+                report.LogInfoLocalized(LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
+                targetAvatar.transform.localScale = avatarScaleVec;
+            }
 
             // apply wearable scale
-            targetWearable.transform.localScale = avatarConfig.wearableLossyScale.ToVector3();
+            var wearableScaleVec = avatarConfig.wearableLossyScale.ToVector3();
+            if (targetWearable.transform.localScale != wearableScaleVec)
+            {
+                report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
+                targetWearable.transform.localScale = wearableScaleVec;
+            }
         }
 
         private void RollbackTransform(GameObject targetAvatar, Transform lastAvatarParent, Vector3 lastAvatarScale)
@@ -72,12 +102,14 @@ namespace Chocopoi.DressingTools.Applier.Default
             dresserSettings.targetWearable = targetWearable;
             dresserSettings.avatarArmatureName = avatarArmatureName;
             dresserSettings.wearableArmatureName = wearableConfig.wearableArmatureName;
+
             var dresserReport = dresser.Execute(dresserSettings, out boneMappings);
+            report.AppendReport(dresserReport);
 
             // abort on error
-            if (dresserReport.Result != DTReportResult.Compatible && dresserReport.Result != DTReportResult.Ok)
+            if (dresserReport.HasLogType(DTReportLogType.Error))
             {
-                report.LogError(0, string.Format("Unable to wear \"{0}\" with dresser report errors!", wearableConfig.info.name));
+                report.LogErrorLocalized(LogLabel, MessageCode.DresserHasErrors, wearableConfig.info.name);
                 return false;
             }
 
@@ -269,7 +301,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                             }
                             else
                             {
-                                report.LogError(0, string.Format("Cannot create ParentConstraint to \"{0}\" because an existing ParentConstraint is already on the wearable bone: {1}", mapping.avatarBonePath, mapping.wearableBonePath));
+                                report.LogErrorLocalized(LogLabel, MessageCode.CannotCreateParentConstraintWithExisting, mapping.avatarBonePath, mapping.wearableBonePath);
                                 return false;
                             }
                         }
@@ -317,7 +349,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                     }
                     else
                     {
-                        report.LogError(0, string.Format("Avatar bone path \"{0}\" in mapping not found", mapping.avatarBonePath));
+                        report.LogErrorLocalized(LogLabel, MessageCode.AvatarBonePathNotFound, mapping.avatarBonePath);
                         return false;
                     }
                 }
@@ -360,7 +392,7 @@ namespace Chocopoi.DressingTools.Applier.Default
 
             if (!GenerateMappings(report, cabinet.avatarArmatureName, wearable.config, cabinet.avatarGameObject, wearableObj, out var boneMappings))
             {
-                Debug.Log("Generate mapping error");
+                report.LogErrorLocalized(LogLabel, MessageCode.MappingGenerationHasErrors);
                 // abort on error
                 RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                 return false;
@@ -371,7 +403,7 @@ namespace Chocopoi.DressingTools.Applier.Default
                 // apply bone mappings
                 if (!ApplyBoneMappings(report, settings, wearable.config.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableObj.transform, wearableObj.transform, "", wearable.config, cabinet))
                 {
-                    Debug.Log("Bone mapping error");
+                    report.LogErrorLocalized(LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
                     // abort on error
                     RollbackTransform(cabinet.avatarGameObject, lastAvatarParent, lastAvatarScale);
                     return false;
@@ -395,7 +427,7 @@ namespace Chocopoi.DressingTools.Applier.Default
             {
                 if (!ApplyWearable(report, settings, cabinet, wearable, avatarDynamics))
                 {
-                    report.LogError(0, "Error applying wearable, aborting: " + wearable.config.info.name);
+                    report.LogErrorLocalized(LogLabel, MessageCode.ApplyingWearableHasErrors, wearable.config.info.name);
                     break;
                 }
             }

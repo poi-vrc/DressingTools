@@ -20,10 +20,10 @@ namespace Chocopoi.DressingTools.Integrations.VRC
 
             var report = cabinet.Apply();
 
-            // TODO: show report frame if != OK
-            if (report.Result != DTReportResult.Ok && report.Result != DTReportResult.Compatible)
+            // TODO: show report frame if have errors
+            if (report.HasLogType(DTReportLogType.Error))
             {
-                EditorUtility.DisplayDialog("DressingTools", "Apply result is " + report.Result + ", aborting", "OK");
+                EditorUtility.DisplayDialog("DressingTools", "Error occured when applying cabinet, aborting", "OK");
                 return false;
             }
 

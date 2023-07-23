@@ -8,14 +8,14 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
     // TODO: replace by reading missing scripts Unity files
     public class NoMissingScriptsHook : IDefaultDresserHook
     {
-        public bool ScanGameObject(DTReport report, int errorCode, GameObject gameObject)
+        public bool ScanGameObject(DTReport report, string errorCode, GameObject gameObject)
         {
             var components = gameObject.GetComponents<Component>();
             for (var i = 0; i < components.Length; i++)
             {
                 if (components[i] == null)
                 {
-                    report.LogError(errorCode, "Missing script detected, make sure you have imported DynamicBones or related stuff: " + gameObject.name);
+                    report.LogErrorLocalized(DTDefaultDresser.LogLabel, errorCode, gameObject.name);
                     return false;
                 }
             }
@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (!avatarResult)
             {
-                report.LogError(DTDefaultDresser.MessageCode.MissingScriptsDetectedInAvatar, "Missing scripts detected in avatar");
+                report.LogErrorLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.MissingScriptsDetectedInAvatar);
             }
 
             //scan wearable missing scripts
@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (!clothesResult)
             {
-                report.LogError(DTDefaultDresser.MessageCode.MissingScriptsDetectedInWearable, "Missing scripts detected in wearable");
+                report.LogErrorLocalized(DTDefaultDresser.LogLabel, DTDefaultDresser.MessageCode.MissingScriptsDetectedInWearable);
             }
 
             return avatarResult && clothesResult;

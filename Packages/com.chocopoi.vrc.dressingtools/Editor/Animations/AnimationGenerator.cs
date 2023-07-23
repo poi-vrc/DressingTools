@@ -9,6 +9,22 @@ namespace Chocopoi.DressingTools.Animations
 {
     public class AnimationGenerator
     {
+        public const string LogLabel = "AnimationGenerator";
+
+        public static class MessageCode
+        {
+            // Warnings
+            public const string IgnoredObjectHasNoSkinnedMeshRendererAttached = "animationGenerator.msgCode.warn.ignoredObjectHasNoSkinnedMeshRendererAttached";
+            public const string IgnoredObjectHasNoMeshAttached = "animationGenerator.msgCode.warn.ignoredObjectHasNoMeshAttached";
+            public const string IgnoredObjectHasNoSuchBlendshape = "animationGenerator.msgCode.warn.ignoredObjectHasNoSuchBlendshape";
+            public const string IgnoredAvatarToggleObjectNotFound = "animationGenerator.msgCode.warn.ignoredAvatarToggleObjectNotFound";
+            public const string IgnoredAvatarBlendshapeObjectNotFound = "animationGenerator.msgCode.warn.ignoredAvatarBlendshapeObjectNotFound";
+            public const string IgnoredCouldNotObtainAvatarBlendshapeOriginalValue = "animationGenerator.msgCode.warn.ignoredCouldNotObtainAvatarBlendshapeOriginalValue";
+            public const string IgnoredWearableToggleObjectNotFound = "animationGenerator.msgCode.warn.ignoredWearableToggleObjectNotFound";
+            public const string IgnoredWearableBlendshapeObjectNotFound = "animationGenerator.msgCode.warn.ignoredWearableBlendshapeObjectNotFound";
+            public const string IgnoredCouldNotObtainWearableBlendshapeOriginalValue = "animationGenerator.msgCode.warn.ignoredCouldNotObtainWearableBlendshapeOriginalValue";
+        }
+
         private DTReport report;
 
         private GameObject avatarObject;
@@ -35,21 +51,21 @@ namespace Chocopoi.DressingTools.Animations
             SkinnedMeshRenderer smr;
             if ((smr = obj.GetComponent<SkinnedMeshRenderer>()) == null)
             {
-                report.LogWarn(0, string.Format("Object {0} does not have SkinnedMeshRenderer attached", obj.name));
+                report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSkinnedMeshRendererAttached, obj.name);
                 return false;
             }
 
             Mesh mesh;
             if ((mesh = smr.sharedMesh) == null)
             {
-                report.LogWarn(0, string.Format("SkinnedMeshRenderer in {0} has no mesh attached", obj.name));
+                report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoMeshAttached, obj.name);
                 return false;
             }
 
             int blendshapeIndex;
             if ((blendshapeIndex = mesh.GetBlendShapeIndex(blendshapeName)) == -1)
             {
-                report.LogWarn(0, string.Format("Mesh in {0} has no such blendshape named \"{1}\"", obj.name, blendshapeName));
+                report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSuchBlendshape, obj.name, blendshapeName);
                 return false;
             }
 
@@ -64,7 +80,7 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = avatarObject.transform.Find(toggle.path);
                 if (obj == null)
                 {
-                    report.LogWarn(0, "Could not find avatar toggle GameObject at path, ignoring: " + toggle.path);
+                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarToggleObjectNotFound, toggle.path);
                 }
                 else
                 {
@@ -84,13 +100,13 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = avatarObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    report.LogWarn(0, string.Format("Could not find avatar object {0} for blendshape animating at path, ignoring: {1}", avatarObject.name, blendshape.path));
+                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, avatarObject.name, blendshape.path);
                     continue;
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
                 {
-                    report.LogWarn(0, string.Format("Could not get the original blendshape value of avatar object {0} for blendshape animating at path, ignoring: {1}", avatarObject.name, blendshape.path));
+                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainAvatarBlendshapeOriginalValue, avatarObject.name, blendshape.path);
                     continue;
                 }
 
@@ -110,7 +126,7 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = wearableObject.transform.Find(toggle.path);
                 if (obj == null)
                 {
-                    report.LogWarn(0, "Could not find wearable toggle GameObject at path, ignoring: " + toggle.path);
+                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredWearableToggleObjectNotFound, toggle.path);
                 }
                 else
                 {
@@ -130,12 +146,12 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = wearableObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    report.LogWarn(0, "Could not find wearable object " + wearableObject.name + " for blendshape animating at path, ignoring: " + blendshape.path);
+                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, wearableObject.name, blendshape.path);
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
                 {
-                    report.LogWarn(0, string.Format("Could not get the original blendshape value of wearable object {0} for blendshape animating at path, ignoring: {1}", avatarObject.name, blendshape.path));
+                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainWearableBlendshapeOriginalValue, wearableObject.name, blendshape.path);
                     continue;
                 }
 
