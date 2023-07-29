@@ -17,7 +17,7 @@ namespace Chocopoi.DressingTools.Wearable
         public DTAvatarConfig targetAvatarConfig;
 
         [JsonConverter(typeof(DTWearableModuleBaseConverter))]
-        public DTWearableModuleBase[] modules;
+        public List<DTWearableModuleBase> modules;
 
         public DTWearableConfig()
         {
@@ -30,9 +30,8 @@ namespace Chocopoi.DressingTools.Wearable
                 updatedTime = isoTimeStr
             };
             targetAvatarConfig = new DTAvatarConfig();
-            modules = new DTWearableModuleBase[] {
-                new ArmatureMappingModule()
-            };
+            modules = new List<DTWearableModuleBase>();
+            modules.Add(new ArmatureMappingModule());
         }
 
         public bool HasUnknownModules()

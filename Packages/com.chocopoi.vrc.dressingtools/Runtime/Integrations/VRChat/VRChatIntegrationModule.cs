@@ -19,6 +19,8 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         public override int ApplyOrder => int.MaxValue;
 
+        public override bool AllowMultiple => false;
+
         public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
         {
 #if !VRC_SDK_VRCSDK3

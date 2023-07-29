@@ -19,7 +19,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override int ApplyOrder => 6;
 
+        public override bool AllowMultiple => false;
+
         public DTAnimationBlendshapeSync[] blendshapeSyncs; // blendshapes to sync from avatar to wearables
+
+        public BlendshapeSyncModule()
+        {
+            blendshapeSyncs = new DTAnimationBlendshapeSync[0];
+        }
 
         public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
         {

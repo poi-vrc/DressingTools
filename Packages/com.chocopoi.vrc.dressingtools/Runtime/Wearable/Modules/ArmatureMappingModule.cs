@@ -33,6 +33,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override int ApplyOrder => 2;
 
+        public override bool AllowMultiple => false;
+
         public string dresserName;
 
         public string wearableArmatureName;

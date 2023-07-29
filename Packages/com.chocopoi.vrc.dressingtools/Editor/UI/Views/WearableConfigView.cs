@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
@@ -30,11 +31,17 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private static Dictionary<Type, Type> moduleEditorTypesCache = null;
 
+        private static List<Type> availableModulesCache = null;
+
+        private static string[] availableModuleKeysCache = null;
+
         private WearableConfigPresenter wearableConfigPresenter;
 
         private WearableConfigViewContainer container;
 
         private Dictionary<DTWearableModuleBase, ModuleEditor> moduleEditors;
+
+        private int selectedAvailableModule = 0;
 
         private bool foldoutMetaInfo = false;
 
@@ -134,8 +141,49 @@ namespace Chocopoi.DressingTools.UI.Views
             return null;
         }
 
+        private static List<Type> GetAllAvailableModules()
+        {
+            return System.Reflection.Assembly.GetAssembly(typeof(DTWearableModuleBase))
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(DTWearableModuleBase)) && !t.IsAbstract)
+                .ToList();
+        }
+
         private void DrawModulesGUI()
         {
+            if (availableModulesCache == null)
+            {
+                availableModulesCache = GetAllAvailableModules();
+                availableModuleKeysCache = new string[availableModulesCache.Count];
+                for (var i = 0; i < availableModulesCache.Count; i++)
+                {
+                    availableModuleKeysCache[i] = availableModulesCache[i].FullName;
+                }
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            selectedAvailableModule = EditorGUILayout.Popup("Select Module: ", selectedAvailableModule, availableModuleKeysCache);
+            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
+            {
+                var newModule = (DTWearableModuleBase)Activator.CreateInstance(availableModulesCache[selectedAvailableModule]);
+                if (!newModule.AllowMultiple)
+                {
+                    // check if any existing type
+                    foreach (var existingModule in container.config.modules)
+                    {
+                        if (existingModule.GetType() == newModule.GetType())
+                        {
+                            EditorUtility.DisplayDialog("DressingTools", "This module has been added before and cannot have multiple ones.", "OK");
+                            return;
+                        }
+                    }
+                }
+                container.config.modules.Add(newModule);
+            }
+            EditorGUILayout.EndHorizontal();
+
+            var toRemove = new List<DTWearableModuleBase>();
+
             foreach (var module in container.config.modules)
             {
                 if (!moduleEditors.TryGetValue(module, out var editor))
@@ -146,6 +194,10 @@ namespace Chocopoi.DressingTools.UI.Views
                     {
                         // unable to initialize editor;
                         EditorGUILayout.HelpBox("No editor available for the module.", MessageType.Error);
+                        if (GUILayout.Button("Remove"))
+                        {
+                            toRemove.Add(module);
+                        }
                         continue;
                     }
 
@@ -155,7 +207,10 @@ namespace Chocopoi.DressingTools.UI.Views
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
                 EditorGUILayout.BeginHorizontal();
                 editor.foldout = EditorGUILayout.BeginFoldoutHeaderGroup(editor.foldout, editor.FriendlyName);
-                GUILayout.Button("Remove", GUILayout.ExpandWidth(false));
+                if (GUILayout.Button("Remove", GUILayout.ExpandWidth(false)))
+                {
+                    toRemove.Add(module);
+                }
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.EndFoldoutHeaderGroup();
                 if (editor.foldout)
@@ -166,6 +221,12 @@ namespace Chocopoi.DressingTools.UI.Views
                     }
                 }
                 EditorGUILayout.EndVertical();
+            }
+
+            // remove modules
+            foreach (var module in toRemove)
+            {
+                container.config.modules.Remove(module);
             }
         }
 

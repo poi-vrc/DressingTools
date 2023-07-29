@@ -11,6 +11,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     {
         public sealed override int ApplyOrder => int.MaxValue;
 
+        public override bool AllowMultiple => true;
+
         public readonly string moduleTypeName;
 
         public readonly string rawJson;
