@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
-using Newtonsoft.Json;
+﻿using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Wearable;
 using UnityEditor;
 using UnityEngine;
 
@@ -59,7 +56,6 @@ namespace Chocopoi.DressingTools
                 // TODO: read default config, scan for armature names?
                 comp.avatarGameObject = avatar;
                 comp.avatarArmatureName = "Armature";
-                comp.serializedApplierSettings = "{}";
             }
 
             return comp;
@@ -82,11 +78,7 @@ namespace Chocopoi.DressingTools
                 var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
 
                 cabinetWearable.wearableGameObject = wearableGameObject;
-                cabinetWearable.config = config;
-                cabinetWearable.serializedJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                });
+                cabinetWearable.configJson = config.Serialize();
             }
         }
 

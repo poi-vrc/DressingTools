@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.UI.Presenters;
+﻿using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.Wearable;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,7 +44,7 @@ namespace Chocopoi.DressingTools.UI.Views
             wearableConfigView.OnGUI();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(!wearableConfigView.IsConfigReady());
+            EditorGUI.BeginDisabledGroup(!wearableConfigView.IsValid());
             EditorGUI.BeginDisabledGroup(cabinet == null);
             if (GUILayout.Button("Add to cabinet"))
             {

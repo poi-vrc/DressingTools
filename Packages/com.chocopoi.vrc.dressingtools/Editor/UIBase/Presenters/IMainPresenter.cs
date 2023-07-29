@@ -1,4 +1,5 @@
 ﻿using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Wearable;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UIBase.Presenters

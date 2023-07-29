@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
+﻿using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
-using Newtonsoft.Json;
-using UnityEditor;
+using Chocopoi.DressingTools.Wearable;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters

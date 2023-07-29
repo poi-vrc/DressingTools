@@ -5,7 +5,5 @@ namespace Chocopoi.DressingTools.UIBase.Presenters
 {
     internal interface IWearableConfigPresenter
     {
-        DTReport GenerateDresserMappings(IDTDresser dresser, DTDresserSettings dresserSettings);
-        void StartMappingEditor();
     }
 }

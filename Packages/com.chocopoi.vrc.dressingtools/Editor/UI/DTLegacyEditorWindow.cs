@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Chocopoi.DressingTools.Applier.Default;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
@@ -20,8 +19,6 @@ namespace Chocopoi.DressingTools.UI
         private static readonly Regex IllegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 
         private static readonly DTDefaultDresser DefaultDresser = new DTDefaultDresser();
-
-        private static readonly DTDefaultApplier DefaultApplier = new DTDefaultApplier();
 
         private static AnimatorController testModeAnimationController;
 
@@ -292,16 +289,6 @@ namespace Chocopoi.DressingTools.UI
                 dynamicsOption = dynamicsOption,
                 avatarArmatureName = avatarArmatureObjectName,
                 wearableArmatureName = clothesArmatureObjectName
-            };
-        }
-
-        private DTDefaultApplierSettings MakeApplierSettings()
-        {
-            return new DTDefaultApplierSettings()
-            {
-                removeExistingPrefixSuffix = removeExistingPrefixSuffix,
-                groupBones = groupBones,
-                groupDynamics = groupDynamics
             };
         }
 
@@ -582,15 +569,16 @@ namespace Chocopoi.DressingTools.UI
 
             var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar);
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable);
-            var applierSettings = MakeApplierSettings();
 
-            if (!DefaultApplier.ApplyBoneMappings(report, applierSettings, clothesToDress.name, avatarDynamics, wearableDynamics, boneMappings, targetAvatar, targetWearable))
-            {
-                Debug.Log("Error applying bone mappings!");
-            }
+            throw new System.NotImplementedException("extract v2 ArmatureMappingModule stuff here");
 
-            Selection.activeGameObject = targetAvatar;
-            SceneView.FrameLastActiveSceneView();
+            //if (!DefaultApplier.ApplyBoneMappings(report, applierSettings, clothesToDress.name, avatarDynamics, wearableDynamics, boneMappings, targetAvatar, targetWearable))
+            //{
+            //    Debug.Log("Error applying bone mappings!");
+            //}
+
+            //Selection.activeGameObject = targetAvatar;
+            //SceneView.FrameLastActiveSceneView();
         }
 
         private void DrawToolContentGUI()

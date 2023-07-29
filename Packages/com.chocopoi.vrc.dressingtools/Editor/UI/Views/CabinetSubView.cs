@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Applier;
-using Chocopoi.DressingTools.Applier.Default;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -21,24 +20,18 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private int selectedCabinetIndex;
 
-        private DTApplierSettings applierSettings = null;
+        private Dictionary<DTCabinetWearable, DTWearableConfig> deserializedConfigCache;
 
         public CabinetSubView(IMainView mainView, IMainPresenter mainPresenter)
         {
             cabinetPresenter = new CabinetPresenter(this);
             this.mainPresenter = mainPresenter;
+            deserializedConfigCache = new Dictionary<DTCabinetWearable, DTWearableConfig>();
         }
 
-        private DTCabinetApplierMode ConvertIntToApplierMode(int applierMode)
+        public void ResetAllDeserializedConfigCache()
         {
-            switch (applierMode)
-            {
-                default:
-                case 0:
-                    return DTCabinetApplierMode.LateApply;
-                case 1:
-                    return DTCabinetApplierMode.ApplyImmediately;
-            }
+            deserializedConfigCache.Clear();
         }
 
         public void OnGUI()
@@ -71,48 +64,35 @@ namespace Chocopoi.DressingTools.UI.Views
             cabinet.avatarGameObject = (GameObject)EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
             cabinet.avatarArmatureName = EditorGUILayout.TextField("Armature Name", cabinet.avatarArmatureName);
 
-            {
-                // list all appliers
-                string[] applierKeys = DTCabinet.GetApplierKeys();
-                string selectedApplierKey = DTCabinet.GetApplierKeyByTypeName(cabinet.applierName);
-                int selectedApplierIndex = EditorGUILayout.Popup("Appliers", selectedApplierKey != null ? System.Array.IndexOf(applierKeys, selectedApplierKey) : 0, applierKeys);
-                string newSelectedApplierKey = applierKeys[selectedApplierIndex];
-                var applier = DTCabinet.GetApplierByKey(newSelectedApplierKey);
-                cabinet.applierName = applier.GetType().FullName;
-                if (newSelectedApplierKey != selectedApplierKey)
-                {
-                    // wipe old settings if applier is changed
-                    applierSettings = null;
-                    cabinet.serializedApplierSettings = null;
-                }
-
-                // initialize applier settings
-                if (applier is DTDefaultApplier)
-                {
-                    if (applierSettings == null || !(applierSettings is DTDefaultApplierSettings))
-                    {
-                        applierSettings = applier.DeserializeSettings(cabinet.serializedApplierSettings ?? "{}");
-                        if (applierSettings == null)
-                        {
-                            applierSettings = new DTDefaultApplierSettings();
-                        }
-                    }
-                }
-
-                // draw applier settings
-                if (applierSettings.DrawEditorGUI())
-                {
-                    // serialize if modified
-                    cabinet.serializedApplierSettings = JsonConvert.SerializeObject(applierSettings);
-                }
-            }
-
             var wearablesToRemove = new List<DTCabinetWearable>();
             var wearables = cabinet.GetWearables();
 
             foreach (var wearable in wearables)
             {
-                GUILayout.Label(string.Format("{0} ({1})", wearable.config.info.name, wearable.config.info.uuid));
+                DTWearableConfig config = null;
+
+                // TODO: when to clear deserialization cache?
+                if (!deserializedConfigCache.ContainsKey(wearable))
+                {
+                    if (wearable.configJson != null)
+                    {
+                        config = JsonConvert.DeserializeObject<DTWearableConfig>(wearable.configJson);
+                        deserializedConfigCache.Add(wearable, config);
+                    }
+                }
+                else
+                {
+                    config = deserializedConfigCache[wearable];
+                }
+
+                if (config == null)
+                {
+                    EditorGUILayout.HelpBox("Unable to load one of the wearable configuration!", MessageType.Error);
+                }
+                else
+                {
+                    GUILayout.Label(string.Format("{0} ({1})", config.info.name, config.info.uuid));
+                }
                 if (GUILayout.Button("Remove"))
                 {
                     wearablesToRemove.Add(wearable);

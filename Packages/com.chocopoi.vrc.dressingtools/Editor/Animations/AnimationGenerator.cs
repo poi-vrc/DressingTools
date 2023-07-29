@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
+using Chocopoi.DressingTools.Wearable;
+using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations
@@ -29,17 +30,17 @@ namespace Chocopoi.DressingTools.Animations
 
         private GameObject avatarObject;
 
-        private DTWearableConfig config;
-
         private GameObject wearableObject;
+
+        private AnimationGenerationModule module;
 
         private List<IDynamicsProxy> wearableDynamics;
 
-        public AnimationGenerator(DTReport report, GameObject avatarObject, DTWearableConfig config, GameObject wearableObject, List<IDynamicsProxy> wearableDynamics)
+        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationModule module, GameObject wearableObject, List<IDynamicsProxy> wearableDynamics)
         {
             this.report = report;
             this.avatarObject = avatarObject;
-            this.config = config;
+            this.module = module;
             this.wearableObject = wearableObject;
             this.wearableDynamics = wearableDynamics;
         }
@@ -176,10 +177,10 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar toggles
-            GenerateAvatarToggleAnimations(enableClip, disableClip, config.avatarAnimationOnWear.toggles, writeDefaults);
+            GenerateAvatarToggleAnimations(enableClip, disableClip, module.avatarAnimationOnWear.toggles, writeDefaults);
 
             // wearable toggles
-            GenerateWearableToggleAnimations(enableClip, disableClip, config.wearableAnimationOnWear.toggles, writeDefaults);
+            GenerateWearableToggleAnimations(enableClip, disableClip, module.wearableAnimationOnWear.toggles, writeDefaults);
 
             // dynamics
             var visitedDynamicsTransforms = new List<Transform>();
@@ -208,10 +209,10 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar blendshapes
-            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, config.avatarAnimationOnWear.blendshapes, writeDefaults);
+            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, module.avatarAnimationOnWear.blendshapes, writeDefaults);
 
             // wearable blendshapes
-            GenerateWearableBlendshapeAnimations(enableClip, disableClip, config.wearableAnimationOnWear.blendshapes, writeDefaults);
+            GenerateWearableBlendshapeAnimations(enableClip, disableClip, module.wearableAnimationOnWear.blendshapes, writeDefaults);
 
             return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
@@ -226,7 +227,7 @@ namespace Chocopoi.DressingTools.Animations
 
             var dict = new Dictionary<DTWearableCustomizable, System.Tuple<AnimationClip, AnimationClip>>();
 
-            foreach (var customizable in config.wearableCustomizables)
+            foreach (var customizable in module.wearableCustomizables)
             {
                 var enableClip = new AnimationClip();
                 var disableClip = new AnimationClip();

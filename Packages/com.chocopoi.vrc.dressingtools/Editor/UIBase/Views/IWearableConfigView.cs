@@ -2,7 +2,7 @@
 {
     internal interface IWearableConfigView
     {
-        bool IsConfigReady();
+        bool IsValid();
         void OnGUI();
     }
 }
