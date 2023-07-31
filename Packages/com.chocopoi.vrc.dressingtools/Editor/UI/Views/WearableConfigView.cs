@@ -1,374 +1,209 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.UI.Modules;
 using Chocopoi.DressingTools.UI.Presenters;
+using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
-using Chocopoi.DressingTools.Wearable.Modules;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
-    internal class WearableConfigViewContainer
-    {
-        public GameObject targetAvatar;
-        public GameObject targetWearable;
-        public DTWearableConfig config;
-    }
-
-    internal class WearableConfigView : IWearableConfigView
+    internal class WearableConfigView : EditorViewBase, IWearableConfigView
     {
         private static readonly I18n t = I18n.GetInstance();
 
-        private static Dictionary<Type, Type> moduleEditorTypesCache = null;
+        public event Action ForceUpdateView;
+        public event Action TargetAvatarOrWearableChange { add { viewParent_.TargetAvatarOrWearableChange += value; } remove { viewParent_.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarConfigChange;
+        public event Action MetaInfoChange;
+        public event Action AddModuleButtonClick;
 
-        private static List<Type> availableModulesCache = null;
+        public string[] AvailableModuleKeys { get; set; }
+        public int SelectedAvailableModule { get => selectedAvailableModule_; set => selectedAvailableModule_ = value; }
+        public GameObject TargetAvatar { get => viewParent_.TargetAvatar; }
+        public GameObject TargetWearable { get => viewParent_.TargetWearable; }
+        public DTWearableConfig Config { get => viewParent_.Config; }
+        public List<ModuleData> ModuleDataList { get; set; }
+        public bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
+        public bool IsInvalidAvatarPrefabGuid { get; set; }
+        public string AvatarPrefabGuid { get; set; }
+        public GameObject GuidReferencePrefab { get => guidReferencePrefab_; set => guidReferencePrefab_ = value; }
+        public bool TargetAvatarConfigUseAvatarObjectName { get => targetAvatarConfigUseAvatarObjectName_; set => targetAvatarConfigUseAvatarObjectName_ = value; }
+        public string TargetAvatarConfigAvatarName { get => targetAvatarConfigAvatarName_; set => targetAvatarConfigAvatarName_ = value; }
+        public string TargetAvatarConfigArmatureName { get; set; }
+        public string TargetAvatarConfigWorldPosition { get; set; }
+        public string TargetAvatarConfigWorldRotation { get; set; }
+        public string TargetAvatarConfigWorldAvatarLossyScale { get; set; }
+        public string TargetAvatarConfigWorldWearableLossyScale { get; set; }
+        public string ConfigUuid { get; set; }
+        public bool MetaInfoUseWearableObjectName { get => metaInfoUseWearableObjectName_; set => metaInfoUseWearableObjectName_ = value; }
+        public string MetaInfoWearableName { get => metaInfoWearableName_; set => metaInfoWearableName_ = value; }
+        public string MetaInfoAuthor { get => metaInfoAuthor_; set => metaInfoAuthor_ = value; }
+        public string MetaInfoCreatedTime { get; set; }
+        public string MetaInfoUpdatedTime { get; set; }
+        public string MetaInfoDescription { get => metaInfoDescription_; set => metaInfoDescription_ = value; }
 
-        private static string[] availableModuleKeysCache = null;
+        private WearableConfigPresenter presenter_;
+        private IWearableConfigViewParent viewParent_;
+        private int selectedAvailableModule_;
+        private bool foldoutMetaInfo_;
+        private bool foldoutTargetAvatarConfigs_;
+        private GameObject guidReferencePrefab_;
+        private bool targetAvatarConfigUseAvatarObjectName_;
+        private string targetAvatarConfigAvatarName_;
+        private bool metaInfoUseWearableObjectName_;
+        private string metaInfoWearableName_;
+        private string metaInfoAuthor_;
+        private string metaInfoDescription_;
 
-        private WearableConfigPresenter wearableConfigPresenter;
-
-        private WearableConfigViewContainer container;
-
-        private Dictionary<DTWearableModuleBase, ModuleEditor> moduleEditors;
-
-        private int selectedAvailableModule = 0;
-
-        private bool foldoutMetaInfo = false;
-
-        private bool foldoutTargetAvatarConfigs = false;
-
-        private bool metaInfoUseWearableName = true;
-
-        private bool targetAvatarConfigUseAvatarName = true;
-
-        private GameObject guidReferencePrefab = null;
-
-        public WearableConfigView(WearableConfigViewContainer container)
+        public WearableConfigView(IWearableConfigViewParent viewParent)
         {
-            wearableConfigPresenter = new WearableConfigPresenter(this);
-            this.container = container;
-            moduleEditors = new Dictionary<DTWearableModuleBase, ModuleEditor>();
+            viewParent_ = viewParent;
+            presenter_ = new WearableConfigPresenter(this);
 
-            // check if meta info name is customized
-            if (container.targetWearable != null && container.config.info.name != container.targetWearable.name)
-            {
-                metaInfoUseWearableName = false;
-            }
+            AvailableModuleKeys = new string[0];
+            ModuleDataList = new List<ModuleData>();
+            ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
+            IsInvalidAvatarPrefabGuid = true;
+            AvatarPrefabGuid = null;
+            TargetAvatarConfigArmatureName = null;
+            TargetAvatarConfigWorldPosition = null;
+            TargetAvatarConfigWorldRotation = null;
+            TargetAvatarConfigWorldAvatarLossyScale = null;
+            TargetAvatarConfigWorldWearableLossyScale = null;
+            ConfigUuid = null;
+            MetaInfoCreatedTime = null;
+            MetaInfoUpdatedTime = null;
 
-            // check if target avatar name is customized
-            if (container.targetAvatar != null)
-            {
-                targetAvatarConfigUseAvatarName = container.config.targetAvatarConfig.name == container.targetAvatar.name;
-            }
+            selectedAvailableModule_ = 0;
+            foldoutMetaInfo_ = false;
+            foldoutTargetAvatarConfigs_ = false;
+            guidReferencePrefab_ = null;
+            targetAvatarConfigUseAvatarObjectName_ = false;
+            targetAvatarConfigAvatarName_ = null;
+            metaInfoUseWearableObjectName_ = false;
+            metaInfoWearableName_ = null;
+            metaInfoAuthor_ = null;
+            metaInfoDescription_ = null;
         }
 
-        private void UpdateTargetAvatarConfig(DTCabinet cabinet)
+        public void RaiseForceUpdateView()
         {
-            if (container.targetAvatar == null || container.targetWearable == null)
-            {
-                // we cannot do anything with target avatar and wearable null
-                return;
-            }
-
-            if (targetAvatarConfigUseAvatarName)
-            {
-                container.config.targetAvatarConfig.name = container.targetAvatar.name;
-            }
-
-            // try obtain armature name from cabinet
-            if (cabinet == null)
-            {
-                // leave it empty
-                container.config.targetAvatarConfig.armatureName = "";
-            }
-            else
-            {
-                container.config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
-            }
-
-            var deltaPos = container.targetWearable.transform.position - container.targetAvatar.transform.position;
-            var deltaRotation = container.targetWearable.transform.rotation * Quaternion.Inverse(container.targetAvatar.transform.rotation);
-            container.config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
-            container.config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
-            container.config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(container.targetAvatar.transform.lossyScale);
-            container.config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(container.targetWearable.transform.lossyScale);
-        }
-
-        private ModuleEditor CreateModuleEditor(DTWearableModuleBase module)
-        {
-            // prepare cache if not yet
-            if (moduleEditorTypesCache == null)
-            {
-                moduleEditorTypesCache = new Dictionary<Type, Type>();
-
-                var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-
-                foreach (var assembly in assemblies)
-                {
-                    foreach (var type in assembly.GetTypes())
-                    {
-                        var attributes = type.GetCustomAttributes(typeof(CustomModuleEditor), true);
-                        foreach (CustomModuleEditor attribute in attributes)
-                        {
-                            if (moduleEditorTypesCache.ContainsKey(attribute.ModuleType))
-                            {
-                                Debug.LogWarning("There are more than one CustomModuleEditor pointing to the same module! Skipping: " + type.FullName);
-                                continue;
-                            }
-                            moduleEditorTypesCache.Add(attribute.ModuleType, type);
-                        }
-                    }
-                }
-            }
-
-            // obtain from cache and create an editor instance
-            if (moduleEditorTypesCache.TryGetValue(module.GetType(), out var moduleEditorType))
-            {
-                return (ModuleEditor)Activator.CreateInstance(moduleEditorType, module, container.config);
-
-            }
-
-            return null;
-        }
-
-        private static List<Type> GetAllAvailableModules()
-        {
-            return System.Reflection.Assembly.GetAssembly(typeof(DTWearableModuleBase))
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(DTWearableModuleBase)) && !t.IsAbstract)
-                .ToList();
+            ForceUpdateView?.Invoke();
         }
 
         private void DrawModulesGUI()
         {
-            if (availableModulesCache == null)
+            BeginHorizontal();
             {
-                availableModulesCache = GetAllAvailableModules();
-                availableModuleKeysCache = new string[availableModulesCache.Count];
-                for (var i = 0; i < availableModulesCache.Count; i++)
-                {
-                    availableModuleKeysCache[i] = availableModulesCache[i].FullName;
-                }
+                Popup("Select Module:", ref selectedAvailableModule_, AvailableModuleKeys);
+                Button("Add", AddModuleButtonClick, GUILayout.ExpandWidth(false));
             }
+            EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            selectedAvailableModule = EditorGUILayout.Popup("Select Module: ", selectedAvailableModule, availableModuleKeysCache);
-            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
+            var copy = new List<ModuleData>(ModuleDataList);
+            foreach (var moduleData in copy)
             {
-                var newModule = (DTWearableModuleBase)Activator.CreateInstance(availableModulesCache[selectedAvailableModule]);
-                if (!newModule.AllowMultiple)
+                BeginFoldoutBoxWithButtonRight(ref moduleData.editor.foldout, moduleData.editor.FriendlyName, "x Remove", moduleData.removeButtonOnClickEvent);
+                if (moduleData.editor.foldout)
                 {
-                    // check if any existing type
-                    foreach (var existingModule in container.config.modules)
-                    {
-                        if (existingModule.GetType() == newModule.GetType())
-                        {
-                            EditorUtility.DisplayDialog("DressingTools", "This module has been added before and cannot have multiple ones.", "OK");
-                            return;
-                        }
-                    }
+                    moduleData.editor.OnGUI();
                 }
-                container.config.modules.Add(newModule);
-            }
-            EditorGUILayout.EndHorizontal();
-
-            var toRemove = new List<DTWearableModuleBase>();
-
-            foreach (var module in container.config.modules)
-            {
-                if (!moduleEditors.TryGetValue(module, out var editor))
-                {
-                    editor = CreateModuleEditor(module);
-
-                    if (editor == null)
-                    {
-                        // unable to initialize editor;
-                        EditorGUILayout.HelpBox("No editor available for the module.", MessageType.Error);
-                        if (GUILayout.Button("Remove"))
-                        {
-                            toRemove.Add(module);
-                        }
-                        continue;
-                    }
-
-                    moduleEditors.Add(module, editor);
-                }
-
-                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                EditorGUILayout.BeginHorizontal();
-                editor.foldout = EditorGUILayout.BeginFoldoutHeaderGroup(editor.foldout, editor.FriendlyName);
-                if (GUILayout.Button("Remove", GUILayout.ExpandWidth(false)))
-                {
-                    toRemove.Add(module);
-                }
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.EndFoldoutHeaderGroup();
-                if (editor.foldout)
-                {
-                    if (editor.OnGUI(container.targetAvatar, container.targetWearable))
-                    {
-                        // TODO: what to do if modified
-                    }
-                }
-                EditorGUILayout.EndVertical();
-            }
-
-            // remove modules
-            foreach (var module in toRemove)
-            {
-                container.config.modules.Remove(module);
+                EndFoldoutBox();
             }
         }
 
-        private void DrawAvatarConfigsGUI(DTCabinet cabinet)
+        private void DrawAvatarConfigsGUI()
         {
-            UpdateTargetAvatarConfig(cabinet);
-
-            // GUI
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            foldoutTargetAvatarConfigs = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTargetAvatarConfigs, "Target Avatar Configuration");
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            if (foldoutTargetAvatarConfigs)
+            BeginFoldoutBox(ref foldoutTargetAvatarConfigs_, "Target Avatar Configuration");
+            if (foldoutTargetAvatarConfigs_)
             {
-                EditorGUILayout.HelpBox("This allows other users to be able to find your configuration for their avatars and wearables once uploaded.", MessageType.Info);
+                HelpBox("This allows other users to be able to find your configuration for their avatars and wearables once uploaded.", MessageType.Info);
 
-                if (container.targetAvatar == null || container.targetWearable == null)
+                if (ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox)
                 {
-                    EditorGUILayout.HelpBox("Target avatar and wearable cannot be empty to access this editor.", MessageType.Error);
+                    HelpBox("Target avatar and wearable cannot be empty to access this editor.", MessageType.Error);
                 }
                 else
                 {
-                    guidReferencePrefab = (GameObject)EditorGUILayout.ObjectField("GUID Reference Prefab", guidReferencePrefab, typeof(GameObject), true);
-
-                    var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
-                    var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
-
-                    if (invalidAvatarPrefabGuid)
+                    if (IsInvalidAvatarPrefabGuid)
                     {
-                        EditorGUILayout.HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
+                        HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
                     }
+                    GameObjectField("GUID Reference Prefab", ref guidReferencePrefab_, true, TargetAvatarConfigChange);
 
-                    DTEditorUtils.ReadOnlyTextField("GUID", invalidAvatarPrefabGuid ? "(Not available)" : avatarPrefabGuid);
+                    ReadOnlyTextField("GUID", IsInvalidAvatarPrefabGuid ? "(Not available)" : AvatarPrefabGuid);
 
-                    targetAvatarConfigUseAvatarName = EditorGUILayout.ToggleLeft("Use avatar object's name", targetAvatarConfigUseAvatarName);
-                    EditorGUI.BeginDisabledGroup(targetAvatarConfigUseAvatarName);
-                    container.config.targetAvatarConfig.name = EditorGUILayout.TextField("Name", container.config.targetAvatarConfig.name);
-                    EditorGUI.EndDisabledGroup();
+                    ToggleLeft("Use avatar object's name", ref targetAvatarConfigUseAvatarObjectName_, TargetAvatarConfigChange);
+                    BeginDisabled(targetAvatarConfigUseAvatarObjectName_);
+                    {
+                        DelayedTextField("Name", ref targetAvatarConfigAvatarName_, TargetAvatarConfigChange);
+                    }
+                    EndDisabled();
 
-                    DTEditorUtils.ReadOnlyTextField("Armature Name", container.config.targetAvatarConfig.armatureName);
-                    DTEditorUtils.ReadOnlyTextField("Delta World Position", container.config.targetAvatarConfig.worldPosition.ToString());
-                    DTEditorUtils.ReadOnlyTextField("Delta World Rotation", container.config.targetAvatarConfig.worldRotation.ToString());
-                    DTEditorUtils.ReadOnlyTextField("Avatar Lossy Scale", container.config.targetAvatarConfig.avatarLossyScale.ToString());
-                    DTEditorUtils.ReadOnlyTextField("Wearable Lossy Scale", container.config.targetAvatarConfig.wearableLossyScale.ToString());
+                    ReadOnlyTextField("Armature Name", TargetAvatarConfigArmatureName);
+                    ReadOnlyTextField("Delta World Position", TargetAvatarConfigWorldPosition);
+                    ReadOnlyTextField("Delta World Rotation", TargetAvatarConfigWorldRotation);
+                    ReadOnlyTextField("Avatar Lossy Scale", TargetAvatarConfigWorldAvatarLossyScale);
+                    ReadOnlyTextField("Wearable Lossy Scale", TargetAvatarConfigWorldAvatarLossyScale);
 
-                    EditorGUILayout.HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
+                    HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
                 }
             }
-            EditorGUILayout.EndVertical();
+            EndFoldoutBox();
         }
 
         private void DrawMetaInfoGUI()
         {
-            // write info name
-            if (metaInfoUseWearableName)
+            BeginFoldoutBox(ref foldoutMetaInfo_, "Meta Information");
+            if (foldoutMetaInfo_)
             {
-                container.config.info.name = container.targetWearable?.name;
+                ReadOnlyTextField("UUID", ConfigUuid);
+
+                ToggleLeft("Use wearable object's name", ref metaInfoUseWearableObjectName_, MetaInfoChange);
+                BeginDisabled(metaInfoUseWearableObjectName_);
+                {
+                    DelayedTextField("Name", ref metaInfoWearableName_, MetaInfoChange);
+                }
+                EndDisabled();
+                DelayedTextField("Author", ref metaInfoAuthor_, MetaInfoChange);
+
+                ReadOnlyTextField("Created Time", MetaInfoCreatedTime);
+                ReadOnlyTextField("Updated Time", MetaInfoUpdatedTime);
+
+                Label("Description");
+                TextArea(ref metaInfoDescription_, MetaInfoChange);
             }
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            foldoutMetaInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutMetaInfo, "Meta Information");
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            if (foldoutMetaInfo)
-            {
-                DTEditorUtils.ReadOnlyTextField("UUID", container.config.info.uuid);
-
-                metaInfoUseWearableName = EditorGUILayout.ToggleLeft("Use wearable object's name", metaInfoUseWearableName);
-                EditorGUI.BeginDisabledGroup(metaInfoUseWearableName);
-                container.config.info.name = EditorGUILayout.TextField("Name", container.config.info.name);
-                EditorGUI.EndDisabledGroup();
-                container.config.info.author = EditorGUILayout.TextField("Author", container.config.info.author);
-
-                // attempts to parse and display the created time
-                if (DateTime.TryParse(container.config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
-                {
-                    DTEditorUtils.ReadOnlyTextField("Created Time", createdTimeDt.ToLocalTime().ToString());
-                }
-                else
-                {
-                    DTEditorUtils.ReadOnlyTextField("Created Time", "(Unable to parse date)");
-                }
-
-                // attempts to parse and display the updated time
-                if (DateTime.TryParse(container.config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
-                {
-                    DTEditorUtils.ReadOnlyTextField("Updated Time", updatedTimeDt.ToLocalTime().ToString());
-                }
-                else
-                {
-                    DTEditorUtils.ReadOnlyTextField("Updated Time", "(Unable to parse date)");
-                }
-
-                GUILayout.Label("Description");
-                container.config.info.description = EditorGUILayout.TextArea(container.config.info.description);
-            }
-            EditorGUILayout.EndVertical();
+            EndFoldoutBox();
         }
 
-        public void OnGUI()
+        public override void OnEnable()
         {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(container.targetAvatar);
+            base.OnEnable();
+            foreach (var moduleData in ModuleDataList)
+            {
+                moduleData.editor.OnEnable();
+            }
+        }
 
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            foreach (var moduleData in ModuleDataList)
+            {
+                moduleData.editor.OnDisable();
+            }
+        }
+
+        public override void OnGUI()
+        {
             DrawModulesGUI();
-            DrawAvatarConfigsGUI(cabinet);
+            DrawAvatarConfigsGUI();
             DrawMetaInfoGUI();
         }
 
-        public bool IsValid()
-        {
-            // prepare config
-            container.config.configVersion = DTWearableConfig.CurrentConfigVersion;
-
-            // TODO: multiple GUIDs
-            if (guidReferencePrefab != null || container.targetAvatar != null)
-            {
-                var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(guidReferencePrefab ?? container.targetAvatar);
-                var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
-                if (invalidAvatarPrefabGuid)
-                {
-                    if (container.config.targetAvatarConfig.guids.Length != 0)
-                    {
-                        container.config.targetAvatarConfig.guids = new string[0];
-                    }
-                }
-                else
-                {
-                    if (container.config.targetAvatarConfig.guids.Length != 1)
-                    {
-                        container.config.targetAvatarConfig.guids = new string[1];
-                    }
-                    container.config.targetAvatarConfig.guids[0] = avatarPrefabGuid;
-                }
-            }
-
-            var ready = true;
-
-            foreach (var module in container.config.modules)
-            {
-                // ask the module editor that whether the module config is valid
-                ready &= moduleEditors.TryGetValue(module, out var editor) && editor.IsValid();
-            }
-
-            return ready;
-        }
+        public bool IsValid() => presenter_.IsValid();
     }
 }

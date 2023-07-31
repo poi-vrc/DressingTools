@@ -1,33 +1,14 @@
-﻿using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.UIBase.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
-using UnityEngine;
+﻿using Chocopoi.DressingTools.UIBase.Views;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
-    internal class MainPresenter : IMainPresenter
+    internal class MainPresenter
     {
-        private IMainView mainView;
+        private IMainView view_;
 
-        public MainPresenter(IMainView mainView)
+        public MainPresenter(IMainView view)
         {
-            this.mainView = mainView;
-        }
-
-        public void StartDressingWizard()
-        {
-            // TODO: reset dressing tab?
-            mainView.SwitchTab(1);
-        }
-
-        public void AddToCabinet(DTCabinet cabinet, DTWearableConfig config, GameObject wearableGameObject)
-        {
-            DTEditorUtils.AddCabinetWearable(cabinet, config, wearableGameObject);
-
-            // TODO: reset dressing tab?
-            // return to cabinet page
-            mainView.SwitchTab(0);
+            view_ = view;
         }
     }
 }

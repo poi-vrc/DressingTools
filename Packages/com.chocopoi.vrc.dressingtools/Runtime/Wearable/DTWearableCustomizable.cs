@@ -15,9 +15,18 @@ namespace Chocopoi.DressingTools.Wearable
     public class DTWearableCustomizable
     {
         public DTWearableCustomizableType type;
-        public DTAnimationToggle[] avatarRequiredToggles;
-        public DTAnimationToggle[] wearableToggles;
-        public DTAnimationBlendshapeValue[] avatarRequiredBlendshapes;
-        public DTAnimationBlendshapeValue[] wearableBlendshapes;
+        public List<DTAnimationToggle> avatarRequiredToggles;
+        public List<DTAnimationToggle> wearableToggles;
+        public List<DTAnimationBlendshapeValue> avatarRequiredBlendshapes;
+        public List<DTAnimationBlendshapeValue> wearableBlendshapes;
+
+        public DTWearableCustomizable()
+        {
+            type = DTWearableCustomizableType.Toggle;
+            avatarRequiredToggles = new List<DTAnimationToggle>();
+            wearableToggles = new List<DTAnimationToggle>();
+            avatarRequiredBlendshapes = new List<DTAnimationBlendshapeValue>();
+            wearableBlendshapes = new List<DTAnimationBlendshapeValue>();
+        }
     }
 }

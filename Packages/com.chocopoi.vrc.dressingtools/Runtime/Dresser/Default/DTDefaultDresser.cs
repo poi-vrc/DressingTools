@@ -49,6 +49,8 @@ namespace Chocopoi.DressingTools.Dresser
             new ArmatureHook()
         };
 
+        public string FriendlyName => "Default Dresser";
+
         public DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings)
         {
             var report = new DTReport();

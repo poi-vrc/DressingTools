@@ -1,114 +1,67 @@
-﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
+﻿using System;
+using System.Collections.Generic;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Presenters;
+using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
-using Newtonsoft.Json;
-using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
-    internal class CabinetSubView : ICabinetSubView
+    internal class CabinetSubView : EditorViewBase, ICabinetSubView
     {
-        private CabinetPresenter cabinetPresenter;
+        public event Action CreateCabinetButtonClick;
+        public event Action AddWearableButtonClick;
 
-        private IMainPresenter mainPresenter;
+        public bool ShowCreateCabinetWizard { get; set; }
+        public bool ShowCabinetWearables { get; set; }
+        public int SelectedCabinetIndex { get => selectedCabinetIndex_; set => selectedCabinetIndex_ = value; }
+        public string[] AvailableCabinetSelections { get; set; }
+        public GameObject CabinetAvatarGameObject { get => cabinetAvatarGameObject_; set => cabinetAvatarGameObject_ = value; }
+        public string CabinetAvatarArmatureName { get => cabinetAvatarArmatureName_; set => cabinetAvatarArmatureName_ = value; }
+        public List<WearablePreview> WearablePreviews { get; set; }
+        public GameObject SelectedCreateCabinetGameObject { get => selectedCreateCabinetGameObject_; }
 
-        private GameObject selectedCreateCabinetGameObject;
+        private CabinetPresenter cabinetPresenter_;
+        private GameObject selectedCreateCabinetGameObject_;
+        private int selectedCabinetIndex_;
+        private GameObject cabinetAvatarGameObject_;
+        private string cabinetAvatarArmatureName_;
 
-        private int selectedCabinetIndex;
-
-        private Dictionary<DTCabinetWearable, DTWearableConfig> deserializedConfigCache;
-
-        public CabinetSubView(IMainView mainView, IMainPresenter mainPresenter)
+        public CabinetSubView(IMainView mainView)
         {
-            cabinetPresenter = new CabinetPresenter(this);
-            this.mainPresenter = mainPresenter;
-            deserializedConfigCache = new Dictionary<DTCabinetWearable, DTWearableConfig>();
+            cabinetPresenter_ = new CabinetPresenter(this);
+            selectedCabinetIndex_ = 0;
+
+            ShowCreateCabinetWizard = false;
+            ShowCabinetWearables = false;
+            AvailableCabinetSelections = new string[0];
+            WearablePreviews = new List<WearablePreview>();
         }
 
-        public void ResetAllDeserializedConfigCache()
+        public override void OnGUI()
         {
-            deserializedConfigCache.Clear();
-        }
-
-        public void OnGUI()
-        {
-            // TODO: beautify UI, now it's so simplified for functionality development
-
-            var cabinets = DTEditorUtils.GetAllCabinets();
-
-            if (cabinets.Length == 0)
+            if (ShowCreateCabinetWizard)
             {
-                GUILayout.Label("There are no existing cabinets. Create one below for your avatar:");
-                selectedCreateCabinetGameObject = (GameObject)EditorGUILayout.ObjectField("Avatar", selectedCreateCabinetGameObject, typeof(GameObject), true);
-                if (GUILayout.Button("Create cabinet") && selectedCreateCabinetGameObject != null)
-                {
-                    DTEditorUtils.GetAvatarCabinet(selectedCreateCabinetGameObject, true);
-                }
-                return;
+                Label("There are no existing cabinets. Create one below for your avatar:");
+                GameObjectField("Avatar", ref selectedCreateCabinetGameObject_, true);
+                Button("Create cabinet", CreateCabinetButtonClick);
             }
 
-            // create dropdown menu for cabinet selection
-            string[] cabinetOptions = new string[cabinets.Length];
-            for (var i = 0; i < cabinets.Length; i++)
+            if (ShowCabinetWearables)
             {
-                cabinetOptions[i] = cabinets[i].avatarGameObject != null ? cabinets[i].avatarGameObject.name : string.Format("Cabinet {0} (No GameObject Attached)", i + 1);
-            }
-            selectedCabinetIndex = EditorGUILayout.Popup("Cabinet", selectedCabinetIndex, cabinetOptions);
+                // create dropdown menu for cabinet selection
+                Popup("Cabinet", ref selectedCabinetIndex_, AvailableCabinetSelections);
 
-            var cabinet = cabinets[selectedCabinetIndex];
+                GameObjectField("Avatar", ref cabinetAvatarGameObject_, true);
+                TextField("Armature Name", ref cabinetAvatarArmatureName_);
 
-            cabinet.avatarGameObject = (GameObject)EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
-            cabinet.avatarArmatureName = EditorGUILayout.TextField("Armature Name", cabinet.avatarArmatureName);
-
-            var wearablesToRemove = new List<DTCabinetWearable>();
-            var wearables = cabinet.GetWearables();
-
-            foreach (var wearable in wearables)
-            {
-                DTWearableConfig config = null;
-
-                // TODO: when to clear deserialization cache?
-                if (!deserializedConfigCache.ContainsKey(wearable))
+                foreach (var preview in WearablePreviews)
                 {
-                    if (wearable.configJson != null)
-                    {
-                        config = JsonConvert.DeserializeObject<DTWearableConfig>(wearable.configJson);
-                        deserializedConfigCache.Add(wearable, config);
-                    }
-                }
-                else
-                {
-                    config = deserializedConfigCache[wearable];
+                    Label(preview.name);
+                    Button("Remove", preview.RemoveButtonClick);
                 }
 
-                if (config == null)
-                {
-                    EditorGUILayout.HelpBox("Unable to load one of the wearable configuration!", MessageType.Error);
-                }
-                else
-                {
-                    GUILayout.Label(string.Format("{0} ({1})", config.info.name, config.info.uuid));
-                }
-                if (GUILayout.Button("Remove"))
-                {
-                    wearablesToRemove.Add(wearable);
-                }
-            }
-
-            // remove all pending wearable in list
-            foreach (var wearable in wearablesToRemove)
-            {
-                DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);
-            }
-
-            if (GUILayout.Button("Add Wearable"))
-            {
-                // start dressing
-                mainPresenter.StartDressingWizard();
+                Button("Add Wearable", AddWearableButtonClick);
             }
         }
     }

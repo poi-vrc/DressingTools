@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Chocopoi.DressingTools.Dresser
 {
     public class DresserRegistry
     {
-        private static readonly Dictionary<string, IDTDresser> dressers = new Dictionary<string, IDTDresser>()
+        private static readonly List<IDTDresser> dressers = new List<IDTDresser>()
         {
-            { "Default", new DTDefaultDresser() }
+            new DTDefaultDresser()
         };
 
         public static IDTDresser GetDresserByTypeName(string name)
         {
-            foreach (var dresser in dressers.Values)
+            foreach (var dresser in dressers)
             {
                 var type = dresser.GetType();
                 if (name == type.FullName || name == type.Name)
@@ -24,15 +25,32 @@ namespace Chocopoi.DressingTools.Dresser
 
         public static string[] GetAvailableDresserKeys()
         {
-            string[] dresserKeys = new string[dressers.Keys.Count];
-            dressers.Keys.CopyTo(dresserKeys, 0);
+            string[] dresserKeys = new string[dressers.Count];
+            for (var i = 0; i < dressers.Count; i++)
+            {
+                dresserKeys[i] = dressers[i].FriendlyName;
+            }
             return dresserKeys;
+        }
+
+        public static IDTDresser GetDresserByIndex(int index) => dressers[index];
+
+        public static int GetDresserKeyIndexByTypeName(string name)
+        {
+            for (var i = 0; i < dressers.Count; i++)
+            {
+                var type = dressers[i].GetType();
+                if (name == type.FullName || name == type.Name)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public static IDTDresser GetDresserByName(string name)
         {
-            dressers.TryGetValue(name, out var dresser);
-            return dresser;
+            return dressers.FirstOrDefault(d => d.FriendlyName == name);
         }
     }
 }

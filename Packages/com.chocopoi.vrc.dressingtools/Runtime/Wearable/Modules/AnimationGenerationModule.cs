@@ -25,13 +25,13 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public DTAnimationPreset wearableAnimationOnWear;
 
-        public DTWearableCustomizable[] wearableCustomizables; // items that show up in action menu for customization
+        public List<DTWearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
 
         public AnimationGenerationModule()
         {
             avatarAnimationOnWear = new DTAnimationPreset();
             wearableAnimationOnWear = new DTAnimationPreset();
-            wearableCustomizables = new DTWearableCustomizable[0];
+            wearableCustomizables = new List<DTWearableCustomizable>();
         }
 
         public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)

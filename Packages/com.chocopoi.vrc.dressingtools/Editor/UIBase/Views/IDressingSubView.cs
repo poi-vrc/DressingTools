@@ -1,7 +1,14 @@
-﻿namespace Chocopoi.DressingTools.UIBase.Views
+﻿using System;
+
+namespace Chocopoi.DressingTools.UIBase.Views
 {
-    internal interface IDressingSubView
+    internal interface IDressingSubView : IEditorView, IWearableConfigViewParent
     {
-        void OnGUI();
+        event Action AddToCabinetButtonClick;
+        bool ShowAvatarNoExistingCabinetHelpbox { get; set; }
+        bool DisableAllButtons { get; set; }
+        bool DisableAddToCabinetButton { get; set; }
+
+        void ForceUpdateConfigView();
     }
 }

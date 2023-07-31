@@ -14,7 +14,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     {
         private const string ModuleTypeKey = "$dtModuleType";
 
-        public override bool CanConvert(Type objectType) => objectType == typeof(DTWearableModuleBase) || objectType == typeof(IEnumerable<DTWearableModuleBase>);
+        public override bool CanConvert(Type objectType) => objectType == typeof(DTWearableModuleBase) || objectType == typeof(List<DTWearableModuleBase>);
 
         private static JObject GetJsonWithModuleType(DTWearableModuleBase module)
         {
@@ -30,7 +30,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 // single
                 GetJsonWithModuleType(singleModule).WriteTo(writer);
             }
-            else if (value is IEnumerable<DTWearableModuleBase> modules)
+            else if (value is List<DTWearableModuleBase> modules)
             {
                 var arr = new JArray();
                 // array
@@ -73,10 +73,10 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             else if (token.Type == JTokenType.Array)
             {
                 var arr = (JArray)token;
-                var output = new DTWearableModuleBase[arr.Count];
-                for (var i = 0; i < output.Length; i++)
+                var output = new List<DTWearableModuleBase>();
+                for (var i = 0; i < arr.Count; i++)
                 {
-                    output[i] = GetModuleFromJson((JObject)arr[i]);
+                    output.Add(GetModuleFromJson((JObject)arr[i]));
                 }
                 return output;
             }

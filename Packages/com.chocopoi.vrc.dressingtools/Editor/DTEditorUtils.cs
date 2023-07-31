@@ -8,18 +8,13 @@ namespace Chocopoi.DressingTools
     public class DTEditorUtils
     {
         //Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
-        public static void DrawHorizontalLine(int i_height = 1)
+        public static void DrawHorizontalLine(int height = 1)
         {
             EditorGUILayout.Separator();
-            var rect = EditorGUILayout.GetControlRect(false, i_height);
-            rect.height = i_height;
+            var rect = EditorGUILayout.GetControlRect(false, height);
+            rect.height = height;
             EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
             EditorGUILayout.Separator();
-        }
-
-        public static DTCabinet[] GetAllCabinets()
-        {
-            return Object.FindObjectsOfType<DTCabinet>();
         }
 
         public static void ReadOnlyTextField(string label, string text)
@@ -30,6 +25,11 @@ namespace Chocopoi.DressingTools
                 EditorGUILayout.SelectableLabel(text, GUILayout.Height(EditorGUIUtility.singleLineHeight));
             }
             EditorGUILayout.EndHorizontal();
+        }
+
+        public static DTCabinet[] GetAllCabinets()
+        {
+            return Object.FindObjectsOfType<DTCabinet>();
         }
 
         public static string GetGameObjectOriginalPrefabGuid(GameObject obj)

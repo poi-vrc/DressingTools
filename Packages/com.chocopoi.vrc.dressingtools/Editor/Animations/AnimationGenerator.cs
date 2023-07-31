@@ -177,10 +177,10 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar toggles
-            GenerateAvatarToggleAnimations(enableClip, disableClip, module.avatarAnimationOnWear.toggles, writeDefaults);
+            GenerateAvatarToggleAnimations(enableClip, disableClip, module.avatarAnimationOnWear.toggles.ToArray(), writeDefaults);
 
             // wearable toggles
-            GenerateWearableToggleAnimations(enableClip, disableClip, module.wearableAnimationOnWear.toggles, writeDefaults);
+            GenerateWearableToggleAnimations(enableClip, disableClip, module.wearableAnimationOnWear.toggles.ToArray(), writeDefaults);
 
             // dynamics
             var visitedDynamicsTransforms = new List<Transform>();
@@ -209,10 +209,10 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar blendshapes
-            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, module.avatarAnimationOnWear.blendshapes, writeDefaults);
+            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, module.avatarAnimationOnWear.blendshapes.ToArray(), writeDefaults);
 
             // wearable blendshapes
-            GenerateWearableBlendshapeAnimations(enableClip, disableClip, module.wearableAnimationOnWear.blendshapes, writeDefaults);
+            GenerateWearableBlendshapeAnimations(enableClip, disableClip, module.wearableAnimationOnWear.blendshapes.ToArray(), writeDefaults);
 
             return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
@@ -235,16 +235,16 @@ namespace Chocopoi.DressingTools.Animations
                 if (customizable.type == DTWearableCustomizableType.Toggle)
                 {
                     // avatar required toggles
-                    GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarRequiredToggles, writeDefaults);
+                    GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarRequiredToggles.ToArray(), writeDefaults);
 
                     // avatar required blendshapes
-                    GenerateAvatarBlendshapeAnimations(enableClip, disableClip, customizable.avatarRequiredBlendshapes, writeDefaults);
+                    GenerateAvatarBlendshapeAnimations(enableClip, disableClip, customizable.avatarRequiredBlendshapes.ToArray(), writeDefaults);
 
                     // wearable required blendshapes
-                    GenerateWearableBlendshapeAnimations(enableClip, disableClip, customizable.wearableBlendshapes, writeDefaults);
+                    GenerateWearableBlendshapeAnimations(enableClip, disableClip, customizable.wearableBlendshapes.ToArray(), writeDefaults);
 
                     // wearable toggle
-                    GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles, writeDefaults);
+                    GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray(), writeDefaults);
                 }
                 else if (customizable.type == DTWearableCustomizableType.Blendshape)
                 {

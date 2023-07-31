@@ -1,8 +1,6 @@
 ﻿namespace Chocopoi.DressingTools.UIBase.Views
 {
-    internal interface IMainView
+    internal interface IMainView : IEditorView
     {
-        void OnGUI();
-        void SwitchTab(int tab);
     }
 }

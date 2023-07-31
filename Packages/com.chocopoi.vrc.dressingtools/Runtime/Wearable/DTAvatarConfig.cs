@@ -93,7 +93,7 @@ namespace Chocopoi.DressingTools.Wearable
     [Serializable]
     public class DTAvatarConfig
     {
-        public string[] guids;
+        public List<string> guids;
         public string name;
         public string armatureName;
         public DTAvatarConfigVector3 worldPosition;
@@ -103,7 +103,7 @@ namespace Chocopoi.DressingTools.Wearable
 
         public DTAvatarConfig()
         {
-            guids = new string[0];
+            guids = new List<string>();
             worldPosition = new DTAvatarConfigVector3(0, 0, 0);
             worldRotation = new DTAvatarConfigQuaternion(0, 0, 0, 0);
             avatarLossyScale = new DTAvatarConfigVector3(0, 0, 0);
@@ -114,8 +114,7 @@ namespace Chocopoi.DressingTools.Wearable
         public DTAvatarConfig(DTAvatarConfig toCopy)
         {
             // deep copy
-            guids = new string[toCopy.guids.Length];
-            toCopy.guids.CopyTo(guids, 0);
+            guids = new List<string>(toCopy.guids);
 
             worldPosition = new DTAvatarConfigVector3(toCopy.worldPosition);
             worldRotation = new DTAvatarConfigQuaternion(toCopy.worldRotation);

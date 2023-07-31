@@ -1,21 +1,12 @@
-﻿using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UI.Views;
-using Chocopoi.DressingTools.UIBase.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
+﻿using Chocopoi.DressingTools.UI.View;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
-    public class DTMainEditorWindow : EditorWindow, IMainView
+    public class DTMainEditorWindow : EditorWindow
     {
-        private IMainPresenter mainPresenter;
-
-        private ICabinetSubView cabinetSubView;
-        private IDressingSubView dressingSubView;
-        private ISettingsSubView settingsSubView;
-
-        private int selectedTab;
+        private MainView view_;
 
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void ShowWindow()
@@ -27,36 +18,22 @@ namespace Chocopoi.DressingTools.UI
 
         public DTMainEditorWindow()
         {
-            mainPresenter = new MainPresenter(this);
-            cabinetSubView = new CabinetSubView(this, mainPresenter);
-            dressingSubView = new DressingSubView(this, mainPresenter);
-            settingsSubView = new SettingsSubView(this, mainPresenter);
+            view_ = new MainView();
         }
 
-        public void SwitchTab(int tab)
+        public void OnEnable()
         {
-            selectedTab = tab;
+            view_.OnEnable();
+        }
+
+        public void OnDisable()
+        {
+            view_.OnDisable();
         }
 
         public void OnGUI()
         {
-            // show the tool logo
-            DTLogo.Show();
-
-            // tool tabs
-            selectedTab = GUILayout.Toolbar(selectedTab, new string[] { "Cabinet", "Dressing", "Settings" });
-            if (selectedTab == 0)
-            {
-                cabinetSubView.OnGUI();
-            }
-            else if (selectedTab == 1)
-            {
-                dressingSubView.OnGUI();
-            }
-            else if (selectedTab == 2)
-            {
-                settingsSubView.OnGUI();
-            }
+            view_.OnGUI();
         }
     }
 }

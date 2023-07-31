@@ -7,13 +7,13 @@ namespace Chocopoi.DressingTools.Wearable
     [Serializable]
     public class DTAnimationPreset
     {
-        public DTAnimationToggle[] toggles;
-        public DTAnimationBlendshapeValue[] blendshapes;
+        public List<DTAnimationToggle> toggles;
+        public List<DTAnimationBlendshapeValue> blendshapes;
 
         public DTAnimationPreset()
         {
-            toggles = new DTAnimationToggle[0];
-            blendshapes = new DTAnimationBlendshapeValue[0];
+            toggles = new List<DTAnimationToggle>();
+            blendshapes = new List<DTAnimationBlendshapeValue>();
         }
     }
 }

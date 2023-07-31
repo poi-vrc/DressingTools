@@ -1,5 +1,6 @@
-﻿using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Presenters;
+﻿using System;
+using Chocopoi.DressingTools.UI.Presenters;
+using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
 using UnityEditor;
@@ -7,56 +8,84 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
-    internal class DressingSubView : IDressingSubView
+    internal class DressingSubView : EditorViewBase, IDressingSubView, IWearableConfigViewParent
     {
-        private IMainPresenter mainPresenter;
+        private DressingPresenter presenter_;
 
-        private DressingPresenter dressingPresenter;
+        public event Action TargetAvatarOrWearableChange;
+        public event Action AddToCabinetButtonClick;
+        public GameObject TargetAvatar { get => targetAvatar_; set => targetAvatar_ = value; }
+        public GameObject TargetWearable { get => targetWearable_; set => targetWearable_ = value; }
+        public DTWearableConfig Config { get; set; }
+        public bool ShowAvatarNoExistingCabinetHelpbox { get; set; }
+        public bool DisableAllButtons { get; set; }
+        public bool DisableAddToCabinetButton { get; set; }
 
-        private WearableConfigViewContainer wearableConfigViewSettings;
+        private GameObject targetAvatar_;
+        private GameObject targetWearable_;
+        private WearableConfigView configView_;
 
-        private WearableConfigView wearableConfigView;
-
-        public DressingSubView(IMainView mainView, IMainPresenter mainPresenter)
+        public DressingSubView(IMainView mainView)
         {
-            this.mainPresenter = mainPresenter;
-            dressingPresenter = new DressingPresenter(this);
-            wearableConfigViewSettings = new WearableConfigViewContainer
-            {
-                config = new DTWearableConfig()
-            };
-            wearableConfigView = new WearableConfigView(wearableConfigViewSettings);
+            presenter_ = new DressingPresenter(this);
+
+            targetAvatar_ = null;
+            targetWearable_ = null;
+
+            ShowAvatarNoExistingCabinetHelpbox = true;
+            DisableAllButtons = true;
+            DisableAddToCabinetButton = true;
+            Config = new DTWearableConfig();
+
+            configView_ = new WearableConfigView(this);
         }
 
-        public void OnGUI()
+        public void ForceUpdateConfigView()
         {
-            // TODO: beautify UI
-            wearableConfigViewSettings.targetAvatar = (GameObject)EditorGUILayout.ObjectField("Avatar", wearableConfigViewSettings.targetAvatar, typeof(GameObject), true);
+            // force update the config view
+            configView_.RaiseForceUpdateView();
+        }
 
-            var cabinet = DTEditorUtils.GetAvatarCabinet(wearableConfigViewSettings.targetAvatar);
-            if (cabinet == null)
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            configView_.OnEnable();
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            configView_.OnDisable();
+        }
+
+        public override void OnGUI()
+        {
+            GameObjectField("Avatar", ref targetAvatar_, true, TargetAvatarOrWearableChange);
+
+            if (ShowAvatarNoExistingCabinetHelpbox)
             {
-                EditorGUILayout.HelpBox("The selected avatar has no existing cabinet.", MessageType.Error);
+                HelpBox("The selected avatar has no existing cabinet.", MessageType.Error);
             }
 
-            wearableConfigViewSettings.targetWearable = (GameObject)EditorGUILayout.ObjectField("Wearable", wearableConfigViewSettings.targetWearable, typeof(GameObject), true);
+            GameObjectField("Wearable", ref targetWearable_, true, TargetAvatarOrWearableChange);
 
-            wearableConfigView.OnGUI();
+            configView_.OnGUI();
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(!wearableConfigView.IsValid());
-            EditorGUI.BeginDisabledGroup(cabinet == null);
-            if (GUILayout.Button("Add to cabinet"))
+            BeginHorizontal();
             {
-                mainPresenter.AddToCabinet(cabinet, wearableConfigViewSettings.config, wearableConfigViewSettings.targetWearable);
-            }
-            EditorGUI.EndDisabledGroup();
-            if (GUILayout.Button("Save to file"))
-            {
+                BeginDisabled(!configView_.IsValid());
+                {
+                    BeginDisabled(DisableAddToCabinetButton);
+                    {
+                        Button("Add to cabinet", AddToCabinetButtonClick);
+                    }
+                    EndDisabled();
 
+                    Button("Save to file");
+                }
+                EndDisabled();
             }
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndHorizontal();
+            EndHorizontal();
         }
     }
 }
