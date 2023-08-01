@@ -62,7 +62,8 @@ namespace Chocopoi.DressingTools.UI.Views
                 GameObjectField("Avatar", ref _cabinetAvatarGameObject, true);
                 TextField("Armature Name", ref _cabinetAvatarArmatureName);
 
-                foreach (var preview in WearablePreviews)
+                var copy = new List<WearablePreview>(WearablePreviews);
+                foreach (var preview in copy)
                 {
                     Label(preview.name);
                     Button("Remove", preview.RemoveButtonClick);
