@@ -21,12 +21,14 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool DisableAllButtons { get; set; }
         public bool DisableAddToCabinetButton { get; set; }
 
+        private IMainView mainView_;
         private GameObject targetAvatar_;
         private GameObject targetWearable_;
         private WearableConfigView configView_;
 
         public DressingSubView(IMainView mainView)
         {
+            mainView_ = mainView;
             presenter_ = new DressingPresenter(this);
 
             targetAvatar_ = null;
@@ -40,8 +42,18 @@ namespace Chocopoi.DressingTools.UI.Views
             configView_ = new WearableConfigView(this);
         }
 
-        public void ForceUpdateConfigView()
+        public void SelectTab(int selectedTab)
         {
+            mainView_.SelectedTab = selectedTab;
+        }
+
+        public void ResetConfigView()
+        {
+            // reset parameters
+            TargetAvatar = null;
+            TargetWearable = null;
+            Config = new DTWearableConfig();
+
             // force update the config view
             configView_.RaiseForceUpdateView();
         }

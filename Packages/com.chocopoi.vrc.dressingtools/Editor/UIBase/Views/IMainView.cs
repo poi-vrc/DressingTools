@@ -2,5 +2,6 @@
 {
     internal interface IMainView : IEditorView
     {
+        int SelectedTab { get; set; }
     }
 }

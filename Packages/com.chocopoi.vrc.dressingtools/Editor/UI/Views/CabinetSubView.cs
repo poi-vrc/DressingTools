@@ -21,6 +21,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public List<WearablePreview> WearablePreviews { get; set; }
         public GameObject SelectedCreateCabinetGameObject { get => selectedCreateCabinetGameObject_; }
 
+        private IMainView mainView_;
         private CabinetPresenter cabinetPresenter_;
         private GameObject selectedCreateCabinetGameObject_;
         private int selectedCabinetIndex_;
@@ -29,6 +30,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public CabinetSubView(IMainView mainView)
         {
+            mainView_ = mainView;
             cabinetPresenter_ = new CabinetPresenter(this);
             selectedCabinetIndex_ = 0;
 
@@ -36,6 +38,11 @@ namespace Chocopoi.DressingTools.UI.Views
             ShowCabinetWearables = false;
             AvailableCabinetSelections = new string[0];
             WearablePreviews = new List<WearablePreview>();
+        }
+
+        public void SelectTab(int selectedTab)
+        {
+            mainView_.SelectedTab = selectedTab;
         }
 
         public override void OnGUI()

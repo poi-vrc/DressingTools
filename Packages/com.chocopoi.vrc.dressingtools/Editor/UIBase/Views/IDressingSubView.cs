@@ -9,6 +9,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool DisableAllButtons { get; set; }
         bool DisableAddToCabinetButton { get; set; }
 
-        void ForceUpdateConfigView();
+        void SelectTab(int selectedTab);
+        void ResetConfigView();
     }
 }

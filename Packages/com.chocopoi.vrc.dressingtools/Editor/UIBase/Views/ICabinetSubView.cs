@@ -23,5 +23,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         string CabinetAvatarArmatureName { get; set; }
         List<WearablePreview> WearablePreviews { get; set; }
         GameObject SelectedCreateCabinetGameObject { get; }
+
+        void SelectTab(int selectedTab);
     }
 }

@@ -99,6 +99,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnAddWearableButtonClick()
         {
             // TODO: start dressing wizard
+            view_.SelectTab(1);
         }
 
         private void OnCreateCabinetButtonClick()

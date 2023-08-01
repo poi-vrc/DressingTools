@@ -7,8 +7,9 @@ namespace Chocopoi.DressingTools.UI.View
 {
     internal class MainView : EditorViewBase, IMainView
     {
-        private MainPresenter presenter_;
+        public int SelectedTab { get => selectedTab_; set => selectedTab_ = value; }
 
+        private MainPresenter presenter_;
         private ICabinetSubView cabinetSubView_;
         private IDressingSubView dressingSubView_;
         private ISettingsSubView settingsSubView_;

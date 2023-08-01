@@ -66,11 +66,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             DTEditorUtils.AddCabinetWearable(cabinet, view_.Config, view_.TargetWearable);
 
-            // reset
-            view_.TargetAvatar = null;
-            view_.TargetWearable = null;
-            view_.Config = new DTWearableConfig();
-            view_.ForceUpdateConfigView();
+            // reset and return
+            view_.ResetConfigView();
+            view_.SelectTab(0);
         }
     }
 }
