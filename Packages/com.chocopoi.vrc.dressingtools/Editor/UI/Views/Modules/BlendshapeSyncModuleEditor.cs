@@ -18,11 +18,11 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
         public List<BlendshapeSyncData> BlendshapeSyncs { get; set; }
 
-        private BlendshapeSyncModuleEditorPresenter presenter_;
+        private BlendshapeSyncModuleEditorPresenter _presenter;
 
         public BlendshapeSyncModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
         {
-            presenter_ = new BlendshapeSyncModuleEditorPresenter(this, configView, (BlendshapeSyncModule)target);
+            _presenter = new BlendshapeSyncModuleEditorPresenter(this, configView, (BlendshapeSyncModule)target);
 
             ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
             BlendshapeSyncs = new List<BlendshapeSyncData>();

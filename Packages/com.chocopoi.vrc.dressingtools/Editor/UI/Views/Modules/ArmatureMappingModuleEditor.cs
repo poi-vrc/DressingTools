@@ -14,7 +14,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { configView_.TargetAvatarOrWearableChange += value; } remove { configView_.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
         public event Action DresserChange;
         public event Action AvatarArmatureNameChange;
         public event Action DresserSettingsChange;
@@ -24,23 +24,23 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public ReportData DresserReportData { get; set; }
         public DTDresserSettings DresserSettings { get; set; }
         public string[] AvailableDresserKeys { get; set; }
-        public int SelectedDresserIndex { get => selectedDresserIndex_; set => selectedDresserIndex_ = value; }
+        public int SelectedDresserIndex { get => _selectedDresserIndex; set => _selectedDresserIndex = value; }
         public bool IsAvatarAssociatedWithCabinet { get; set; }
-        public string AvatarArmatureName { get => avatarArmatureName_; set => avatarArmatureName_ = value; }
+        public string AvatarArmatureName { get => _avatarArmatureName; set => _avatarArmatureName = value; }
 
-        private ArmatureMappingModuleEditorPresenter presenter_;
-        private IWearableConfigView configView_;
-        private int selectedDresserIndex_;
-        private string avatarArmatureName_;
-        private bool foldoutDresserReportLogEntries_;
+        private ArmatureMappingModuleEditorPresenter _presenter;
+        private IWearableConfigView _configView;
+        private int _selectedDresserIndex;
+        private string _avatarArmatureName;
+        private bool _foldoutDresserReportLogEntries;
 
         public ArmatureMappingModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
         {
-            configView_ = configView;
-            presenter_ = new ArmatureMappingModuleEditorPresenter(this, configView, (ArmatureMappingModule)target);
-            selectedDresserIndex_ = 0;
-            avatarArmatureName_ = null;
-            foldoutDresserReportLogEntries_ = true;
+            _configView = configView;
+            _presenter = new ArmatureMappingModuleEditorPresenter(this, configView, (ArmatureMappingModule)target);
+            _selectedDresserIndex = 0;
+            _avatarArmatureName = null;
+            _foldoutDresserReportLogEntries = true;
 
             DresserReportData = null;
             DresserSettings = null;
@@ -75,8 +75,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 }
                 EndHorizontal();
 
-                BeginFoldoutBox(ref foldoutDresserReportLogEntries_, "Logs");
-                if (foldoutDresserReportLogEntries_)
+                BeginFoldoutBox(ref _foldoutDresserReportLogEntries, "Logs");
+                if (_foldoutDresserReportLogEntries)
                 {
                     foreach (var msg in DresserReportData.errorMsgs)
                     {
@@ -104,7 +104,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public override void OnGUI()
         {
             // list all available dressers
-            Popup("Dressers", ref selectedDresserIndex_, AvailableDresserKeys, DresserChange);
+            Popup("Dressers", ref _selectedDresserIndex, AvailableDresserKeys, DresserChange);
 
             if (IsAvatarAssociatedWithCabinet)
             {
@@ -112,7 +112,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             }
             BeginDisabled(IsAvatarAssociatedWithCabinet);
             {
-                DelayedTextField("Avatar Armature Name", ref avatarArmatureName_, AvatarArmatureNameChange);
+                DelayedTextField("Avatar Armature Name", ref _avatarArmatureName, AvatarArmatureNameChange);
             }
             EndDisabled();
 
@@ -161,6 +161,6 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             DrawDresserReportGUI();
         }
 
-        public override bool IsValid() => presenter_.IsValid();
+        public override bool IsValid() => _presenter.IsValid();
     }
 }

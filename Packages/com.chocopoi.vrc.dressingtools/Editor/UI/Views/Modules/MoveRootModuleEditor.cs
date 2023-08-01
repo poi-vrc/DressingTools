@@ -13,20 +13,20 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { configView_.TargetAvatarOrWearableChange += value; } remove { configView_.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
         public event Action MoveToGameObjectFieldChange;
         public bool ShowSelectAvatarFirstHelpBox { get; set; }
         public bool IsGameObjectInvalid { get; set; }
-        public GameObject MoveToGameObject { get => moveToGameObject_; set => moveToGameObject_ = value; }
+        public GameObject MoveToGameObject { get => _moveToGameObject; set => _moveToGameObject = value; }
 
-        private MoveRootModuleEditorPresenter presenter_;
-        private IWearableConfigView configView_;
-        private GameObject moveToGameObject_;
+        private MoveRootModuleEditorPresenter _presenter;
+        private IWearableConfigView _configView;
+        private GameObject _moveToGameObject;
 
         public MoveRootModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
         {
-            configView_ = configView;
-            presenter_ = new MoveRootModuleEditorPresenter(this, configView, (MoveRootModule)target);
+            _configView = configView;
+            _presenter = new MoveRootModuleEditorPresenter(this, configView, (MoveRootModule)target);
             ShowSelectAvatarFirstHelpBox = true;
             IsGameObjectInvalid = true;
         }
@@ -43,7 +43,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 {
                     HelpBox("The selected GameObject is not inside the avatar.", MessageType.Error);
                 }
-                GameObjectField("Move To", ref moveToGameObject_, true, MoveToGameObjectFieldChange);
+                GameObjectField("Move To", ref _moveToGameObject, true, MoveToGameObjectFieldChange);
             }
         }
 

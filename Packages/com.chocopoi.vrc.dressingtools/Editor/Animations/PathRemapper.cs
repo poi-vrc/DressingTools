@@ -8,7 +8,7 @@ namespace Chocopoi.DressingTools.Animations
 {
     public class PathRemapper
     {
-        private Dictionary<GameObject, string> objectOriginalPaths;
+        private Dictionary<GameObject, string> _objectOriginalPaths;
 
         public PathRemapper(GameObject avatarRoot)
         {

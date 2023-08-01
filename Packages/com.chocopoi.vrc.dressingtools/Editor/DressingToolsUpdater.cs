@@ -42,27 +42,27 @@ namespace Chocopoi.DressingTools
             public int[] versionNumbers;
         }
 
-        private static readonly int SupportedManifestVersion = 1;
+        private const int SupportedManifestVersion = 1;
 
-        private static readonly string ManifestJsonUrl = "https://poi-vrc.github.io/DressingTools/updater_manifest.json";
+        private const string ManifestJsonUrl = "https://poi-vrc.github.io/DressingTools/updater_manifest.json";
 
-        private static Manifest manifest = null;
+        private static Manifest s_manifest = null;
 
-        private static ParsedVersion currentVersion = null;
+        private static ParsedVersion s_currentVersion = null;
 
-        private static bool checkingUpdate = false;
+        private static bool s_checkingUpdate = false;
 
-        private static DateTime lastUpdateCheckTime = DateTime.MinValue;
+        private static DateTime s_lastUpdateCheckTime = DateTime.MinValue;
 
-        private static bool lastUpdateCheckErrored = false;
+        private static bool s_lastUpdateCheckErrored = false;
 
-        private static bool branchNotFoundWarningSent = false;
+        private static bool s_branchNotFoundWarningSent = false;
 
         public static ParsedVersion GetCurrentVersion()
         {
-            if (currentVersion != null)
+            if (s_currentVersion != null)
             {
-                return currentVersion;
+                return s_currentVersion;
             }
 
             try
@@ -79,7 +79,7 @@ namespace Chocopoi.DressingTools
                     return null;
                 }
 
-                return currentVersion = ParseVersionString(packageJson.Value<string>("version"));
+                return s_currentVersion = ParseVersionString(packageJson.Value<string>("version"));
             }
             catch (Exception e)
             {
@@ -90,21 +90,21 @@ namespace Chocopoi.DressingTools
 
         public static bool IsUpdateChecked()
         {
-            return manifest != null || (DateTime.Now - lastUpdateCheckTime).TotalMinutes <= 5;
+            return s_manifest != null || (DateTime.Now - s_lastUpdateCheckTime).TotalMinutes <= 5;
         }
 
         public static bool IsLastUpdateCheckErrored()
         {
-            return lastUpdateCheckErrored;
+            return s_lastUpdateCheckErrored;
         }
 
         public static void FetchOnlineVersion(Action<Manifest> callback)
         {
-            if (checkingUpdate)
+            if (s_checkingUpdate)
             {
                 return;
             }
-            checkingUpdate = true;
+            s_checkingUpdate = true;
 
             new Thread(() =>
             {
@@ -116,41 +116,41 @@ namespace Chocopoi.DressingTools
                     var reader = new StreamReader(response.GetResponseStream());
                     var json = reader.ReadToEnd();
 
-                    manifest = JsonUtility.FromJson<Manifest>(json);
+                    s_manifest = JsonUtility.FromJson<Manifest>(json);
 
-                    if (manifest.info.compat_version > SupportedManifestVersion)
+                    if (s_manifest.info.compat_version > SupportedManifestVersion)
                     {
-                        manifest = null;
+                        s_manifest = null;
                         Debug.LogError("[DressingTools] This DressingTools update checker is too old and does not support the online updater manifest. Please download the latest version to check updates.");
                         EditorUtility.DisplayDialog("DressingTools", "This DressingTools update checker is too old and does not support the online updater manifest. Please download the latest version to check updates.", "OK");
-                        lastUpdateCheckErrored = true;
+                        s_lastUpdateCheckErrored = true;
                     }
 
-                    callback?.Invoke(manifest);
+                    callback?.Invoke(s_manifest);
                 }
                 catch (Exception e)
                 {
                     Debug.LogError("[DressingTools] Check update failed: " + e.Message);
-                    lastUpdateCheckErrored = true;
+                    s_lastUpdateCheckErrored = true;
                 }
 
-                lastUpdateCheckTime = DateTime.Now;
-                checkingUpdate = false;
+                s_lastUpdateCheckTime = DateTime.Now;
+                s_checkingUpdate = false;
             }).Start();
         }
 
         public static ManifestBranch GetManifestBranch(string branchName)
         {
-            if (manifest == null)
+            if (s_manifest == null)
             {
                 throw new Exception("Online updater manifest has not been loaded.");
             }
 
-            for (var i = 0; i < manifest.branches.Length; i++)
+            for (var i = 0; i < s_manifest.branches.Length; i++)
             {
-                if (manifest.branches[i].name == branchName)
+                if (s_manifest.branches[i].name == branchName)
                 {
-                    return manifest.branches[i];
+                    return s_manifest.branches[i];
                 }
             }
 
@@ -163,17 +163,17 @@ namespace Chocopoi.DressingTools
 
             if (branch == null)
             {
-                if (!branchNotFoundWarningSent)
+                if (!s_branchNotFoundWarningSent)
                 {
-                    branchNotFoundWarningSent = true;
-                    Debug.LogWarning("Branch \"" + branchName + "\" not found in manifest. Using default branch \"" + manifest.default_branch + "\" instead");
+                    s_branchNotFoundWarningSent = true;
+                    Debug.LogWarning("Branch \"" + branchName + "\" not found in manifest. Using default branch \"" + s_manifest.default_branch + "\" instead");
                 }
 
-                branch = GetManifestBranch(manifest.default_branch);
+                branch = GetManifestBranch(s_manifest.default_branch);
 
                 if (branch == null)
                 {
-                    throw new Exception("Default branch provided by manifest \"" + manifest.default_branch + "\" not found!");
+                    throw new Exception("Default branch provided by manifest \"" + s_manifest.default_branch + "\" not found!");
                 }
             }
 
@@ -182,25 +182,25 @@ namespace Chocopoi.DressingTools
 
         public static string GetDefaultBranchName()
         {
-            if (manifest == null)
+            if (s_manifest == null)
             {
                 throw new Exception("Online updater manifest has not been loaded.");
             }
 
-            return manifest.default_branch;
+            return s_manifest.default_branch;
         }
 
         public static string[] GetAvailableBranches()
         {
-            if (manifest == null)
+            if (s_manifest == null)
             {
                 throw new Exception("Online updater manifest has not been loaded.");
             }
 
-            var strs = new string[manifest.branches.Length];
+            var strs = new string[s_manifest.branches.Length];
             for (var i = 0; i < strs.Length; i++)
             {
-                strs[i] = manifest.branches[i].name;
+                strs[i] = s_manifest.branches[i].name;
             }
 
             return strs;
@@ -208,7 +208,7 @@ namespace Chocopoi.DressingTools
 
         public static bool IsUpdateAvailable()
         {
-            if (currentVersion == null || manifest == null)
+            if (s_currentVersion == null || s_manifest == null)
             {
                 throw new Exception("Current version or online updater manifest has not been loaded.");
             }
@@ -224,7 +224,7 @@ namespace Chocopoi.DressingTools
             }
 
             //return CompareVersions(remoteVersion, currentVersion) > 0;
-            return !remoteVersion.version.Equals(currentVersion.version);
+            return !remoteVersion.version.Equals(s_currentVersion.version);
         }
 
         public static ParsedVersion ParseVersionString(string str)

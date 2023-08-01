@@ -8,14 +8,14 @@ namespace Chocopoi.DressingTools
 {
     public class DTRuntimeUtils
     {
-        private static Dictionary<string, System.Type> reflectionTypeCache = new Dictionary<string, System.Type>();
+        private static Dictionary<string, System.Type> s_reflectionTypeCache = new Dictionary<string, System.Type>();
 
         public static System.Type FindType(string typeName)
         {
             // try getting from cache to avoid scanning the assemblies again
-            if (reflectionTypeCache.ContainsKey(typeName))
+            if (s_reflectionTypeCache.ContainsKey(typeName))
             {
-                return reflectionTypeCache[typeName];
+                return s_reflectionTypeCache[typeName];
             }
 
             // scan from assemblies and save to cache
@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools
                 var type = assembly.GetType(typeName);
                 if (type != null)
                 {
-                    reflectionTypeCache[typeName] = type;
+                    s_reflectionTypeCache[typeName] = type;
                     return type;
                 }
             }

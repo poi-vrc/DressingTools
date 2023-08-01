@@ -13,7 +13,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { configView_.TargetAvatarOrWearableChange += value; } remove { configView_.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
         public event Action AvatarOnWearPresetChangeEvent;
         public event Action AvatarOnWearPresetSaveEvent;
         public event Action AvatarOnWearPresetDeleteEvent;
@@ -30,31 +30,31 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public PresetData AvatarOnWearPresetData { get; set; }
         public PresetData WearableOnWearPresetData { get; set; }
 
-        private AnimationGenerationModuleEditorPresenter presenter_;
-        private IWearableConfigView configView_;
-        private bool foldoutAnimationGenerationAvatarOnWear_;
-        private bool foldoutAnimationGenerationWearableOnWear_;
-        private bool foldoutAvatarAnimationPresetToggles_;
-        private bool foldoutAvatarAnimationPresetBlendshapes_;
-        private bool foldoutWearableAnimationPresetToggles_;
-        private bool foldoutWearableAnimationPresetBlendshapes_;
+        private AnimationGenerationModuleEditorPresenter _presenter;
+        private IWearableConfigView _configView;
+        private bool _foldoutAnimationGenerationAvatarOnWear;
+        private bool _foldoutAnimationGenerationWearableOnWear;
+        private bool _foldoutAvatarAnimationPresetToggles;
+        private bool _foldoutAvatarAnimationPresetBlendshapes;
+        private bool _foldoutWearableAnimationPresetToggles;
+        private bool _foldoutWearableAnimationPresetBlendshapes;
 
         public AnimationGenerationModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
         {
-            configView_ = configView;
-            presenter_ = new AnimationGenerationModuleEditorPresenter(this, configView, (AnimationGenerationModule)target);
+            _configView = configView;
+            _presenter = new AnimationGenerationModuleEditorPresenter(this, configView, (AnimationGenerationModule)target);
 
             ShowCannotRenderPresetWithoutTargetAvatarHelpBox = true;
             ShowCannotRenderPresetWithoutTargetWearableHelpBox = true;
             AvatarOnWearPresetData = new PresetData();
             WearableOnWearPresetData = new PresetData();
 
-            foldoutAnimationGenerationAvatarOnWear_ = false;
-            foldoutAnimationGenerationWearableOnWear_ = false;
-            foldoutAvatarAnimationPresetToggles_ = false;
-            foldoutAvatarAnimationPresetBlendshapes_ = false;
-            foldoutWearableAnimationPresetToggles_ = false;
-            foldoutWearableAnimationPresetBlendshapes_ = false;
+            _foldoutAnimationGenerationAvatarOnWear = false;
+            _foldoutAnimationGenerationWearableOnWear = false;
+            _foldoutAvatarAnimationPresetToggles = false;
+            _foldoutAvatarAnimationPresetBlendshapes = false;
+            _foldoutWearableAnimationPresetToggles = false;
+            _foldoutWearableAnimationPresetBlendshapes = false;
         }
 
         private void DrawAnimationPresetToggles(List<ToggleData> toggles, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetToggles)
@@ -149,8 +149,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         private void DrawAnimationGenerationAvatarOnWear()
         {
-            BeginFoldoutBox(ref foldoutAnimationGenerationAvatarOnWear_, "Avatar Animation On Wear");
-            if (foldoutAnimationGenerationAvatarOnWear_)
+            BeginFoldoutBox(ref _foldoutAnimationGenerationAvatarOnWear, "Avatar Animation On Wear");
+            if (_foldoutAnimationGenerationAvatarOnWear)
             {
                 if (ShowCannotRenderPresetWithoutTargetAvatarHelpBox)
                 {
@@ -158,7 +158,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 }
                 else
                 {
-                    DrawAnimationPreset(AvatarOnWearPresetData, AvatarOnWearPresetChangeEvent, AvatarOnWearPresetSaveEvent, AvatarOnWearPresetDeleteEvent, AvatarOnWearToggleAddEvent, AvatarOnWearBlendshapeAddEvent, ref foldoutAvatarAnimationPresetToggles_, ref foldoutAvatarAnimationPresetBlendshapes_);
+                    DrawAnimationPreset(AvatarOnWearPresetData, AvatarOnWearPresetChangeEvent, AvatarOnWearPresetSaveEvent, AvatarOnWearPresetDeleteEvent, AvatarOnWearToggleAddEvent, AvatarOnWearBlendshapeAddEvent, ref _foldoutAvatarAnimationPresetToggles, ref _foldoutAvatarAnimationPresetBlendshapes);
                 }
             }
             EndFoldoutBox();
@@ -166,8 +166,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         private void DrawAnimationGenerationWearableOnWear()
         {
-            BeginFoldoutBox(ref foldoutAnimationGenerationWearableOnWear_, "Wearable Animation On Wear");
-            if (foldoutAnimationGenerationWearableOnWear_)
+            BeginFoldoutBox(ref _foldoutAnimationGenerationWearableOnWear, "Wearable Animation On Wear");
+            if (_foldoutAnimationGenerationWearableOnWear)
             {
                 if (ShowCannotRenderPresetWithoutTargetWearableHelpBox)
                 {
@@ -175,7 +175,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 }
                 else
                 {
-                    DrawAnimationPreset(WearableOnWearPresetData, WearableOnWearChangeEvent, WearableOnWearSaveEvent, WearableOnWearDeleteEvent, WearableOnWearToggleAddEvent, WearableOnWearBlendshapeAddEvent, ref foldoutWearableAnimationPresetToggles_, ref foldoutWearableAnimationPresetBlendshapes_);
+                    DrawAnimationPreset(WearableOnWearPresetData, WearableOnWearChangeEvent, WearableOnWearSaveEvent, WearableOnWearDeleteEvent, WearableOnWearToggleAddEvent, WearableOnWearBlendshapeAddEvent, ref _foldoutWearableAnimationPresetToggles, ref _foldoutWearableAnimationPresetBlendshapes);
                 }
             }
             EndFoldoutBox();

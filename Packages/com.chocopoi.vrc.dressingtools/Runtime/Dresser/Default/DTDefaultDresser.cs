@@ -44,7 +44,7 @@ namespace Chocopoi.DressingTools.Dresser
             public const string HookHasErrors = "dressers.default.msgCode.error.hookHasErrors";
         }
 
-        private static readonly IDefaultDresserHook[] hooks = new IDefaultDresserHook[] {
+        private static readonly IDefaultDresserHook[] Hooks = new IDefaultDresserHook[] {
             new NoMissingScriptsHook(),
             new ArmatureHook()
         };
@@ -72,7 +72,7 @@ namespace Chocopoi.DressingTools.Dresser
             boneMappings = new List<DTBoneMapping>();
 
             // evaluate each hooks to generate the bone mappings
-            foreach (var hook in hooks)
+            foreach (var hook in Hooks)
             {
                 if (!hook.Evaluate(report, settings, boneMappings))
                 {

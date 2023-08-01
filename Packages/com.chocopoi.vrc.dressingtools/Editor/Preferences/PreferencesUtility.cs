@@ -17,15 +17,15 @@ namespace Chocopoi.DressingTools
 
         private static readonly string DefaultUpdateBranch = "stable";
 
-        private static Preferences preferences = null;
+        private static Preferences _preferences = null;
 
         public static Preferences GetPreferences()
         {
-            if (preferences == null)
+            if (_preferences == null)
             {
-                preferences = LoadPreferences();
+                _preferences = LoadPreferences();
             }
-            return preferences;
+            return _preferences;
         }
 
         public static Preferences LoadPreferences()
@@ -76,7 +76,7 @@ namespace Chocopoi.DressingTools
                 {
                     Directory.CreateDirectory(JsonPath);
                 }
-                File.WriteAllText(JsonPath + "/" + JsonFileName, JsonConvert.SerializeObject(preferences));
+                File.WriteAllText(JsonPath + "/" + JsonFileName, JsonConvert.SerializeObject(_preferences));
             }
             catch (IOException e)
             {

@@ -6,7 +6,7 @@ namespace Chocopoi.DressingTools.UI
 {
     public class DTMainEditorWindow : EditorWindow
     {
-        private MainView view_;
+        private MainView _view;
 
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void ShowWindow()
@@ -18,22 +18,22 @@ namespace Chocopoi.DressingTools.UI
 
         public DTMainEditorWindow()
         {
-            view_ = new MainView();
+            _view = new MainView();
         }
 
         public void OnEnable()
         {
-            view_.OnEnable();
+            _view.OnEnable();
         }
 
         public void OnDisable()
         {
-            view_.OnDisable();
+            _view.OnDisable();
         }
 
         public void OnGUI()
         {
-            view_.OnGUI();
+            _view.OnGUI();
         }
     }
 }

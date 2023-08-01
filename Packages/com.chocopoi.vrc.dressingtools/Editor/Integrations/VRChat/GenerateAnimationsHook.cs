@@ -18,11 +18,11 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
     internal class GenerateAnimationsHook : IBuildDTCabinetHook
     {
         private const string GeneratedAssetsFolder = "Assets/_DTGeneratedAssets";
-        private DTCabinet cabinet;
+        private DTCabinet _cabinet;
 
         public GenerateAnimationsHook(DTCabinet cabinet)
         {
-            this.cabinet = cabinet;
+            _cabinet = cabinet;
         }
         
         private AnimationGenerationModule FindAnimationGenerationModule(DTWearableConfig config)
@@ -101,7 +101,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             };
 
             // get wearables
-            var wearables = cabinet.GetWearables();
+            var wearables = _cabinet.GetWearables();
 
             for (var i = 0; i < wearables.Length; i++)
             {

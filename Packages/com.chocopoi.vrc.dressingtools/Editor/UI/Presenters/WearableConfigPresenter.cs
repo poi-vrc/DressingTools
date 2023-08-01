@@ -12,41 +12,41 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class WearableConfigPresenter
     {
-        private static Dictionary<Type, Type> moduleEditorTypesCache = null;
+        private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
-        private static List<Type> availableModulesCache = null;
+        private static List<Type> s_availableModulesCache = null;
 
-        private IWearableConfigView view_;
+        private IWearableConfigView _view;
 
         public WearableConfigPresenter(IWearableConfigView view)
         {
-            view_ = view;
+            _view = view;
 
             SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            view_.Load += OnLoad;
-            view_.Unload += OnUnload;
+            _view.Load += OnLoad;
+            _view.Unload += OnUnload;
 
-            view_.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            view_.AddModuleButtonClick += OnAddModuleButtonClick;
-            view_.TargetAvatarConfigChange += OnTargetAvatarConfigChange;
-            view_.MetaInfoChange += OnMetaInfoChange;
-            view_.ForceUpdateView += OnForceUpdateView;
+            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.AddModuleButtonClick += OnAddModuleButtonClick;
+            _view.TargetAvatarConfigChange += OnTargetAvatarConfigChange;
+            _view.MetaInfoChange += OnMetaInfoChange;
+            _view.ForceUpdateView += OnForceUpdateView;
         }
 
         private void UnsubscribeEvents()
         {
-            view_.Load -= OnLoad;
-            view_.Unload -= OnUnload;
+            _view.Load -= OnLoad;
+            _view.Unload -= OnUnload;
 
-            view_.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            view_.AddModuleButtonClick -= OnAddModuleButtonClick;
-            view_.TargetAvatarConfigChange -= OnTargetAvatarConfigChange;
-            view_.MetaInfoChange -= OnMetaInfoChange;
-            view_.ForceUpdateView -= OnForceUpdateView;
+            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.AddModuleButtonClick -= OnAddModuleButtonClick;
+            _view.TargetAvatarConfigChange -= OnTargetAvatarConfigChange;
+            _view.MetaInfoChange -= OnMetaInfoChange;
+            _view.ForceUpdateView -= OnForceUpdateView;
         }
 
         private void OnForceUpdateView()
@@ -63,41 +63,41 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplyTargetAvatarConfigChanges()
         {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(view_.TargetAvatar);
+            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             // try obtain armature name from cabinet
             if (cabinet == null)
             {
                 // leave it empty
-                view_.Config.targetAvatarConfig.armatureName = "";
+                _view.Config.targetAvatarConfig.armatureName = "";
             }
             else
             {
-                view_.Config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
+                _view.Config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
             }
 
             // can't do anything
-            if (view_.TargetAvatar == null || view_.TargetWearable == null)
+            if (_view.TargetAvatar == null || _view.TargetWearable == null)
             {
                 return;
             }
 
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(view_.GuidReferencePrefab ?? view_.TargetAvatar);
+            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            view_.Config.targetAvatarConfig.guids.Clear();
+            _view.Config.targetAvatarConfig.guids.Clear();
             if (!invalidAvatarPrefabGuid)
             {
                 // TODO: multiple guids
-                view_.Config.targetAvatarConfig.guids.Add(avatarPrefabGuid);
+                _view.Config.targetAvatarConfig.guids.Add(avatarPrefabGuid);
             }
 
-            var deltaPos = view_.TargetWearable.transform.position - view_.TargetAvatar.transform.position;
-            var deltaRotation = view_.TargetWearable.transform.rotation * Quaternion.Inverse(view_.TargetAvatar.transform.rotation);
-            view_.Config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
-            view_.Config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
-            view_.Config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(view_.TargetAvatar.transform.lossyScale);
-            view_.Config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(view_.TargetWearable.transform.lossyScale);
+            var deltaPos = _view.TargetWearable.transform.position - _view.TargetAvatar.transform.position;
+            var deltaRotation = _view.TargetWearable.transform.rotation * Quaternion.Inverse(_view.TargetAvatar.transform.rotation);
+            _view.Config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
+            _view.Config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
+            _view.Config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
+            _view.Config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
         }
 
         private void OnMetaInfoChange()
@@ -107,23 +107,23 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplyMetaInfoChanges()
         {
-            view_.Config.info.name = view_.MetaInfoWearableName;
-            view_.Config.info.author = view_.MetaInfoAuthor;
-            view_.Config.info.description = view_.MetaInfoDescription;
+            _view.Config.info.name = _view.MetaInfoWearableName;
+            _view.Config.info.author = _view.MetaInfoAuthor;
+            _view.Config.info.description = _view.MetaInfoDescription;
         }
 
         private void OnTargetAvatarOrWearableChange()
         {
             // reset the settings and read the avatar and wearable name
-            view_.TargetAvatarConfigUseAvatarObjectName = true;
-            if (view_.TargetAvatar != null)
+            _view.TargetAvatarConfigUseAvatarObjectName = true;
+            if (_view.TargetAvatar != null)
             {
-                view_.TargetAvatarConfigAvatarName = view_.Config.targetAvatarConfig.name = view_.TargetAvatar.name;
+                _view.TargetAvatarConfigAvatarName = _view.Config.targetAvatarConfig.name = _view.TargetAvatar.name;
             }
-            view_.MetaInfoUseWearableObjectName = true;
-            if (view_.TargetWearable != null)
+            _view.MetaInfoUseWearableObjectName = true;
+            if (_view.TargetWearable != null)
             {
-                view_.MetaInfoWearableName = view_.Config.info.name = view_.TargetWearable.name;
+                _view.MetaInfoWearableName = _view.Config.info.name = _view.TargetWearable.name;
             }
 
             // apply guid, world pos changes
@@ -135,11 +135,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddModuleButtonClick()
         {
-            var newModule = (DTWearableModuleBase)Activator.CreateInstance(availableModulesCache[view_.SelectedAvailableModule]);
+            var newModule = (DTWearableModuleBase)Activator.CreateInstance(s_availableModulesCache[_view.SelectedAvailableModule]);
             if (!newModule.AllowMultiple)
             {
                 // check if any existing type
-                foreach (var existingModule in view_.Config.modules)
+                foreach (var existingModule in _view.Config.modules)
                 {
                     if (existingModule.GetType() == newModule.GetType())
                     {
@@ -148,7 +148,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 }
             }
-            view_.Config.modules.Add(newModule);
+            _view.Config.modules.Add(newModule);
 
             // update module editors
             UpdateModulesView();
@@ -157,9 +157,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private ModuleEditor CreateModuleEditor(DTWearableModuleBase module)
         {
             // prepare cache if not yet
-            if (moduleEditorTypesCache == null)
+            if (s_moduleEditorTypesCache == null)
             {
-                moduleEditorTypesCache = new Dictionary<Type, Type>();
+                s_moduleEditorTypesCache = new Dictionary<Type, Type>();
 
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -170,25 +170,25 @@ namespace Chocopoi.DressingTools.UI.Presenters
                         var attributes = type.GetCustomAttributes(typeof(CustomModuleEditor), true);
                         foreach (CustomModuleEditor attribute in attributes)
                         {
-                            if (moduleEditorTypesCache.ContainsKey(attribute.ModuleType))
+                            if (s_moduleEditorTypesCache.ContainsKey(attribute.ModuleType))
                             {
                                 Debug.LogWarning("There are more than one CustomModuleEditor pointing to the same module! Skipping: " + type.FullName);
                                 continue;
                             }
-                            moduleEditorTypesCache.Add(attribute.ModuleType, type);
+                            s_moduleEditorTypesCache.Add(attribute.ModuleType, type);
                         }
                     }
                 }
             }
 
             // obtain from cache and create an editor instance
-            if (moduleEditorTypesCache.TryGetValue(module.GetType(), out var moduleEditorType))
+            if (s_moduleEditorTypesCache.TryGetValue(module.GetType(), out var moduleEditorType))
             {
-                return (ModuleEditor)Activator.CreateInstance(moduleEditorType, view_, module);
+                return (ModuleEditor)Activator.CreateInstance(moduleEditorType, _view, module);
             }
 
             // default module
-            return new ModuleEditor(view_, module);
+            return new ModuleEditor(_view, module);
         }
 
         private static List<Type> GetAllAvailableModules()
@@ -204,25 +204,25 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // this will clear the list and causing foldout to be closed (default state is false)
             // TODO: do not clear but update necessary only?
 
-            if (availableModulesCache == null)
+            if (s_availableModulesCache == null)
             {
-                availableModulesCache = GetAllAvailableModules();
-                var keys = new string[availableModulesCache.Count];
-                for (var i = 0; i < availableModulesCache.Count; i++)
+                s_availableModulesCache = GetAllAvailableModules();
+                var keys = new string[s_availableModulesCache.Count];
+                for (var i = 0; i < s_availableModulesCache.Count; i++)
                 {
-                    keys[i] = availableModulesCache[i].FullName;
+                    keys[i] = s_availableModulesCache[i].FullName;
                 }
-                view_.AvailableModuleKeys = keys;
+                _view.AvailableModuleKeys = keys;
             }
 
             // call unload before we clear the list
-            foreach (var moduleData in view_.ModuleDataList)
+            foreach (var moduleData in _view.ModuleDataList)
             {
                 moduleData.editor.OnDisable();
             }
-            view_.ModuleDataList.Clear();
+            _view.ModuleDataList.Clear();
 
-            foreach (var module in view_.Config.modules)
+            foreach (var module in _view.Config.modules)
             {
                 var moduleData = new ModuleData()
                 {
@@ -231,10 +231,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 moduleData.removeButtonOnClickEvent = () =>
                 {
                     moduleData.editor.OnDisable();
-                    view_.Config.modules.Remove(module);
-                    view_.ModuleDataList.Remove(moduleData);
+                    _view.Config.modules.Remove(module);
+                    _view.ModuleDataList.Remove(moduleData);
                 };
-                view_.ModuleDataList.Add(moduleData);
+                _view.ModuleDataList.Add(moduleData);
 
                 // call enable
                 moduleData.editor.OnEnable();
@@ -245,65 +245,65 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateAvatarConfigsView()
         {
-            if (view_.TargetAvatar == null || view_.TargetWearable == null)
+            if (_view.TargetAvatar == null || _view.TargetWearable == null)
             {
                 // we cannot do anything with target avatar and wearable null
-                view_.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
+                _view.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
                 return;
             }
-            view_.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = false;
+            _view.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = false;
 
             // GUI Data
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(view_.GuidReferencePrefab ?? view_.TargetAvatar);
+            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            view_.IsInvalidAvatarPrefabGuid = invalidAvatarPrefabGuid;
-            view_.AvatarPrefabGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;
+            _view.IsInvalidAvatarPrefabGuid = invalidAvatarPrefabGuid;
+            _view.AvatarPrefabGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;
 
-            view_.TargetAvatarConfigUseAvatarObjectName = view_.TargetAvatar.name == view_.Config.targetAvatarConfig.name;
-            view_.TargetAvatarConfigAvatarName = view_.Config.targetAvatarConfig.name;
-            view_.TargetAvatarConfigWorldPosition = view_.Config.targetAvatarConfig.worldPosition.ToString();
-            view_.TargetAvatarConfigWorldRotation = view_.Config.targetAvatarConfig.worldRotation.ToString();
-            view_.TargetAvatarConfigWorldAvatarLossyScale = view_.Config.targetAvatarConfig.avatarLossyScale.ToString();
-            view_.TargetAvatarConfigWorldWearableLossyScale = view_.Config.targetAvatarConfig.wearableLossyScale.ToString();
+            _view.TargetAvatarConfigUseAvatarObjectName = _view.TargetAvatar.name == _view.Config.targetAvatarConfig.name;
+            _view.TargetAvatarConfigAvatarName = _view.Config.targetAvatarConfig.name;
+            _view.TargetAvatarConfigWorldPosition = _view.Config.targetAvatarConfig.worldPosition.ToString();
+            _view.TargetAvatarConfigWorldRotation = _view.Config.targetAvatarConfig.worldRotation.ToString();
+            _view.TargetAvatarConfigWorldAvatarLossyScale = _view.Config.targetAvatarConfig.avatarLossyScale.ToString();
+            _view.TargetAvatarConfigWorldWearableLossyScale = _view.Config.targetAvatarConfig.wearableLossyScale.ToString();
         }
 
         private void UpdateMetaInfoView()
         {
-            view_.ConfigUuid = view_.Config.info.uuid;
+            _view.ConfigUuid = _view.Config.info.uuid;
 
-            if (view_.TargetWearable == null)
+            if (_view.TargetWearable == null)
             {
                 // can't do anything with empty wearable
                 return;
             }
 
             // automatically unset this setting if name is not the same
-            view_.MetaInfoUseWearableObjectName = view_.TargetWearable.name == view_.Config.info.name;
-            view_.MetaInfoWearableName = view_.Config.info.name;
-            view_.MetaInfoAuthor = view_.Config.info.author;
+            _view.MetaInfoUseWearableObjectName = _view.TargetWearable.name == _view.Config.info.name;
+            _view.MetaInfoWearableName = _view.Config.info.name;
+            _view.MetaInfoAuthor = _view.Config.info.author;
 
             // attempts to parse and display the created time
-            if (DateTime.TryParse(view_.Config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
+            if (DateTime.TryParse(_view.Config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
             {
-                view_.MetaInfoCreatedTime = createdTimeDt.ToLocalTime().ToString();
+                _view.MetaInfoCreatedTime = createdTimeDt.ToLocalTime().ToString();
             }
             else
             {
-                view_.MetaInfoCreatedTime = "(Unable to parse date)";
+                _view.MetaInfoCreatedTime = "(Unable to parse date)";
             }
 
             // attempts to parse and display the updated time
-            if (DateTime.TryParse(view_.Config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
+            if (DateTime.TryParse(_view.Config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
             {
-                view_.MetaInfoUpdatedTime = updatedTimeDt.ToLocalTime().ToString();
+                _view.MetaInfoUpdatedTime = updatedTimeDt.ToLocalTime().ToString();
             }
             else
             {
-                view_.MetaInfoUpdatedTime = "(Unable to parse date)";
+                _view.MetaInfoUpdatedTime = "(Unable to parse date)";
             }
 
-            view_.MetaInfoDescription = view_.Config.info.description;
+            _view.MetaInfoDescription = _view.Config.info.description;
         }
 
         private void UpdateView()

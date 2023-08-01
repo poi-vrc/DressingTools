@@ -7,18 +7,18 @@ namespace Chocopoi.DressingTools.Localization
 {
     public class I18n
     {
-        private static readonly string DEFAULT_LOCALE = "en";
+        private const string DefaultLocale = "en";
 
-        private static I18n instance = null;
+        private static I18n s_instance = null;
 
         public static I18n GetInstance()
         {
-            return instance ?? (instance = new I18n());
+            return s_instance ?? (s_instance = new I18n());
         }
 
-        private Dictionary<string, JObject> translations = null;
+        private Dictionary<string, JObject> _translations = null;
 
-        private string selectedLocale = null;
+        private string _selectedLocale = null;
 
         private I18n()
         {
@@ -27,20 +27,20 @@ namespace Chocopoi.DressingTools.Localization
 
         public string[] GetAvailableLocales()
         {
-            if (translations == null)
+            if (_translations == null)
             {
                 return new string[] { };
             }
 
-            var keys = new string[translations.Keys.Count];
-            translations.Keys.CopyTo(keys, 0);
+            var keys = new string[_translations.Keys.Count];
+            _translations.Keys.CopyTo(keys, 0);
 
             return keys;
         }
 
         public void LoadTranslations()
         {
-            translations = new Dictionary<string, JObject>();
+            _translations = new Dictionary<string, JObject>();
 
             var translationFileNames = Directory.GetFiles("Packages/com.chocopoi.vrc.dressingtools/Translations", "*.json");
             foreach (var translationFileName in translationFileNames)
@@ -50,7 +50,7 @@ namespace Chocopoi.DressingTools.Localization
                     var reader = new StreamReader(translationFileName);
                     var json = reader.ReadToEnd();
                     reader.Close();
-                    translations.Add(Path.GetFileNameWithoutExtension(translationFileName), JObject.Parse(json));
+                    _translations.Add(Path.GetFileNameWithoutExtension(translationFileName), JObject.Parse(json));
                 }
                 catch (IOException e)
                 {
@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools.Localization
 
         public void SetLocale(string locale)
         {
-            selectedLocale = locale;
+            _selectedLocale = locale;
         }
 
         public string _(string key, params object[] args)
@@ -92,12 +92,12 @@ namespace Chocopoi.DressingTools.Localization
         {
             string value;
 
-            if ((value = TranslateByLocale(selectedLocale, key, args)) != null)
+            if ((value = TranslateByLocale(_selectedLocale, key, args)) != null)
             {
                 return value;
             }
 
-            if ((value = TranslateByLocale(DEFAULT_LOCALE, key, args)) != null)
+            if ((value = TranslateByLocale(DefaultLocale, key, args)) != null)
             {
                 return value;
             }
@@ -107,9 +107,9 @@ namespace Chocopoi.DressingTools.Localization
 
         public string TranslateByLocale(string locale, string key, params object[] args)
         {
-            if (locale != null && translations.ContainsKey(locale))
+            if (locale != null && _translations.ContainsKey(locale))
             {
-                translations.TryGetValue(locale, out var t);
+                _translations.TryGetValue(locale, out var t);
 
                 var value = t?.Value<string>(key);
 

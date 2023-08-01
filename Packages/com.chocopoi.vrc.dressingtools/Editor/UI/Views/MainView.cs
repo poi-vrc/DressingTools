@@ -7,53 +7,53 @@ namespace Chocopoi.DressingTools.UI.View
 {
     internal class MainView : EditorViewBase, IMainView
     {
-        public int SelectedTab { get => selectedTab_; set => selectedTab_ = value; }
+        public int SelectedTab { get => _selectedTab; set => _selectedTab = value; }
 
-        private MainPresenter presenter_;
-        private ICabinetSubView cabinetSubView_;
-        private IDressingSubView dressingSubView_;
-        private ISettingsSubView settingsSubView_;
-        private int selectedTab_;
+        private MainPresenter _presenter;
+        private ICabinetSubView _cabinetSubView;
+        private IDressingSubView _dressingSubView;
+        private ISettingsSubView _settingsSubView;
+        private int _selectedTab;
 
         public MainView()
         {
-            presenter_ = new MainPresenter(this);
-            cabinetSubView_ = new CabinetSubView(this);
-            dressingSubView_ = new DressingSubView(this);
-            settingsSubView_ = new SettingsSubView(this);
+            _presenter = new MainPresenter(this);
+            _cabinetSubView = new CabinetSubView(this);
+            _dressingSubView = new DressingSubView(this);
+            _settingsSubView = new SettingsSubView(this);
         }
 
         public override void OnEnable()
         {
             base.OnEnable();
-            cabinetSubView_.OnEnable();
-            dressingSubView_.OnEnable();
+            _cabinetSubView.OnEnable();
+            _dressingSubView.OnEnable();
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            cabinetSubView_.OnDisable();
-            dressingSubView_.OnDisable();
+            _cabinetSubView.OnDisable();
+            _dressingSubView.OnDisable();
         }
 
         public override void OnGUI()
         {
             DTLogo.Show();
 
-            Toolbar(ref selectedTab_, new string[] { "Cabinet", "Dressing", "Settings" });
+            Toolbar(ref _selectedTab, new string[] { "Cabinet", "Dressing", "Settings" });
 
-            if (selectedTab_ == 0)
+            if (_selectedTab == 0)
             {
-                cabinetSubView_.OnGUI();
+                _cabinetSubView.OnGUI();
             }
-            else if (selectedTab_ == 1)
+            else if (_selectedTab == 1)
             {
-                dressingSubView_.OnGUI();
+                _dressingSubView.OnGUI();
             }
-            else if (selectedTab_ == 2)
+            else if (_selectedTab == 2)
             {
-                settingsSubView_.OnGUI();
+                _settingsSubView.OnGUI();
             }
         }
     }

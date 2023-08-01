@@ -8,45 +8,45 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class AnimationGenerationModuleEditorPresenter
     {
-        private IAnimationGenerationModuleEditorView view_;
-        private IWearableConfigView configView_;
-        private AnimationGenerationModule module_;
+        private IAnimationGenerationModuleEditorView _view;
+        private IWearableConfigView _configView;
+        private AnimationGenerationModule _module;
 
         public AnimationGenerationModuleEditorPresenter(IAnimationGenerationModuleEditorView view, IWearableConfigView configView, AnimationGenerationModule module)
         {
-            view_ = view;
-            configView_ = configView;
-            module_ = module;
+            _view = view;
+            _configView = configView;
+            _module = module;
 
             SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            view_.Load += OnLoad;
-            view_.Unload += OnUnload;
+            _view.Load += OnLoad;
+            _view.Unload += OnUnload;
 
-            view_.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
 
-            view_.AvatarOnWearToggleAddEvent += OnAvatarOnWearToggleAddEvent;
-            view_.AvatarOnWearBlendshapeAddEvent += OnAvatarOnWearBlendshapeAddEvent;
+            _view.AvatarOnWearToggleAddEvent += OnAvatarOnWearToggleAddEvent;
+            _view.AvatarOnWearBlendshapeAddEvent += OnAvatarOnWearBlendshapeAddEvent;
 
-            view_.WearableOnWearToggleAddEvent += OnWearableOnWearToggleAddEvent;
-            view_.WearableOnWearBlendshapeAddEvent += OnWearableOnWearBlendshapeAddEvent;
+            _view.WearableOnWearToggleAddEvent += OnWearableOnWearToggleAddEvent;
+            _view.WearableOnWearBlendshapeAddEvent += OnWearableOnWearBlendshapeAddEvent;
         }
 
         private void UnsubscribeEvents()
         {
-            view_.Load -= OnLoad;
-            view_.Unload -= OnUnload;
+            _view.Load -= OnLoad;
+            _view.Unload -= OnUnload;
 
-            view_.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
 
-            view_.AvatarOnWearToggleAddEvent -= OnAvatarOnWearToggleAddEvent;
-            view_.AvatarOnWearBlendshapeAddEvent -= OnAvatarOnWearBlendshapeAddEvent;
+            _view.AvatarOnWearToggleAddEvent -= OnAvatarOnWearToggleAddEvent;
+            _view.AvatarOnWearBlendshapeAddEvent -= OnAvatarOnWearBlendshapeAddEvent;
 
-            view_.WearableOnWearToggleAddEvent -= OnWearableOnWearToggleAddEvent;
-            view_.WearableOnWearBlendshapeAddEvent -= OnWearableOnWearBlendshapeAddEvent;
+            _view.WearableOnWearToggleAddEvent -= OnWearableOnWearToggleAddEvent;
+            _view.WearableOnWearBlendshapeAddEvent -= OnWearableOnWearBlendshapeAddEvent;
         }
 
         private void OnTargetAvatarOrWearableChange()
@@ -56,25 +56,25 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnAvatarOnWearToggleAddEvent()
         {
-            module_.avatarAnimationOnWear.toggles.Add(new DTAnimationToggle());
+            _module.avatarAnimationOnWear.toggles.Add(new DTAnimationToggle());
             UpdateAnimationGenerationAvatarOnWear();
         }
 
         private void OnAvatarOnWearBlendshapeAddEvent()
         {
-            module_.avatarAnimationOnWear.blendshapes.Add(new DTAnimationBlendshapeValue());
+            _module.avatarAnimationOnWear.blendshapes.Add(new DTAnimationBlendshapeValue());
             UpdateAnimationGenerationAvatarOnWear();
         }
 
         private void OnWearableOnWearToggleAddEvent()
         {
-            module_.wearableAnimationOnWear.toggles.Add(new DTAnimationToggle());
+            _module.wearableAnimationOnWear.toggles.Add(new DTAnimationToggle());
             UpdateAnimationGenerationWearableOnWear();
         }
 
         private void OnWearableOnWearBlendshapeAddEvent()
         {
-            module_.wearableAnimationOnWear.blendshapes.Add(new DTAnimationBlendshapeValue());
+            _module.wearableAnimationOnWear.blendshapes.Add(new DTAnimationBlendshapeValue());
             UpdateAnimationGenerationWearableOnWear();
         }
 
@@ -201,27 +201,27 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateAnimationGenerationAvatarOnWear()
         {
-            if (configView_.TargetAvatar != null)
+            if (_configView.TargetAvatar != null)
             {
-                view_.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = false;
-                UpdateAnimationPreset(configView_.TargetAvatar.transform, module_.avatarAnimationOnWear, view_.AvatarOnWearPresetData);
+                _view.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = false;
+                UpdateAnimationPreset(_configView.TargetAvatar.transform, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData);
             }
             else
             {
-                view_.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = true;
+                _view.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = true;
             }
         }
 
         private void UpdateAnimationGenerationWearableOnWear()
         {
-            if (configView_.TargetWearable != null)
+            if (_configView.TargetWearable != null)
             {
-                view_.ShowCannotRenderPresetWithoutTargetWearableHelpBox = false;
-                UpdateAnimationPreset(configView_.TargetWearable.transform, module_.wearableAnimationOnWear, view_.WearableOnWearPresetData);
+                _view.ShowCannotRenderPresetWithoutTargetWearableHelpBox = false;
+                UpdateAnimationPreset(_configView.TargetWearable.transform, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData);
             }
             else
             {
-                view_.ShowCannotRenderPresetWithoutTargetWearableHelpBox = true;
+                _view.ShowCannotRenderPresetWithoutTargetWearableHelpBox = true;
             }
         }
 

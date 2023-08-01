@@ -29,28 +29,28 @@ namespace Chocopoi.DressingTools.Cabinet
             public const string ApplyingWearableHasErrors = "appliers.default.msgCode.error.applyingWearableHasErrors";
         }
 
-        private DTReport report;
+        private DTReport _report;
 
-        private DTCabinet cabinet;
+        private DTCabinet _cabinet;
 
-        private List<IDynamicsProxy> avatarDynamics;
+        private List<IDynamicsProxy> _avatarDynamics;
 
         public DTCabinetApplier(DTReport report, DTCabinet cabinet)
         {
-            this.report = report;
-            this.cabinet = cabinet;
+            this._report = report;
+            this._cabinet = cabinet;
         }
 
         private void ApplyTransforms(DTAvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
         {
-            var targetAvatar = cabinet.avatarGameObject;
+            var targetAvatar = _cabinet.avatarGameObject;
 
             // check position delta and adjust
             {
                 var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
                 if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
                 {
-                    report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
+                    _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
                     targetWearable.transform.position += wearableWorldPos;
                 }
             }
@@ -60,24 +60,24 @@ namespace Chocopoi.DressingTools.Cabinet
                 var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
                 if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
                 {
-                    report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
+                    _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
                     targetWearable.transform.rotation *= wearableWorldRot;
                 }
             }
 
             // apply avatar scale
-            lastAvatarParent = cabinet.avatarGameObject.transform.parent;
+            lastAvatarParent = _cabinet.avatarGameObject.transform.parent;
             lastAvatarScale = Vector3.zero + targetAvatar.transform.localScale;
             if (lastAvatarParent != null)
             {
                 // tricky workaround to apply lossy world scale is to unparent
-                cabinet.avatarGameObject.transform.SetParent(null);
+                _cabinet.avatarGameObject.transform.SetParent(null);
             }
 
             var avatarScaleVec = avatarConfig.avatarLossyScale.ToVector3();
             if (targetAvatar.transform.localScale != avatarScaleVec)
             {
-                report.LogInfoLocalized(LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
+                _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
                 targetAvatar.transform.localScale = avatarScaleVec;
             }
 
@@ -85,7 +85,7 @@ namespace Chocopoi.DressingTools.Cabinet
             var wearableScaleVec = avatarConfig.wearableLossyScale.ToVector3();
             if (targetWearable.transform.localScale != wearableScaleVec)
             {
-                report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
+                _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
                 targetWearable.transform.localScale = wearableScaleVec;
             }
         }
@@ -95,9 +95,9 @@ namespace Chocopoi.DressingTools.Cabinet
             // restore avatar scale
             if (lastAvatarParent != null)
             {
-                cabinet.avatarGameObject.transform.SetParent(lastAvatarParent);
+                _cabinet.avatarGameObject.transform.SetParent(lastAvatarParent);
             }
-            cabinet.avatarGameObject.transform.localScale = lastAvatarScale;
+            _cabinet.avatarGameObject.transform.localScale = lastAvatarScale;
         }
 
         private bool ApplyWearable(DTWearableConfig config, GameObject wearableGameObject)
@@ -108,7 +108,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
             // TODO: is this check still necessary now?
             GameObject wearableObj;
-            if (DTRuntimeUtils.IsGrandParent(cabinet.avatarGameObject.transform, wearableGameObject.transform))
+            if (DTRuntimeUtils.IsGrandParent(_cabinet.avatarGameObject.transform, wearableGameObject.transform))
             {
                 //// check if it's a prefab
                 //if (PrefabUtility.IsPartOfAnyPrefab(wearable.wearableGameObject))
@@ -121,7 +121,7 @@ namespace Chocopoi.DressingTools.Cabinet
             else
             {
                 // instantiate wearable prefab and parent to avatar
-                wearableObj = Object.Instantiate(wearableGameObject, cabinet.avatarGameObject.transform);
+                wearableObj = Object.Instantiate(wearableGameObject, _cabinet.avatarGameObject.transform);
             }
 
             // scan for wearable dynamics
@@ -137,9 +137,9 @@ namespace Chocopoi.DressingTools.Cabinet
             // do module apply
             foreach (var module in modules)
             {
-                if (!module.Apply(report, cabinet, avatarDynamics, config, wearableGameObject))
+                if (!module.Apply(_report, _cabinet, _avatarDynamics, config, wearableGameObject))
                 {
-                    report.LogErrorLocalized(LogLabel, MessageCode.ApplyingModuleHasErrors);
+                    _report.LogErrorLocalized(LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
                 }
             }
@@ -152,8 +152,8 @@ namespace Chocopoi.DressingTools.Cabinet
         public void Execute()
         {
             // scan for avatar dynamics
-            avatarDynamics = DTRuntimeUtils.ScanDynamics(cabinet.avatarGameObject);
-            var wearables = cabinet.GetWearables();
+            _avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabinet.avatarGameObject);
+            var wearables = _cabinet.GetWearables();
 
             foreach (var wearable in wearables)
             {
@@ -162,13 +162,13 @@ namespace Chocopoi.DressingTools.Cabinet
 
                 if (config == null)
                 {
-                    report.LogErrorLocalized(LogLabel, MessageCode.UnableToDeserializeConfig);
+                    _report.LogErrorLocalized(LogLabel, MessageCode.UnableToDeserializeConfig);
                     continue;
                 }
 
                 if (!ApplyWearable(config, wearable.wearableGameObject))
                 {
-                    report.LogErrorLocalized(LogLabel, MessageCode.ApplyingWearableHasErrors, config.info.name);
+                    _report.LogErrorLocalized(LogLabel, MessageCode.ApplyingWearableHasErrors, config.info.name);
                     break;
                 }
             }

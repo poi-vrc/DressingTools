@@ -7,11 +7,11 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal class ApplyCabinetHook : IBuildDTCabinetHook
     {
-        private DTCabinet cabinet;
+        private DTCabinet _cabinet;
 
         public ApplyCabinetHook(DTCabinet cabinet)
         {
-            this.cabinet = cabinet;
+            _cabinet = cabinet;
         }
 
         public bool OnPreprocessAvatar(GameObject avatarGameObject)
@@ -20,7 +20,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
             var report = new DTReport();
 
-            cabinet.Apply(report);
+            _cabinet.Apply(report);
 
             // TODO: show report frame if have errors
             if (report.HasLogType(DTReportLogType.Error))

@@ -14,21 +14,21 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class ArmatureMappingModuleEditorPresenter
     {
-        private IArmatureMappingModuleEditorView view_;
-        private IWearableConfigView configView_;
-        private ArmatureMappingModule module_;
+        private IArmatureMappingModuleEditorView _view;
+        private IWearableConfigView _configView;
+        private ArmatureMappingModule _module;
 
-        private DTReport dresserReport_ = null;
-        private DTMappingEditorContainer mappingEditorContainer_;
-        private DTCabinet cabinet_;
+        private DTReport _dresserReport = null;
+        private DTMappingEditorContainer _mappingEditorContainer;
+        private DTCabinet _cabinet;
 
         public ArmatureMappingModuleEditorPresenter(IArmatureMappingModuleEditorView view, IWearableConfigView configView, ArmatureMappingModule module)
         {
-            view_ = view;
-            configView_ = configView;
-            module_ = module;
+            _view = view;
+            _configView = configView;
+            _module = module;
 
-            mappingEditorContainer_ = new DTMappingEditorContainer();
+            _mappingEditorContainer = new DTMappingEditorContainer();
             ResetMappingEditorContainer();
 
             SubscribeEvents();
@@ -36,46 +36,46 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void SubscribeEvents()
         {
-            view_.Load += OnLoad;
-            view_.Unload += OnUnload;
+            _view.Load += OnLoad;
+            _view.Unload += OnUnload;
 
-            view_.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            view_.DresserChange += OnDresserChange;
-            view_.AvatarArmatureNameChange += OnAvatarArmatureNameChange;
-            view_.DresserSettingsChange += OnDresserSettingsChange;
-            view_.RegenerateMappingsButtonClick += OnRegenerateMappingsButtonClick;
-            view_.ViewEditMappingsButtonClick += OnViewEditMappingsButtonClick;
+            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.DresserChange += OnDresserChange;
+            _view.AvatarArmatureNameChange += OnAvatarArmatureNameChange;
+            _view.DresserSettingsChange += OnDresserSettingsChange;
+            _view.RegenerateMappingsButtonClick += OnRegenerateMappingsButtonClick;
+            _view.ViewEditMappingsButtonClick += OnViewEditMappingsButtonClick;
         }
 
         private void UnsubscribeEvents()
         {
-            view_.Load -= OnLoad;
-            view_.Unload -= OnUnload;
+            _view.Load -= OnLoad;
+            _view.Unload -= OnUnload;
 
-            view_.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            view_.DresserChange -= OnDresserChange;
-            view_.AvatarArmatureNameChange -= OnAvatarArmatureNameChange;
-            view_.DresserSettingsChange -= OnDresserSettingsChange;
-            view_.RegenerateMappingsButtonClick -= OnRegenerateMappingsButtonClick;
-            view_.ViewEditMappingsButtonClick -= OnViewEditMappingsButtonClick;
+            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.DresserChange -= OnDresserChange;
+            _view.AvatarArmatureNameChange -= OnAvatarArmatureNameChange;
+            _view.DresserSettingsChange -= OnDresserSettingsChange;
+            _view.RegenerateMappingsButtonClick -= OnRegenerateMappingsButtonClick;
+            _view.ViewEditMappingsButtonClick -= OnViewEditMappingsButtonClick;
         }
 
         private void ResetMappingEditorContainer()
         {
-            mappingEditorContainer_.dresserSettings = null;
-            mappingEditorContainer_.boneMappings = null;
-            mappingEditorContainer_.boneMappingMode = DTBoneMappingMode.Auto;
+            _mappingEditorContainer.dresserSettings = null;
+            _mappingEditorContainer.boneMappings = null;
+            _mappingEditorContainer.boneMappingMode = DTBoneMappingMode.Auto;
         }
 
         private void GenerateDresserMappings()
         {
             // reset mapping editor container
             ResetMappingEditorContainer();
-            mappingEditorContainer_.dresserSettings = view_.DresserSettings;
+            _mappingEditorContainer.dresserSettings = _view.DresserSettings;
 
             // execute dresser
-            var dresser = DresserRegistry.GetDresserByIndex(view_.SelectedDresserIndex);
-            dresserReport_ = dresser.Execute(view_.DresserSettings, out mappingEditorContainer_.boneMappings);
+            var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
+            _dresserReport = dresser.Execute(_view.DresserSettings, out _mappingEditorContainer.boneMappings);
 
             UpdateDresserReport();
         }
@@ -84,67 +84,67 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
 
-            boneMappingEditorWindow.SetSettings(mappingEditorContainer_);
+            boneMappingEditorWindow.SetSettings(_mappingEditorContainer);
             boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
             boneMappingEditorWindow.Show();
         }
 
         private void InitializeDresserSettings()
         {
-            var dresser = DresserRegistry.GetDresserByName(view_.AvailableDresserKeys[view_.SelectedDresserIndex]);
-            view_.DresserSettings = dresser.DeserializeSettings(module_.serializedDresserConfig ?? "{}");
-            if (view_.DresserSettings == null)
+            var dresser = DresserRegistry.GetDresserByName(_view.AvailableDresserKeys[_view.SelectedDresserIndex]);
+            _view.DresserSettings = dresser.DeserializeSettings(_module.serializedDresserConfig ?? "{}");
+            if (_view.DresserSettings == null)
             {
-                view_.DresserSettings = dresser.NewSettings();
+                _view.DresserSettings = dresser.NewSettings();
             }
         }
 
         private void UpdateDresserReport()
         {
-            if (dresserReport_ != null)
+            if (_dresserReport != null)
             {
-                view_.DresserReportData = new ReportData();
-                var logEntries = dresserReport_.GetLogEntriesAsDictionary();
+                _view.DresserReportData = new ReportData();
+                var logEntries = _dresserReport.GetLogEntriesAsDictionary();
 
-                view_.DresserReportData.errorMsgs.Clear();
+                _view.DresserReportData.errorMsgs.Clear();
                 if (logEntries.ContainsKey(DTReportLogType.Error))
                 {
                     foreach (var logEntry in logEntries[DTReportLogType.Error])
                     {
-                        view_.DresserReportData.errorMsgs.Add(logEntry.message);
+                        _view.DresserReportData.errorMsgs.Add(logEntry.message);
                     }
                 }
 
-                view_.DresserReportData.warnMsgs.Clear();
+                _view.DresserReportData.warnMsgs.Clear();
                 if (logEntries.ContainsKey(DTReportLogType.Warning))
                 {
                     foreach (var logEntry in logEntries[DTReportLogType.Warning])
                     {
-                        view_.DresserReportData.warnMsgs.Add(logEntry.message);
+                        _view.DresserReportData.warnMsgs.Add(logEntry.message);
                     }
                 }
 
-                view_.DresserReportData.infoMsgs.Clear();
+                _view.DresserReportData.infoMsgs.Clear();
                 if (logEntries.ContainsKey(DTReportLogType.Info))
                 {
                     foreach (var logEntry in logEntries[DTReportLogType.Info])
                     {
-                        view_.DresserReportData.infoMsgs.Add(logEntry.message);
+                        _view.DresserReportData.infoMsgs.Add(logEntry.message);
                     }
                 }
             }
             else
             {
-                view_.DresserReportData = null;
+                _view.DresserReportData = null;
             }
         }
 
         private void CheckCorrectDresserSettingsType()
         {
-            var dresser = DresserRegistry.GetDresserByIndex(view_.SelectedDresserIndex);
+            var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
 
             // reinitialize dresser settings if not correct type
-            if (dresser is DTDefaultDresser && !(view_.DresserSettings is DTDefaultDresserSettings))
+            if (dresser is DTDefaultDresser && !(_view.DresserSettings is DTDefaultDresserSettings))
             {
                 InitializeDresserSettings();
             }
@@ -152,18 +152,18 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateDresserSettings()
         {
-            view_.DresserSettings.targetAvatar = configView_.TargetAvatar;
-            view_.DresserSettings.targetWearable = configView_.TargetWearable;
-            cabinet_ = DTEditorUtils.GetAvatarCabinet(configView_.TargetAvatar);
-            if (cabinet_ != null)
+            _view.DresserSettings.targetAvatar = _configView.TargetAvatar;
+            _view.DresserSettings.targetWearable = _configView.TargetWearable;
+            _cabinet = DTEditorUtils.GetAvatarCabinet(_configView.TargetAvatar);
+            if (_cabinet != null)
             {
-                view_.IsAvatarAssociatedWithCabinet = true;
-                view_.AvatarArmatureName = cabinet_.avatarArmatureName;
-                view_.DresserSettings.avatarArmatureName = cabinet_.avatarArmatureName;
+                _view.IsAvatarAssociatedWithCabinet = true;
+                _view.AvatarArmatureName = _cabinet.avatarArmatureName;
+                _view.DresserSettings.avatarArmatureName = _cabinet.avatarArmatureName;
             }
             else
             {
-                view_.IsAvatarAssociatedWithCabinet = false;
+                _view.IsAvatarAssociatedWithCabinet = false;
             }
         }
 
@@ -181,14 +181,14 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnAvatarArmatureNameChange()
         {
-            view_.DresserSettings.avatarArmatureName = view_.AvatarArmatureName;
+            _view.DresserSettings.avatarArmatureName = _view.AvatarArmatureName;
             GenerateDresserMappings();
         }
 
         private void OnDresserSettingsChange()
         {
             // serialize if modified
-            module_.serializedDresserConfig = JsonConvert.SerializeObject(view_.DresserSettings);
+            _module.serializedDresserConfig = JsonConvert.SerializeObject(_view.DresserSettings);
             GenerateDresserMappings();
         }
 
@@ -205,17 +205,17 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         public void UpdateView()
         {
             // list all available dressers
-            view_.AvailableDresserKeys = DresserRegistry.GetAvailableDresserKeys();
-            view_.SelectedDresserIndex = DresserRegistry.GetDresserKeyIndexByTypeName(module_.dresserName);
-            if (view_.SelectedDresserIndex == -1)
+            _view.AvailableDresserKeys = DresserRegistry.GetAvailableDresserKeys();
+            _view.SelectedDresserIndex = DresserRegistry.GetDresserKeyIndexByTypeName(_module.dresserName);
+            if (_view.SelectedDresserIndex == -1)
             {
-                view_.SelectedDresserIndex = 0;
+                _view.SelectedDresserIndex = 0;
             }
 
             var regenerateMappingsNeeded = false;
 
             // initial dresser settings if null
-            if (view_.DresserSettings == null)
+            if (_view.DresserSettings == null)
             {
                 InitializeDresserSettings();
             }
@@ -244,22 +244,22 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         public bool IsValid()
         {
-            var dresser = DresserRegistry.GetDresserByIndex(view_.SelectedDresserIndex);
+            var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
 
-            module_.dresserName = dresser.GetType().FullName;
+            _module.dresserName = dresser.GetType().FullName;
 
             // copy wearable armature name from dresser settings and serialize dresser settings
-            if (view_.DresserSettings != null)
+            if (_view.DresserSettings != null)
             {
-                module_.wearableArmatureName = view_.DresserSettings.wearableArmatureName;
+                _module.wearableArmatureName = _view.DresserSettings.wearableArmatureName;
             }
-            module_.serializedDresserConfig = JsonConvert.SerializeObject(view_.DresserSettings);
+            _module.serializedDresserConfig = JsonConvert.SerializeObject(_view.DresserSettings);
 
             // update values from mapping editor container
-            module_.boneMappingMode = mappingEditorContainer_.boneMappingMode;
-            module_.boneMappings = module_.boneMappingMode != DTBoneMappingMode.Auto ? mappingEditorContainer_.boneMappings?.ToArray() : new DTBoneMapping[0];
+            _module.boneMappingMode = _mappingEditorContainer.boneMappingMode;
+            _module.boneMappings = _module.boneMappingMode != DTBoneMappingMode.Auto ? _mappingEditorContainer.boneMappings?.ToArray() : new DTBoneMapping[0];
 
-            return dresserReport_ != null && !dresserReport_.HasLogType(DTReportLogType.Error) && module_.boneMappings != null;
+            return _dresserReport != null && !_dresserReport.HasLogType(DTReportLogType.Error) && _module.boneMappings != null;
         }
     }
 }

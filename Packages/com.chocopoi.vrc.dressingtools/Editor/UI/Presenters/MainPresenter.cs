@@ -4,11 +4,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class MainPresenter
     {
-        private IMainView view_;
+        private IMainView _view;
 
         public MainPresenter(IMainView view)
         {
-            view_ = view;
+            _view = view;
         }
     }
 }

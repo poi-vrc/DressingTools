@@ -5,39 +5,39 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class DressingPresenter
     {
-        private IDressingSubView view_;
+        private IDressingSubView _view;
 
         public DressingPresenter(IDressingSubView view)
         {
-            view_ = view;
+            _view = view;
 
             SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            view_.Load += OnLoad;
-            view_.Unload += OnUnload;
+            _view.Load += OnLoad;
+            _view.Unload += OnUnload;
 
-            view_.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            view_.AddToCabinetButtonClick += OnAddToCabinetButtonClick;
+            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.AddToCabinetButtonClick += OnAddToCabinetButtonClick;
         }
 
         private void UnsubscribeEvents()
         {
-            view_.Load -= OnLoad;
-            view_.Unload -= OnUnload;
+            _view.Load -= OnLoad;
+            _view.Unload -= OnUnload;
 
-            view_.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            view_.AddToCabinetButtonClick -= OnAddToCabinetButtonClick;
+            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.AddToCabinetButtonClick -= OnAddToCabinetButtonClick;
         }
 
         private void UpdateView()
         {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(view_.TargetAvatar);
+            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
             var cabinetIsNull = cabinet == null;
-            view_.ShowAvatarNoExistingCabinetHelpbox = cabinetIsNull;
-            view_.DisableAddToCabinetButton = cabinetIsNull;
+            _view.ShowAvatarNoExistingCabinetHelpbox = cabinetIsNull;
+            _view.DisableAddToCabinetButton = cabinetIsNull;
         }
 
         private void OnLoad()
@@ -57,18 +57,18 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddToCabinetButtonClick()
         {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(view_.TargetAvatar);
+            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             if (cabinet == null)
             {
                 return;
             }
 
-            DTEditorUtils.AddCabinetWearable(cabinet, view_.Config, view_.TargetWearable);
+            DTEditorUtils.AddCabinetWearable(cabinet, _view.Config, _view.TargetWearable);
 
             // reset and return
-            view_.ResetConfigView();
-            view_.SelectTab(0);
+            _view.ResetConfigView();
+            _view.SelectTab(0);
         }
     }
 }

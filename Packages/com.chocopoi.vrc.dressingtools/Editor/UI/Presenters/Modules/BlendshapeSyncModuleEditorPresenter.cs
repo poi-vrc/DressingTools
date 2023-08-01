@@ -7,38 +7,38 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class BlendshapeSyncModuleEditorPresenter
     {
-        private IBlendshapeSyncModuleEditorView view_;
-        private IWearableConfigView configView_;
-        private BlendshapeSyncModule module_;
+        private IBlendshapeSyncModuleEditorView _view;
+        private IWearableConfigView _configView;
+        private BlendshapeSyncModule _module;
 
         public BlendshapeSyncModuleEditorPresenter(IBlendshapeSyncModuleEditorView view, IWearableConfigView configView, BlendshapeSyncModule module)
         {
-            view_ = view;
-            configView_ = configView;
-            module_ = module;
+            _view = view;
+            _configView = configView;
+            _module = module;
 
             SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            view_.Load += OnLoad;
-            view_.Unload += OnUnload;
+            _view.Load += OnLoad;
+            _view.Unload += OnUnload;
 
-            view_.AddBlendshapeSyncButtonClick += OnAddBlendshapeSyncButtonClick;
+            _view.AddBlendshapeSyncButtonClick += OnAddBlendshapeSyncButtonClick;
         }
 
         private void UnsubscribeEvents()
         {
-            view_.Load -= OnLoad;
-            view_.Unload -= OnUnload;
+            _view.Load -= OnLoad;
+            _view.Unload -= OnUnload;
 
-            view_.AddBlendshapeSyncButtonClick -= OnAddBlendshapeSyncButtonClick;
+            _view.AddBlendshapeSyncButtonClick -= OnAddBlendshapeSyncButtonClick;
         }
 
         private void OnAddBlendshapeSyncButtonClick()
         {
-            module_.blendshapeSyncs.Add(new DTAnimationBlendshapeSync());
+            _module.blendshapeSyncs.Add(new DTAnimationBlendshapeSync());
             UpdateView();
         }
 
@@ -60,22 +60,22 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         public void UpdateView()
         {
             // do not render editor if these two are not available
-            if (configView_.TargetAvatar == null || configView_.TargetWearable == null)
+            if (_configView.TargetAvatar == null || _configView.TargetWearable == null)
             {
-                view_.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
+                _view.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
                 return;
             }
-            view_.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = false;
+            _view.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = false;
 
-            view_.BlendshapeSyncs.Clear();
-            foreach (var blendshapeSync in module_.blendshapeSyncs)
+            _view.BlendshapeSyncs.Clear();
+            foreach (var blendshapeSync in _module.blendshapeSyncs)
             {
-                var avatarTransform = blendshapeSync.avatarPath != null ? configView_.TargetAvatar.transform.Find(blendshapeSync.avatarPath) : null;
+                var avatarTransform = blendshapeSync.avatarPath != null ? _configView.TargetAvatar.transform.Find(blendshapeSync.avatarPath) : null;
                 var avatarSmr = avatarTransform?.GetComponent<SkinnedMeshRenderer>();
                 var avatarMesh = avatarSmr != null ? avatarSmr.sharedMesh : null;
                 var avatarBlendshapeNames = GetBlendshapeNames(avatarMesh);
 
-                var wearableTransform = blendshapeSync.wearablePath != null ? configView_.TargetWearable.transform.Find(blendshapeSync.wearablePath) : null;
+                var wearableTransform = blendshapeSync.wearablePath != null ? _configView.TargetWearable.transform.Find(blendshapeSync.wearablePath) : null;
                 var wearableSmr = wearableTransform?.GetComponent<SkinnedMeshRenderer>();
                 var wearableMesh = wearableSmr != null ? wearableSmr.sharedMesh : null;
                 var wearableBlendshapeNames = GetBlendshapeNames(wearableMesh);
@@ -121,11 +121,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeSyncData.avatarGameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeSyncData.avatarGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(configView_.TargetAvatar.transform, blendshapeSyncData.avatarGameObject.transform))
+                    if (blendshapeSyncData.avatarGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(_configView.TargetAvatar.transform, blendshapeSyncData.avatarGameObject.transform))
                     {
                         // renew path if changed
                         blendshapeSyncData.isAvatarGameObjectInvalid = false;
-                        blendshapeSync.avatarPath = DTRuntimeUtils.GetRelativePath(blendshapeSyncData.avatarGameObject.transform, configView_.TargetAvatar.transform);
+                        blendshapeSync.avatarPath = DTRuntimeUtils.GetRelativePath(blendshapeSyncData.avatarGameObject.transform, _configView.TargetAvatar.transform);
 
                         // generate blendshape names
                         blendshapeSyncData.avatarAvailableBlendshapeNames = GetBlendshapeNames(newMesh);
@@ -145,11 +145,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeSyncData.wearableGameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeSyncData.wearableGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(configView_.TargetWearable.transform, blendshapeSyncData.wearableGameObject.transform))
+                    if (blendshapeSyncData.wearableGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(_configView.TargetWearable.transform, blendshapeSyncData.wearableGameObject.transform))
                     {
                         // renew path if changed
                         blendshapeSyncData.isWearableGameObjectInvalid = false;
-                        blendshapeSync.wearablePath = DTRuntimeUtils.GetRelativePath(blendshapeSyncData.wearableGameObject.transform, configView_.TargetWearable.transform);
+                        blendshapeSync.wearablePath = DTRuntimeUtils.GetRelativePath(blendshapeSyncData.wearableGameObject.transform, _configView.TargetWearable.transform);
 
                         // generate blendshape names
                         blendshapeSyncData.wearableAvailableBlendshapeNames = GetBlendshapeNames(newMesh);
@@ -187,11 +187,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
                 blendshapeSyncData.removeButtonClickEvent = () =>
                 {
-                    module_.blendshapeSyncs.Remove(blendshapeSync);
-                    view_.BlendshapeSyncs.Remove(blendshapeSyncData);
+                    _module.blendshapeSyncs.Remove(blendshapeSync);
+                    _view.BlendshapeSyncs.Remove(blendshapeSyncData);
                 };
 
-                view_.BlendshapeSyncs.Add(blendshapeSyncData);
+                _view.BlendshapeSyncs.Add(blendshapeSyncData);
             }
         }
 

@@ -8,39 +8,39 @@ namespace Chocopoi.DressingTools
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        private Vector2 scrollPos;
+        private Vector2 _scrollPos;
 
-        private Preferences preferences;
+        private Preferences _preferences;
 
-        private int lastSelectedLanguage;
+        private int _lastSelectedLanguage;
 
-        private bool needRepaint;
+        private bool _needRepaint;
 
-        private string[] availableLocales;
+        private string[] _availableLocales;
 
-        private readonly string[] availableLocalesHumanReadable;
+        private readonly string[] _availableLocalesHumanReadable;
 
         public SettingsWindow()
         {
             ReloadPreferences();
 
-            availableLocales = t.GetAvailableLocales();
-            availableLocalesHumanReadable = new string[availableLocales.Length];
-            for (var i = 0; i < availableLocales.Length; i++)
+            _availableLocales = t.GetAvailableLocales();
+            _availableLocalesHumanReadable = new string[_availableLocales.Length];
+            for (var i = 0; i < _availableLocales.Length; i++)
             {
-                availableLocalesHumanReadable[i] = new CultureInfo(availableLocales[i]).NativeName;
+                _availableLocalesHumanReadable[i] = new CultureInfo(_availableLocales[i]).NativeName;
             }
         }
 
         private void DrawSelectLanguageGUI()
         {
-            var selectedLanguage = EditorGUILayout.Popup("Language 言語:", FindArrayItemIndex(availableLocales, preferences.app.selectedLanguage), availableLocalesHumanReadable);
-            if (selectedLanguage != lastSelectedLanguage)
+            var selectedLanguage = EditorGUILayout.Popup("Language 言語:", FindArrayItemIndex(_availableLocales, _preferences.app.selectedLanguage), _availableLocalesHumanReadable);
+            if (selectedLanguage != _lastSelectedLanguage)
             {
-                t.SetLocale(preferences.app.selectedLanguage = availableLocales[selectedLanguage]);
+                t.SetLocale(_preferences.app.selectedLanguage = _availableLocales[selectedLanguage]);
                 PreferencesUtility.SavePreferences();
 
-                lastSelectedLanguage = selectedLanguage;
+                _lastSelectedLanguage = selectedLanguage;
             }
         }
 
@@ -68,10 +68,10 @@ namespace Chocopoi.DressingTools
 
                 // get the branches from manifest and display in GUI
                 var branches = DressingToolsUpdater.GetAvailableBranches();
-                var branchIndex = FindArrayItemIndex(branches, preferences.app.updateBranch);
+                var branchIndex = FindArrayItemIndex(branches, _preferences.app.updateBranch);
                 if (branchIndex == -1)
                 {
-                    GUILayout.Label(t._("label_settings_updater_current_update_branch_cannot_be_found_switching_to_default", preferences.app.updateBranch), EditorStyles.boldLabel);
+                    GUILayout.Label(t._("label_settings_updater_current_update_branch_cannot_be_found_switching_to_default", _preferences.app.updateBranch), EditorStyles.boldLabel);
 
                     branchIndex = FindArrayItemIndex(branches, DressingToolsUpdater.GetDefaultBranchName());
                     if (branchIndex == -1)
@@ -85,13 +85,13 @@ namespace Chocopoi.DressingTools
                 // detect changes and save to file
                 if (branchIndex != selectedUpdateBranch)
                 {
-                    preferences.app.updateBranch = branches[selectedUpdateBranch];
+                    _preferences.app.updateBranch = branches[selectedUpdateBranch];
                     PreferencesUtility.SavePreferences();
                 }
 
                 EditorGUILayout.LabelField(t._("label_settings_updater_current_version", DressingToolsUpdater.GetCurrentVersion()?.fullVersionString));
 
-                var latestVersion = DressingToolsUpdater.GetBranchLatestVersion(preferences.app.updateBranch);
+                var latestVersion = DressingToolsUpdater.GetBranchLatestVersion(_preferences.app.updateBranch);
                 EditorGUILayout.LabelField(t._("label_settings_updater_latest_version", latestVersion.version));
 
                 if (DressingToolsUpdater.IsUpdateAvailable())
@@ -125,26 +125,26 @@ namespace Chocopoi.DressingTools
 
         private void Update()
         {
-            if (needRepaint)
+            if (_needRepaint)
             {
-                needRepaint = false;
+                _needRepaint = false;
                 Repaint();
             }
         }
 
         private void FinishFetchOnlineVersion(DressingToolsUpdater.Manifest manifest)
         {
-            needRepaint = true;
+            _needRepaint = true;
         }
 
         private void ReloadPreferences()
         {
-            preferences = PreferencesUtility.GetPreferences();
+            _preferences = PreferencesUtility.GetPreferences();
         }
 
         private void OnGUI()
         {
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+            _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
 
             DrawSelectLanguageGUI();
 
@@ -158,9 +158,9 @@ namespace Chocopoi.DressingTools
 
             if (GUILayout.Button(t._("button_settings_updater_reset_to_defaults")))
             {
-                PreferencesUtility.ResetToDefaults(preferences);
+                PreferencesUtility.ResetToDefaults(_preferences);
                 PreferencesUtility.SavePreferences();
-                t.SetLocale(preferences.app.selectedLanguage);
+                t.SetLocale(_preferences.app.selectedLanguage);
             }
         }
     }

@@ -26,23 +26,23 @@ namespace Chocopoi.DressingTools.Animations
             public const string IgnoredCouldNotObtainWearableBlendshapeOriginalValue = "animationGenerator.msgCode.warn.ignoredCouldNotObtainWearableBlendshapeOriginalValue";
         }
 
-        private DTReport report;
+        private DTReport _report;
 
-        private GameObject avatarObject;
+        private GameObject _avatarObject;
 
-        private GameObject wearableObject;
+        private GameObject _wearableObject;
 
-        private AnimationGenerationModule module;
+        private AnimationGenerationModule _module;
 
-        private List<IDynamicsProxy> wearableDynamics;
+        private List<IDynamicsProxy> _wearableDynamics;
 
         public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationModule module, GameObject wearableObject, List<IDynamicsProxy> wearableDynamics)
         {
-            this.report = report;
-            this.avatarObject = avatarObject;
-            this.module = module;
-            this.wearableObject = wearableObject;
-            this.wearableDynamics = wearableDynamics;
+            _report = report;
+            _avatarObject = avatarObject;
+            _module = module;
+            _wearableObject = wearableObject;
+            _wearableDynamics = wearableDynamics;
         }
 
         private bool TryGetBlendshapeValue(GameObject obj, string blendshapeName, out float value)
@@ -52,21 +52,21 @@ namespace Chocopoi.DressingTools.Animations
             SkinnedMeshRenderer smr;
             if ((smr = obj.GetComponent<SkinnedMeshRenderer>()) == null)
             {
-                report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSkinnedMeshRendererAttached, obj.name);
+                _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSkinnedMeshRendererAttached, obj.name);
                 return false;
             }
 
             Mesh mesh;
             if ((mesh = smr.sharedMesh) == null)
             {
-                report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoMeshAttached, obj.name);
+                _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoMeshAttached, obj.name);
                 return false;
             }
 
             int blendshapeIndex;
             if ((blendshapeIndex = mesh.GetBlendShapeIndex(blendshapeName)) == -1)
             {
-                report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSuchBlendshape, obj.name, blendshapeName);
+                _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSuchBlendshape, obj.name, blendshapeName);
                 return false;
             }
 
@@ -78,10 +78,10 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var toggle in toggles)
             {
-                var obj = avatarObject.transform.Find(toggle.path);
+                var obj = _avatarObject.transform.Find(toggle.path);
                 if (obj == null)
                 {
-                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarToggleObjectNotFound, toggle.path);
+                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarToggleObjectNotFound, toggle.path);
                 }
                 else
                 {
@@ -98,16 +98,16 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var blendshape in blendshapes)
             {
-                var obj = avatarObject.transform.Find(blendshape.path);
+                var obj = _avatarObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, avatarObject.name, blendshape.path);
+                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _avatarObject.name, blendshape.path);
                     continue;
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
                 {
-                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainAvatarBlendshapeOriginalValue, avatarObject.name, blendshape.path);
+                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainAvatarBlendshapeOriginalValue, _avatarObject.name, blendshape.path);
                     continue;
                 }
 
@@ -124,17 +124,17 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var toggle in toggles)
             {
-                var obj = wearableObject.transform.Find(toggle.path);
+                var obj = _wearableObject.transform.Find(toggle.path);
                 if (obj == null)
                 {
-                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredWearableToggleObjectNotFound, toggle.path);
+                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredWearableToggleObjectNotFound, toggle.path);
                 }
                 else
                 {
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), toggle.state);
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), toggle.state);
                     if (!writeDefaults)
                     {
-                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), obj.gameObject.activeSelf);
+                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), obj.gameObject.activeSelf);
                     }
                 }
             }
@@ -144,23 +144,23 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var blendshape in blendshapes)
             {
-                var obj = wearableObject.transform.Find(blendshape.path);
+                var obj = _wearableObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, wearableObject.name, blendshape.path);
+                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _wearableObject.name, blendshape.path);
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
                 {
-                    report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainWearableBlendshapeOriginalValue, wearableObject.name, blendshape.path);
+                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainWearableBlendshapeOriginalValue, _wearableObject.name, blendshape.path);
                     continue;
                 }
 
-                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), blendshape.blendshapeName, blendshape.value);
+                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), blendshape.blendshapeName, blendshape.value);
                 if (!writeDefaults)
                 {
                     // write the original value if not write defaults
-                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, avatarObject.transform), blendshape.blendshapeName, originalValue);
+                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), blendshape.blendshapeName, originalValue);
                 }
             }
         }
@@ -171,24 +171,24 @@ namespace Chocopoi.DressingTools.Animations
             var disableClip = new AnimationClip();
 
             // prevent unexpected behaviour
-            if (!DTRuntimeUtils.IsGrandParent(avatarObject.transform, wearableObject.transform))
+            if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
 
             // avatar toggles
-            GenerateAvatarToggleAnimations(enableClip, disableClip, module.avatarAnimationOnWear.toggles.ToArray(), writeDefaults);
+            GenerateAvatarToggleAnimations(enableClip, disableClip, _module.avatarAnimationOnWear.toggles.ToArray(), writeDefaults);
 
             // wearable toggles
-            GenerateWearableToggleAnimations(enableClip, disableClip, module.wearableAnimationOnWear.toggles.ToArray(), writeDefaults);
+            GenerateWearableToggleAnimations(enableClip, disableClip, _module.wearableAnimationOnWear.toggles.ToArray(), writeDefaults);
 
             // dynamics
             var visitedDynamicsTransforms = new List<Transform>();
-            foreach (var dynamics in wearableDynamics)
+            foreach (var dynamics in _wearableDynamics)
             {
-                if (!DTRuntimeUtils.IsGrandParent(avatarObject.transform, dynamics.Transform))
+                if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, dynamics.Transform))
                 {
-                    throw new System.Exception(string.Format("Dynamics {0} is not inside avatar {1}, aborting", dynamics.Transform.name, avatarObject.name));
+                    throw new System.Exception(string.Format("Dynamics {0} is not inside avatar {1}, aborting", dynamics.Transform.name, _avatarObject.name));
                 }
 
                 if (visitedDynamicsTransforms.Contains(dynamics.Transform))
@@ -198,10 +198,10 @@ namespace Chocopoi.DressingTools.Animations
                 }
 
                 // enable/disable dynamics object
-                AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(dynamics.Transform, avatarObject.transform), true);
+                AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform), true);
                 if (!writeDefaults)
                 {
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(dynamics.Transform, avatarObject.transform), false);
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform), false);
                 }
 
                 // mark as visited
@@ -209,10 +209,10 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar blendshapes
-            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, module.avatarAnimationOnWear.blendshapes.ToArray(), writeDefaults);
+            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, _module.avatarAnimationOnWear.blendshapes.ToArray(), writeDefaults);
 
             // wearable blendshapes
-            GenerateWearableBlendshapeAnimations(enableClip, disableClip, module.wearableAnimationOnWear.blendshapes.ToArray(), writeDefaults);
+            GenerateWearableBlendshapeAnimations(enableClip, disableClip, _module.wearableAnimationOnWear.blendshapes.ToArray(), writeDefaults);
 
             return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
@@ -220,14 +220,14 @@ namespace Chocopoi.DressingTools.Animations
         public Dictionary<DTWearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations(bool writeDefaults)
         {
             // prevent unexpected behaviour
-            if (!DTRuntimeUtils.IsGrandParent(avatarObject.transform, wearableObject.transform))
+            if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
 
             var dict = new Dictionary<DTWearableCustomizable, System.Tuple<AnimationClip, AnimationClip>>();
 
-            foreach (var customizable in module.wearableCustomizables)
+            foreach (var customizable in _module.wearableCustomizables)
             {
                 var enableClip = new AnimationClip();
                 var disableClip = new AnimationClip();

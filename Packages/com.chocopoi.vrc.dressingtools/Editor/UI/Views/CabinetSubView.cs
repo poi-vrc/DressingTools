@@ -14,25 +14,25 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public bool ShowCreateCabinetWizard { get; set; }
         public bool ShowCabinetWearables { get; set; }
-        public int SelectedCabinetIndex { get => selectedCabinetIndex_; set => selectedCabinetIndex_ = value; }
+        public int SelectedCabinetIndex { get => _selectedCabinetIndex; set => _selectedCabinetIndex = value; }
         public string[] AvailableCabinetSelections { get; set; }
-        public GameObject CabinetAvatarGameObject { get => cabinetAvatarGameObject_; set => cabinetAvatarGameObject_ = value; }
-        public string CabinetAvatarArmatureName { get => cabinetAvatarArmatureName_; set => cabinetAvatarArmatureName_ = value; }
+        public GameObject CabinetAvatarGameObject { get => _cabinetAvatarGameObject; set => _cabinetAvatarGameObject = value; }
+        public string CabinetAvatarArmatureName { get => _cabinetAvatarArmatureName; set => _cabinetAvatarArmatureName = value; }
         public List<WearablePreview> WearablePreviews { get; set; }
-        public GameObject SelectedCreateCabinetGameObject { get => selectedCreateCabinetGameObject_; }
+        public GameObject SelectedCreateCabinetGameObject { get => _selectedCreateCabinetGameObject; }
 
-        private IMainView mainView_;
-        private CabinetPresenter cabinetPresenter_;
-        private GameObject selectedCreateCabinetGameObject_;
-        private int selectedCabinetIndex_;
-        private GameObject cabinetAvatarGameObject_;
-        private string cabinetAvatarArmatureName_;
+        private IMainView _mainView;
+        private CabinetPresenter _cabinetPresenter;
+        private GameObject _selectedCreateCabinetGameObject;
+        private int _selectedCabinetIndex;
+        private GameObject _cabinetAvatarGameObject;
+        private string _cabinetAvatarArmatureName;
 
         public CabinetSubView(IMainView mainView)
         {
-            mainView_ = mainView;
-            cabinetPresenter_ = new CabinetPresenter(this);
-            selectedCabinetIndex_ = 0;
+            _mainView = mainView;
+            _cabinetPresenter = new CabinetPresenter(this);
+            _selectedCabinetIndex = 0;
 
             ShowCreateCabinetWizard = false;
             ShowCabinetWearables = false;
@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void SelectTab(int selectedTab)
         {
-            mainView_.SelectedTab = selectedTab;
+            _mainView.SelectedTab = selectedTab;
         }
 
         public override void OnGUI()
@@ -50,17 +50,17 @@ namespace Chocopoi.DressingTools.UI.Views
             if (ShowCreateCabinetWizard)
             {
                 Label("There are no existing cabinets. Create one below for your avatar:");
-                GameObjectField("Avatar", ref selectedCreateCabinetGameObject_, true);
+                GameObjectField("Avatar", ref _selectedCreateCabinetGameObject, true);
                 Button("Create cabinet", CreateCabinetButtonClick);
             }
 
             if (ShowCabinetWearables)
             {
                 // create dropdown menu for cabinet selection
-                Popup("Cabinet", ref selectedCabinetIndex_, AvailableCabinetSelections);
+                Popup("Cabinet", ref _selectedCabinetIndex, AvailableCabinetSelections);
 
-                GameObjectField("Avatar", ref cabinetAvatarGameObject_, true);
-                TextField("Armature Name", ref cabinetAvatarArmatureName_);
+                GameObjectField("Avatar", ref _cabinetAvatarGameObject, true);
+                TextField("Armature Name", ref _cabinetAvatarArmatureName);
 
                 foreach (var preview in WearablePreviews)
                 {

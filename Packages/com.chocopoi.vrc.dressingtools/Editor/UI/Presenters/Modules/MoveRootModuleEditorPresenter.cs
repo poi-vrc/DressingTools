@@ -6,35 +6,35 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class MoveRootModuleEditorPresenter
     {
-        private IMoveRootModuleEditorView view_;
-        private IWearableConfigView configView_;
-        private MoveRootModule module_;
+        private IMoveRootModuleEditorView _view;
+        private IWearableConfigView _configView;
+        private MoveRootModule _module;
 
         public MoveRootModuleEditorPresenter(IMoveRootModuleEditorView view, IWearableConfigView configView, MoveRootModule module)
         {
-            view_ = view;
-            configView_ = configView;
-            module_ = module;
+            _view = view;
+            _configView = configView;
+            _module = module;
 
             SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            view_.Load += OnLoad;
-            view_.Unload += OnUnload;
+            _view.Load += OnLoad;
+            _view.Unload += OnUnload;
 
-            view_.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            view_.MoveToGameObjectFieldChange += OnMoveToGameObjectFieldChange;
+            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.MoveToGameObjectFieldChange += OnMoveToGameObjectFieldChange;
         }
 
         private void UnsubscribeEvents()
         {
-            view_.Load -= OnLoad;
-            view_.Unload -= OnUnload;
+            _view.Load -= OnLoad;
+            _view.Unload -= OnUnload;
 
-            view_.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            view_.MoveToGameObjectFieldChange -= OnMoveToGameObjectFieldChange;
+            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.MoveToGameObjectFieldChange -= OnMoveToGameObjectFieldChange;
         }
 
         private void OnTargetAvatarOrWearableChange()
@@ -45,14 +45,14 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateView()
         {
-            if (configView_.TargetAvatar != null)
+            if (_configView.TargetAvatar != null)
             {
-                view_.ShowSelectAvatarFirstHelpBox = false;
-                view_.MoveToGameObject = module_.avatarPath != null ? configView_.TargetAvatar.transform.Find(module_.avatarPath)?.gameObject : null;
+                _view.ShowSelectAvatarFirstHelpBox = false;
+                _view.MoveToGameObject = _module.avatarPath != null ? _configView.TargetAvatar.transform.Find(_module.avatarPath)?.gameObject : null;
             }
             else
             {
-                view_.ShowSelectAvatarFirstHelpBox = true;
+                _view.ShowSelectAvatarFirstHelpBox = true;
             }
         }
 
@@ -63,17 +63,17 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ApplyMoveToGameObjectFieldChanges()
         {
-            if (configView_.TargetAvatar != null && view_.MoveToGameObject != null && DTRuntimeUtils.IsGrandParent(configView_.TargetAvatar.transform, view_.MoveToGameObject.transform))
+            if (_configView.TargetAvatar != null && _view.MoveToGameObject != null && DTRuntimeUtils.IsGrandParent(_configView.TargetAvatar.transform, _view.MoveToGameObject.transform))
             {
-                view_.IsGameObjectInvalid = false;
+                _view.IsGameObjectInvalid = false;
 
                 // renew path if valid
-                module_.avatarPath = DTRuntimeUtils.GetRelativePath(view_.MoveToGameObject.transform, configView_.TargetAvatar.transform);
+                _module.avatarPath = DTRuntimeUtils.GetRelativePath(_view.MoveToGameObject.transform, _configView.TargetAvatar.transform);
             }
             else
             {
                 // show helpbox that the path is invalid
-                view_.IsGameObjectInvalid = true;
+                _view.IsGameObjectInvalid = true;
             }
         }
 

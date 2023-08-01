@@ -20,17 +20,17 @@ namespace Chocopoi.DressingTools.UI
 
         private static readonly DTDefaultDresser DefaultDresser = new DTDefaultDresser();
 
-        private static AnimatorController testModeAnimationController;
+        private static AnimatorController s_testModeAnimationController;
 
-        private int dynamicBoneOption = 0;
+        private int _dynamicBoneOption = 0;
 
-        private GameObject activeAvatar;
+        private GameObject _activeAvatar;
 
-        private GameObject clothesToDress;
+        private GameObject _clothesToDress;
 
-        private GameObject lastClothesToDress;
+        private GameObject _lastClothesToDress;
 
-        private string newClothesName;
+        private string _newClothesName;
 
         //private bool useDefaultGeneratedPrefixSuffix = true;
 
@@ -38,29 +38,29 @@ namespace Chocopoi.DressingTools.UI
 
         //private string suffixToBeAdded;
 
-        private bool useCustomArmatureObjectNames = false;
+        private bool _useCustomArmatureObjectNames = false;
 
-        private string avatarArmatureObjectName;
+        private string _avatarArmatureObjectName;
 
-        private string clothesArmatureObjectName;
+        private string _clothesArmatureObjectName;
 
-        private bool removeExistingPrefixSuffix = true;
+        private bool _removeExistingPrefixSuffix = true;
 
-        private bool groupBones = true;
+        private bool _groupBones = true;
 
-        private bool groupDynamics = true;
+        private bool _groupDynamics = true;
 
-        private bool dressNowConfirm = false;
+        private bool _dressNowConfirm = false;
 
-        private int selectedInterface = 0;
+        private int _selectedInterface = 0;
 
-        private DTReport report = null;
+        private DTReport _report = null;
 
         //private bool showStatisticsFoldout = false;
 
-        private Vector2 scrollPos;
+        private Vector2 _scrollPos;
 
-        private bool needClearDirty = false;
+        private bool _needClearDirty = false;
 
         //private bool updateAvailableFoldout = false;
 
@@ -74,9 +74,9 @@ namespace Chocopoi.DressingTools.UI
 
         public void OnEnable()
         {
-            testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Packages/com.chocopoi.vrc.dressingtools/Animations/TestModeAnimationController.controller");
+            s_testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>("Packages/com.chocopoi.vrc.dressingtools/Animations/TestModeAnimationController.controller");
 
-            if (testModeAnimationController == null)
+            if (s_testModeAnimationController == null)
             {
                 Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
             }
@@ -124,9 +124,9 @@ namespace Chocopoi.DressingTools.UI
         private void Update()
         {
             // a dirty way to run repaint on main thread
-            if (needClearDirty)
+            if (_needClearDirty)
             {
-                needClearDirty = false;
+                _needClearDirty = false;
                 Repaint();
             }
         }
@@ -134,7 +134,7 @@ namespace Chocopoi.DressingTools.UI
         private void FinishFetchOnlineVersion(DressingToolsUpdater.Manifest manifest)
         {
             //force redraw
-            needClearDirty = true;
+            _needClearDirty = true;
         }
 
         private void DrawToolFooterGUI()
@@ -172,7 +172,7 @@ namespace Chocopoi.DressingTools.UI
 
         private void DrawReportResult()
         {
-            if (report == null)
+            if (_report == null)
             {
                 EditorGUILayout.HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
                 return;
@@ -180,11 +180,11 @@ namespace Chocopoi.DressingTools.UI
 
             //Result
 
-            if (report.HasLogType(DTReportLogType.Error))
+            if (_report.HasLogType(DTReportLogType.Error))
             {
                 EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
             }
-            else if (report.HasLogType(DTReportLogType.Warning))
+            else if (_report.HasLogType(DTReportLogType.Warning))
             {
                 EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
             }
@@ -229,7 +229,7 @@ namespace Chocopoi.DressingTools.UI
 
         private void DrawDressReportDetails()
         {
-            if (report == null)
+            if (_report == null)
             {
                 return;
             }
@@ -256,13 +256,13 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.LabelField("Logs", EditorStyles.boldLabel);
 
-            DrawLogEntries(report.GetLogEntriesAsDictionary());
+            DrawLogEntries(_report.GetLogEntriesAsDictionary());
         }
 
         private DTDefaultDresserSettings MakeDressSettings()
         {
             DTDefaultDresserDynamicsOption dynamicsOption;
-            switch (dynamicBoneOption)
+            switch (_dynamicBoneOption)
             {
                 default:
                 case 0:
@@ -284,39 +284,39 @@ namespace Chocopoi.DressingTools.UI
 
             return new DTDefaultDresserSettings()
             {
-                targetAvatar = activeAvatar,
-                targetWearable = clothesToDress,
+                targetAvatar = _activeAvatar,
+                targetWearable = _clothesToDress,
                 dynamicsOption = dynamicsOption,
-                avatarArmatureName = avatarArmatureObjectName,
-                wearableArmatureName = clothesArmatureObjectName
+                avatarArmatureName = _avatarArmatureObjectName,
+                wearableArmatureName = _clothesArmatureObjectName
             };
         }
 
         private void DrawNewClothesNameGUI()
         {
-            if (clothesToDress != null && (clothesToDress.name == null || clothesToDress.name == "" || IllegalCharactersRegex.IsMatch(clothesToDress.name)))
+            if (_clothesToDress != null && (_clothesToDress.name == null || _clothesToDress.name == "" || IllegalCharactersRegex.IsMatch(_clothesToDress.name)))
             {
                 //EditorGUILayout.HelpBox(t._("helpbox_error_clothes_name_illegal_characters_detected"), MessageType.Error);
                 EditorGUILayout.HelpBox(t._("helpbox_warn_clothes_name_illegal_characters_detected_may_not_compatible_in_future_versions"), MessageType.Warning);
-                if (newClothesName == null || newClothesName == "")
+                if (_newClothesName == null || _newClothesName == "")
                 {
-                    newClothesName = "NewClothes_" + new System.Random().Next();
+                    _newClothesName = "NewClothes_" + new System.Random().Next();
                 }
-                newClothesName = IllegalCharactersRegex.Replace(newClothesName, "");
+                _newClothesName = IllegalCharactersRegex.Replace(_newClothesName, "");
             }
 
-            if (newClothesName == null || lastClothesToDress != clothesToDress)
+            if (_newClothesName == null || _lastClothesToDress != _clothesToDress)
             {
-                newClothesName = clothesToDress?.name;
+                _newClothesName = _clothesToDress?.name;
             }
-            lastClothesToDress = clothesToDress;
+            _lastClothesToDress = _clothesToDress;
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(clothesToDress == null);
-            newClothesName = EditorGUILayout.TextField(t._("text_new_clothes_name"), newClothesName);
+            EditorGUI.BeginDisabledGroup(_clothesToDress == null);
+            _newClothesName = EditorGUILayout.TextField(t._("text_new_clothes_name"), _newClothesName);
             if (GUILayout.Button(t._("button_rename_clothes_name"), GUILayout.ExpandWidth(false)))
             {
-                clothesToDress.name = newClothesName;
+                _clothesToDress.name = _newClothesName;
             }
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
@@ -324,18 +324,18 @@ namespace Chocopoi.DressingTools.UI
 
         private void DrawCustomArmatureNameGUI()
         {
-            useCustomArmatureObjectNames = GUILayout.Toggle(useCustomArmatureObjectNames, t._("toggle_use_custom_armature_object_names"));
+            _useCustomArmatureObjectNames = GUILayout.Toggle(_useCustomArmatureObjectNames, t._("toggle_use_custom_armature_object_names"));
 
-            if (!useCustomArmatureObjectNames)
+            if (!_useCustomArmatureObjectNames)
             {
-                avatarArmatureObjectName = "Armature";
-                clothesArmatureObjectName = "Armature";
+                _avatarArmatureObjectName = "Armature";
+                _clothesArmatureObjectName = "Armature";
             }
 
-            EditorGUI.BeginDisabledGroup(!useCustomArmatureObjectNames);
+            EditorGUI.BeginDisabledGroup(!_useCustomArmatureObjectNames);
             EditorGUI.indentLevel = 1;
-            avatarArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_avatar_armature_object_name"), avatarArmatureObjectName);
-            clothesArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_clothes_armature_object_name"), clothesArmatureObjectName);
+            _avatarArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_avatar_armature_object_name"), _avatarArmatureObjectName);
+            _clothesArmatureObjectName = EditorGUILayout.TextField(t._("text_custom_clothes_armature_object_name"), _clothesArmatureObjectName);
             EditorGUI.indentLevel = 0;
             EditorGUI.EndDisabledGroup();
         }
@@ -347,21 +347,21 @@ namespace Chocopoi.DressingTools.UI
             EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
 
 #if VRC_SDK_VRCSDK3
-            if (activeAvatar == null)
+            if (_activeAvatar == null)
             {
                 VRC.SDKBase.VRC_AvatarDescriptor[] avatars = FindObjectsOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
                 foreach (var avatar in avatars)
                 {
                     if (!avatar.name.StartsWith("DressingToolsPreview_"))
                     {
-                        activeAvatar = avatar.gameObject;
+                        _activeAvatar = avatar.gameObject;
                     }
                 }
             }
 #endif
-            activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(GameObject), true);
+            _activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), _activeAvatar, typeof(GameObject), true);
 
-            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+            _clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), _clothesToDress, typeof(GameObject), true);
 
             DrawNewClothesNameGUI();
 
@@ -369,7 +369,7 @@ namespace Chocopoi.DressingTools.UI
 
             // simple mode defaults to group dynamics
 
-            groupDynamics = true;
+            _groupDynamics = true;
 
             // simple mode defaults to use generated prefix
 
@@ -383,14 +383,14 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.Separator();
 
-            if (clothesToDress != null)
+            if (_clothesToDress != null)
             {
-                EditorGUILayout.LabelField(t._("label_new_bone_name_preview", clothesToDress.name));
+                EditorGUILayout.LabelField(t._("label_new_bone_name_preview", _clothesToDress.name));
             }
 
             // simple mode defaults to handle dynamic bones automatically
 
-            dynamicBoneOption = 0;
+            _dynamicBoneOption = 0;
 
             EditorGUILayout.LabelField(t._("label_dynamic_bone_auto_handled"));
         }
@@ -400,19 +400,19 @@ namespace Chocopoi.DressingTools.UI
             GUILayout.Label(t._("label_select_avatar"), EditorStyles.boldLabel);
 
 #if VRC_SDK_VRCSDK3
-            if (activeAvatar == null)
+            if (_activeAvatar == null)
             {
                 VRC.SDKBase.VRC_AvatarDescriptor[] avatars = FindObjectsOfType<VRC.SDKBase.VRC_AvatarDescriptor>();
                 foreach (var avatar in avatars)
                 {
                     if (!avatar.name.StartsWith("DressingToolsPreview_"))
                     {
-                        activeAvatar = avatar.gameObject;
+                        _activeAvatar = avatar.gameObject;
                     }
                 }
             }
 #endif
-            activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), activeAvatar, typeof(GameObject), true);
+            _activeAvatar = (GameObject)EditorGUILayout.ObjectField(t._("object_active_avatar"), _activeAvatar, typeof(GameObject), true);
 
             EditorGUILayout.Separator();
 
@@ -420,7 +420,7 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.HelpBox(t._("helpbox_info_move_clothes_into_place"), MessageType.Info);
 
-            clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), clothesToDress, typeof(GameObject), true);
+            _clothesToDress = (GameObject)EditorGUILayout.ObjectField(t._("object_clothes_to_dress"), _clothesToDress, typeof(GameObject), true);
 
             DrawNewClothesNameGUI();
 
@@ -432,9 +432,9 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.Separator();
 
-            groupBones = GUILayout.Toggle(groupBones, t._("toggle_group_bones"));
+            _groupBones = GUILayout.Toggle(_groupBones, t._("toggle_group_bones"));
 
-            groupDynamics = GUILayout.Toggle(groupDynamics, t._("toggle_group_dynamics"));
+            _groupDynamics = GUILayout.Toggle(_groupDynamics, t._("toggle_group_dynamics"));
 
             DTEditorUtils.DrawHorizontalLine();
 
@@ -459,7 +459,7 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.Separator();
 
-            removeExistingPrefixSuffix = GUILayout.Toggle(removeExistingPrefixSuffix, t._("toggle_remove_existing_prefix_suffix_in_clothes_bone"));
+            _removeExistingPrefixSuffix = GUILayout.Toggle(_removeExistingPrefixSuffix, t._("toggle_remove_existing_prefix_suffix_in_clothes_bone"));
 
             DTEditorUtils.DrawHorizontalLine();
 
@@ -474,7 +474,7 @@ namespace Chocopoi.DressingTools.UI
                 wordWrap = true
             };
 
-            dynamicBoneOption = GUILayout.SelectionGrid(dynamicBoneOption, new string[] {
+            _dynamicBoneOption = GUILayout.SelectionGrid(_dynamicBoneOption, new string[] {
                 " " + t._("radio_db_remove_and_parent_const"),
                 " " + t._("radio_db_keep_clothes_and_parent_const_if_need"),
                 " " + t._("radio_db_create_child_and_exclude"),
@@ -499,7 +499,7 @@ namespace Chocopoi.DressingTools.UI
             }
 
             // replicate the v1 behaviour to generate a preview GameObject
-            string avatarNewName = "DressingToolsPreview_" + activeAvatar.name;
+            string avatarNewName = "DressingToolsPreview_" + _activeAvatar.name;
 
             GameObject targetAvatar;
             GameObject targetWearable;
@@ -507,13 +507,13 @@ namespace Chocopoi.DressingTools.UI
             if (write)
             {
                 // write directly
-                targetAvatar = activeAvatar;
-                targetWearable = clothesToDress;
+                targetAvatar = _activeAvatar;
+                targetWearable = _clothesToDress;
             }
             else
             {
                 // create a copy of the avatar and wearable
-                targetAvatar = Instantiate(activeAvatar);
+                targetAvatar = Instantiate(_activeAvatar);
                 targetAvatar.name = avatarNewName;
 
                 var newAvatarPosition = targetAvatar.transform.position;
@@ -521,9 +521,9 @@ namespace Chocopoi.DressingTools.UI
                 targetAvatar.transform.position = newAvatarPosition;
 
                 // if clothes is not inside avatar, we instantiate a new copy
-                if (!DTRuntimeUtils.IsGrandParent(activeAvatar.transform, clothesToDress.transform))
+                if (!DTRuntimeUtils.IsGrandParent(_activeAvatar.transform, _clothesToDress.transform))
                 {
-                    targetWearable = Instantiate(clothesToDress);
+                    targetWearable = Instantiate(_clothesToDress);
 
                     var newClothesPosition = targetWearable.transform.position;
                     newClothesPosition.x -= 20;
@@ -532,7 +532,7 @@ namespace Chocopoi.DressingTools.UI
                 else
                 {
                     // otherwise, we find the inner wearable and use it
-                    targetWearable = targetAvatar.transform.Find(clothesToDress.name).gameObject;
+                    targetWearable = targetAvatar.transform.Find(_clothesToDress.name).gameObject;
                 }
 
                 var animator = targetAvatar.GetComponent<Animator>();
@@ -540,7 +540,7 @@ namespace Chocopoi.DressingTools.UI
                 //add animation controller
                 if (animator != null)
                 {
-                    animator.runtimeAnimatorController = testModeAnimationController;
+                    animator.runtimeAnimatorController = s_testModeAnimationController;
                 }
 
                 //add dummy focus sceneview script
@@ -550,11 +550,11 @@ namespace Chocopoi.DressingTools.UI
             // check if it's a prefab
             if (PrefabUtility.IsPartOfAnyPrefab(targetWearable))
             {
-                if (PrefabUtility.GetPrefabInstanceStatus(clothesToDress) == PrefabInstanceStatus.NotAPrefab)
+                if (PrefabUtility.GetPrefabInstanceStatus(_clothesToDress) == PrefabInstanceStatus.NotAPrefab)
                 {
                     // if not in scene, we cannot just unpack it but need to instantiate first
                     targetWearable = (GameObject)PrefabUtility.InstantiatePrefab(targetWearable);
-                    targetWearable.name = clothesToDress.name;
+                    targetWearable.name = _clothesToDress.name;
                 }
 
                 // unpack completely the prefab
@@ -562,10 +562,10 @@ namespace Chocopoi.DressingTools.UI
             }
 
             // parent to avatar
-            targetWearable.name = clothesToDress.name;
+            targetWearable.name = _clothesToDress.name;
             targetWearable.transform.SetParent(targetAvatar.transform);
 
-            report = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
+            _report = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
 
             var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar);
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable);
@@ -583,13 +583,13 @@ namespace Chocopoi.DressingTools.UI
 
         private void DrawToolContentGUI()
         {
-            selectedInterface = GUILayout.Toolbar(selectedInterface, new string[] { t._("tab_simple_mode"), t._("tab_advanced_mode") });
+            _selectedInterface = GUILayout.Toolbar(_selectedInterface, new string[] { t._("tab_simple_mode"), t._("tab_advanced_mode") });
 
             DTEditorUtils.DrawHorizontalLine();
 
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+            _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
 
-            if (selectedInterface == 0)
+            if (_selectedInterface == 0)
             {
                 DrawSimpleGUI();
             }
@@ -611,38 +611,38 @@ namespace Chocopoi.DressingTools.UI
 
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUI.BeginDisabledGroup(clothesToDress == null || clothesToDress.name == ""); //|| illegalCharactersRegex.IsMatch(clothesToDress.name));
+            EditorGUI.BeginDisabledGroup(_clothesToDress == null || _clothesToDress.name == ""); //|| illegalCharactersRegex.IsMatch(clothesToDress.name));
             if (GUILayout.Button(t._("button_check_and_preview"), checkBtnStyle, GUILayout.Height(40)))
             {
                 GenerateMappingsAndApply(false);
-                dressNowConfirm = false;
-                Debug.Log("[DressingToolsLegacy] Dress report generated with " + report.LogEntries.Count + " log entries");
+                _dressNowConfirm = false;
+                Debug.Log("[DressingToolsLegacy] Dress report generated with " + _report.LogEntries.Count + " log entries");
             }
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.BeginDisabledGroup(report == null || report.HasLogType(DTReportLogType.Error));
+            EditorGUI.BeginDisabledGroup(_report == null || _report.HasLogType(DTReportLogType.Error));
             if (GUILayout.Button(t._("button_test_now"), checkBtnStyle, GUILayout.Height(40)))
             {
                 EditorApplication.EnterPlaymode();
             }
             EditorGUILayout.EndHorizontal();
-            dressNowConfirm = GUILayout.Toggle(dressNowConfirm, t._("toggle_dress_declaration"));
+            _dressNowConfirm = GUILayout.Toggle(_dressNowConfirm, t._("toggle_dress_declaration"));
             EditorGUI.EndDisabledGroup();
 
-            EditorGUI.BeginDisabledGroup(report == null || report.HasLogType(DTReportLogType.Error) || !dressNowConfirm);
+            EditorGUI.BeginDisabledGroup(_report == null || _report.HasLogType(DTReportLogType.Error) || !_dressNowConfirm);
             if (GUILayout.Button(t._("button_dress_now"), checkBtnStyle, GUILayout.Height(40)) &&
                 EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_confirmation_content"), t._("dialog_button_yes"), t._("dialog_button_no")))
             {
                 GenerateMappingsAndApply(true);
-                Debug.Log("[DressingToolsLegacy] Executed with " + report.LogEntries.Count + " log entries");
+                Debug.Log("[DressingToolsLegacy] Executed with " + _report.LogEntries.Count + " log entries");
 
-                if (!report.HasLogType(DTReportLogType.Error))
+                if (!_report.HasLogType(DTReportLogType.Error))
                 {
                     EditorUtility.DisplayDialog(t._("label_tool_name"), t._("dialog_dress_completed_content"), t._("dialog_button_ok"));
 
                     // reset
-                    clothesToDress = null;
-                    report = null;
+                    _clothesToDress = null;
+                    _report = null;
                 }
                 else
                 {

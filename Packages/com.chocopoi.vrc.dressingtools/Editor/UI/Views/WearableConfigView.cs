@@ -15,53 +15,53 @@ namespace Chocopoi.DressingTools.UI.Views
         private static readonly I18n t = I18n.GetInstance();
 
         public event Action ForceUpdateView;
-        public event Action TargetAvatarOrWearableChange { add { viewParent_.TargetAvatarOrWearableChange += value; } remove { viewParent_.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _viewParent.TargetAvatarOrWearableChange += value; } remove { _viewParent.TargetAvatarOrWearableChange -= value; } }
         public event Action TargetAvatarConfigChange;
         public event Action MetaInfoChange;
         public event Action AddModuleButtonClick;
 
         public string[] AvailableModuleKeys { get; set; }
-        public int SelectedAvailableModule { get => selectedAvailableModule_; set => selectedAvailableModule_ = value; }
-        public GameObject TargetAvatar { get => viewParent_.TargetAvatar; }
-        public GameObject TargetWearable { get => viewParent_.TargetWearable; }
-        public DTWearableConfig Config { get => viewParent_.Config; }
+        public int SelectedAvailableModule { get => _selectedAvailableModule; set => _selectedAvailableModule = value; }
+        public GameObject TargetAvatar { get => _viewParent.TargetAvatar; }
+        public GameObject TargetWearable { get => _viewParent.TargetWearable; }
+        public DTWearableConfig Config { get => _viewParent.Config; }
         public List<ModuleData> ModuleDataList { get; set; }
         public bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
         public bool IsInvalidAvatarPrefabGuid { get; set; }
         public string AvatarPrefabGuid { get; set; }
-        public GameObject GuidReferencePrefab { get => guidReferencePrefab_; set => guidReferencePrefab_ = value; }
-        public bool TargetAvatarConfigUseAvatarObjectName { get => targetAvatarConfigUseAvatarObjectName_; set => targetAvatarConfigUseAvatarObjectName_ = value; }
-        public string TargetAvatarConfigAvatarName { get => targetAvatarConfigAvatarName_; set => targetAvatarConfigAvatarName_ = value; }
+        public GameObject GuidReferencePrefab { get => _guidReferencePrefab; set => _guidReferencePrefab = value; }
+        public bool TargetAvatarConfigUseAvatarObjectName { get => _targetAvatarConfigUseAvatarObjectName; set => _targetAvatarConfigUseAvatarObjectName = value; }
+        public string TargetAvatarConfigAvatarName { get => _targetAvatarConfigAvatarName; set => _targetAvatarConfigAvatarName = value; }
         public string TargetAvatarConfigArmatureName { get; set; }
         public string TargetAvatarConfigWorldPosition { get; set; }
         public string TargetAvatarConfigWorldRotation { get; set; }
         public string TargetAvatarConfigWorldAvatarLossyScale { get; set; }
         public string TargetAvatarConfigWorldWearableLossyScale { get; set; }
         public string ConfigUuid { get; set; }
-        public bool MetaInfoUseWearableObjectName { get => metaInfoUseWearableObjectName_; set => metaInfoUseWearableObjectName_ = value; }
-        public string MetaInfoWearableName { get => metaInfoWearableName_; set => metaInfoWearableName_ = value; }
-        public string MetaInfoAuthor { get => metaInfoAuthor_; set => metaInfoAuthor_ = value; }
+        public bool MetaInfoUseWearableObjectName { get => _metaInfoUseWearableObjectName; set => _metaInfoUseWearableObjectName = value; }
+        public string MetaInfoWearableName { get => _metaInfoWearableName; set => _metaInfoWearableName = value; }
+        public string MetaInfoAuthor { get => _metaInfoAuthor; set => _metaInfoAuthor = value; }
         public string MetaInfoCreatedTime { get; set; }
         public string MetaInfoUpdatedTime { get; set; }
-        public string MetaInfoDescription { get => metaInfoDescription_; set => metaInfoDescription_ = value; }
+        public string MetaInfoDescription { get => _metaInfoDescription; set => _metaInfoDescription = value; }
 
-        private WearableConfigPresenter presenter_;
-        private IWearableConfigViewParent viewParent_;
-        private int selectedAvailableModule_;
-        private bool foldoutMetaInfo_;
-        private bool foldoutTargetAvatarConfigs_;
-        private GameObject guidReferencePrefab_;
-        private bool targetAvatarConfigUseAvatarObjectName_;
-        private string targetAvatarConfigAvatarName_;
-        private bool metaInfoUseWearableObjectName_;
-        private string metaInfoWearableName_;
-        private string metaInfoAuthor_;
-        private string metaInfoDescription_;
+        private WearableConfigPresenter _presenter;
+        private IWearableConfigViewParent _viewParent;
+        private int _selectedAvailableModule;
+        private bool _foldoutMetaInfo;
+        private bool _foldoutTargetAvatarConfigs;
+        private GameObject _guidReferencePrefab;
+        private bool _targetAvatarConfigUseAvatarObjectName;
+        private string _targetAvatarConfigAvatarName;
+        private bool _metaInfoUseWearableObjectName;
+        private string _metaInfoWearableName;
+        private string _metaInfoAuthor;
+        private string _metaInfoDescription;
 
         public WearableConfigView(IWearableConfigViewParent viewParent)
         {
-            viewParent_ = viewParent;
-            presenter_ = new WearableConfigPresenter(this);
+            _viewParent = viewParent;
+            _presenter = new WearableConfigPresenter(this);
 
             AvailableModuleKeys = new string[0];
             ModuleDataList = new List<ModuleData>();
@@ -77,16 +77,16 @@ namespace Chocopoi.DressingTools.UI.Views
             MetaInfoCreatedTime = null;
             MetaInfoUpdatedTime = null;
 
-            selectedAvailableModule_ = 0;
-            foldoutMetaInfo_ = false;
-            foldoutTargetAvatarConfigs_ = false;
-            guidReferencePrefab_ = null;
-            targetAvatarConfigUseAvatarObjectName_ = false;
-            targetAvatarConfigAvatarName_ = null;
-            metaInfoUseWearableObjectName_ = false;
-            metaInfoWearableName_ = null;
-            metaInfoAuthor_ = null;
-            metaInfoDescription_ = null;
+            _selectedAvailableModule = 0;
+            _foldoutMetaInfo = false;
+            _foldoutTargetAvatarConfigs = false;
+            _guidReferencePrefab = null;
+            _targetAvatarConfigUseAvatarObjectName = false;
+            _targetAvatarConfigAvatarName = null;
+            _metaInfoUseWearableObjectName = false;
+            _metaInfoWearableName = null;
+            _metaInfoAuthor = null;
+            _metaInfoDescription = null;
         }
 
         public void RaiseForceUpdateView()
@@ -98,7 +98,7 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             BeginHorizontal();
             {
-                Popup("Select Module:", ref selectedAvailableModule_, AvailableModuleKeys);
+                Popup("Select Module:", ref _selectedAvailableModule, AvailableModuleKeys);
                 Button("Add", AddModuleButtonClick, GUILayout.ExpandWidth(false));
             }
             EndHorizontal();
@@ -117,8 +117,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawAvatarConfigsGUI()
         {
-            BeginFoldoutBox(ref foldoutTargetAvatarConfigs_, "Target Avatar Configuration");
-            if (foldoutTargetAvatarConfigs_)
+            BeginFoldoutBox(ref _foldoutTargetAvatarConfigs, "Target Avatar Configuration");
+            if (_foldoutTargetAvatarConfigs)
             {
                 HelpBox("This allows other users to be able to find your configuration for their avatars and wearables once uploaded.", MessageType.Info);
 
@@ -132,14 +132,14 @@ namespace Chocopoi.DressingTools.UI.Views
                     {
                         HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
                     }
-                    GameObjectField("GUID Reference Prefab", ref guidReferencePrefab_, true, TargetAvatarConfigChange);
+                    GameObjectField("GUID Reference Prefab", ref _guidReferencePrefab, true, TargetAvatarConfigChange);
 
                     ReadOnlyTextField("GUID", IsInvalidAvatarPrefabGuid ? "(Not available)" : AvatarPrefabGuid);
 
-                    ToggleLeft("Use avatar object's name", ref targetAvatarConfigUseAvatarObjectName_, TargetAvatarConfigChange);
-                    BeginDisabled(targetAvatarConfigUseAvatarObjectName_);
+                    ToggleLeft("Use avatar object's name", ref _targetAvatarConfigUseAvatarObjectName, TargetAvatarConfigChange);
+                    BeginDisabled(_targetAvatarConfigUseAvatarObjectName);
                     {
-                        DelayedTextField("Name", ref targetAvatarConfigAvatarName_, TargetAvatarConfigChange);
+                        DelayedTextField("Name", ref _targetAvatarConfigAvatarName, TargetAvatarConfigChange);
                     }
                     EndDisabled();
 
@@ -157,24 +157,24 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawMetaInfoGUI()
         {
-            BeginFoldoutBox(ref foldoutMetaInfo_, "Meta Information");
-            if (foldoutMetaInfo_)
+            BeginFoldoutBox(ref _foldoutMetaInfo, "Meta Information");
+            if (_foldoutMetaInfo)
             {
                 ReadOnlyTextField("UUID", ConfigUuid);
 
-                ToggleLeft("Use wearable object's name", ref metaInfoUseWearableObjectName_, MetaInfoChange);
-                BeginDisabled(metaInfoUseWearableObjectName_);
+                ToggleLeft("Use wearable object's name", ref _metaInfoUseWearableObjectName, MetaInfoChange);
+                BeginDisabled(_metaInfoUseWearableObjectName);
                 {
-                    DelayedTextField("Name", ref metaInfoWearableName_, MetaInfoChange);
+                    DelayedTextField("Name", ref _metaInfoWearableName, MetaInfoChange);
                 }
                 EndDisabled();
-                DelayedTextField("Author", ref metaInfoAuthor_, MetaInfoChange);
+                DelayedTextField("Author", ref _metaInfoAuthor, MetaInfoChange);
 
                 ReadOnlyTextField("Created Time", MetaInfoCreatedTime);
                 ReadOnlyTextField("Updated Time", MetaInfoUpdatedTime);
 
                 Label("Description");
-                TextArea(ref metaInfoDescription_, MetaInfoChange);
+                TextArea(ref _metaInfoDescription, MetaInfoChange);
             }
             EndFoldoutBox();
         }
@@ -204,6 +204,6 @@ namespace Chocopoi.DressingTools.UI.Views
             DrawMetaInfoGUI();
         }
 
-        public bool IsValid() => presenter_.IsValid();
+        public bool IsValid() => _presenter.IsValid();
     }
 }
