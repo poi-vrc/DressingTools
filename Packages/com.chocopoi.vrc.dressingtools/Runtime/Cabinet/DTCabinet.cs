@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.Cabinet
 {
     [AddComponentMenu("DressingTools/DT Cabinet")]
+    [DefaultExecutionOrder(-19999)]
     public class DTCabinet : DTBaseComponent
     {
         public GameObject avatarGameObject;
@@ -20,16 +21,10 @@ namespace Chocopoi.DressingTools.Cabinet
             new DTCabinetApplier(report, this).Execute();
         }
 
-        // Start is called before the first frame update
         void Start()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            // TODO: the report shouldn't put here
+            Apply(new DTReport());
         }
     }
 }

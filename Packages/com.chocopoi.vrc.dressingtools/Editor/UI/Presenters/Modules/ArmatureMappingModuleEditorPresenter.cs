@@ -41,7 +41,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
             _view.DresserChange += OnDresserChange;
-            _view.AvatarArmatureNameChange += OnAvatarArmatureNameChange;
+            _view.ModuleSettingsChange += OnModuleSettingsChange;
             _view.DresserSettingsChange += OnDresserSettingsChange;
             _view.RegenerateMappingsButtonClick += OnRegenerateMappingsButtonClick;
             _view.ViewEditMappingsButtonClick += OnViewEditMappingsButtonClick;
@@ -54,7 +54,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
             _view.DresserChange -= OnDresserChange;
-            _view.AvatarArmatureNameChange -= OnAvatarArmatureNameChange;
+            _view.ModuleSettingsChange -= OnModuleSettingsChange;
             _view.DresserSettingsChange -= OnDresserSettingsChange;
             _view.RegenerateMappingsButtonClick -= OnRegenerateMappingsButtonClick;
             _view.ViewEditMappingsButtonClick -= OnViewEditMappingsButtonClick;
@@ -179,9 +179,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             GenerateDresserMappings();
         }
 
-        private void OnAvatarArmatureNameChange()
+        private void OnModuleSettingsChange()
         {
             _view.DresserSettings.avatarArmatureName = _view.AvatarArmatureName;
+            _module.groupBones = _view.GroupBones;
+            _module.removeExistingPrefixSuffix = _view.RemoveExistingPrefixSuffix;
             GenerateDresserMappings();
         }
 
@@ -211,6 +213,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             {
                 _view.SelectedDresserIndex = 0;
             }
+
+            _view.GroupBones = _module.groupBones;
+            _view.RemoveExistingPrefixSuffix = _module.removeExistingPrefixSuffix;
 
             var regenerateMappingsNeeded = false;
 

@@ -12,5 +12,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
         void SelectTab(int selectedTab);
         void ResetConfigView();
         void ForceUpdateCabinetSubView();
+        bool IsConfigValid();
     }
 }

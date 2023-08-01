@@ -327,7 +327,40 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public bool IsValid()
         {
-            return true;
+            // prepare config
+            _view.Config.configVersion = DTWearableConfig.CurrentConfigVersion;
+
+            // TODO: multiple GUIDs
+            if (_view.GuidReferencePrefab != null || _view.TargetAvatar != null)
+            {
+                var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
+                var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
+                if (invalidAvatarPrefabGuid)
+                {
+                    if (_view.Config.targetAvatarConfig.guids.Count > 0)
+                    {
+                        _view.Config.targetAvatarConfig.guids.Clear();
+                    }
+                }
+                else
+                {
+                    if (_view.Config.targetAvatarConfig.guids.Count != 1)
+                    {
+                        _view.Config.targetAvatarConfig.guids.Clear();
+                        _view.Config.targetAvatarConfig.guids.Add(avatarPrefabGuid);
+                    }
+                }
+            }
+
+            var ready = true;
+
+            foreach (var module in _view.ModuleDataList)
+            {
+                // ask the module editor that whether the module config is valid
+                ready &= module.editor.IsValid();
+            }
+
+            return ready;
         }
     }
 }

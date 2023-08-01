@@ -41,6 +41,11 @@ namespace Chocopoi.DressingTools.UI.Views
             _configView = new WearableConfigView(this);
         }
 
+        public bool IsConfigValid()
+        {
+            return _configView.IsValid();
+        }
+
         public void SelectTab(int selectedTab)
         {
             _mainView.SelectedTab = selectedTab;

@@ -16,7 +16,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
         public event Action DresserChange;
-        public event Action AvatarArmatureNameChange;
+        public event Action ModuleSettingsChange;
         public event Action DresserSettingsChange;
         public event Action RegenerateMappingsButtonClick;
         public event Action ViewEditMappingsButtonClick;
@@ -27,12 +27,16 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public int SelectedDresserIndex { get => _selectedDresserIndex; set => _selectedDresserIndex = value; }
         public bool IsAvatarAssociatedWithCabinet { get; set; }
         public string AvatarArmatureName { get => _avatarArmatureName; set => _avatarArmatureName = value; }
+        public bool RemoveExistingPrefixSuffix { get => _removeExistingPrefixSuffix; set => _removeExistingPrefixSuffix = value; }
+        public bool GroupBones { get => _groupBones; set => _groupBones = value; }
 
         private ArmatureMappingModuleEditorPresenter _presenter;
         private IWearableConfigView _configView;
         private int _selectedDresserIndex;
         private string _avatarArmatureName;
         private bool _foldoutDresserReportLogEntries;
+        private bool _removeExistingPrefixSuffix;
+        private bool _groupBones;
 
         public ArmatureMappingModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
         {
@@ -41,6 +45,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             _selectedDresserIndex = 0;
             _avatarArmatureName = null;
             _foldoutDresserReportLogEntries = true;
+            _groupBones = true;
+            _removeExistingPrefixSuffix = true;
 
             DresserReportData = null;
             DresserSettings = null;
@@ -112,9 +118,11 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             }
             BeginDisabled(IsAvatarAssociatedWithCabinet);
             {
-                DelayedTextField("Avatar Armature Name", ref _avatarArmatureName, AvatarArmatureNameChange);
+                DelayedTextField("Avatar Armature Name", ref _avatarArmatureName, ModuleSettingsChange);
             }
             EndDisabled();
+            ToggleLeft("Remove existing prefixes and suffixes", ref _removeExistingPrefixSuffix, ModuleSettingsChange);
+            ToggleLeft("Group bones", ref _groupBones, ModuleSettingsChange);
 
             // TODO: the current way to draw dresser settings is not in MVP pattern
             if (DresserSettings != null)

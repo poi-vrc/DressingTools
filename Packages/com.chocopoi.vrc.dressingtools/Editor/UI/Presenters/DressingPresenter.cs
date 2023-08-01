@@ -1,5 +1,6 @@
 ﻿using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -57,6 +58,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddToCabinetButtonClick()
         {
+            if (!_view.IsConfigValid())
+            {
+                Debug.Log("[DressingTools] Invalid configuration. Cannot proceed adding to cabinet");
+                return;
+            }
+
             var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             if (cabinet == null)

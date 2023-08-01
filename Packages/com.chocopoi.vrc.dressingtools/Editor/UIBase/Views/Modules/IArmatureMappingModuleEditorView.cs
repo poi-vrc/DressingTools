@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
     {
         event Action TargetAvatarOrWearableChange;
         event Action DresserChange;
-        event Action AvatarArmatureNameChange;
+        event Action ModuleSettingsChange;
         event Action DresserSettingsChange;
         event Action RegenerateMappingsButtonClick;
         event Action ViewEditMappingsButtonClick;
@@ -34,5 +34,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         int SelectedDresserIndex { get; set; }
         bool IsAvatarAssociatedWithCabinet { get; set; }
         string AvatarArmatureName { get; set; }
+        bool RemoveExistingPrefixSuffix { get; set; }
+        bool GroupBones { get; set; }
     }
 }
