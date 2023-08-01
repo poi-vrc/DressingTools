@@ -8,8 +8,14 @@ namespace Chocopoi.DressingTools.UIBase
 {
     public abstract class EditorViewBase : IEditorView
     {
+        public event Action ForceUpdateView;
         public event Action Load;
         public event Action Unload;
+
+        public virtual void RaiseForceUpdateViewEvent()
+        {
+            ForceUpdateView?.Invoke();
+        }
 
         public abstract void OnGUI();
 

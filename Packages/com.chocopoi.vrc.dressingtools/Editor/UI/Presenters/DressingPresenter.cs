@@ -69,6 +69,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // reset and return
             _view.ResetConfigView();
             _view.SelectTab(0);
+
+            _view.ForceUpdateCabinetSubView();
         }
     }
 }

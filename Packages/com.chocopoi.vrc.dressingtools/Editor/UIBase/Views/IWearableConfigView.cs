@@ -14,7 +14,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface IWearableConfigView : IEditorView
     {
-        event Action ForceUpdateView;
         event Action TargetAvatarOrWearableChange;
         event Action TargetAvatarConfigChange;
         event Action MetaInfoChange;
@@ -44,7 +43,5 @@ namespace Chocopoi.DressingTools.UIBase.Views
         string MetaInfoCreatedTime { get; set; }
         string MetaInfoUpdatedTime { get; set; }
         string MetaInfoDescription { get; set; }
-
-        void RaiseForceUpdateView();
     }
 }

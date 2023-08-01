@@ -46,6 +46,11 @@ namespace Chocopoi.DressingTools.UI.Views
             _mainView.SelectedTab = selectedTab;
         }
 
+        public void ForceUpdateCabinetSubView()
+        {
+            _mainView.ForceUpdateCabinetSubView();
+        }
+
         public void ResetConfigView()
         {
             // reset parameters
@@ -54,7 +59,7 @@ namespace Chocopoi.DressingTools.UI.Views
             Config = new DTWearableConfig();
 
             // force update the config view
-            _configView.RaiseForceUpdateView();
+            _configView.RaiseForceUpdateViewEvent();
         }
 
         public override void OnEnable()

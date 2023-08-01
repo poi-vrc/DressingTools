@@ -14,7 +14,6 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         private static readonly I18n t = I18n.GetInstance();
 
-        public event Action ForceUpdateView;
         public event Action TargetAvatarOrWearableChange { add { _viewParent.TargetAvatarOrWearableChange += value; } remove { _viewParent.TargetAvatarOrWearableChange -= value; } }
         public event Action TargetAvatarConfigChange;
         public event Action MetaInfoChange;
@@ -87,11 +86,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _metaInfoWearableName = null;
             _metaInfoAuthor = null;
             _metaInfoDescription = null;
-        }
-
-        public void RaiseForceUpdateView()
-        {
-            ForceUpdateView?.Invoke();
         }
 
         private void DrawModulesGUI()

@@ -23,6 +23,11 @@ namespace Chocopoi.DressingTools.UI.View
             _settingsSubView = new SettingsSubView(this);
         }
 
+        public void ForceUpdateCabinetSubView()
+        {
+            _cabinetSubView.RaiseForceUpdateViewEvent();
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();

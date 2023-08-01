@@ -22,6 +22,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.AddWearableButtonClick += OnAddWearableButtonClick;
             _view.CreateCabinetButtonClick += OnCreateCabinetButtonClick;
+            _view.ForceUpdateView += OnForceUpdateView;
         }
 
         private void UnsubscribeEvents()
@@ -31,6 +32,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.AddWearableButtonClick -= OnAddWearableButtonClick;
             _view.CreateCabinetButtonClick -= OnCreateCabinetButtonClick;
+            _view.ForceUpdateView -= OnForceUpdateView;
+        }
+
+        private void OnForceUpdateView()
+        {
+            UpdateView();
         }
 
         private void UpdateView()
