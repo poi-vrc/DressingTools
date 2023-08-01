@@ -338,7 +338,9 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return false;
             }
 
-            if (!ApplyBoneMappings(report, config.info.name, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableGameObject.transform, wearableGameObject.transform, ""))
+            var generatedName = string.Format("{0}-{1}", config.info.name, GUID.Generate().ToString());
+
+            if (!ApplyBoneMappings(report, generatedName, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableGameObject.transform, wearableGameObject.transform, ""))
             {
                 report.LogErrorLocalized(LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
                 return false;
