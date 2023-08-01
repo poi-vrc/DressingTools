@@ -49,6 +49,17 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public bool groupBones;
 
+        public ArmatureMappingModule()
+        {
+            dresserName = null;
+            wearableArmatureName = null;
+            boneMappingMode = DTBoneMappingMode.Auto;
+            boneMappings = null;
+            serializedDresserConfig = "{}";
+            removeExistingPrefixSuffix = true;
+            groupBones = true;
+        }
+
         private bool GenerateMappings(DTReport report, string avatarArmatureName, string wearableName, GameObject targetAvatar, GameObject targetWearable, out List<DTBoneMapping> resultantBoneMappings)
         {
             // execute dresser
