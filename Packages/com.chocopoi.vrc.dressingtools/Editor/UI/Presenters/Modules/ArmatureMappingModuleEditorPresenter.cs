@@ -15,17 +15,17 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     internal class ArmatureMappingModuleEditorPresenter
     {
         private IArmatureMappingModuleEditorView _view;
-        private IWearableConfigView _configView;
+        private IModuleEditorViewParent _parentView;
         private ArmatureMappingModule _module;
 
         private DTReport _dresserReport = null;
         private DTMappingEditorContainer _mappingEditorContainer;
         private DTCabinet _cabinet;
 
-        public ArmatureMappingModuleEditorPresenter(IArmatureMappingModuleEditorView view, IWearableConfigView configView, ArmatureMappingModule module)
+        public ArmatureMappingModuleEditorPresenter(IArmatureMappingModuleEditorView view, IModuleEditorViewParent parentView, ArmatureMappingModule module)
         {
             _view = view;
-            _configView = configView;
+            _parentView = parentView;
             _module = module;
 
             _mappingEditorContainer = new DTMappingEditorContainer();
@@ -77,6 +77,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
             _dresserReport = dresser.Execute(_view.DresserSettings, out _mappingEditorContainer.boneMappings);
 
+            ApplySettings();
             UpdateDresserReport();
         }
 
@@ -152,9 +153,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateDresserSettings()
         {
-            _view.DresserSettings.targetAvatar = _configView.TargetAvatar;
-            _view.DresserSettings.targetWearable = _configView.TargetWearable;
-            _cabinet = DTEditorUtils.GetAvatarCabinet(_configView.TargetAvatar);
+            _view.DresserSettings.targetAvatar = _parentView.TargetAvatar;
+            _view.DresserSettings.targetWearable = _parentView.TargetWearable;
+            _cabinet = DTEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
                 _view.IsAvatarAssociatedWithCabinet = true;
@@ -247,10 +248,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             UnsubscribeEvents();
         }
 
-        public bool IsValid()
+        private void ApplySettings()
         {
             var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
-
             _module.dresserName = dresser.GetType().FullName;
 
             // copy wearable armature name from dresser settings and serialize dresser settings
@@ -263,7 +263,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             // update values from mapping editor container
             _module.boneMappingMode = _mappingEditorContainer.boneMappingMode;
             _module.boneMappings = _module.boneMappingMode != DTBoneMappingMode.Auto ? _mappingEditorContainer.boneMappings?.ToArray() : new DTBoneMapping[0];
+        }
 
+        public bool IsValid()
+        {
+            ApplySettings();
             return _dresserReport != null && !_dresserReport.HasLogType(DTReportLogType.Error) && _module.boneMappings != null;
         }
     }

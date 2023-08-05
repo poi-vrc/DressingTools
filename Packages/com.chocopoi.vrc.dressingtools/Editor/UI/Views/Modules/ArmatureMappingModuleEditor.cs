@@ -14,7 +14,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _parentView.TargetAvatarOrWearableChange += value; } remove { _parentView.TargetAvatarOrWearableChange -= value; } }
         public event Action DresserChange;
         public event Action ModuleSettingsChange;
         public event Action DresserSettingsChange;
@@ -31,17 +31,17 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public bool GroupBones { get => _groupBones; set => _groupBones = value; }
 
         private ArmatureMappingModuleEditorPresenter _presenter;
-        private IWearableConfigView _configView;
+        private IModuleEditorViewParent _parentView;
         private int _selectedDresserIndex;
         private string _avatarArmatureName;
         private bool _foldoutDresserReportLogEntries;
         private bool _removeExistingPrefixSuffix;
         private bool _groupBones;
 
-        public ArmatureMappingModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
+        public ArmatureMappingModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target) : base(parentView, target)
         {
-            _configView = configView;
-            _presenter = new ArmatureMappingModuleEditorPresenter(this, configView, (ArmatureMappingModule)target);
+            _parentView = parentView;
+            _presenter = new ArmatureMappingModuleEditorPresenter(this, parentView, (ArmatureMappingModule)target);
             _selectedDresserIndex = 0;
             _avatarArmatureName = null;
             _foldoutDresserReportLogEntries = true;

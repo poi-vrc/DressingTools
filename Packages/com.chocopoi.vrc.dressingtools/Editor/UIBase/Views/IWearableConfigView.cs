@@ -12,17 +12,14 @@ namespace Chocopoi.DressingTools.UIBase.Views
         public Action removeButtonOnClickEvent;
     }
 
-    internal interface IWearableConfigView : IEditorView
+    internal interface IWearableConfigView : IEditorView, IModuleEditorViewParent
     {
-        event Action TargetAvatarOrWearableChange;
         event Action TargetAvatarConfigChange;
         event Action MetaInfoChange;
         event Action AddModuleButtonClick;
 
         string[] AvailableModuleKeys { get; set; }
         int SelectedAvailableModule { get; set; }
-        GameObject TargetAvatar { get; }
-        GameObject TargetWearable { get; }
         DTWearableConfig Config { get; }
         List<ModuleData> ModuleDataList { get; set; }
         bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }

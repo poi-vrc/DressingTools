@@ -31,7 +31,6 @@ namespace Chocopoi.DressingTools.Wearable
             };
             targetAvatarConfig = new DTAvatarConfig();
             modules = new List<DTWearableModuleBase>();
-            modules.Add(new ArmatureMappingModule());
         }
 
         public bool HasUnknownModules()

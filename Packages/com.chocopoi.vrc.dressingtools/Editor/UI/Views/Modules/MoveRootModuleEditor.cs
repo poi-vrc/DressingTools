@@ -13,20 +13,20 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _parentView.TargetAvatarOrWearableChange += value; } remove { _parentView.TargetAvatarOrWearableChange -= value; } }
         public event Action MoveToGameObjectFieldChange;
         public bool ShowSelectAvatarFirstHelpBox { get; set; }
         public bool IsGameObjectInvalid { get; set; }
         public GameObject MoveToGameObject { get => _moveToGameObject; set => _moveToGameObject = value; }
 
         private MoveRootModuleEditorPresenter _presenter;
-        private IWearableConfigView _configView;
+        private IModuleEditorViewParent _parentView;
         private GameObject _moveToGameObject;
 
-        public MoveRootModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
+        public MoveRootModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target) : base(parentView, target)
         {
-            _configView = configView;
-            _presenter = new MoveRootModuleEditorPresenter(this, configView, (MoveRootModule)target);
+            _parentView = parentView;
+            _presenter = new MoveRootModuleEditorPresenter(this, parentView, (MoveRootModule)target);
             ShowSelectAvatarFirstHelpBox = true;
             IsGameObjectInvalid = true;
         }

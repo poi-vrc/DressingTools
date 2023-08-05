@@ -9,13 +9,13 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     internal class AnimationGenerationModuleEditorPresenter
     {
         private IAnimationGenerationModuleEditorView _view;
-        private IWearableConfigView _configView;
+        private IModuleEditorViewParent _parentView;
         private AnimationGenerationModule _module;
 
-        public AnimationGenerationModuleEditorPresenter(IAnimationGenerationModuleEditorView view, IWearableConfigView configView, AnimationGenerationModule module)
+        public AnimationGenerationModuleEditorPresenter(IAnimationGenerationModuleEditorView view, IModuleEditorViewParent parentView, AnimationGenerationModule module)
         {
             _view = view;
-            _configView = configView;
+            _parentView = parentView;
             _module = module;
 
             SubscribeEvents();
@@ -201,10 +201,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateAnimationGenerationAvatarOnWear()
         {
-            if (_configView.TargetAvatar != null)
+            if (_parentView.TargetAvatar != null)
             {
                 _view.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = false;
-                UpdateAnimationPreset(_configView.TargetAvatar.transform, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData);
+                UpdateAnimationPreset(_parentView.TargetAvatar.transform, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData);
             }
             else
             {
@@ -214,10 +214,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateAnimationGenerationWearableOnWear()
         {
-            if (_configView.TargetWearable != null)
+            if (_parentView.TargetWearable != null)
             {
                 _view.ShowCannotRenderPresetWithoutTargetWearableHelpBox = false;
-                UpdateAnimationPreset(_configView.TargetWearable.transform, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData);
+                UpdateAnimationPreset(_parentView.TargetWearable.transform, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData);
             }
             else
             {

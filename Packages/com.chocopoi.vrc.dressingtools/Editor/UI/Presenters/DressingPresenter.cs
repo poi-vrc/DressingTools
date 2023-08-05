@@ -21,7 +21,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload += OnUnload;
 
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            _view.AddToCabinetButtonClick += OnAddToCabinetButtonClick;
+            _view.DoAddToCabinetEvent += OnAddToCabinetButtonClick;
         }
 
         private void UnsubscribeEvents()
@@ -30,7 +30,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload -= OnUnload;
 
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            _view.AddToCabinetButtonClick -= OnAddToCabinetButtonClick;
+            _view.DoAddToCabinetEvent -= OnAddToCabinetButtonClick;
         }
 
         private void UpdateView()
@@ -58,6 +58,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddToCabinetButtonClick()
         {
+            Debug.Log("Add");
             if (!_view.IsConfigValid())
             {
                 Debug.Log("[DressingTools] Invalid configuration. Cannot proceed adding to cabinet");
@@ -74,7 +75,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             DTEditorUtils.AddCabinetWearable(cabinet, _view.Config, _view.TargetWearable);
 
             // reset and return
-            _view.ResetConfigView();
+            _view.ResetWizardAndConfigView();
             _view.SelectTab(0);
 
             _view.ForceUpdateCabinetSubView();

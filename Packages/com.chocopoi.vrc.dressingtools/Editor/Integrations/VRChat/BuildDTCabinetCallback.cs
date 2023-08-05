@@ -34,6 +34,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 var hooks = new IBuildDTCabinetHook[]
                 {
                     new ApplyCabinetHook(cabinet),
+                    new GenerateAnimationsHook(cabinet),
                 };
 
                 // execute hooks

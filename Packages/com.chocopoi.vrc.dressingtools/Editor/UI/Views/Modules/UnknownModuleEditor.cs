@@ -11,7 +11,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public UnknownModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
+        public UnknownModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target) : base(parentView, target)
         {
         }
 

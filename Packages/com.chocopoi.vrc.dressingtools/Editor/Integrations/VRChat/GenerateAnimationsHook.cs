@@ -17,7 +17,8 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal class GenerateAnimationsHook : IBuildDTCabinetHook
     {
-        private const string GeneratedAssetsFolder = "Assets/_DTGeneratedAssets";
+        private const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
+        private const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
         private DTCabinet _cabinet;
 
         public GenerateAnimationsHook(DTCabinet cabinet)
@@ -40,6 +41,12 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         public bool OnPreprocessAvatar(GameObject avatarGameObject)
         {
             EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
+
+            // prepare folder
+            if (!AssetDatabase.IsValidFolder(GeneratedAssetsPath))
+            {
+                AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
+            }
 
             // get the avatar descriptor
             var avatarDescriptor = avatarGameObject.GetComponent<VRCAvatarDescriptor>();
@@ -94,7 +101,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         
             // create an empty clip
             var emptyClip = new AnimationClip();
-            AssetDatabase.CreateAsset(emptyClip, GeneratedAssetsFolder + "/DT_EmptyClip.anim");
+            AssetDatabase.CreateAsset(emptyClip, GeneratedAssetsPath + "/DT_EmptyClip.anim");
             var pairs = new Dictionary<int, Motion>
             {
                 { 0, emptyClip }
@@ -131,7 +138,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 // TODO: write defaults settings
                 var wearAnimations = animationGenerator.GenerateWearAnimations(true);
                 pairs.Add(i + 1, wearAnimations.Item1); // enable clip
-                AssetDatabase.CreateAsset(wearAnimations.Item1, GeneratedAssetsFolder + "/cpDT_" + wearables[i].name + ".anim");
+                AssetDatabase.CreateAsset(wearAnimations.Item1, GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
                 // generate expression menu
                 subMenu.AddToggle(config.info.name, "cpDT_Cabinet", i + 1);
@@ -140,7 +147,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, true, null, refTransition);
 
             EditorUtility.DisplayProgressBar("DressingTools", "Generating expression menu...", 0);
-            subMenu.CreateAsset(GeneratedAssetsFolder + "/cpDT_Cabinet.asset")
+            subMenu.CreateAsset(GeneratedAssetsPath + "/cpDT_Cabinet.asset")
                 .EndNewSubMenu();
 
             AssetDatabase.SaveAssets();

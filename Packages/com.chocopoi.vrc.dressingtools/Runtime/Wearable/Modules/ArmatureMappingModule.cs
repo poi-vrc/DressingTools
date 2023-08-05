@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -28,6 +28,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             public const string MappingGenerationHasErrors = "appliers.default.msgCode.error.mappingGenerationHasErrors";
             public const string ApplyingBoneMappingHasErrors = "appliers.default.msgCode.error.applyingBoneMappingHasErrors";
         }
+
+        private static System.Random random = new System.Random();
 
         private const string LogLabel = "ArmatureModule";
 
@@ -327,6 +329,15 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
+        private static string RandomString(int length)
+        {
+            // i just copied from stackoverflow :D
+            // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings?page=1&tab=scoredesc#tab-top
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
         public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
         {
             // scan for wearable dynamics
@@ -338,7 +349,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return false;
             }
 
-            var generatedName = string.Format("{0}-{1}", config.info.name, GUID.Generate().ToString());
+            var generatedName = string.Format("{0}-{1}", config.info.name, RandomString(32));
 
             if (!ApplyBoneMappings(report, generatedName, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableGameObject.transform, wearableGameObject.transform, ""))
             {

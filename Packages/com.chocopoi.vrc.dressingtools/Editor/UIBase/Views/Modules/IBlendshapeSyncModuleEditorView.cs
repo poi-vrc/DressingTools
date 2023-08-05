@@ -52,7 +52,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface IBlendshapeSyncModuleEditorView : IEditorView
     {
+        event Action TargetAvatarOrWearableChange;
         event Action AddBlendshapeSyncButtonClick;
+        GameObject TargetAvatar { get; }
+        GameObject TargetWearable { get; }
         bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
         List<BlendshapeSyncData> BlendshapeSyncs { get; set; }
     }

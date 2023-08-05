@@ -14,13 +14,13 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         public bool foldout;
 
-        protected IWearableConfigView configView;
+        protected IModuleEditorViewParent parentView;
 
         protected DTWearableModuleBase target;
 
-        public ModuleEditor(IWearableConfigView configView, DTWearableModuleBase target)
+        public ModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target)
         {
-            this.configView = configView;
+            this.parentView = parentView;
             this.target = target;
         }
 

@@ -11,7 +11,7 @@ namespace Chocopoi.DressingTools.UI.Views
     internal class DressingSubView : EditorViewBase, IDressingSubView, IWearableConfigViewParent
     {
         public event Action TargetAvatarOrWearableChange;
-        public event Action AddToCabinetButtonClick;
+        public event Action DoAddToCabinetEvent;
         public GameObject TargetAvatar { get => _targetAvatar; set => _targetAvatar = value; }
         public GameObject TargetWearable { get => _targetWearable; set => _targetWearable = value; }
         public DTWearableConfig Config { get; set; }
@@ -23,7 +23,9 @@ namespace Chocopoi.DressingTools.UI.Views
         private IMainView _mainView;
         private GameObject _targetAvatar;
         private GameObject _targetWearable;
+        private WearableSetupWizardView _wizardView;
         private WearableConfigView _configView;
+        private int _currentMode;
 
         public DressingSubView(IMainView mainView)
         {
@@ -38,12 +40,13 @@ namespace Chocopoi.DressingTools.UI.Views
             DisableAddToCabinetButton = true;
             Config = new DTWearableConfig();
 
+            _wizardView = new WearableSetupWizardView(this);
             _configView = new WearableConfigView(this);
         }
 
         public bool IsConfigValid()
         {
-            return _configView.IsValid();
+            return _currentMode == 0 ? _wizardView.IsValid() : _configView.IsValid();
         }
 
         public void SelectTab(int selectedTab)
@@ -56,12 +59,22 @@ namespace Chocopoi.DressingTools.UI.Views
             _mainView.ForceUpdateCabinetSubView();
         }
 
-        public void ResetConfigView()
+        public void RaiseDoAddToCabinetEvent()
+        {
+            DoAddToCabinetEvent?.Invoke();
+        }
+
+        public void ResetWizardAndConfigView()
         {
             // reset parameters
             TargetAvatar = null;
             TargetWearable = null;
             Config = new DTWearableConfig();
+
+            _wizardView.CurrentStep = 0;
+            _wizardView.TargetAvatar = null;
+            _wizardView.TargetWearable = null;
+            _wizardView.RaiseForceUpdateViewEvent();
 
             // force update the config view
             _configView.RaiseForceUpdateViewEvent();
@@ -90,23 +103,44 @@ namespace Chocopoi.DressingTools.UI.Views
 
             GameObjectField("Wearable", ref _targetWearable, true, TargetAvatarOrWearableChange);
 
-            _configView.OnGUI();
+            HorizontalLine();
 
             BeginHorizontal();
             {
-                BeginDisabled(!_configView.IsValid());
-                {
-                    BeginDisabled(DisableAddToCabinetButton);
-                    {
-                        Button("Add to cabinet", AddToCabinetButtonClick);
-                    }
-                    EndDisabled();
-
-                    Button("Save to file");
-                }
-                EndDisabled();
+                GUILayout.FlexibleSpace();
+                // TODO: ask wizard to write back data to here on mode change
+                Toolbar(ref _currentMode, new string[] { "Wizard", "Advanced" });
             }
             EndHorizontal();
+
+            Separator();
+
+            if (_currentMode == 0)
+            {
+                // Wizard mode
+                _wizardView.OnGUI();
+            }
+            else if (_currentMode == 1)
+            {
+                // Fully-custom advanced mode
+                _configView.OnGUI();
+
+                BeginHorizontal();
+                {
+                    BeginDisabled(!_configView.IsValid());
+                    {
+                        BeginDisabled(DisableAddToCabinetButton);
+                        {
+                            Button("Add to cabinet", DoAddToCabinetEvent);
+                        }
+                        EndDisabled();
+
+                        Button("Save to file");
+                    }
+                    EndDisabled();
+                }
+                EndHorizontal();
+            }
         }
     }
 }

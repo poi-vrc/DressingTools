@@ -7,13 +7,13 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     internal class MoveRootModuleEditorPresenter
     {
         private IMoveRootModuleEditorView _view;
-        private IWearableConfigView _configView;
+        private IModuleEditorViewParent _parentView;
         private MoveRootModule _module;
 
-        public MoveRootModuleEditorPresenter(IMoveRootModuleEditorView view, IWearableConfigView configView, MoveRootModule module)
+        public MoveRootModuleEditorPresenter(IMoveRootModuleEditorView view, IModuleEditorViewParent parentView, MoveRootModule module)
         {
             _view = view;
-            _configView = configView;
+            _parentView = parentView;
             _module = module;
 
             SubscribeEvents();
@@ -45,10 +45,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateView()
         {
-            if (_configView.TargetAvatar != null)
+            if (_parentView.TargetAvatar != null)
             {
                 _view.ShowSelectAvatarFirstHelpBox = false;
-                _view.MoveToGameObject = _module.avatarPath != null ? _configView.TargetAvatar.transform.Find(_module.avatarPath)?.gameObject : null;
+                _view.MoveToGameObject = _module.avatarPath != null ? _parentView.TargetAvatar.transform.Find(_module.avatarPath)?.gameObject : null;
             }
             else
             {
@@ -63,12 +63,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ApplyMoveToGameObjectFieldChanges()
         {
-            if (_configView.TargetAvatar != null && _view.MoveToGameObject != null && DTRuntimeUtils.IsGrandParent(_configView.TargetAvatar.transform, _view.MoveToGameObject.transform))
+            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DTRuntimeUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
             {
                 _view.IsGameObjectInvalid = false;
 
                 // renew path if valid
-                _module.avatarPath = DTRuntimeUtils.GetRelativePath(_view.MoveToGameObject.transform, _configView.TargetAvatar.transform);
+                _module.avatarPath = DTRuntimeUtils.GetRelativePath(_view.MoveToGameObject.transform, _parentView.TargetAvatar.transform);
             }
             else
             {

@@ -13,7 +13,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { _configView.TargetAvatarOrWearableChange += value; } remove { _configView.TargetAvatarOrWearableChange -= value; } }
+        public event Action TargetAvatarOrWearableChange { add { _parentView.TargetAvatarOrWearableChange += value; } remove { _parentView.TargetAvatarOrWearableChange -= value; } }
         public event Action AvatarOnWearPresetChangeEvent;
         public event Action AvatarOnWearPresetSaveEvent;
         public event Action AvatarOnWearPresetDeleteEvent;
@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public PresetData WearableOnWearPresetData { get; set; }
 
         private AnimationGenerationModuleEditorPresenter _presenter;
-        private IWearableConfigView _configView;
+        private IModuleEditorViewParent _parentView;
         private bool _foldoutAnimationGenerationAvatarOnWear;
         private bool _foldoutAnimationGenerationWearableOnWear;
         private bool _foldoutAvatarAnimationPresetToggles;
@@ -39,10 +39,10 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _foldoutWearableAnimationPresetToggles;
         private bool _foldoutWearableAnimationPresetBlendshapes;
 
-        public AnimationGenerationModuleEditor(IWearableConfigView configView, DTWearableModuleBase target) : base(configView, target)
+        public AnimationGenerationModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target) : base(parentView, target)
         {
-            _configView = configView;
-            _presenter = new AnimationGenerationModuleEditorPresenter(this, configView, (AnimationGenerationModule)target);
+            _parentView = parentView;
+            _presenter = new AnimationGenerationModuleEditorPresenter(this, parentView, (AnimationGenerationModule)target);
 
             ShowCannotRenderPresetWithoutTargetAvatarHelpBox = true;
             ShowCannotRenderPresetWithoutTargetWearableHelpBox = true;
