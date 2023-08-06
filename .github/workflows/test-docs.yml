@@ -1,0 +1,25 @@
+name: Test documentations
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "docs/**"
+
+jobs:
+  test-deploy:
+    name: Test deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install dependencies
+        run: cd docs && npm ci
+      - name: Test build website
+        run: cd docs && npm run build

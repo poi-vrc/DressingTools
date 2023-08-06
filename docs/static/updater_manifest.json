@@ -1,0 +1,23 @@
+{
+    "info": {
+        "version": 1,
+        "compat_version": 1
+    },
+    "default_branch": "stable",
+    "branches": [
+        {
+            "name": "stable",
+            "version": "1.2.1-stable",
+            "updated_at": "2023-05-07T00:14:09.423Z",
+            "github_url": "https://github.com/poi-vrc/DressingTools/releases/tag/1.2.1-stable",
+            "booth_url": "https://chocopoi.booth.pm/items/3639300"
+        },
+        {
+            "name": "nightly",
+            "version": "1.2.1-nightly",
+            "updated_at": "2023-05-07T00:22:56.693Z",
+            "github_url": "https://github.com/poi-vrc/DressingTools/releases/tag/1.2.1-nightly",
+            "booth_url": "https://chocopoi.booth.pm/items/3639300"
+        }
+    ]
+}
