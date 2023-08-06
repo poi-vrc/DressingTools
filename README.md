@@ -1,5 +1,22 @@
-# DressingTools<sup>2</sup> [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/)
-Simple but advanced automated cabinet system. No more hussles to change or put on multiple wearables on your avatar!
+<div align="center">
+  <a href="#">
+    <img src="logo/png/dt-banner-pink.png" width="50%">
+  </a>
+  
+  <br>
+  <br>
+  
+  <p>
+    A simple but advanced, non-destructive and automated cabinet system.
+  </p>
+  
+  <a href="https://weblate.chocopoi.com/projects/dressingtools/">
+    <img alt="Translation Badge" src="https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg">
+  </a>
+  
+  <br>
+  <br>
+</div>
 
 [[Download latest stable 最新安定版のダウンロード]](https://github.com/poi-vrc/DressingTools/releases/latest)
 
@@ -28,4 +45,8 @@ More details will be disclosed in the online documentation in the future.
 - Centralized wearable configuration
 
 ## License ライセンス
-[tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) This project is licensed under the GPLv3 License. Please make sure your project is licensed under the GPLv3 and published open-source to the users. Copyright (c) 2022-2023 poi-vrc.
+This project is mainly licensed **under the GPLv3 License**. ([tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))) Please make sure your derived project is licensed under the GPLv3 and published open-source to the users.
+
+Please be noted that logo assets resources in the `logo` folder is [separately licensed under specific terms](logo/README.md) by **chocopoi**.
+
+Copyright (c) 2022-2023 poi-vrc.
