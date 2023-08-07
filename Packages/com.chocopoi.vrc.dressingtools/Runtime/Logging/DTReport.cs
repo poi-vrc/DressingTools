@@ -102,7 +102,7 @@ namespace Chocopoi.DressingTools.Logging
 
         public void LogLocalized(DTReportLogType type, string label, string code, params object[] args)
         {
-            Log(type, label, t._(code, args));
+            Log(type, label, t._(code, args), code);
         }
 
         public void AppendReport(DTReport report)
