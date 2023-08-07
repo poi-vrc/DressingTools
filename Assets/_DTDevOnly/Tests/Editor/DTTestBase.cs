@@ -16,7 +16,7 @@ namespace Chocopoi.DressingTools.Tests
         protected T LoadEditorTestAsset<T>(string relativePath) where T : Object
         {
             // load test asset from resources folder
-            var path = "Packages/com.chocopoi.vrc.dressingtools/Tests/Editor/Resources/" + GetType().Name + "/" + relativePath;
+            var path = "Assets/_DTDevOnly/Tests/Editor/Resources/" + GetType().Name + "/" + relativePath;
             var obj = AssetDatabase.LoadAssetAtPath<T>(path);
             Assert.NotNull(obj, "Could not find test asset at path:" + path);
             return obj;
