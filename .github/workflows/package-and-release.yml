@@ -1,0 +1,125 @@
+name: Package and Release
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+  pull_request:
+  create:
+    ref_type: tag
+  workflow_dispatch:
+
+env:
+  packageName: "com.chocopoi.vrc.dressingtools"
+
+permissions:
+  contents: write
+
+jobs:
+  unity-packaging:
+    name: Unity Packaging
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.prop }}
+      zipFile: ${{ env.zipFile }}
+      unityPackage: ${{ env.unityPackage }}
+      packageName: ${{ env.packageName }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+          
+      - name: Obtain package version
+        id: version
+        uses: notiz-dev/github-action-json-property@7c8cf5cc36eb85d8d287a8086a39dac59628eb31
+        with: 
+            path: "Packages/${{env.packageName}}/package.json"
+            prop_path: "version"
+    
+      - name: Set Environment Variables
+        run: |
+          echo "zipFile=${{ env.packageName }}-${{ steps.version.outputs.prop }}".zip >> $GITHUB_ENV
+          echo "unityPackage=${{ env.packageName }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_ENV
+        
+      - name: Create Zip
+        uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+        with:
+          type: "zip"
+          directory: "Packages/${{env.packageName}}/"
+          filename: "../../${{env.zipFile}}" # make the zip file two directories up, since we start two directories in above
+          
+      - run: find "Packages/${{env.packageName}}/" -name \*.meta >> metaList
+          
+      - name: Create UnityPackage
+        uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
+        with:
+          package-path: ${{ env.unityPackage }}
+          include-files: metaList
+          
+      # upload artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: DT-${{ steps.version.outputs.prop }}
+          path: |
+            ${{ env.zipFile }}
+            ${{ env.unityPackage }}
+            Packages/${{ env.packageName }}/package.json
+
+  upload-release:
+    name: Upload Release
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_type == 'tag' }}
+    needs: unity-packaging
+    steps:
+      # checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Checking if tag name is equal to version from code
+        run: if [ ${{ github.ref_name }} != ${{ needs.unity-packaging.outputs.version }} ]; then exit 1; fi
+      # get previous tag
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "poi-vrc/github-action-get-previous-tag@v1.1.0"
+        with:
+          fallback: ${{ needs.unity-packaging.outputs.version }}
+      # download artifact
+      - uses: actions/download-artifact@v2
+        with:
+          name: DT-${{ needs.unity-packaging.outputs.version }}
+      - name: "Generate release changelog"
+        id: generateChangelog
+        uses: poi-vrc/action-github-changelog-generator@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sinceTag: ${{ steps.previoustag.outputs.tag }}
+          futureRelease: ${{ needs.unity-packaging.outputs.version }}
+          output: CHANGELOG.md
+      # create release
+      - name: Release prerelease
+        uses: poi-vrc/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          prerelease: true
+          files: |
+            ${{ needs.unity-packaging.outputs.zipFile }}
+            ${{ needs.unity-packaging.outputs.unityPackage }}
+            package.json
+      # checkout to gh-pages
+      # - name: Checkout to gh-pages
+        # uses: actions/checkout@v3
+        # with:
+          # ref: gh-pages
+      # update manifest
+      # - name: Update manifest JSON
+        # uses: poi-vrc/poi-update-manifest-json-action@v1.0
+        # with:
+          # full-version: ${{ needs.version-check-and-make-unitypackage.outputs.version }}
+          # release-booth-url: "https://chocopoi.booth.pm/items/3639300"
+      # push changes
+      # - name: Push new manifest JSON
+        # run: |
+          # git config user.name github-actions[bot]
+          # git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          # git add updater_manifest.json
+          # git commit -m "Update updater_manifest.json for ${{ needs.version-check-and-make-unitypackage.outputs.version }}"
+          # git push
