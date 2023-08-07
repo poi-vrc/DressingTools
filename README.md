@@ -10,9 +10,8 @@
     A simple but advanced, non-destructive and automated cabinet system.
   </p>
   
-  <a href="https://weblate.chocopoi.com/projects/dressingtools/">
-    <img alt="Translation Badge" src="https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg">
-  </a>
+  [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/) 
+  [![Unity Tests](https://github.com/poi-vrc/DressingTools/actions/workflows/unity-tests.yml/badge.svg)](https://github.com/poi-vrc/DressingTools/actions/workflows/unity-tests.yml)
   
   <br>
   <br>
