@@ -70,6 +70,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+.vscode
 .vsconfig
 /[Aa]ssets/[Rr]esources
 
@@ -95,6 +96,14 @@ crashlytics-build.properties
 /[Aa]ssets/Kikyo.meta
 /[Aa]ssets/csc.rsp
 /[Aa]ssets/csc.rsp.meta
+/[Aa]ssets/Kyubi closet
+/[Aa]ssets/Kyubi closet.meta
+/[Aa]ssets/\[FOIV's Shop\]
+/[Aa]ssets/\[FOIV's Shop\].meta
+/[Aa]ssets/_DTGeneratedAssets
+/[Aa]ssets/_DTGeneratedAssets.meta
+ProjectSettings/lilToonSetting.json
+UpgradeLog.htm
 
 /[Aa]ssets/chocopoi/DressingTools/Resources/preferences.json
 /[Aa]ssets/chocopoi/DressingTools/Resources/preferences.json.meta
