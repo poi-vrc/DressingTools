@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
 using UnityEditor;
@@ -163,9 +164,33 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 var avatarSmrCache = new Dictionary<SkinnedMeshRenderer, string[]>();
                 foreach (var avatarSmr in avatarSmrs)
                 {
+                    // transverse up to see if it is originated from ours or an existing wearable
+                    var transform = avatarSmr.transform;
+                    var cabinetWearableFound = false;
+                    while (transform != null)
+                    {
+                        transform = transform.parent;
+                        if (transform != null && (transform == _view.TargetWearable.transform || transform.TryGetComponent<DTCabinetWearable>(out var _)))
+                        {
+                            cabinetWearableFound = true;
+                            break;
+                        }
+
+                        if (cabinetWearableFound)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (cabinetWearableFound)
+                    {
+                        // skip this SMR
+                        continue;
+                    }
+
+                    // add to cache
                     avatarSmrCache.Add(avatarSmr, GetBlendshapeNames(avatarSmr));
                 }
-                // TODO: skip existing wearables
 
                 // pair wearable blendshape names with avatar
                 var wearableSmrs = _view.TargetWearable.GetComponentsInChildren<SkinnedMeshRenderer>(true);
@@ -183,6 +208,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     var found = false;
                     foreach (var avatarSmr in avatarSmrs)
                     {
+                        if (!avatarSmrCache.ContainsKey(avatarSmr))
+                        {
+                            continue;
+                        }
+
                         var avatarBlendshapes = avatarSmrCache[avatarSmr];
                         foreach (var wearableBlendshape in wearableBlendshapes)
                         {
