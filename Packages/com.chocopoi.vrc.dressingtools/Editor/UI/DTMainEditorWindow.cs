@@ -160,6 +160,8 @@ namespace Chocopoi.DressingTools.UI
             _view = new MainView();
         }
 
+        public void SelectCabinet(DTCabinet cabinet) => _view.SelectCabinet(cabinet);
+
         public void OnEnable()
         {
             _view.OnEnable();

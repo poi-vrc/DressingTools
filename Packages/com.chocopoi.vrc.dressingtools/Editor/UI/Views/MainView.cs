@@ -1,4 +1,5 @@
-﻿using Chocopoi.DressingTools.UI.Presenters;
+﻿using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -29,6 +30,8 @@ namespace Chocopoi.DressingTools.UI.View
             _selectedTab = 1;
             _dressingSubView.StartSetupWizard(targetAvatar, targetWearable);
         }
+
+        public void SelectCabinet(DTCabinet cabinet) => _cabinetSubView.SelectCabinet(cabinet);
 
         public void ForceUpdateCabinetSubView()
         {

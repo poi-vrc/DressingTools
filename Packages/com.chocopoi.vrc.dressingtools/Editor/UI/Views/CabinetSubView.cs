@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -11,6 +12,8 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         public event Action CreateCabinetButtonClick;
         public event Action AddWearableButtonClick;
+        public event Action SelectedCabinetChange;
+        public event Action CabinetSettingsChange;
 
         public bool ShowCreateCabinetWizard { get; set; }
         public bool ShowCabinetWearables { get; set; }
@@ -50,6 +53,8 @@ namespace Chocopoi.DressingTools.UI.Views
             _mainView.StartSetupWizard(_cabinetAvatarGameObject);
         }
 
+        public void SelectCabinet(DTCabinet cabinet) => _cabinetPresenter.SelectCabinet(cabinet);
+
         public override void OnGUI()
         {
             if (ShowCreateCabinetWizard)
@@ -62,10 +67,10 @@ namespace Chocopoi.DressingTools.UI.Views
             if (ShowCabinetWearables)
             {
                 // create dropdown menu for cabinet selection
-                Popup("Cabinet", ref _selectedCabinetIndex, AvailableCabinetSelections);
+                Popup("Cabinet", ref _selectedCabinetIndex, AvailableCabinetSelections, SelectedCabinetChange);
 
-                GameObjectField("Avatar", ref _cabinetAvatarGameObject, true);
-                TextField("Armature Name", ref _cabinetAvatarArmatureName);
+                GameObjectField("Avatar", ref _cabinetAvatarGameObject, true, CabinetSettingsChange);
+                TextField("Armature Name", ref _cabinetAvatarArmatureName, CabinetSettingsChange);
 
                 var copy = new List<WearablePreview>(WearablePreviews);
                 foreach (var preview in copy)
