@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
-            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.ForceUpdateView += OnForceUpdateView;
 
             _view.AvatarOnWearToggleAddEvent += OnAvatarOnWearToggleAddEvent;
             _view.AvatarOnWearBlendshapeAddEvent += OnAvatarOnWearBlendshapeAddEvent;
@@ -40,7 +40,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
-            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.ForceUpdateView -= OnForceUpdateView;
 
             _view.AvatarOnWearToggleAddEvent -= OnAvatarOnWearToggleAddEvent;
             _view.AvatarOnWearBlendshapeAddEvent -= OnAvatarOnWearBlendshapeAddEvent;
@@ -49,7 +49,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.WearableOnWearBlendshapeAddEvent -= OnWearableOnWearBlendshapeAddEvent;
         }
 
-        private void OnTargetAvatarOrWearableChange()
+        private void OnForceUpdateView()
         {
             UpdateView();
         }

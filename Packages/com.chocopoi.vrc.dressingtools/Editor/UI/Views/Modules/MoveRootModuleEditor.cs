@@ -13,7 +13,6 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        public event Action TargetAvatarOrWearableChange { add { _parentView.TargetAvatarOrWearableChange += value; } remove { _parentView.TargetAvatarOrWearableChange -= value; } }
         public event Action MoveToGameObjectFieldChange;
         public bool ShowSelectAvatarFirstHelpBox { get; set; }
         public bool IsGameObjectInvalid { get; set; }

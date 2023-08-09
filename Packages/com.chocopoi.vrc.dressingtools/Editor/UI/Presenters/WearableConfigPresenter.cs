@@ -131,6 +131,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             // update view
             UpdateView();
+
+            // force update module editors
+            foreach (var moduleData in _view.ModuleDataList)
+            {
+                moduleData.editor.RaiseForceUpdateViewEvent();
+            }
         }
 
         private void OnAddModuleButtonClick()

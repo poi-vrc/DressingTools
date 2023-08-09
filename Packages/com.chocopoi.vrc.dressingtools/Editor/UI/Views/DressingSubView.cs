@@ -64,16 +64,23 @@ namespace Chocopoi.DressingTools.UI.Views
             DoAddToCabinetEvent?.Invoke();
         }
 
+        public void StartSetupWizard(GameObject targetAvatar, GameObject targetWearable = null)
+        {
+            ResetWizardAndConfigView();
+            TargetAvatar = targetAvatar;
+            TargetWearable = targetWearable;
+            TargetAvatarOrWearableChange?.Invoke();
+        }
+
         public void ResetWizardAndConfigView()
         {
             // reset parameters
+            _currentMode = 0;
             TargetAvatar = null;
             TargetWearable = null;
             Config = new DTWearableConfig();
 
             _wizardView.CurrentStep = 0;
-            _wizardView.TargetAvatar = null;
-            _wizardView.TargetWearable = null;
             _wizardView.RaiseForceUpdateViewEvent();
 
             // force update the config view
@@ -84,12 +91,14 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             base.OnEnable();
             _configView.OnEnable();
+            _wizardView.OnEnable();
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             _configView.OnDisable();
+            _wizardView.OnDisable();
         }
 
         public override void OnGUI()

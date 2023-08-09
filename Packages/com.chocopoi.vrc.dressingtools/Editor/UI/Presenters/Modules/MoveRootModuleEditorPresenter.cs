@@ -24,7 +24,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
-            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.ForceUpdateView += OnForceUpdateView;
             _view.MoveToGameObjectFieldChange += OnMoveToGameObjectFieldChange;
         }
 
@@ -33,11 +33,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
-            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.ForceUpdateView -= OnForceUpdateView;
             _view.MoveToGameObjectFieldChange -= OnMoveToGameObjectFieldChange;
         }
 
-        private void OnTargetAvatarOrWearableChange()
+        private void OnForceUpdateView()
         {
             ApplyMoveToGameObjectFieldChanges();
             UpdateView();

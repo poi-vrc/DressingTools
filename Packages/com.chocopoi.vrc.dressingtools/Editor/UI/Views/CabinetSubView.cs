@@ -45,6 +45,11 @@ namespace Chocopoi.DressingTools.UI.Views
             _mainView.SelectedTab = selectedTab;
         }
 
+        public void StartSetupWizard()
+        {
+            _mainView.StartSetupWizard(_cabinetAvatarGameObject);
+        }
+
         public override void OnGUI()
         {
             if (ShowCreateCabinetWizard)
