@@ -115,8 +115,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     var wearableArmature = DTRuntimeUtils.GuessArmature(_view.TargetWearable, _view.ArmatureMappingModule.wearableArmatureName);
                     for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
+                        // do not auto add wearable toggle if state is disabled initially
                         var child = _view.TargetWearable.transform.GetChild(i);
-                        if (child != wearableArmature)
+                        if (child != wearableArmature && child.gameObject.activeSelf)
                         {
                             transforms.Add(child);
                         }
@@ -127,7 +128,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     // add all
                     for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
-                        transforms.Add(_view.TargetWearable.transform.GetChild(i));
+                        // do not auto add wearable toggle if state is disabled initially
+                        var child = _view.TargetWearable.transform.GetChild(i);
+                        if (child.gameObject.activeSelf)
+                        {
+                            transforms.Add(child);
+                        }
                     }
                 }
 
@@ -136,7 +142,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 toggles.Clear();
                 blendshapes.Clear();
 
-                var wearableToggles = new List<DTAnimationToggle>();
                 foreach (var trans in transforms)
                 {
                     toggles.Add(new DTAnimationToggle()
@@ -154,7 +159,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 blendshapeSyncs.Clear();
 
                 // find all avatar blendshapes
-                var avatarSmrs = _view.TargetAvatar.GetComponentsInChildren<SkinnedMeshRenderer>();
+                var avatarSmrs = _view.TargetAvatar.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 var avatarSmrCache = new Dictionary<SkinnedMeshRenderer, string[]>();
                 foreach (var avatarSmr in avatarSmrs)
                 {
@@ -163,7 +168,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 // TODO: skip existing wearables
 
                 // pair wearable blendshape names with avatar
-                var wearableSmrs = _view.TargetWearable.GetComponentsInChildren<SkinnedMeshRenderer>();
+                var wearableSmrs = _view.TargetWearable.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 foreach (var wearableSmr in wearableSmrs)
                 {
                     var wearableBlendshapes = GetBlendshapeNames(wearableSmr);
