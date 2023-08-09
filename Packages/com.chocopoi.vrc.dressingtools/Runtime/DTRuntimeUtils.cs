@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Proxy;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +10,11 @@ namespace Chocopoi.DressingTools
 {
     public class DTRuntimeUtils
     {
+        private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
+
         private static Dictionary<string, System.Type> s_reflectionTypeCache = new Dictionary<string, System.Type>();
+
+        private static List<List<string>> s_boneNameMappings = null;
 
         public static System.Type FindType(string typeName)
         {
@@ -117,8 +123,29 @@ namespace Chocopoi.DressingTools
             return FindDynamicsWithRoot(avatarDynamics, dynamicsRoot) != null;
         }
 
+        private static void LoadBoneNameMappings()
+        {
+            try
+            {
+                var reader = new StreamReader(BoneNameMappingsPath);
+                var json = reader.ReadToEnd();
+                reader.Close();
+                s_boneNameMappings = JsonConvert.DeserializeObject<List<List<string>>>(json);
+            }
+            catch (IOException e)
+            {
+                Debug.LogError(e);
+            }
+        }
+
         public static Transform GuessMatchingAvatarBone(Transform avatarBoneParent, string childBoneName)
         {
+            // load bone name mappings if needed
+            if (s_boneNameMappings == null)
+            {
+                LoadBoneNameMappings();
+            }
+
             // check if there is a prefix
             if (childBoneName.StartsWith("("))
             {
@@ -141,9 +168,32 @@ namespace Chocopoi.DressingTools
                 }
             }
 
-            // TODO: Guess bone?
+            var exactMatchBoneTransform = avatarBoneParent.Find(childBoneName);
+            if (exactMatchBoneTransform != null)
+            {
+                // exact match
+                return exactMatchBoneTransform;
+            }
 
-            return avatarBoneParent.Find(childBoneName);
+            // try match it via the mapping list
+            foreach (var boneNames in s_boneNameMappings)
+            {
+                if (boneNames.Contains(childBoneName))
+                {
+                    foreach (var boneName in boneNames)
+                    {
+                        var remappedBoneTransform = avatarBoneParent.Find(boneName);
+                        if (remappedBoneTransform != null)
+                        {
+                            // found alternative bone name
+                            return remappedBoneTransform;
+                        }
+                    }
+                }
+            }
+
+            // match failure
+            return null;
         }
 
         public static Transform GuessArmature(GameObject targetClothes, string armatureObjectName, bool rename = false)
