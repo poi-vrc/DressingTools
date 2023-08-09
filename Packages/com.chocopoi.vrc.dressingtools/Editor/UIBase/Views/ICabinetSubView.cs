@@ -14,6 +14,8 @@ namespace Chocopoi.DressingTools.UIBase.Views
     {
         event Action CreateCabinetButtonClick;
         event Action AddWearableButtonClick;
+        event Action SelectedCabinetChange;
+        event Action CabinetSettingsChange;
 
         bool ShowCreateCabinetWizard { get; set; }
         bool ShowCabinetWearables { get; set; }

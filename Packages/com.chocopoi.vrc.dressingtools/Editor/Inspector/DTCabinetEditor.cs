@@ -23,10 +23,10 @@ namespace Chocopoi.DressingTools
 
             if (GUILayout.Button("Open in Editor", GUILayout.Height(40)))
             {
-                // TODO: select cabinet in editor
                 var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
                 window.titleContent = new GUIContent("DressingTools");
                 window.Show();
+                window.SelectCabinet(cabinet);
             }
         }
     }
