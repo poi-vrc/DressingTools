@@ -1,4 +1,5 @@
-﻿using Chocopoi.DressingTools.UIBase.Views;
+﻿using System;
+using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
+            _view.ForceUpdateView += OnForceUpdateView;
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
             _view.DoAddToCabinetEvent += OnAddToCabinetButtonClick;
         }
@@ -29,8 +31,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
+            _view.ForceUpdateView -= OnForceUpdateView;
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
             _view.DoAddToCabinetEvent -= OnAddToCabinetButtonClick;
+        }
+
+        private void OnForceUpdateView()
+        {
+            UpdateView();
         }
 
         private void UpdateView()

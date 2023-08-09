@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.UI.Views.Modules;
 using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEngine;
@@ -16,6 +17,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
         MoveRootModule MoveRootModule { get; set; }
         AnimationGenerationModule AnimationGenerationModule { get; set; }
         BlendshapeSyncModule BlendshapeSyncModule { get; set; }
+        ArmatureMappingModuleEditor ArmatureMappingModuleEditor { get; set; }
+        MoveRootModuleEditor MoveRootModuleEditor { get; set; }
+        AnimationGenerationModuleEditor AnimationGenerationModuleEditor { get; set; }
+        BlendshapeSyncModuleEditor BlendshapeSyncModuleEditor { get; set; }
         bool UseArmatureMapping { get; set; }
         bool UseMoveRoot { get; set; }
         bool UseAnimationGeneration { get; set; }

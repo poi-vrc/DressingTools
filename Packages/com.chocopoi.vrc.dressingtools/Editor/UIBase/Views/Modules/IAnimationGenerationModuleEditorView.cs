@@ -60,7 +60,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface IAnimationGenerationModuleEditorView : IEditorView
     {
-        event Action TargetAvatarOrWearableChange;
         event Action AvatarOnWearPresetChangeEvent;
         event Action AvatarOnWearPresetSaveEvent;
         event Action AvatarOnWearPresetDeleteEvent;

@@ -20,6 +20,10 @@ namespace Chocopoi.DressingTools.UI.Views
         public MoveRootModule MoveRootModule { get; set; }
         public AnimationGenerationModule AnimationGenerationModule { get; set; }
         public BlendshapeSyncModule BlendshapeSyncModule { get; set; }
+        public ArmatureMappingModuleEditor ArmatureMappingModuleEditor { get; set; }
+        public MoveRootModuleEditor MoveRootModuleEditor { get; set; }
+        public AnimationGenerationModuleEditor AnimationGenerationModuleEditor { get; set; }
+        public BlendshapeSyncModuleEditor BlendshapeSyncModuleEditor { get; set; }
         public GameObject TargetAvatar { get => _dressingSubView.TargetAvatar; set => _dressingSubView.TargetAvatar = value; }
         public GameObject TargetWearable { get => _dressingSubView.TargetWearable; set => _dressingSubView.TargetWearable = value; }
         public DTWearableConfig Config { get => _dressingSubView.Config; set => _dressingSubView.Config = value; }
@@ -36,10 +40,6 @@ namespace Chocopoi.DressingTools.UI.Views
         private bool _useMoveRoot;
         private bool _useAnimationGeneration;
         private bool _useBlendshapeSync;
-        private ArmatureMappingModuleEditor _armatureMappingModuleEditor;
-        private MoveRootModuleEditor _moveRootModuleEditor;
-        private AnimationGenerationModuleEditor _animationGenerationModuleEditor;
-        private BlendshapeSyncModuleEditor _blendshapeSyncModuleEditor;
         private bool _foldoutArmatureMapping;
         private bool _foldoutMoveRoot;
 
@@ -52,6 +52,11 @@ namespace Chocopoi.DressingTools.UI.Views
             MoveRootModule = new MoveRootModule();
             AnimationGenerationModule = new AnimationGenerationModule();
             BlendshapeSyncModule = new BlendshapeSyncModule();
+
+            ArmatureMappingModuleEditor = new ArmatureMappingModuleEditor(this, ArmatureMappingModule);
+            MoveRootModuleEditor = new MoveRootModuleEditor(this, MoveRootModule);
+            AnimationGenerationModuleEditor = new AnimationGenerationModuleEditor(this, AnimationGenerationModule);
+            BlendshapeSyncModuleEditor = new BlendshapeSyncModuleEditor(this, BlendshapeSyncModule);
         }
 
         public bool IsValid()
@@ -63,10 +68,10 @@ namespace Chocopoi.DressingTools.UI.Views
 
             var valid = true;
 
-            valid &= !_useArmatureMapping || _armatureMappingModuleEditor.IsValid();
-            valid &= !_useMoveRoot || _moveRootModuleEditor.IsValid();
-            valid &= !_useAnimationGeneration || _animationGenerationModuleEditor.IsValid();
-            valid &= !_useBlendshapeSync || _blendshapeSyncModuleEditor.IsValid();
+            valid &= !_useArmatureMapping || ArmatureMappingModuleEditor.IsValid();
+            valid &= !_useMoveRoot || MoveRootModuleEditor.IsValid();
+            valid &= !_useAnimationGeneration || AnimationGenerationModuleEditor.IsValid();
+            valid &= !_useBlendshapeSync || BlendshapeSyncModuleEditor.IsValid();
 
             return valid;
         }
@@ -79,47 +84,21 @@ namespace Chocopoi.DressingTools.UI.Views
         public override void OnEnable()
         {
             base.OnEnable();
-            _armatureMappingModuleEditor?.OnEnable();
-            _moveRootModuleEditor?.OnEnable();
-            _animationGenerationModuleEditor?.OnEnable();
-            _blendshapeSyncModuleEditor?.OnEnable();
+
+            ArmatureMappingModuleEditor.OnEnable();
+            MoveRootModuleEditor.OnEnable();
+            AnimationGenerationModuleEditor.OnEnable();
+            BlendshapeSyncModuleEditor.OnEnable();
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
 
-            _armatureMappingModuleEditor?.OnDisable();
-            _moveRootModuleEditor?.OnDisable();
-            _animationGenerationModuleEditor?.OnDisable();
-            _blendshapeSyncModuleEditor?.OnDisable();
-        }
-
-        private void InitializeModuleEditorsIfNeeded()
-        {
-            if (_armatureMappingModuleEditor == null)
-            {
-                _armatureMappingModuleEditor = new ArmatureMappingModuleEditor(this, ArmatureMappingModule);
-                _armatureMappingModuleEditor.OnEnable();
-            }
-
-            if (_moveRootModuleEditor == null)
-            {
-                _moveRootModuleEditor = new MoveRootModuleEditor(this, MoveRootModule);
-                _moveRootModuleEditor.OnEnable();
-            }
-
-            if (_animationGenerationModuleEditor == null)
-            {
-                _animationGenerationModuleEditor = new AnimationGenerationModuleEditor(this, AnimationGenerationModule);
-                _animationGenerationModuleEditor.OnEnable();
-            }
-
-            if (_blendshapeSyncModuleEditor == null)
-            {
-                _blendshapeSyncModuleEditor = new BlendshapeSyncModuleEditor(this, BlendshapeSyncModule);
-                _blendshapeSyncModuleEditor.OnEnable();
-            }
+            ArmatureMappingModuleEditor.OnDisable();
+            MoveRootModuleEditor.OnDisable();
+            AnimationGenerationModuleEditor.OnDisable();
+            BlendshapeSyncModuleEditor.OnDisable();
         }
 
         private void DrawMappingStep()
@@ -131,7 +110,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 BeginFoldoutBox(ref _foldoutArmatureMapping, "Settings");
                 if (_foldoutArmatureMapping)
                 {
-                    _armatureMappingModuleEditor.OnGUI();
+                    ArmatureMappingModuleEditor.OnGUI();
                 }
                 EndFoldoutBox();
             }
@@ -146,7 +125,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 BeginFoldoutBox(ref _foldoutMoveRoot, "Settings");
                 if (_foldoutMoveRoot)
                 {
-                    _moveRootModuleEditor.OnGUI();
+                    MoveRootModuleEditor.OnGUI();
                 }
                 EndFoldoutBox();
             }
@@ -159,7 +138,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             BeginDisabled(!_useAnimationGeneration);
             {
-                _animationGenerationModuleEditor.OnGUI();
+                AnimationGenerationModuleEditor.OnGUI();
             }
             EndDisabled();
 
@@ -169,15 +148,13 @@ namespace Chocopoi.DressingTools.UI.Views
 
             BeginDisabled(!_useBlendshapeSync);
             {
-                _blendshapeSyncModuleEditor.OnGUI();
+                BlendshapeSyncModuleEditor.OnGUI();
             }
             EndDisabled();
         }
 
         public override void OnGUI()
         {
-            InitializeModuleEditorsIfNeeded();
-
             Toolbar(ref _currentStep, new string[] { " 1.\nMapping", "2.\nAnimate", "3.\nIntegrate", "4.\nOptimize" });
 
             Separator();

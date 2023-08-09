@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -45,6 +46,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnTargetAvatarOrWearableChange()
         {
+            UpdateView();
             AutoSetup();
         }
 
@@ -219,6 +221,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             AutoSetupMapping();
             AutoSetupAnimationGeneration();
+            UpdateView();
         }
 
         private void OnPreviousButtonClick()
@@ -227,57 +230,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 _view.CurrentStep -= 1;
             }
-        }
-
-        private void AddTargetAvatarConfig(DTWearableConfig config)
-        {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
-
-            // try obtain armature name from cabinet
-            if (cabinet == null)
-            {
-                // leave it empty
-                config.targetAvatarConfig.armatureName = "";
-            }
-            else
-            {
-                config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
-            }
-
-            // can't do anything
-            if (_view.TargetAvatar == null || _view.TargetWearable == null)
-            {
-                return;
-            }
-
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.TargetAvatar);
-            var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
-
-            config.targetAvatarConfig.guids.Clear();
-            if (!invalidAvatarPrefabGuid)
-            {
-                // TODO: multiple guids
-                config.targetAvatarConfig.guids.Add(avatarPrefabGuid);
-            }
-
-            var deltaPos = _view.TargetWearable.transform.position - _view.TargetAvatar.transform.position;
-            var deltaRotation = _view.TargetWearable.transform.rotation * Quaternion.Inverse(_view.TargetAvatar.transform.rotation);
-            config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
-            config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
-            config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
-            config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
-        }
-
-        private void AddMetaInfo(DTWearableConfig config)
-        {
-            if (_view.TargetWearable == null)
-            {
-                return;
-            }
-
-            config.info.name = _view.TargetWearable.name;
-            config.info.author = "";
-            config.info.description = "";
         }
 
         private void OnNextButtonClick()
@@ -303,10 +255,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                 var config = new DTWearableConfig();
 
-                config.configVersion = DTWearableConfig.CurrentConfigVersion;
-
-                AddMetaInfo(config);
-                AddTargetAvatarConfig(config);
+                DTEditorUtils.PrepareWearableConfig(config, _view.TargetAvatar, _view.TargetWearable);
 
                 if (_view.UseArmatureMapping)
                 {
@@ -335,7 +284,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateView()
         {
-
+            _view.ArmatureMappingModuleEditor.RaiseForceUpdateViewEvent();
+            _view.MoveRootModuleEditor.RaiseForceUpdateViewEvent();
+            _view.AnimationGenerationModuleEditor.RaiseForceUpdateViewEvent();
+            _view.BlendshapeSyncModuleEditor.RaiseForceUpdateViewEvent();
         }
 
         private void OnLoad()

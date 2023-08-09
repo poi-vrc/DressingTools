@@ -21,7 +21,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface IArmatureMappingModuleEditorView : IEditorView
     {
-        event Action TargetAvatarOrWearableChange;
         event Action DresserChange;
         event Action ModuleSettingsChange;
         event Action DresserSettingsChange;

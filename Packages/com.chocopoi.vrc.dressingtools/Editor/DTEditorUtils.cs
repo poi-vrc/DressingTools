@@ -99,5 +99,64 @@ namespace Chocopoi.DressingTools
                 }
             }
         }
+
+        public static void PrepareWearableConfig(DTWearableConfig config, GameObject targetAvatar, GameObject targetWearable)
+        {
+            config.configVersion = DTWearableConfig.CurrentConfigVersion;
+
+            AddWearableMetaInfo(config, targetWearable);
+            AddWearableTargetAvatarConfig(config, targetAvatar, targetWearable);
+        }
+
+        public static void AddWearableTargetAvatarConfig(DTWearableConfig config, GameObject targetAvatar, GameObject targetWearable)
+        {
+            var cabinet = DTEditorUtils.GetAvatarCabinet(targetAvatar);
+
+            // try obtain armature name from cabinet
+            if (cabinet == null)
+            {
+                // leave it empty
+                config.targetAvatarConfig.armatureName = "";
+            }
+            else
+            {
+                config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
+            }
+
+            // can't do anything
+            if (targetAvatar == null || targetWearable == null)
+            {
+                return;
+            }
+
+            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
+            var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
+
+            config.targetAvatarConfig.guids.Clear();
+            if (!invalidAvatarPrefabGuid)
+            {
+                // TODO: multiple guids
+                config.targetAvatarConfig.guids.Add(avatarPrefabGuid);
+            }
+
+            var deltaPos = targetWearable.transform.position - targetAvatar.transform.position;
+            var deltaRotation = targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation);
+            config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
+            config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
+            config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(targetAvatar.transform.lossyScale);
+            config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(targetWearable.transform.lossyScale);
+        }
+
+        public static void AddWearableMetaInfo(DTWearableConfig config, GameObject targetWearable)
+        {
+            if (targetWearable == null)
+            {
+                return;
+            }
+
+            config.info.name = targetWearable.name;
+            config.info.author = "";
+            config.info.description = "";
+        }
     }
 }

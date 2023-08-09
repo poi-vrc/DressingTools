@@ -39,7 +39,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
-            _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
+            _view.ForceUpdateView += OnForceUpdateView;
             _view.DresserChange += OnDresserChange;
             _view.ModuleSettingsChange += OnModuleSettingsChange;
             _view.DresserSettingsChange += OnDresserSettingsChange;
@@ -52,7 +52,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
-            _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+            _view.ForceUpdateView -= OnForceUpdateView;
             _view.DresserChange -= OnDresserChange;
             _view.ModuleSettingsChange -= OnModuleSettingsChange;
             _view.DresserSettingsChange -= OnDresserSettingsChange;
@@ -92,7 +92,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void InitializeDresserSettings()
         {
-            var dresser = DresserRegistry.GetDresserByName(_view.AvailableDresserKeys[_view.SelectedDresserIndex]);
+            var dresser = DresserRegistry.GetDresserByName(_view.AvailableDresserKeys != null ? _view.AvailableDresserKeys[_view.SelectedDresserIndex] : "Default Dresser");
             _view.DresserSettings = dresser.DeserializeSettings(_module.serializedDresserConfig ?? "{}");
             if (_view.DresserSettings == null)
             {
@@ -168,8 +168,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void OnTargetAvatarOrWearableChange()
+        private void OnForceUpdateView()
         {
+            if (_view.DresserSettings == null)
+            {
+                InitializeDresserSettings();
+            }
             UpdateDresserSettings();
             GenerateDresserMappings();
         }
@@ -220,11 +224,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             var regenerateMappingsNeeded = false;
 
-            // initial dresser settings if null
-            if (_view.DresserSettings == null)
-            {
-                InitializeDresserSettings();
-            }
             CheckCorrectDresserSettingsType();
 
             UpdateDresserSettings();

@@ -2,6 +2,7 @@
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.View
 {
@@ -10,9 +11,9 @@ namespace Chocopoi.DressingTools.UI.View
         public int SelectedTab { get => _selectedTab; set => _selectedTab = value; }
 
         private MainPresenter _presenter;
-        private ICabinetSubView _cabinetSubView;
-        private IDressingSubView _dressingSubView;
-        private ISettingsSubView _settingsSubView;
+        private CabinetSubView _cabinetSubView;
+        private DressingSubView _dressingSubView;
+        private SettingsSubView _settingsSubView;
         private int _selectedTab;
 
         public MainView()
@@ -21,6 +22,12 @@ namespace Chocopoi.DressingTools.UI.View
             _cabinetSubView = new CabinetSubView(this);
             _dressingSubView = new DressingSubView(this);
             _settingsSubView = new SettingsSubView(this);
+        }
+
+        public void StartSetupWizard(GameObject targetAvatar, GameObject targetWearable = null)
+        {
+            _selectedTab = 1;
+            _dressingSubView.StartSetupWizard(targetAvatar, targetWearable);
         }
 
         public void ForceUpdateCabinetSubView()
