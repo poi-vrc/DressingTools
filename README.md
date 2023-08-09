@@ -25,8 +25,12 @@
 
 <table border="0">
  <tr>
-    <img src=".github/teaser/teaser_1.PNG" width="25%">
-    <img src=".github/teaser/teaser_2.PNG" width="25%">
+   <td>
+     <img src=".github/teaser/teaser_1.PNG" width="50%">
+   </td>
+   <td>
+     <img src=".github/teaser/teaser_2.PNG" width="50%">
+   </td>
  </tr>
 </table>
 
