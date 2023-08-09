@@ -21,6 +21,15 @@
 
 > :warning: v2 is not ready for production use yet! You might be actually finding for the v1 version right now: https://github.com/poi-vrc/DressingTools/tree/1.x :warning:
 
+## Development Screenshots
+
+<table border="0">
+ <tr>
+    <img src=".github/teaser/teaser_1.PNG" width="25%">
+    <img src=".github/teaser/teaser_2.PNG" width="25%">
+ </tr>
+</table>
+
 ## License
 This project is mainly licensed **under the GPLv3 License**. ([tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))) Please make sure your derived project is licensed under the GPLv3 and published open-source to the users.
 
