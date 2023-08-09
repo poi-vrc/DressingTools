@@ -19,6 +19,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public event Action DresserSettingsChange;
         public event Action RegenerateMappingsButtonClick;
         public event Action ViewEditMappingsButtonClick;
+        public event Action ViewReportButtonClick;
 
         public ReportData DresserReportData { get; set; }
         public DTDresserSettings DresserSettings { get; set; }
@@ -150,8 +151,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             {
                 BeginDisabled(DresserReportData == null);
                 {
-                    // TODO: handle view report
-                    Button("View Report");
+                    Button("View Report", ViewReportButtonClick);
                 }
                 EndDisabled();
                 BeginDisabled(true);

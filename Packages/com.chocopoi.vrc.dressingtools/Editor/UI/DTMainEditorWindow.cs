@@ -75,7 +75,7 @@ namespace Chocopoi.DressingTools.UI
 
                 if (report.HasLogType(Logging.DTReportLogType.Error))
                 {
-                    // TODO: show report dialog
+                    DTReportWindow.ShowWindow(report);
                     EditorUtility.DisplayDialog("DressingTools", "Default dresser has errors processing this wearable automatically, please use the wizard instead.", "OK");
                     return;
                 }
