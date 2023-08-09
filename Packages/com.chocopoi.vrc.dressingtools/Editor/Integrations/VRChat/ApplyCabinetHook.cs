@@ -1,6 +1,7 @@
 ﻿#if VRC_SDK_VRCSDK3
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.UI;
 using UnityEditor;
 using UnityEngine;
 namespace Chocopoi.DressingTools.Integrations.VRChat
@@ -22,9 +23,9 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
             _cabinet.Apply(report);
 
-            // TODO: show report frame if have errors
             if (report.HasLogType(DTReportLogType.Error))
             {
+                DTReportWindow.ShowWindow(report);
                 EditorUtility.DisplayDialog("DressingTools", "Error occured when applying cabinet, aborting", "OK");
                 return false;
             }

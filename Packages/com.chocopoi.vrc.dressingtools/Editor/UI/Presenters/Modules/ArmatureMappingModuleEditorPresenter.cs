@@ -45,6 +45,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.DresserSettingsChange += OnDresserSettingsChange;
             _view.RegenerateMappingsButtonClick += OnRegenerateMappingsButtonClick;
             _view.ViewEditMappingsButtonClick += OnViewEditMappingsButtonClick;
+            _view.ViewReportButtonClick += OnViewReportButtonClick;
         }
 
         private void UnsubscribeEvents()
@@ -58,6 +59,15 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.DresserSettingsChange -= OnDresserSettingsChange;
             _view.RegenerateMappingsButtonClick -= OnRegenerateMappingsButtonClick;
             _view.ViewEditMappingsButtonClick -= OnViewEditMappingsButtonClick;
+            _view.ViewReportButtonClick -= OnViewReportButtonClick;
+        }
+
+        private void OnViewReportButtonClick()
+        {
+            if (_dresserReport != null)
+            {
+                DTReportWindow.ShowWindow(_dresserReport);
+            }
         }
 
         private void ResetMappingEditorContainer()

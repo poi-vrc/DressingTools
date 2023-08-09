@@ -26,6 +26,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action DresserSettingsChange;
         event Action RegenerateMappingsButtonClick;
         event Action ViewEditMappingsButtonClick;
+        event Action ViewReportButtonClick;
 
         ReportData DresserReportData { get; set; }
         DTDresserSettings DresserSettings { get; set; }
