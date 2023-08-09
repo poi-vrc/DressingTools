@@ -23,16 +23,8 @@
 
 ## Development Screenshots
 
-<table border="0">
- <tr>
-   <td>
-     <img src=".github/teaser/teaser_1.PNG" width="50%">
-   </td>
-   <td>
-     <img src=".github/teaser/teaser_2.PNG" width="50%">
-   </td>
- </tr>
-</table>
+[![Teaser 1](.github/teaser/teaser_1.PNG)](.github/teaser/teaser_1.PNG)
+[![Teaser 2](.github/teaser/teaser_2.PNG)](.github/teaser/teaser_2.PNG)
 
 ## License
 This project is mainly licensed **under the GPLv3 License**. ([tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))) Please make sure your derived project is licensed under the GPLv3 and published open-source to the users.
