@@ -16,7 +16,7 @@
   <br>
   <br>
 
-  [BOOTH Page](https://chocopoi.booth.pm/items/3639300) | [Getting Started](https://dressingtools.chocopoi.com/)
+  [BOOTH Page](https://chocopoi.booth.pm/items/3639300) | [Getting Started](https://dressingtools.chocopoi.com/) | [Discord](https://discord.gg/Gyst8Pr2ay)
 </div>
 
 > :warning: v2 is not ready for production use yet! You might be actually finding for the v1 version right now: https://github.com/poi-vrc/DressingTools/tree/1.x :warning:
