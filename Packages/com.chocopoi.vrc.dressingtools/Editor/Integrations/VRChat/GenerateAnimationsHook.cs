@@ -17,15 +17,18 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal class GenerateAnimationsHook : IBuildDTCabinetHook
     {
-        private const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
-        private const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
+        private const string LogLabel = "GenerateAnimationHook";
+
+        private DTReport _report;
+
         private DTCabinet _cabinet;
 
-        public GenerateAnimationsHook(DTCabinet cabinet)
+        public GenerateAnimationsHook(DTReport report, DTCabinet cabinet)
         {
+            _report = report;
             _cabinet = cabinet;
         }
-        
+
         private AnimationGenerationModule FindAnimationGenerationModule(DTWearableConfig config)
         {
             foreach (var module in config.modules)
@@ -38,21 +41,15 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             return null;
         }
 
-        public bool OnPreprocessAvatar(GameObject avatarGameObject)
+        public bool OnPreprocessAvatar()
         {
             EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
 
-            // prepare folder
-            if (!AssetDatabase.IsValidFolder(GeneratedAssetsPath))
-            {
-                AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
-            }
-
             // get the avatar descriptor
-            var avatarDescriptor = avatarGameObject.GetComponent<VRCAvatarDescriptor>();
+            var avatarDescriptor = _cabinet.avatarGameObject.GetComponent<VRCAvatarDescriptor>();
 
             // obtain FX layer
-            var fxController = GetLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
+            var fxController = CopyAndReplaceLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
 
             // TODO: these operations are just temporary for testing, need rework to do exception catching etc
 
@@ -67,7 +64,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 canTransitionToSelf = false,
                 duration = 0,
                 exitTime = 0,
-                hasExitTime = true,
+                hasExitTime = false,
                 hasFixedDuration = true,
                 isExit = false,
                 mute = false,
@@ -77,9 +74,15 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 conditions = new AnimatorCondition[] { }
             };
 
-            ExpressionMenuUtils.RemoveExpressionParameters(avatarDescriptor.expressionParameters, "^cpDT_Cabinet");
-            ExpressionMenuUtils.AddExpressionParameters(avatarDescriptor.expressionParameters, new VRCExpressionParameters.Parameter[]
+            var exParams = CopyAndReplaceExpressionParameters(avatarDescriptor);
+            var exMenu = CopyAndReplaceExpressionMenu(avatarDescriptor);
+
+            ExpressionMenuUtils.RemoveExpressionParameters(exParams, "^cpDT_Cabinet");
+
+            try
             {
+                ExpressionMenuUtils.AddExpressionParameters(exParams, new VRCExpressionParameters.Parameter[]
+                {
                 new VRCExpressionParameters.Parameter()
                 {
                     name = "cpDT_Cabinet",
@@ -88,20 +91,24 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                     networkSynced = true,
                     saved = true
                 }
-            });
+                });
+            }
+            catch (ParameterOverflowException ex)
+            {
+                _report.LogExceptionLocalized(LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
+                return false;
+            }
 
-            ExpressionMenuUtils.RemoveExpressionMenuControls(avatarDescriptor.expressionsMenu, "DT Cabinet");
+            ExpressionMenuUtils.RemoveExpressionMenuControls(exMenu, "DT Cabinet");
 
-            var subMenu = new ExpressionMenuBuilder(avatarDescriptor.expressionsMenu)
+            var subMenu = new ExpressionMenuBuilder(exMenu)
                 .BeginNewSubMenu("DT Cabinet");
 
             subMenu.AddToggle("Original", "cpDT_Cabinet", 0);
 
-            var report = new DTReport();
-        
             // create an empty clip
             var emptyClip = new AnimationClip();
-            AssetDatabase.CreateAsset(emptyClip, GeneratedAssetsPath + "/DT_EmptyClip.anim");
+            AssetDatabase.CreateAsset(emptyClip, BuildDTCabinetCallback.GeneratedAssetsPath + "/cpDT_EmptyClip.anim");
             var pairs = new Dictionary<int, Motion>
             {
                 { 0, emptyClip }
@@ -133,12 +140,12 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(report, avatarGameObject, module, wearables[i].wearableGameObject, wearableDynamics);
+                var animationGenerator = new AnimationGenerator(_report, _cabinet.avatarGameObject, module, wearables[i].wearableGameObject, wearableDynamics);
 
                 // TODO: write defaults settings
                 var wearAnimations = animationGenerator.GenerateWearAnimations(true);
                 pairs.Add(i + 1, wearAnimations.Item1); // enable clip
-                AssetDatabase.CreateAsset(wearAnimations.Item1, GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
+                AssetDatabase.CreateAsset(wearAnimations.Item1, BuildDTCabinetCallback.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
                 // generate expression menu
                 subMenu.AddToggle(config.info.name, "cpDT_Cabinet", i + 1);
@@ -147,10 +154,12 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, true, null, refTransition);
 
             EditorUtility.DisplayProgressBar("DressingTools", "Generating expression menu...", 0);
-            subMenu.CreateAsset(GeneratedAssetsPath + "/cpDT_Cabinet.asset")
+            subMenu.CreateAsset(BuildDTCabinetCallback.GeneratedAssetsPath + "/cpDT_Cabinet.asset")
                 .EndNewSubMenu();
 
-            AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(fxController);
+            EditorUtility.SetDirty(exMenu);
+            EditorUtility.SetDirty(exParams);
 
             return true;
         }
@@ -190,7 +199,32 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             return controller;
         }
 
-        private AnimatorController GetLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType)
+        private VRCExpressionParameters CopyAndReplaceExpressionParameters(VRCAvatarDescriptor avatarDescriptor)
+        {
+            var copiedPath = string.Format("{0}/cpDT_ExParams.asset", BuildDTCabinetCallback.GeneratedAssetsPath);
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(avatarDescriptor.expressionParameters), copiedPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(copiedPath);
+            var copiedParams = AssetDatabase.LoadAssetAtPath<VRCExpressionParameters>(copiedPath);
+            avatarDescriptor.expressionParameters = copiedParams;
+            return copiedParams;
+        }
+
+        private VRCExpressionsMenu CopyAndReplaceExpressionMenu(VRCAvatarDescriptor avatarDescriptor)
+        {
+            var copiedPath = string.Format("{0}/cpDT_ExMenu.asset", BuildDTCabinetCallback.GeneratedAssetsPath);
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(avatarDescriptor.expressionsMenu), copiedPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(copiedPath);
+            var copiedMenu = AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>(copiedPath);
+            avatarDescriptor.expressionsMenu = copiedMenu;
+            return copiedMenu;
+        }
+
+
+        private AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType)
         {
             VRCAvatarDescriptor.CustomAnimLayer? nullableAnimLayer = null;
 
@@ -208,13 +242,20 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             }
 
             var animLayer = nullableAnimLayer.Value;
+            var animator = !animLayer.isDefault && animLayer.animatorController != null ? (AnimatorController)animLayer.animatorController : GetDefaultLayerAnimator(animLayerType);
 
-            if (!animLayer.isDefault && animLayer.animatorController != null)
-            {
-                return (AnimatorController)animLayer.animatorController;
-            }
+            // copy to our asset path
+            var copiedPath = string.Format("{0}/cpDT_{1}.controller", BuildDTCabinetCallback.GeneratedAssetsPath, animLayerType.ToString());
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(animator), copiedPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(copiedPath);
 
-            return GetDefaultLayerAnimator(animLayerType);
+            // get back here
+            var copiedAnimator = AssetDatabase.LoadAssetAtPath<AnimatorController>(copiedPath);
+            animLayer.animatorController = copiedAnimator;
+
+            return copiedAnimator;
         }
     }
 }

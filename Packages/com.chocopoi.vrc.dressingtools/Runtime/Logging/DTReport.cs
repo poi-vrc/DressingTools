@@ -7,7 +7,6 @@ namespace Chocopoi.DressingTools.Logging
     [Serializable]
     public enum DTReportLogType
     {
-        Fatal = -2,
         Error = -1,
         Info = 0,
         Warning = 1,
@@ -110,19 +109,14 @@ namespace Chocopoi.DressingTools.Logging
             LogEntries.AddRange(new List<DTReportLogEntry>(report.LogEntries));
         }
 
-        public void LogException(Exception exception)
+        public void LogException(string label, Exception exception, string extraMessage = null, string extraCode = null)
         {
-            LogFatal("Exception", exception.ToString());
+            LogError(label, extraMessage != null ? string.Format("{0}: {1}", extraMessage, exception.ToString()) : exception.ToString(), extraCode);
         }
 
-        public void LogFatal(string label, string message, string code = null)
+        public void LogExceptionLocalized(string label, Exception exception, string extraCode = null, params object[] args)
         {
-            Log(DTReportLogType.Fatal, label, message, code);
-        }
-
-        public void LogFatalLocalized(string label, string code, params object[] args)
-        {
-            LogLocalized(DTReportLogType.Fatal, label, code, args);
+            LogException(label, exception, t._(extraCode, args), extraCode);
         }
 
         public void LogError(string label, string message, string code = null)

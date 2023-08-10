@@ -8,29 +8,23 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal class ApplyCabinetHook : IBuildDTCabinetHook
     {
+        private DTReport _report;
+
         private DTCabinet _cabinet;
 
-        public ApplyCabinetHook(DTCabinet cabinet)
+        public ApplyCabinetHook(DTReport report, DTCabinet cabinet)
         {
+            _report = report;
             _cabinet = cabinet;
         }
 
-        public bool OnPreprocessAvatar(GameObject avatarGameObject)
+        public bool OnPreprocessAvatar()
         {
             EditorUtility.DisplayProgressBar("DressingTools", "Applying cabinet...", 0);
 
-            var report = new DTReport();
+            _cabinet.Apply(_report);
 
-            _cabinet.Apply(report);
-
-            if (report.HasLogType(DTReportLogType.Error))
-            {
-                DTReportWindow.ShowWindow(report);
-                EditorUtility.DisplayDialog("DressingTools", "Error occured when applying cabinet, aborting", "OK");
-                return false;
-            }
-
-            return true;
+            return !_report.HasLogType(DTReportLogType.Error);
         }
     }
 }

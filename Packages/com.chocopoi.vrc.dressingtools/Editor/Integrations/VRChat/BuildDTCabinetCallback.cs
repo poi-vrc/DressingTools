@@ -6,17 +6,29 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using VRC.SDKBase;
+using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.UI;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     [InitializeOnLoad]
     public class BuildDTCabinetCallback : IVRCSDKPreprocessAvatarCallback, IVRCSDKPostprocessAvatarCallback
     {
+        private const string LogLabel = "BuilDTCabinetCallback";
+
+        public const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
+
+        public const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
+
         public int callbackOrder => -25;
 
         public bool OnPreprocessAvatar(GameObject avatarGameObject)
         {
             Debug.Log("Preprocess avatar");
+
+            // remove previous generated files
+            AssetDatabase.DeleteAsset(GeneratedAssetsPath);
+            AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
 
             var cabinet = DTEditorUtils.GetAvatarCabinet(avatarGameObject);
             if (cabinet == null)
@@ -28,34 +40,45 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             // display progress bar
             EditorUtility.DisplayProgressBar("DressingTools", "Preparing to process avatar...", 0);
 
+            var report = new DTReport();
+
             try
             {
                 // create hook instances
                 var hooks = new IBuildDTCabinetHook[]
                 {
-                    new ApplyCabinetHook(cabinet),
-                    new GenerateAnimationsHook(cabinet),
+                    new ApplyCabinetHook(report, cabinet),
+                    new GenerateAnimationsHook(report, cabinet),
                 };
 
                 // execute hooks
                 foreach (var hook in hooks)
                 {
-                    if (!hook.OnPreprocessAvatar(avatarGameObject))
+                    if (!hook.OnPreprocessAvatar())
                     {
-                        return false;
+                        break;
                     }
                 }
+            }
+            catch (System.Exception ex)
+            {
+                report.LogExceptionLocalized(LogLabel, ex, "integrations.vrc.msgCode.error.exceptionProcessAvatar");
+            }
+            finally
+            {
+                // show report window if any errors
+                if (report.HasLogType(DTReportLogType.Error))
+                {
+                    DTReportWindow.ShowWindow(report);
+                    EditorUtility.DisplayDialog("DressingTools", "Error preprocessing avatar, please refer to the report window.", "OK");
+                }
 
-                return true;
-            } catch (System.Exception ex)
-            {
-                EditorUtility.DisplayDialog("DressingTools", "Error processing avatar: " + ex.Message, "OK");
-                return false;
-            } finally
-            {
+                AssetDatabase.SaveAssets();
                 // hide the progress bar
                 EditorUtility.ClearProgressBar();
             }
+
+            return !report.HasLogType(DTReportLogType.Error);
         }
 
         public void OnPostprocessAvatar()
