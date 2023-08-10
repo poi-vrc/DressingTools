@@ -15,7 +15,6 @@ namespace Chocopoi.DressingTools.UI
         private Dictionary<DTReportLogType, List<DTReportLogEntry>> _logEntries;
 
         private Vector2 scrollPos;
-
         public static void ShowWindow(DTReport report)
         {
             var window = (DTReportWindow)GetWindow(typeof(DTReportWindow));
@@ -23,7 +22,6 @@ namespace Chocopoi.DressingTools.UI
             window.Show();
 
             window._report = report;
-            window._logEntries = report.GetLogEntriesAsDictionary();
         }
 
         public void ResetReport()
@@ -36,6 +34,10 @@ namespace Chocopoi.DressingTools.UI
         {
             if (_report != null)
             {
+                if (_logEntries == null)
+                {
+                    _logEntries = _report.GetLogEntriesAsDictionary();
+                }
                 //Result
 
                 if (_report.HasLogType(DTReportLogType.Error))

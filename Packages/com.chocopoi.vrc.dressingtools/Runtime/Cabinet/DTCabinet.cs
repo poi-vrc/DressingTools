@@ -1,4 +1,5 @@
-﻿using Chocopoi.DressingTools.Logging;
+﻿using System;
+using Chocopoi.DressingTools.Logging;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
@@ -7,6 +8,8 @@ namespace Chocopoi.DressingTools.Cabinet
     [DefaultExecutionOrder(-19999)]
     public class DTCabinet : DTBaseComponent
     {
+        private const string LogLabel = "DTCabinet";
+
         public GameObject avatarGameObject;
 
         public string avatarArmatureName;
@@ -18,7 +21,14 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public void Apply(DTReport report)
         {
-            new DTCabinetApplier(report, this).Execute();
+            try
+            {
+                new DTCabinetApplier(report, this).Execute();
+            }
+            catch (Exception ex)
+            {
+                report.LogExceptionLocalized(LogLabel, ex, "cabinet.apply.msgCode.hasException");
+            }
         }
 
         void Start()
