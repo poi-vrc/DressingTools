@@ -9,11 +9,9 @@ namespace Chocopoi.DressingTools
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 
-        private static readonly int TargetPreferencesVersion = 2;
+        private static readonly int TargetPreferencesVersion = 3;
 
-        private static readonly string JsonPath = "Assets/chocopoi/DressingTools/Resources";
-
-        private static readonly string JsonFileName = "preferences.json";
+        private static readonly string EditorPrefsKey = "Chocopoi.DressingTools.Preferences";
 
         private static readonly string DefaultUpdateBranch = "stable";
 
@@ -30,7 +28,7 @@ namespace Chocopoi.DressingTools
 
         public static Preferences LoadPreferences()
         {
-            if (!File.Exists(JsonPath))
+            if (!EditorPrefs.HasKey(EditorPrefsKey))
             {
                 Debug.Log("[DressingTools] Preferences file not found, using default preferences instead.");
                 return GenerateDefaultPreferences();
@@ -38,7 +36,7 @@ namespace Chocopoi.DressingTools
 
             try
             {
-                var json = File.ReadAllText(JsonPath);
+                var json = EditorPrefs.GetString(EditorPrefsKey);
                 var p = JsonConvert.DeserializeObject<Preferences>(json);
 
                 if (p == null)
@@ -72,11 +70,7 @@ namespace Chocopoi.DressingTools
         {
             try
             {
-                if (!Directory.Exists(JsonPath))
-                {
-                    Directory.CreateDirectory(JsonPath);
-                }
-                File.WriteAllText(JsonPath + "/" + JsonFileName, JsonConvert.SerializeObject(_preferences));
+                EditorPrefs.SetString(EditorPrefsKey, JsonConvert.SerializeObject(_preferences));
             }
             catch (IOException e)
             {
