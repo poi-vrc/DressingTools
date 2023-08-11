@@ -12,12 +12,14 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         public event Action TargetAvatarOrWearableChange;
         public event Action DoAddToCabinetEvent;
+        public event Action DressingModeChange;
         public GameObject TargetAvatar { get => _targetAvatar; set => _targetAvatar = value; }
         public GameObject TargetWearable { get => _targetWearable; set => _targetWearable = value; }
         public DTWearableConfig Config { get; set; }
         public bool ShowAvatarNoExistingCabinetHelpbox { get; set; }
         public bool DisableAllButtons { get; set; }
         public bool DisableAddToCabinetButton { get; set; }
+        public int SelectedDressingMode { get => _currentMode; set => _currentMode = value; }
 
         private DressingPresenter _presenter;
         private IMainView _mainView;
@@ -42,6 +44,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
             _wizardView = new WearableSetupWizardView(this);
             _configView = new WearableConfigView(this);
+        }
+
+        public void WizardGenerateConfig()
+        {
+            _wizardView.GenerateConfig();
+            _configView.RaiseForceUpdateViewEvent();
         }
 
         public bool IsConfigValid()
@@ -118,7 +126,7 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 GUILayout.FlexibleSpace();
                 // TODO: ask wizard to write back data to here on mode change
-                Toolbar(ref _currentMode, new string[] { "Wizard", "Advanced" });
+                Toolbar(ref _currentMode, new string[] { "Wizard", "Advanced" }, DressingModeChange);
             }
             EndHorizontal();
 

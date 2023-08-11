@@ -129,6 +129,8 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
+            config.targetAvatarConfig.name = targetAvatar.name;
+
             var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 

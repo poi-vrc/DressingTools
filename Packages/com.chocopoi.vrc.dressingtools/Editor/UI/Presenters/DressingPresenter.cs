@@ -1,6 +1,7 @@
 ﻿using System;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -24,6 +25,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.ForceUpdateView += OnForceUpdateView;
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
             _view.DoAddToCabinetEvent += OnAddToCabinetButtonClick;
+            _view.DressingModeChange += OnDressingModeChange;
         }
 
         private void UnsubscribeEvents()
@@ -34,6 +36,20 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
             _view.DoAddToCabinetEvent -= OnAddToCabinetButtonClick;
+            _view.DressingModeChange -= OnDressingModeChange;
+        }
+
+        private void OnDressingModeChange()
+        {
+            // ask if really switch back to wizard mode
+            if (_view.SelectedDressingMode == 0 && !EditorUtility.DisplayDialog("DressingTools", "Switching back to wizard mode will do auto-setup and wipe your existing configuration here.\nAre you sure?", "Yes", "No"))
+            {
+                _view.SelectedDressingMode = 1;
+                return;
+            }
+
+            // generate config
+            _view.WizardGenerateConfig();
         }
 
         private void OnForceUpdateView()

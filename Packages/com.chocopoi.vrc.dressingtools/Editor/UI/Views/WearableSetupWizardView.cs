@@ -63,6 +63,8 @@ namespace Chocopoi.DressingTools.UI.Views
             BlendshapeSyncModuleEditor = new BlendshapeSyncModuleEditor(this, BlendshapeSyncModule);
         }
 
+        public void GenerateConfig() => _presenter.GenerateConfig();
+
         public bool IsValid()
         {
             if (TargetAvatar == null || TargetWearable == null)
