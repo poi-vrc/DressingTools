@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
@@ -72,8 +73,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ResetMappingEditorContainer()
         {
-            _mappingEditorContainer.dresserSettings = null;
-            _mappingEditorContainer.boneMappings = null;
+            _mappingEditorContainer.targetAvatar = null;
+            _mappingEditorContainer.targetWearable = null;
+            _mappingEditorContainer.generatedBoneMappings = null;
             _mappingEditorContainer.boneMappingMode = DTBoneMappingMode.Auto;
         }
 
@@ -81,11 +83,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             // reset mapping editor container
             ResetMappingEditorContainer();
-            _mappingEditorContainer.dresserSettings = _view.DresserSettings;
+            _mappingEditorContainer.targetAvatar = _parentView.TargetAvatar;
+            _mappingEditorContainer.targetWearable = _parentView.TargetWearable;
 
             // execute dresser
             var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
-            _dresserReport = dresser.Execute(_view.DresserSettings, out _mappingEditorContainer.boneMappings);
+            _dresserReport = dresser.Execute(_view.DresserSettings, out _mappingEditorContainer.generatedBoneMappings);
 
             ApplySettings();
             UpdateDresserReport();
@@ -95,7 +98,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
 
-            boneMappingEditorWindow.SetSettings(_mappingEditorContainer);
+            boneMappingEditorWindow.SetContainer(_mappingEditorContainer);
             boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
             boneMappingEditorWindow.Show();
         }
@@ -271,7 +274,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             // update values from mapping editor container
             _module.boneMappingMode = _mappingEditorContainer.boneMappingMode;
-            _module.boneMappings = _module.boneMappingMode != DTBoneMappingMode.Auto ? _mappingEditorContainer.boneMappings?.ToArray() : new DTBoneMapping[0];
+            _module.boneMappings = _module.boneMappingMode != DTBoneMappingMode.Auto ? _mappingEditorContainer.generatedBoneMappings : new List<DTBoneMapping>();
         }
 
         public bool IsValid()

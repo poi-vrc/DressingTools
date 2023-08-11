@@ -2,6 +2,7 @@
 using System.IO;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Proxy;
+using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -39,6 +40,24 @@ namespace Chocopoi.DressingTools
 
             // no such type found
             return null;
+        }
+
+        public static void HandleBoneMappingOverrides(List<DTBoneMapping> generatedBoneMappings, List<DTBoneMapping> overrideBoneMappings)
+        {
+            foreach (var mappingOverride in overrideBoneMappings)
+            {
+                foreach (var originalMapping in generatedBoneMappings)
+                {
+                    Debug.Log(string.Format("{0} vs {1} {2} vs {3}", originalMapping.avatarBonePath, mappingOverride.avatarBonePath, originalMapping.wearableBonePath, mappingOverride.wearableBonePath));
+                    // override on match
+                    if (originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
+                    {
+                        Debug.Log("match");
+                        originalMapping.avatarBonePath = mappingOverride.avatarBonePath;
+                        originalMapping.mappingType = mappingOverride.mappingType;
+                    }
+                }
+            }
         }
 
         // TODO: copied from AvatarLib because of the Runtime/Editor assembly problem, create a Runtime one there soon?

@@ -198,6 +198,11 @@ namespace Chocopoi.DressingTools.UIBase
             EditorGUILayout.HelpBox(message, type);
         }
 
+        public void Foldout(ref bool foldout, string label)
+        {
+            foldout = EditorGUILayout.Foldout(foldout, label);
+        }
+
         public void BeginFoldoutBox(ref bool foldout, string label)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
