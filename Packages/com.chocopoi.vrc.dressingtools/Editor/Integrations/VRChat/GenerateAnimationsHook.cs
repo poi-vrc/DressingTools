@@ -223,25 +223,24 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             return copiedMenu;
         }
 
-
         private AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType)
         {
-            VRCAvatarDescriptor.CustomAnimLayer? nullableAnimLayer = null;
-
-            foreach (var layer in avatarDescriptor.baseAnimationLayers)
+            var customAnimLayerIndex = -1;
+            for (var i = 0; i < avatarDescriptor.baseAnimationLayers.Length; i++)
             {
-                if (layer.type == animLayerType)
+                if (avatarDescriptor.baseAnimationLayers[i].type == animLayerType)
                 {
-                    nullableAnimLayer = layer;
+                    customAnimLayerIndex = i;
+                    break;
                 }
             }
 
-            if (nullableAnimLayer == null)
+            if (customAnimLayerIndex == -1)
             {
                 return null;
             }
 
-            var animLayer = nullableAnimLayer.Value;
+            var animLayer = avatarDescriptor.baseAnimationLayers[customAnimLayerIndex];
             var animator = !animLayer.isDefault && animLayer.animatorController != null ? (AnimatorController)animLayer.animatorController : GetDefaultLayerAnimator(animLayerType);
 
             // copy to our asset path
@@ -254,6 +253,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             // get back here
             var copiedAnimator = AssetDatabase.LoadAssetAtPath<AnimatorController>(copiedPath);
             animLayer.animatorController = copiedAnimator;
+            avatarDescriptor.baseAnimationLayers[customAnimLayerIndex] = animLayer;
 
             return copiedAnimator;
         }
