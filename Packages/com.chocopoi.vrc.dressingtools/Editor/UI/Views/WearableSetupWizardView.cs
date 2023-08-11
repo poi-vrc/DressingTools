@@ -32,6 +32,10 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool UseAnimationGeneration { get => _useAnimationGeneration; set => _useAnimationGeneration = value; }
         public bool UseBlendshapeSync { get => _useBlendshapeSync; set => _useBlendshapeSync = value; }
         public int CurrentStep { get => _currentStep; set => _currentStep = value; }
+        public bool ShowAvatarNoCabinetHelpBox { get; set; }
+        public bool ShowArmatureNotFoundHelpBox { get; set; }
+        public bool ShowArmatureGuessedHelpBox { get; set; }
+
 
         private WearableSetupWizardPresenter _presenter;
         private IDressingSubView _dressingSubView;
@@ -175,6 +179,18 @@ namespace Chocopoi.DressingTools.UI.Views
 
             if (_currentStep == 0)
             {
+                if (ShowAvatarNoCabinetHelpBox)
+                {
+                    HelpBox("Auto-setup: Selected avatar has no cabinet, using default settings", MessageType.Warning);
+                }
+                if (ShowArmatureNotFoundHelpBox)
+                {
+                    HelpBox("Auto-setup: Wearable armature not found. Armature mapping is not enabled.", MessageType.Warning);
+                }
+                if (ShowArmatureGuessedHelpBox)
+                {
+                    HelpBox("Auto-setup: Wearable armature was guessed.", MessageType.Warning);
+                }
                 DrawMappingStep();
             }
             else if (_currentStep == 1)

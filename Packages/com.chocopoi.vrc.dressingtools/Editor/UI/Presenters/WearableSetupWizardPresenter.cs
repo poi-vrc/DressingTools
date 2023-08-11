@@ -60,9 +60,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (cabinet != null)
             {
                 armatureName = cabinet.avatarArmatureName;
+                _view.ShowAvatarNoCabinetHelpBox = false;
             }
-
-            // TODO: show message
+            else
+            {
+                _view.ShowAvatarNoCabinetHelpBox = true;
+            }
 
             // attempt to find wearable armature using avatar armature name
             var armature = DTRuntimeUtils.GuessArmature(_view.TargetWearable, armatureName);
@@ -72,14 +75,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.UseArmatureMapping = false;
                 _view.UseMoveRoot = true;
 
-                // TODO: show message
+                _view.ShowArmatureNotFoundHelpBox = true;
+                _view.ShowArmatureGuessedHelpBox = false;
             }
             else
             {
-                if (armature.name != armatureName)
-                {
-                    // TODO: show message
-                }
+                _view.ShowArmatureNotFoundHelpBox = false;
+                _view.ShowArmatureGuessedHelpBox = armature.name != armatureName;
 
                 _view.UseArmatureMapping = true;
                 _view.UseMoveRoot = false;
