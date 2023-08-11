@@ -26,6 +26,9 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool UseAnimationGeneration { get; set; }
         bool UseBlendshapeSync { get; set; }
         int CurrentStep { get; set; }
+        bool ShowAvatarNoCabinetHelpBox { get; set; }
+        bool ShowArmatureNotFoundHelpBox { get; set; }
+        bool ShowArmatureGuessedHelpBox { get; set; }
 
         void RaiseDoAddToCabinetEvent();
         bool IsValid();
