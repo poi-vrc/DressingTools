@@ -43,7 +43,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public DTBoneMappingMode boneMappingMode;
 
-        public DTBoneMapping[] boneMappings;
+        public List<DTBoneMapping> boneMappings;
 
         public string serializedDresserConfig;
 
@@ -94,17 +94,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
             else if (boneMappingMode == DTBoneMappingMode.Override)
             {
-                foreach (var mappingOverride in boneMappings)
-                {
-                    foreach (var originalMapping in boneMappings)
-                    {
-                        // override on match
-                        if (originalMapping.avatarBonePath == mappingOverride.avatarBonePath && originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
-                        {
-                            originalMapping.mappingType = mappingOverride.mappingType;
-                        }
-                    }
-                }
+                DTRuntimeUtils.HandleBoneMappingOverrides(resultantBoneMappings, boneMappings);
             }
 
             return true;

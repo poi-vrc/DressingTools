@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.UI.View;
 using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
@@ -8,169 +9,49 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
-    public class DTMappingEditorContainer
+    internal class DTMappingEditorContainer
     {
-        public DTDresserSettings dresserSettings;
+        public GameObject targetAvatar;
+        public GameObject targetWearable;
         public DTBoneMappingMode boneMappingMode;
-        public List<DTBoneMapping> boneMappings;
+        public List<DTBoneMapping> generatedBoneMappings;
+        public List<DTBoneMapping> outputBoneMappings;
+
+        public DTMappingEditorContainer()
+        {
+            targetAvatar = null;
+            targetWearable = null;
+            boneMappingMode = DTBoneMappingMode.Auto;
+            generatedBoneMappings = null;
+            outputBoneMappings = null;
+        }
     }
 
-    public class DTMappingEditorWindow : EditorWindow
+    internal class DTMappingEditorWindow : EditorWindow
     {
+        private MappingEditorView _view;
         private DTMappingEditorContainer _container;
-
-        private Vector2 _scrollPos;
-
-        private Vector2 _leftScrollPos;
-        private Vector2 _rightScrollPos;
-
-        private int _selectedBoneObjectEditor;
 
         public DTMappingEditorWindow()
         {
+            _view = new MappingEditorView();
+            _container = null;
         }
 
-        public void SetSettings(DTMappingEditorContainer container)
+        public void SetContainer(DTMappingEditorContainer container)
         {
             _container = container;
+            _view.SetContainer(container);
         }
 
-        private List<DTBoneMapping> GetAvatarBoneMapping(Transform avatarRoot, Transform targetAvatarBone)
+        public void OnEnable()
         {
-            var path = AnimationUtils.GetRelativePath(targetAvatarBone, avatarRoot);
-
-            var boneMappings = new List<DTBoneMapping>();
-
-            foreach (var boneMapping in _container.boneMappings)
-            {
-                if (boneMapping.avatarBonePath == path)
-                {
-                    boneMappings.Add(boneMapping);
-                }
-            }
-
-            return boneMappings;
+            _view.OnEnable();
         }
 
-        public void DrawAvatarHierarchy(Transform avatarRoot, Transform parent)
+        public void OnDisable()
         {
-            for (var i = 0; i < parent.childCount; i++)
-            {
-                var child = parent.GetChild(i);
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.ObjectField(child.gameObject, typeof(GameObject), true);
-
-                // TODO: implement adding
-                GUILayout.Button("+", GUILayout.ExpandWidth(false));
-
-                // backup and set indent level to zero
-                var lastIndentLevel = EditorGUI.indentLevel;
-                EditorGUI.indentLevel = 0;
-
-                EditorGUILayout.BeginVertical();
-
-                var boneMappings = GetAvatarBoneMapping(avatarRoot, child);
-
-                if (boneMappings.Count > 0)
-                {
-                    foreach (var boneMapping in boneMappings)
-                    {
-                        // TODO: implement editing
-                        EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.Popup((int)boneMapping.mappingType, new string[] { "Do Nothing", "Move to Avatar Bone", "ParentConstraint to Avatar Bone", "IgnoreTransform on Dynamics", "Copy Avatar Data on Dynamics" });
-                        EditorGUILayout.ObjectField(_container.dresserSettings.targetWearable.transform.Find(boneMapping.wearableBonePath)?.gameObject, typeof(GameObject), true);
-                        GUILayout.Button("x", GUILayout.ExpandWidth(false));
-                        EditorGUILayout.EndHorizontal();
-                    }
-                }
-                else
-                {
-                    // empty mapping placeholder
-                    EditorGUI.BeginDisabledGroup(true);
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.Popup(0, new string[] { "---" });
-                    EditorGUILayout.ObjectField(null, typeof(GameObject), true);
-                    GUILayout.Button("x", GUILayout.ExpandWidth(false));
-                    EditorGUILayout.EndHorizontal();
-                    EditorGUI.EndDisabledGroup();
-                }
-
-                EditorGUILayout.EndVertical();
-                // restore to the previous indent level
-                EditorGUI.indentLevel = lastIndentLevel;
-
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUI.indentLevel += 1;
-                DrawAvatarHierarchy(avatarRoot, child);
-                EditorGUI.indentLevel -= 1;
-            }
-        }
-
-        private DTBoneMappingMode ConvertIntToWearableMappingMode(int wearableMappingMode)
-        {
-            switch (wearableMappingMode)
-            {
-                case 1:
-                    return DTBoneMappingMode.Override;
-                case 2:
-                    return DTBoneMappingMode.Manual;
-                default:
-                case 0:
-                    return DTBoneMappingMode.Auto;
-            }
-        }
-
-        private void DrawMappingHeaderHelpBoxes(DTBoneMappingMode mappingMode)
-        {
-            if (mappingMode == DTBoneMappingMode.Auto)
-            {
-                EditorGUILayout.HelpBox("In auto mode, everything is controlled by dresser and its generated mappings. To edit mappings, either use Override or even Manual mode.", MessageType.Warning);
-            }
-            if (mappingMode == DTBoneMappingMode.Override)
-            {
-                EditorGUILayout.HelpBox("In override mode, the mappings here will override the ones generated by the dresser. It could be useful for fixing some minor bone mappings.", MessageType.Info);
-            }
-            if (mappingMode == DTBoneMappingMode.Manual)
-            {
-                EditorGUILayout.HelpBox("In manual mode, the dresser is ignored and the mappings defined here will be exactly the same when applied to other avatars/users. It might cause incompatibility issues so use with caution.", MessageType.Warning);
-            }
-        }
-
-        private void DrawBoneMappingEditor()
-        {
-            // Header
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.BeginHorizontal();
-
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Left: Avatar", _container.dresserSettings.targetAvatar, typeof(GameObject), true);
-            EditorGUI.EndDisabledGroup();
-            _container.boneMappingMode = ConvertIntToWearableMappingMode(EditorGUILayout.Popup("Mode", (int)_container.boneMappingMode, new string[] { "Auto", "Override", "Manual" }));
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Right: Wearable", _container.dresserSettings.targetWearable, typeof(GameObject), true);
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndHorizontal();
-
-            DrawMappingHeaderHelpBoxes(_container.boneMappingMode);
-
-            DTEditorUtils.DrawHorizontalLine();
-
-            // TODO: implement final result mapping preview
-            GUILayout.Toolbar(0, new string[] { "Your Mappings", "Result Mappings" });
-
-            EditorGUILayout.Separator();
-
-            // Bone Mappings
-            _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
-
-            EditorGUI.BeginDisabledGroup(_container.boneMappingMode == DTBoneMappingMode.Auto);
-            DrawAvatarHierarchy(_container.dresserSettings.targetAvatar.transform, _container.dresserSettings.targetAvatar.transform);
-            EditorGUI.EndDisabledGroup();
-
-            EditorGUILayout.EndScrollView();
-            EditorGUILayout.EndVertical();
+            _view.OnDisable();
         }
 
         public void OnGUI()
@@ -178,19 +59,9 @@ namespace Chocopoi.DressingTools.UI
             if (_container == null)
             {
                 Close();
-                return;
             }
 
-            if (_container.dresserSettings == null || _container.boneMappings == null)
-            {
-                EditorGUILayout.HelpBox("Bone mapping not available.", MessageType.Error);
-                return;
-            }
-
-            // Bone editor
-            DrawBoneMappingEditor();
-
-            EditorGUILayout.Separator();
+            _view.OnGUI();
         }
     }
 }
