@@ -12,6 +12,10 @@ namespace Chocopoi.DressingTools.UI
 {
     public class DTMainEditorWindow : EditorWindow
     {
+        // note that in order for a menu item in "GameObject/" to be propagated to the
+        // hierarchy Create dropdown and hierarchy context menu, it must be grouped with
+        // the other GameObject creation menu items. This can be achieved by setting its priority to 10 
+        private const int MenuItemPriority = 20;
         private MainView _view;
 
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
@@ -22,7 +26,7 @@ namespace Chocopoi.DressingTools.UI
             window.Show();
         }
 
-        [MenuItem("GameObject/DressingTools/Auto-setup wearable (Mappings Only)", false)]
+        [MenuItem("GameObject/DressingTools/Auto-setup wearable (Mappings Only)", false, MenuItemPriority)]
         static void QuickAutoSetup(MenuCommand menuCommand)
         {
             if (!(menuCommand.context is GameObject))
@@ -97,8 +101,8 @@ namespace Chocopoi.DressingTools.UI
             DTEditorUtils.AddCabinetWearable(cabinet, config, wearable);
         }
 
-        [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true)]
-        [MenuItem("GameObject/DressingTools/Auto-setup wearable (Mappings Only)", true)]
+        [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true, MenuItemPriority)]
+        [MenuItem("GameObject/DressingTools/Auto-setup wearable (Mappings Only)", true, MenuItemPriority)]
         public static bool ValidateSetupMenus()
         {
             // no selected objects
@@ -128,7 +132,7 @@ namespace Chocopoi.DressingTools.UI
             return true;
         }
 
-        [MenuItem("GameObject/DressingTools/Setup wearable with wizard", false)]
+        [MenuItem("GameObject/DressingTools/Setup wearable with wizard", false, MenuItemPriority)]
         public static void StartSetupWizard(MenuCommand menuCommand)
         {
             if (!(menuCommand.context is GameObject))
