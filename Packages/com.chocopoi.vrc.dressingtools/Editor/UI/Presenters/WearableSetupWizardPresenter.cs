@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable;
@@ -269,6 +270,35 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
+        public void GenerateConfig()
+        {
+            var config = new DTWearableConfig();
+
+            DTEditorUtils.PrepareWearableConfig(config, _view.TargetAvatar, _view.TargetWearable);
+
+            if (_view.UseArmatureMapping)
+            {
+                config.modules.Add(_view.ArmatureMappingModule);
+            }
+
+            if (_view.UseMoveRoot)
+            {
+                config.modules.Add(_view.MoveRootModule);
+            }
+
+            if (_view.UseAnimationGeneration)
+            {
+                config.modules.Add(_view.AnimationGenerationModule);
+            }
+
+            if (_view.UseBlendshapeSync)
+            {
+                config.modules.Add(_view.BlendshapeSyncModule);
+            }
+
+            _view.Config = config;
+        }
+
         private void OnNextButtonClick()
         {
             // progress step if not last step
@@ -290,31 +320,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     return;
                 }
 
-                var config = new DTWearableConfig();
-
-                DTEditorUtils.PrepareWearableConfig(config, _view.TargetAvatar, _view.TargetWearable);
-
-                if (_view.UseArmatureMapping)
-                {
-                    config.modules.Add(_view.ArmatureMappingModule);
-                }
-
-                if (_view.UseMoveRoot)
-                {
-                    config.modules.Add(_view.MoveRootModule);
-                }
-
-                if (_view.UseAnimationGeneration)
-                {
-                    config.modules.Add(_view.AnimationGenerationModule);
-                }
-
-                if (_view.UseBlendshapeSync)
-                {
-                    config.modules.Add(_view.BlendshapeSyncModule);
-                }
-
-                _view.Config = config;
+                GenerateConfig();
                 _view.RaiseDoAddToCabinetEvent();
             }
         }

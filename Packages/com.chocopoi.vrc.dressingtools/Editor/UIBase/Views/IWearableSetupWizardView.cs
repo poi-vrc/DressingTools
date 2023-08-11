@@ -30,6 +30,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool ShowArmatureNotFoundHelpBox { get; set; }
         bool ShowArmatureGuessedHelpBox { get; set; }
 
+        void GenerateConfig();
         void RaiseDoAddToCabinetEvent();
         bool IsValid();
     }
