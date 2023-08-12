@@ -23,8 +23,8 @@
 
 ## Development Screenshots
 
-[![Teaser 1](.github/teaser/teaser_1.PNG)](.github/teaser/teaser_1.PNG)
-[![Teaser 2](.github/teaser/teaser_2.PNG)](.github/teaser/teaser_2.PNG)
+[![Teaser 1](docs/static/img/teaser-1.PNG)](docs/static/img/teaser-1.PNG)
+[![Teaser 2](docs/static/img/teaser-2.PNG)](docs/static/img/teaser-2.PNG)
 
 ## License
 This project is mainly licensed **under the GPLv3 License**. ([tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))) Please make sure your derived project is licensed under the GPLv3 and published open-source to the users.

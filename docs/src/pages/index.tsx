@@ -18,12 +18,12 @@ function HomepageHeader() {
         </h1>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          {/* <Link
+          <Link
             className="button button--secondary button--lg"
             target="_self"
             to="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
             Install with VCC ❤️
-          </Link> */}
+          </Link>
           <Link
             className="button button--secondary button--lg"
             to="/docs">
@@ -31,7 +31,7 @@ function HomepageHeader() {
           </Link>
         </div>
       </div>
-    </header>
+    </header >
   );
 }
 
