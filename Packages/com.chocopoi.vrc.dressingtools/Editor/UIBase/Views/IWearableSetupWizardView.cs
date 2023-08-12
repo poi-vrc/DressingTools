@@ -16,11 +16,9 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Chocopoi.DressingTools.UI.Views.Modules;
 using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {

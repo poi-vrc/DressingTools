@@ -16,9 +16,6 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations

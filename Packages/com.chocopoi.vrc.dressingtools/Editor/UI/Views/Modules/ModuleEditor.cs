@@ -15,11 +15,8 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using Chocopoi.DressingTools.UI.Views.Modules;
 using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 

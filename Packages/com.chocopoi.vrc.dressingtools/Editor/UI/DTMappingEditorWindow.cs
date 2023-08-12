@@ -16,8 +16,6 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.UI.View;
 using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;

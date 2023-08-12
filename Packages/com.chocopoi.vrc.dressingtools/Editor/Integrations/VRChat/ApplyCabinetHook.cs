@@ -18,9 +18,7 @@
 #if VRC_SDK_VRCSDK3
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.UI;
 using UnityEditor;
-using UnityEngine;
 namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal class ApplyCabinetHook : IBuildDTCabinetHook

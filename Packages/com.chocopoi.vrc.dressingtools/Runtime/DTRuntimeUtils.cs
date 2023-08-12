@@ -17,11 +17,9 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
-using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools

@@ -17,12 +17,9 @@
 
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
