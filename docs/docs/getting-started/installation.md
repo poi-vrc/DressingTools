@@ -34,15 +34,15 @@ DressingTools require and the version of VRCSDK that we support.
 
 2. Press `I Understand, Add Repository` to add the repository.
 
-    [![Installation VCC Underestand](/img/installation-vcc-repo-understand.PNG)](/img/installation-vcc-repo-understand.PNG)
+    [![Installation VCC Understand](/img/installation-vcc-repo-understand.PNG)](/img/installation-vcc-repo-understand.PNG)
 
 3. Add the DressingTools package to your avatar project.
 
-    [![Installation VCC Underestand](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
+    [![Installation VCC Add Package](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
 
 4. Open the project and you are good to go!
 
-    [![Installation VCC Underestand](/img/teaser-1.PNG)](/img/teaser-1.PNG)
+    [![Installation VCC Teaser](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
 ## Others
 
