@@ -73,10 +73,10 @@ There are currently 5 mapping types:
   - Use cases: normal wearable bones, accessories
 - **ParentConstraint to Avatar Bone**: Create ParentConstraint from wearable bone to target avatar bone without moving
   - Use cases: Bones with dynamics (i.e. Breast bones)
-- **IgnoreTransform on Dynamics**: Move the wearable bone to the target avatar bone
-  - Use cases: **For Quest avatars** bones with dynamics (i.e. Breast bones), where **ParentConstraints cannot be used.**
+- **IgnoreTransform on Dynamics**: The wearable bone will be added to the avatar dynamics' ignore transforms list (Only if the avatar bone is controlled by a dynamics)
+  - Use cases: **For Quest avatar** bones with dynamics (i.e. Breast bones), in situations where **ParentConstraints cannot be used.**
   - Downsides: It is **not 100% compatible** with all wearables.
-- **Copy Avatar Data on Dynamics**: Move the wearable bone to the target avatar bone
+- **Copy Avatar Data on Dynamics**: The avatar dynamics will be copied to the wearable bone (Only if the avatar bone is controlled by a dynamics)
   - Use cases: Bones with dynamics (i.e. Breast bones), separating two dynamics component for grabbing purposes 🤔
 
 ### Removing a mapping
