@@ -16,15 +16,12 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.Cabinet
 {

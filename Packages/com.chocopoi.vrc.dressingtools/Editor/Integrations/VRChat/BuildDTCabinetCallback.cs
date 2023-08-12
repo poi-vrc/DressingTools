@@ -16,15 +16,15 @@
  */
 
 #if VRC_SDK_VRCSDK3
-using UnityEngine;
-using UnityEditor;
-using VRC.SDKBase.Editor.BuildPipeline;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
-using VRC.SDKBase;
+using System.Reflection;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.UI;
+using UnityEditor;
+using UnityEngine;
+using VRC.SDKBase;
+using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat
 {

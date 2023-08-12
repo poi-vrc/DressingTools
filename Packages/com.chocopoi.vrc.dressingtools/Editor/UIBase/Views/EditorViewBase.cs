@@ -16,7 +16,6 @@
  */
 
 using System;
-using Chocopoi.DressingTools.UI;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEngine;

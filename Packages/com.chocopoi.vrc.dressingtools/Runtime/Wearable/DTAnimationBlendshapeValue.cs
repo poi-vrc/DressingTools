@@ -16,8 +16,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable
 {

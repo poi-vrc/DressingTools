@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable
 {
