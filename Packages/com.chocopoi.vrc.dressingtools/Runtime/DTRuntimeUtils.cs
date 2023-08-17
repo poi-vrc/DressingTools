@@ -15,8 +15,11 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
@@ -256,6 +259,50 @@ namespace Chocopoi.DressingTools
             {
                 return null;
             }
+        }
+
+        // referenced from: http://answers.unity3d.com/questions/458207/copy-a-component-at-runtime.html
+        public static Component CopyComponent(Component originalComponent, GameObject destGameObject)
+        {
+            Type type = originalComponent.GetType();
+
+            // get the destination component or add new
+            var destComp = destGameObject.GetComponent(type);
+            if (!destComp)
+            {
+                destGameObject.AddComponent(type);
+            }
+
+            var fields = GetAllFields(type);
+            foreach (var field in fields)
+            {
+                field.SetValue(destComp, field.GetValue(originalComponent));
+            }
+
+            var props = type.GetProperties();
+            foreach (var prop in props)
+            {
+                if (!prop.CanWrite || prop.Name == "name")
+                {
+                    continue;
+                }
+                prop.SetValue(destComp, prop.GetValue(originalComponent, null), null);
+            }
+
+            return destComp;
+        }
+
+        // referenced from http://stackoverflow.com/questions/10261824/how-can-i-get-all-constants-of-a-type-by-reflection
+        private static IEnumerable<FieldInfo> GetAllFields(Type t)
+        {
+            if (t == null)
+            {
+                return Enumerable.Empty<FieldInfo>();
+            }
+
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+                                 BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            return t.GetFields(flags).Concat(GetAllFields(t.BaseType));
         }
     }
 }

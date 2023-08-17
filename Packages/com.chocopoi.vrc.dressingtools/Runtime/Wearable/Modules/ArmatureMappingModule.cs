@@ -299,28 +299,24 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
                             }
 
-                            // TODO: copy using reflection
-                            throw new System.NotImplementedException();
+                            // copy component with reflection
+                            var comp = DTRuntimeUtils.CopyComponent(avatarBoneDynamics.Component, wearableChild.gameObject);
 
-                            // copy component using unityeditor internal method (easiest way)
-                            //UnityEditorInternal.ComponentUtility.CopyComponent(avatarBoneDynamics.Component);
-                            //UnityEditorInternal.ComponentUtility.PasteComponentAsNew(wearableChild.gameObject);
-
-                            //// set root transform
-                            //if (avatarBoneDynamics is DynamicBoneProxy)
-                            //{
-                            //    new DynamicBoneProxy(wearableChild.GetComponent(DynamicBoneProxy.DynamicBoneType))
-                            //    {
-                            //        RootTransform = wearableChild
-                            //    };
-                            //}
-                            //else if (avatarBoneDynamics is PhysBoneProxy)
-                            //{
-                            //    new PhysBoneProxy(wearableChild.GetComponent(PhysBoneProxy.PhysBoneType))
-                            //    {
-                            //        RootTransform = wearableChild
-                            //    };
-                            //}
+                            // set root transform
+                            if (avatarBoneDynamics is DynamicBoneProxy)
+                            {
+                                new DynamicBoneProxy(comp)
+                                {
+                                    RootTransform = wearableChild
+                                };
+                            }
+                            else if (avatarBoneDynamics is PhysBoneProxy)
+                            {
+                                new PhysBoneProxy(comp)
+                                {
+                                    RootTransform = wearableChild
+                                };
+                            }
                         }
                     }
                     else
