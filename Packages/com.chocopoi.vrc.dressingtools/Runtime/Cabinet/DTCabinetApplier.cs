@@ -41,6 +41,8 @@ namespace Chocopoi.DressingTools.Cabinet
             public const string UnableToDeserializeConfig = "appliers.default.msgCode.error.unableToDeserializeConfig";
             public const string ApplyingModuleHasErrors = "appliers.default.msgCode.error.applyingModuleHasErrors";
             public const string ApplyingWearableHasErrors = "appliers.default.msgCode.error.applyingWearableHasErrors";
+            public const string IncompatibleConfigVersion = "appliers.default.msgCode.error.incompatibleConfigVersion";
+            public const string ConfigMigrationFailed = "appliers.default.msgCode.error.configMigrationFailed";
         }
 
         private DTReport _report;
@@ -116,20 +118,9 @@ namespace Chocopoi.DressingTools.Cabinet
 
         private bool ApplyWearable(DTWearableConfig config, GameObject wearableGameObject)
         {
-            // TODO: check config version and do migration here
-
-            // TODO: do avatar GUID check?
-
-            // TODO: is this check still necessary now?
             GameObject wearableObj;
             if (DTRuntimeUtils.IsGrandParent(_cabinet.avatarGameObject.transform, wearableGameObject.transform))
             {
-                //// check if it's a prefab
-                //if (PrefabUtility.IsPartOfAnyPrefab(wearable.wearableGameObject))
-                //{
-                //    // unpack completely the prefab
-                //    PrefabUtility.UnpackPrefabInstance(wearable.wearableGameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
-                //}
                 wearableObj = wearableGameObject;
             }
             else
@@ -173,6 +164,24 @@ namespace Chocopoi.DressingTools.Cabinet
             {
                 // deserialize the config
                 var config = JsonConvert.DeserializeObject<DTWearableConfig>(wearable.configJson);
+
+                // Migration
+                if (config.configVersion > DTWearableConfig.CurrentConfigVersion)
+                {
+                    _report.LogErrorLocalized(LogLabel, MessageCode.IncompatibleConfigVersion);
+                    break;
+                }
+                else if (config.configVersion < DTWearableConfig.CurrentConfigVersion)
+                {
+                    var result = DTWearableConfigMigrator.Migrate(wearable.configJson, out var migratedJson);
+                    if (!result)
+                    {
+                        _report.LogErrorLocalized(LogLabel, MessageCode.ConfigMigrationFailed);
+                        break;
+                    }
+                    wearable.configJson = migratedJson;
+                    config = JsonConvert.DeserializeObject<DTWearableConfig>(migratedJson);
+                }
 
                 if (config == null)
                 {

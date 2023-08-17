@@ -23,6 +23,16 @@ using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Wearable
 {
+    public class DTWearableConfigMigrator
+    {
+        public static bool Migrate(string inputJson, out string outputJson)
+        {
+            // TODO: do migration if necessary
+            outputJson = inputJson;
+            return false;
+        }
+    }
+
     // serialization is handled by newtonsoft json
     public class DTWearableConfig
     {
