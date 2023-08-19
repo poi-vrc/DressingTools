@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
 {
-    public class DTCabinetApplier
+    internal class CabinetApplier
     {
         public const string LogLabel = "DTCabinetApplier";
         private const string DynamicsContainerName = "DT_Dynamics";
@@ -52,13 +52,13 @@ namespace Chocopoi.DressingTools.Cabinet
 
         private List<IDynamicsProxy> _avatarDynamics;
 
-        public DTCabinetApplier(DTReport report, DTCabinet cabinet)
+        public CabinetApplier(DTReport report, DTCabinet cabinet)
         {
             _report = report;
             _cabinet = cabinet;
         }
 
-        private void ApplyTransforms(DTAvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
+        private void ApplyTransforms(AvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
         {
             var targetAvatar = _cabinet.avatarGameObject;
 
@@ -183,7 +183,7 @@ namespace Chocopoi.DressingTools.Cabinet
             }
         }
 
-        private bool ApplyWearable(DTWearableConfig config, GameObject wearableGameObject)
+        private bool ApplyWearable(WearableConfig config, GameObject wearableGameObject)
         {
             GameObject wearableObj;
             if (DTRuntimeUtils.IsGrandParent(_cabinet.avatarGameObject.transform, wearableGameObject.transform))
@@ -203,7 +203,7 @@ namespace Chocopoi.DressingTools.Cabinet
             ApplyTransforms(config.targetAvatarConfig, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
             // sort modules according to their apply order
-            var modules = new List<DTWearableModuleBase>(config.modules);
+            var modules = new List<IWearableModule>(config.modules);
             modules.Sort((m1, m2) => m1.ApplyOrder.CompareTo(m2.ApplyOrder));
 
             // do module apply
@@ -236,24 +236,24 @@ namespace Chocopoi.DressingTools.Cabinet
             foreach (var wearable in wearables)
             {
                 // deserialize the config
-                var config = JsonConvert.DeserializeObject<DTWearableConfig>(wearable.configJson);
+                var config = JsonConvert.DeserializeObject<WearableConfig>(wearable.configJson);
 
                 // Migration
-                if (config.configVersion > DTWearableConfig.CurrentConfigVersion)
+                if (config.configVersion > WearableConfig.CurrentConfigVersion)
                 {
                     _report.LogErrorLocalized(LogLabel, MessageCode.IncompatibleConfigVersion);
                     break;
                 }
-                else if (config.configVersion < DTWearableConfig.CurrentConfigVersion)
+                else if (config.configVersion < WearableConfig.CurrentConfigVersion)
                 {
-                    var result = DTWearableConfigMigrator.Migrate(wearable.configJson, out var migratedJson);
+                    var result = WearableConfigMigrator.Migrate(wearable.configJson, out var migratedJson);
                     if (!result)
                     {
                         _report.LogErrorLocalized(LogLabel, MessageCode.ConfigMigrationFailed);
                         break;
                     }
                     wearable.configJson = migratedJson;
-                    config = JsonConvert.DeserializeObject<DTWearableConfig>(migratedJson);
+                    config = JsonConvert.DeserializeObject<WearableConfig>(migratedJson);
                 }
 
                 if (config == null)

@@ -63,7 +63,7 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
-            var config = new DTWearableConfig();
+            var config = new WearableConfig();
             DTEditorUtils.PrepareWearableConfig(config, cabinet.avatarGameObject, wearable);
 
             var armatureName = cabinet.avatarArmatureName;
@@ -84,28 +84,28 @@ namespace Chocopoi.DressingTools.UI
                     // TODO: show message
                 }
 
-                var dresserSettings = new DTDefaultDresserSettings()
+                var dresserSettings = new DefaultDresserSettings()
                 {
                     targetAvatar = cabinet.avatarGameObject,
                     targetWearable = wearable,
-                    dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
+                    dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
                 };
 
-                var dresser = new DTDefaultDresser();
+                var dresser = new DefaultDresser();
                 var report = dresser.Execute(dresserSettings, out _);
 
                 if (report.HasLogType(Logging.DTReportLogType.Error))
                 {
-                    DTReportWindow.ShowWindow(report);
+                    ReportWindow.ShowWindow(report);
                     EditorUtility.DisplayDialog("DressingTools", "Default dresser has errors processing this wearable automatically, please use the wizard instead.", "OK");
                     return;
                 }
 
                 var armatureMappingModule = new ArmatureMappingModule
                 {
-                    dresserName = typeof(DTDefaultDresser).FullName,
+                    dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armature.name,
-                    boneMappingMode = DTBoneMappingMode.Auto,
+                    boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings),
                     removeExistingPrefixSuffix = true,

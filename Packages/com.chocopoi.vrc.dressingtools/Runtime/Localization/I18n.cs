@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Localization
 {
-    public class I18n
+    internal class I18n
     {
         private const string DefaultLocale = "en";
 

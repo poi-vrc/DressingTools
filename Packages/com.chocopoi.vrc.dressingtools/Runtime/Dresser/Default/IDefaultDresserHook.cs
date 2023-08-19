@@ -21,8 +21,8 @@ using Chocopoi.DressingTools.Wearable;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 {
-    public interface IDefaultDresserHook
+    internal interface IDefaultDresserHook
     {
-        bool Evaluate(DTReport report, DTDresserSettings settings, List<DTBoneMapping> boneMappings);
+        bool Evaluate(DTReport report, DTDresserSettings settings, List<BoneMapping> boneMappings);
     }
 }

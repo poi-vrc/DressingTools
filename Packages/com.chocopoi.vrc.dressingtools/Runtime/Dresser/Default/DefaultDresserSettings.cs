@@ -19,7 +19,7 @@ using UnityEditor;
 
 namespace Chocopoi.DressingTools.Dresser.Default
 {
-    public enum DTDefaultDresserDynamicsOption
+    internal enum DefaultDresserDynamicsOption
     {
         RemoveDynamicsAndUseParentConstraint = 0,
         KeepDynamicsAndUseParentConstraintIfNecessary = 1,
@@ -28,31 +28,31 @@ namespace Chocopoi.DressingTools.Dresser.Default
         IgnoreAll = 4,
     }
 
-    public class DTDefaultDresserSettings : DTDresserSettings
+    internal class DefaultDresserSettings : DTDresserSettings
     {
-        public DTDefaultDresserDynamicsOption dynamicsOption;
+        public DefaultDresserDynamicsOption dynamicsOption;
 
-        public DTDefaultDresserSettings()
+        public DefaultDresserSettings()
         {
             // default settings
-            dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
+            dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
         }
 
-        private DTDefaultDresserDynamicsOption ConvertIntToDynamicsOption(int dynamicsOption)
+        private DefaultDresserDynamicsOption ConvertIntToDynamicsOption(int dynamicsOption)
         {
             switch (dynamicsOption)
             {
                 case 1:
-                    return DTDefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
+                    return DefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
                 case 2:
-                    return DTDefaultDresserDynamicsOption.IgnoreTransform;
+                    return DefaultDresserDynamicsOption.IgnoreTransform;
                 case 3:
-                    return DTDefaultDresserDynamicsOption.CopyDynamics;
+                    return DefaultDresserDynamicsOption.CopyDynamics;
                 case 4:
-                    return DTDefaultDresserDynamicsOption.IgnoreAll;
+                    return DefaultDresserDynamicsOption.IgnoreAll;
                 default:
                 case 0:
-                    return DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
+                    return DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
             }
         }
 

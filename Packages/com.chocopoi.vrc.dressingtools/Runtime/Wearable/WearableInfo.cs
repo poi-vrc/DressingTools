@@ -20,7 +20,7 @@ using System;
 namespace Chocopoi.DressingTools.Wearable
 {
     [Serializable]
-    public class DTWearableInfo
+    public class WearableInfo
     {
         public string uuid;
         public string name;
@@ -29,10 +29,10 @@ namespace Chocopoi.DressingTools.Wearable
         public string createdTime;
         public string updatedTime;
 
-        public DTWearableInfo() { }
+        public WearableInfo() { }
 
         // copy constructor
-        public DTWearableInfo(DTWearableInfo toCopy)
+        public WearableInfo(WearableInfo toCopy)
         {
             uuid = toCopy.uuid;
             name = toCopy.name;

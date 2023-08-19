@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations
 {
-    public class AnimationGenerator
+    internal class AnimationGenerator
     {
         public const string LogLabel = "AnimationGenerator";
 
@@ -91,7 +91,7 @@ namespace Chocopoi.DressingTools.Animations
             return true;
         }
 
-        private void GenerateAvatarToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, DTAnimationToggle[] toggles, bool writeDefaults)
+        private void GenerateAvatarToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles, bool writeDefaults)
         {
             foreach (var toggle in toggles)
             {
@@ -111,7 +111,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void GenerateAvatarBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, DTAnimationBlendshapeValue[] blendshapes, bool writeDefaults)
+        private void GenerateAvatarBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationBlendshapeValue[] blendshapes, bool writeDefaults)
         {
             foreach (var blendshape in blendshapes)
             {
@@ -137,7 +137,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void GenerateWearableToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, DTAnimationToggle[] toggles, bool writeDefaults)
+        private void GenerateWearableToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles, bool writeDefaults)
         {
             foreach (var toggle in toggles)
             {
@@ -157,7 +157,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void GenerateWearableBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, DTAnimationBlendshapeValue[] blendshapes, bool writeDefaults)
+        private void GenerateWearableBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationBlendshapeValue[] blendshapes, bool writeDefaults)
         {
             foreach (var blendshape in blendshapes)
             {
@@ -234,7 +234,7 @@ namespace Chocopoi.DressingTools.Animations
             return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
 
-        public Dictionary<DTWearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations(bool writeDefaults)
+        public Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations(bool writeDefaults)
         {
             // prevent unexpected behaviour
             if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
@@ -242,14 +242,14 @@ namespace Chocopoi.DressingTools.Animations
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
 
-            var dict = new Dictionary<DTWearableCustomizable, System.Tuple<AnimationClip, AnimationClip>>();
+            var dict = new Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>>();
 
             foreach (var customizable in _module.wearableCustomizables)
             {
                 var enableClip = new AnimationClip();
                 var disableClip = new AnimationClip();
 
-                if (customizable.type == DTWearableCustomizableType.Toggle)
+                if (customizable.type == WearableCustomizableType.Toggle)
                 {
                     // avatar required toggles
                     GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarRequiredToggles.ToArray(), writeDefaults);
@@ -263,7 +263,7 @@ namespace Chocopoi.DressingTools.Animations
                     // wearable toggle
                     GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray(), writeDefaults);
                 }
-                else if (customizable.type == DTWearableCustomizableType.Blendshape)
+                else if (customizable.type == WearableCustomizableType.Blendshape)
                 {
                     // TODO: we need to create a curve from 0.0f to 100.0f to handle this type of customizable
                     throw new System.NotImplementedException();

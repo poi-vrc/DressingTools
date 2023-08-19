@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTBoneMapping.cs
+ * File: DTAnimationBlendshapeValue.cs
  * Project: DressingTools
  * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -20,30 +20,10 @@ using System;
 namespace Chocopoi.DressingTools.Wearable
 {
     [Serializable]
-    public enum DTBoneMappingType
+    public class AnimationBlendshapeValue
     {
-        DoNothing = 0,
-        MoveToBone = 1,
-        ParentConstraint = 2,
-        IgnoreTransform = 3,
-        CopyDynamics = 4
-    }
-
-    [Serializable]
-    public class DTBoneMapping
-    {
-        public DTBoneMappingType mappingType;
-        public string avatarBonePath;
-        public string wearableBonePath;
-
-        public bool Equals(DTBoneMapping x)
-        {
-            return mappingType == x.mappingType && avatarBonePath == x.avatarBonePath && wearableBonePath == x.wearableBonePath;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}: {1} -> {2}", mappingType, wearableBonePath, avatarBonePath);
-        }
+        public string path;
+        public string blendshapeName;
+        public float value;
     }
 }

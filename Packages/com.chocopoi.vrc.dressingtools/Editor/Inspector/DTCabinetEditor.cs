@@ -23,7 +23,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools
 {
     [CustomEditor(typeof(DTCabinet))]
-    public class DTCabinetEditor : Editor
+    internal class DTCabinetEditor : Editor
     {
         public override void OnInspectorGUI()
         {

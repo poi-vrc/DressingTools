@@ -26,6 +26,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action TargetAvatarOrWearableChange;
         GameObject TargetAvatar { get; set; }
         GameObject TargetWearable { get; set; }
-        DTWearableConfig Config { get; set; }
+        WearableConfig Config { get; set; }
     }
 }

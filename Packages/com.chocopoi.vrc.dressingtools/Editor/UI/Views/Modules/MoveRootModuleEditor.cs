@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private IModuleEditorViewParent _parentView;
         private GameObject _moveToGameObject;
 
-        public MoveRootModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target) : base(parentView, target)
+        public MoveRootModuleEditor(IModuleEditorViewParent parentView, WearableModuleBase target) : base(parentView, target)
         {
             _parentView = parentView;
             _presenter = new MoveRootModuleEditorPresenter(this, parentView, (MoveRootModule)target);

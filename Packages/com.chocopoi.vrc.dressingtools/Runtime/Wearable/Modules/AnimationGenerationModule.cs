@@ -23,7 +23,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    public class AnimationGenerationModule : DTWearableModuleBase
+    internal class AnimationGenerationModule : WearableModuleBase
     {
         public static class MessageCode
         {
@@ -35,20 +35,20 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override bool AllowMultiple => false;
 
-        public DTAnimationPreset avatarAnimationOnWear; // execute on wear
+        public AnimationPreset avatarAnimationOnWear; // execute on wear
 
-        public DTAnimationPreset wearableAnimationOnWear;
+        public AnimationPreset wearableAnimationOnWear;
 
-        public List<DTWearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
+        public List<WearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
 
         public AnimationGenerationModule()
         {
-            avatarAnimationOnWear = new DTAnimationPreset();
-            wearableAnimationOnWear = new DTAnimationPreset();
-            wearableCustomizables = new List<DTWearableCustomizable>();
+            avatarAnimationOnWear = new AnimationPreset();
+            wearableAnimationOnWear = new AnimationPreset();
+            wearableCustomizables = new List<WearableCustomizable>();
         }
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             return true;
         }

@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class DTEditorUtils
+    internal class DTEditorUtils
     {
         //Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
         public static void DrawHorizontalLine(int height = 1)
@@ -78,7 +78,7 @@ namespace Chocopoi.DressingTools
             return comp;
         }
 
-        public static void AddCabinetWearable(DTCabinet cabinet, DTWearableConfig config, GameObject wearableGameObject)
+        public static void AddCabinetWearable(DTCabinet cabinet, WearableConfig config, GameObject wearableGameObject)
         {
             if (PrefabUtility.IsPartOfAnyPrefab(wearableGameObject) && PrefabUtility.GetPrefabInstanceStatus(wearableGameObject) == PrefabInstanceStatus.NotAPrefab)
             {
@@ -117,15 +117,15 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        public static void PrepareWearableConfig(DTWearableConfig config, GameObject targetAvatar, GameObject targetWearable)
+        public static void PrepareWearableConfig(WearableConfig config, GameObject targetAvatar, GameObject targetWearable)
         {
-            config.configVersion = DTWearableConfig.CurrentConfigVersion;
+            config.configVersion = WearableConfig.CurrentConfigVersion;
 
             AddWearableMetaInfo(config, targetWearable);
             AddWearableTargetAvatarConfig(config, targetAvatar, targetWearable);
         }
 
-        public static void AddWearableTargetAvatarConfig(DTWearableConfig config, GameObject targetAvatar, GameObject targetWearable)
+        public static void AddWearableTargetAvatarConfig(WearableConfig config, GameObject targetAvatar, GameObject targetWearable)
         {
             var cabinet = DTEditorUtils.GetAvatarCabinet(targetAvatar);
 
@@ -160,13 +160,13 @@ namespace Chocopoi.DressingTools
 
             var deltaPos = targetWearable.transform.position - targetAvatar.transform.position;
             var deltaRotation = targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation);
-            config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
-            config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
-            config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(targetAvatar.transform.lossyScale);
-            config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(targetWearable.transform.lossyScale);
+            config.targetAvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            config.targetAvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            config.targetAvatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
+            config.targetAvatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
         }
 
-        public static void AddWearableMetaInfo(DTWearableConfig config, GameObject targetWearable)
+        public static void AddWearableMetaInfo(WearableConfig config, GameObject targetWearable)
         {
             if (targetWearable == null)
             {

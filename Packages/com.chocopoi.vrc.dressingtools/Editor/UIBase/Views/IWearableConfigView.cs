@@ -37,7 +37,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
         string[] AvailableModuleKeys { get; set; }
         int SelectedAvailableModule { get; set; }
-        DTWearableConfig Config { get; }
+        WearableConfig Config { get; }
         List<ModuleData> ModuleDataList { get; set; }
         bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
         bool IsInvalidAvatarPrefabGuid { get; set; }

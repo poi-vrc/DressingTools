@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTWearableAnimationPreset.cs
+ * File: DTWearableModuleBase.cs
  * Project: DressingTools
  * Created Date: Tuesday, August 1st 2023, 12:37:10 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -17,19 +17,19 @@
 
 using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.Proxy;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 
-namespace Chocopoi.DressingTools.Wearable
+namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    [Serializable]
-    public class DTAnimationPreset
+    public interface IWearableModule
     {
-        public List<DTAnimationToggle> toggles;
-        public List<DTAnimationBlendshapeValue> blendshapes;
-
-        public DTAnimationPreset()
-        {
-            toggles = new List<DTAnimationToggle>();
-            blendshapes = new List<DTAnimationBlendshapeValue>();
-        }
+        int ApplyOrder { get; }
+        bool AllowMultiple { get; }
+        bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject);
     }
 }

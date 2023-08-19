@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class SettingsWindow : EditorWindow
+    internal class SettingsWindow : EditorWindow
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 

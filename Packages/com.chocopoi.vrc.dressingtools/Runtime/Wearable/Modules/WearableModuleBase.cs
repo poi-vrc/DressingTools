@@ -26,13 +26,13 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    public class DTWearableModuleBaseConverter : JsonConverter
+    internal class WearableModuleConverter : JsonConverter
     {
         private const string ModuleTypeKey = "$dtModuleType";
 
-        public override bool CanConvert(Type objectType) => objectType == typeof(DTWearableModuleBase) || objectType == typeof(List<DTWearableModuleBase>);
+        public override bool CanConvert(Type objectType) => objectType == typeof(IWearableModule) || objectType == typeof(List<IWearableModule>);
 
-        private static JObject GetJsonWithModuleType(DTWearableModuleBase module)
+        private static JObject GetJsonWithModuleType(IWearableModule module)
         {
             var obj = JObject.FromObject(module);
             obj.AddFirst(new JProperty(ModuleTypeKey, module.GetType().FullName));
@@ -41,12 +41,12 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public sealed override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is DTWearableModuleBase singleModule)
+            if (value is IWearableModule singleModule)
             {
                 // single
                 GetJsonWithModuleType(singleModule).WriteTo(writer);
             }
-            else if (value is List<DTWearableModuleBase> modules)
+            else if (value is List<IWearableModule> modules)
             {
                 var arr = new JArray();
                 // array
@@ -58,7 +58,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        private static DTWearableModuleBase GetModuleFromJson(JObject obj)
+        private static IWearableModule GetModuleFromJson(JObject obj)
         {
             if (!obj.ContainsKey(ModuleTypeKey))
             {
@@ -75,7 +75,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return new UnknownModule(moduleTypeName, rawJson);
             }
 
-            return (DTWearableModuleBase)JsonConvert.DeserializeObject(rawJson, type);
+            return (IWearableModule)JsonConvert.DeserializeObject(rawJson, type);
         }
 
         public sealed override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -89,7 +89,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             else if (token.Type == JTokenType.Array)
             {
                 var arr = (JArray)token;
-                var output = new List<DTWearableModuleBase>();
+                var output = new List<IWearableModule>();
                 for (var i = 0; i < arr.Count; i++)
                 {
                     output.Add(GetModuleFromJson((JObject)arr[i]));
@@ -101,7 +101,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         }
     }
 
-    public abstract class DTWearableModuleBase
+    internal abstract class WearableModuleBase : IWearableModule
     {
         [JsonIgnore]
         public abstract int ApplyOrder { get; }
@@ -111,19 +111,19 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public virtual string Serialize()
         {
-            return JsonConvert.SerializeObject(this, new DTWearableModuleBaseConverter());
+            return JsonConvert.SerializeObject(this, new WearableModuleConverter());
         }
 
-        public abstract bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject);
+        public abstract bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject);
 
         public override string ToString()
         {
             return Serialize();
         }
 
-        public static DTWearableModuleBase Deserialize(string json)
+        public static WearableModuleBase Deserialize(string json)
         {
-            return JsonConvert.DeserializeObject<DTWearableModuleBase>(json, new DTWearableModuleBaseConverter());
+            return JsonConvert.DeserializeObject<WearableModuleBase>(json, new WearableModuleConverter());
         }
     }
 }

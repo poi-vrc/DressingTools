@@ -60,7 +60,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnAddBlendshapeSyncButtonClick()
         {
-            _module.blendshapeSyncs.Add(new DTAnimationBlendshapeSync());
+            _module.blendshapeSyncs.Add(new AnimationBlendshapeSync());
             UpdateView();
         }
 

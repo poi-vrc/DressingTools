@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Proxy
 {
-    public class DynamicBoneProxy : IDynamicsProxy
+    internal class DynamicBoneProxy : IDynamicsProxy
     {
         public static readonly System.Type DynamicBoneType = DTRuntimeUtils.FindType("DynamicBone");
 

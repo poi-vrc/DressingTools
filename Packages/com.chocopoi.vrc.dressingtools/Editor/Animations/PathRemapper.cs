@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations
 {
-    public class PathRemapper
+    internal class PathRemapper
     {
         private Dictionary<GameObject, string> _objectOriginalPaths;
 

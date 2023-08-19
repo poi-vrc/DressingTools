@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools.Cabinet
         {
             try
             {
-                new DTCabinetApplier(report, this).Execute();
+                new CabinetApplier(report, this).Execute();
             }
             catch (Exception ex)
             {

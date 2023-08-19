@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class DressingToolsUpdater
+    internal class DressingToolsUpdater
     {
         [Serializable]
         public class ManifestInfo

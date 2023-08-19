@@ -20,11 +20,11 @@ using System.Linq;
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    public class DresserRegistry
+    internal class DresserRegistry
     {
         private static readonly List<IDTDresser> dressers = new List<IDTDresser>()
         {
-            new DTDefaultDresser()
+            new DefaultDresser()
         };
 
         public static IDTDresser GetDresserByTypeName(string name)

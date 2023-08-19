@@ -1,7 +1,7 @@
 ﻿/*
- * File: DTAnimationToggle.cs
+ * File: DTWearableAnimationPreset.cs
  * Project: DressingTools
- * Created Date: Saturday, July 29th 2023, 10:31:11 am
+ * Created Date: Tuesday, August 1st 2023, 12:37:10 am
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -16,13 +16,20 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace Chocopoi.DressingTools.Wearable
 {
     [Serializable]
-    public class DTAnimationToggle
+    public class AnimationPreset
     {
-        public string path;
-        public bool state;
+        public List<AnimationToggle> toggles;
+        public List<AnimationBlendshapeValue> blendshapes;
+
+        public AnimationPreset()
+        {
+            toggles = new List<AnimationToggle>();
+            blendshapes = new List<AnimationBlendshapeValue>();
+        }
     }
 }
