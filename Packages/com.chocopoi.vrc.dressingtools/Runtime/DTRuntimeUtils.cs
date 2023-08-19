@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
@@ -267,15 +268,12 @@ namespace Chocopoi.DressingTools
             Type type = originalComponent.GetType();
 
             // get the destination component or add new
-            var destComp = destGameObject.GetComponent(type);
-            if (!destComp)
-            {
-                destGameObject.AddComponent(type);
-            }
+            var destComp = destGameObject.AddComponent(type);
 
-            var fields = GetAllFields(type);
+            var fields = type.GetFields();
             foreach (var field in fields)
             {
+                if (field.IsStatic) continue;
                 field.SetValue(destComp, field.GetValue(originalComponent));
             }
 

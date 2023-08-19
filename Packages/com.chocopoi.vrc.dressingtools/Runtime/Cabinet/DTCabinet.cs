@@ -31,6 +31,19 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public string avatarArmatureName;
 
+        public bool groupDynamics;
+
+        public bool groupDynamicsSeparateGameObjects;
+
+        public DTCabinet()
+        {
+            // TOOD: Read default settings?
+            avatarGameObject = null;
+            avatarArmatureName = "Armature";
+            groupDynamics = true;
+            groupDynamicsSeparateGameObjects = true;
+        }
+
         public DTCabinetWearable[] GetWearables()
         {
             return avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
