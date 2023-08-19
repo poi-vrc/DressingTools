@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTReportWindow.cs
+ * File: ReportWindow.cs
  * Project: DressingTools
  * Created Date: Thursday, August 10th 2023, 11:42:41 pm
  * Author: chocopoi (poi@chocopoi.com)
@@ -23,7 +23,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
-    public class DTReportWindow : EditorWindow
+    internal class ReportWindow : EditorWindow
     {
         private static readonly I18n t = I18n.GetInstance();
 
@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI
         private Vector2 scrollPos;
         public static void ShowWindow(DTReport report)
         {
-            var window = (DTReportWindow)GetWindow(typeof(DTReportWindow));
+            var window = (ReportWindow)GetWindow(typeof(ReportWindow));
             window.titleContent = new GUIContent("DT Report Window");
             window.Show();
 

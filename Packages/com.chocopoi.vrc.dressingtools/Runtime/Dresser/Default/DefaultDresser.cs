@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    public class DTDefaultDresser : IDTDresser
+    internal class DefaultDresser : IDTDresser
     {
         public const string LogLabel = "DTDefaultDresser";
 
@@ -68,12 +68,12 @@ namespace Chocopoi.DressingTools.Dresser
 
         public string FriendlyName => "Default Dresser";
 
-        public DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings)
+        public DTReport Execute(DTDresserSettings settings, out List<BoneMapping> boneMappings)
         {
             var report = new DTReport();
             boneMappings = null;
 
-            if (!(settings is DTDefaultDresserSettings))
+            if (!(settings is DefaultDresserSettings))
             {
                 report.LogErrorLocalized(LogLabel, MessageCode.NotDefaultSettingsSettings);
                 return report;
@@ -86,7 +86,7 @@ namespace Chocopoi.DressingTools.Dresser
                 return report;
             }
 
-            boneMappings = new List<DTBoneMapping>();
+            boneMappings = new List<BoneMapping>();
 
             // evaluate each hooks to generate the bone mappings
             foreach (var hook in Hooks)
@@ -106,12 +106,12 @@ namespace Chocopoi.DressingTools.Dresser
 
         public DTDresserSettings DeserializeSettings(string serializedJson)
         {
-            return JsonConvert.DeserializeObject<DTDefaultDresserSettings>(serializedJson);
+            return JsonConvert.DeserializeObject<DefaultDresserSettings>(serializedJson);
         }
 
         public DTDresserSettings NewSettings()
         {
-            return new DTDefaultDresserSettings();
+            return new DefaultDresserSettings();
         }
     }
 }

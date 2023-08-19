@@ -23,7 +23,7 @@ using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Wearable
 {
-    public class DTWearableConfigMigrator
+    public class WearableConfigMigrator
     {
         public static bool Migrate(string inputJson, out string outputJson)
         {
@@ -34,29 +34,29 @@ namespace Chocopoi.DressingTools.Wearable
     }
 
     // serialization is handled by newtonsoft json
-    public class DTWearableConfig
+    public class WearableConfig
     {
         public const int CurrentConfigVersion = 1;
 
         public int configVersion;
-        public DTWearableInfo info;
-        public DTAvatarConfig targetAvatarConfig;
+        public WearableInfo info;
+        public AvatarConfig targetAvatarConfig;
 
-        [JsonConverter(typeof(DTWearableModuleBaseConverter))]
-        public List<DTWearableModuleBase> modules;
+        [JsonConverter(typeof(WearableModuleConverter))]
+        public List<IWearableModule> modules;
 
-        public DTWearableConfig()
+        public WearableConfig()
         {
             // initialize some fields
             var isoTimeStr = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
-            info = new DTWearableInfo
+            info = new WearableInfo
             {
                 uuid = Guid.NewGuid().ToString(),
                 createdTime = isoTimeStr,
                 updatedTime = isoTimeStr
             };
-            targetAvatarConfig = new DTAvatarConfig();
-            modules = new List<DTWearableModuleBase>();
+            targetAvatarConfig = new AvatarConfig();
+            modules = new List<IWearableModule>();
         }
 
         public bool HasUnknownModules()
@@ -81,12 +81,12 @@ namespace Chocopoi.DressingTools.Wearable
             return JsonConvert.SerializeObject(this);
         }
 
-        public static DTWearableConfig Deserialize(string json)
+        public static WearableConfig Deserialize(string json)
         {
-            return JsonConvert.DeserializeObject<DTWearableConfig>(json);
+            return JsonConvert.DeserializeObject<WearableConfig>(json);
         }
 
-        public DTWearableConfig Clone()
+        public WearableConfig Clone()
         {
             // a tricky and easier way to copy 
             return Deserialize(Serialize());

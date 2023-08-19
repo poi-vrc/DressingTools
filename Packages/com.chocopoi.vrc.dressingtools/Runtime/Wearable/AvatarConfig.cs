@@ -24,20 +24,20 @@ namespace Chocopoi.DressingTools.Wearable
     // sadly, json.net cannot serialize unity vector3,quaternion well
     // creating custom classes as a workaround
     [Serializable]
-    public class DTAvatarConfigVector3
+    public class AvatarConfigVector3
     {
         public float x;
         public float y;
         public float z;
 
-        public DTAvatarConfigVector3(float x, float y, float z)
+        public AvatarConfigVector3(float x, float y, float z)
         {
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-        public DTAvatarConfigVector3(Vector3 vec)
+        public AvatarConfigVector3(Vector3 vec)
         {
             x = vec.x;
             y = vec.y;
@@ -45,7 +45,7 @@ namespace Chocopoi.DressingTools.Wearable
         }
 
         // copy constructor
-        public DTAvatarConfigVector3(DTAvatarConfigVector3 toCopy)
+        public AvatarConfigVector3(AvatarConfigVector3 toCopy)
         {
             x = toCopy.x;
             y = toCopy.y;
@@ -64,14 +64,14 @@ namespace Chocopoi.DressingTools.Wearable
     }
 
     [Serializable]
-    public class DTAvatarConfigQuaternion
+    public class AvatarConfigQuaternion
     {
         public float x;
         public float y;
         public float z;
         public float w;
 
-        public DTAvatarConfigQuaternion(float x, float y, float z, float w)
+        public AvatarConfigQuaternion(float x, float y, float z, float w)
         {
             this.x = x;
             this.y = y;
@@ -79,7 +79,7 @@ namespace Chocopoi.DressingTools.Wearable
             this.w = w;
         }
 
-        public DTAvatarConfigQuaternion(Quaternion q)
+        public AvatarConfigQuaternion(Quaternion q)
         {
             x = q.x;
             y = q.y;
@@ -88,7 +88,7 @@ namespace Chocopoi.DressingTools.Wearable
         }
 
         // copy constructor
-        public DTAvatarConfigQuaternion(DTAvatarConfigQuaternion toCopy)
+        public AvatarConfigQuaternion(AvatarConfigQuaternion toCopy)
         {
             x = toCopy.x;
             y = toCopy.y;
@@ -108,35 +108,35 @@ namespace Chocopoi.DressingTools.Wearable
     }
 
     [Serializable]
-    public class DTAvatarConfig
+    public class AvatarConfig
     {
         public List<string> guids;
         public string name;
         public string armatureName;
-        public DTAvatarConfigVector3 worldPosition;
-        public DTAvatarConfigQuaternion worldRotation;
-        public DTAvatarConfigVector3 avatarLossyScale;
-        public DTAvatarConfigVector3 wearableLossyScale;
+        public AvatarConfigVector3 worldPosition;
+        public AvatarConfigQuaternion worldRotation;
+        public AvatarConfigVector3 avatarLossyScale;
+        public AvatarConfigVector3 wearableLossyScale;
 
-        public DTAvatarConfig()
+        public AvatarConfig()
         {
             guids = new List<string>();
-            worldPosition = new DTAvatarConfigVector3(0, 0, 0);
-            worldRotation = new DTAvatarConfigQuaternion(0, 0, 0, 0);
-            avatarLossyScale = new DTAvatarConfigVector3(0, 0, 0);
-            wearableLossyScale = new DTAvatarConfigVector3(0, 0, 0);
+            worldPosition = new AvatarConfigVector3(0, 0, 0);
+            worldRotation = new AvatarConfigQuaternion(0, 0, 0, 0);
+            avatarLossyScale = new AvatarConfigVector3(0, 0, 0);
+            wearableLossyScale = new AvatarConfigVector3(0, 0, 0);
         }
 
         // copy constructor
-        public DTAvatarConfig(DTAvatarConfig toCopy)
+        public AvatarConfig(AvatarConfig toCopy)
         {
             // deep copy
             guids = new List<string>(toCopy.guids);
 
-            worldPosition = new DTAvatarConfigVector3(toCopy.worldPosition);
-            worldRotation = new DTAvatarConfigQuaternion(toCopy.worldRotation);
-            avatarLossyScale = new DTAvatarConfigVector3(toCopy.avatarLossyScale);
-            wearableLossyScale = new DTAvatarConfigVector3(toCopy.wearableLossyScale);
+            worldPosition = new AvatarConfigVector3(toCopy.worldPosition);
+            worldRotation = new AvatarConfigQuaternion(toCopy.worldRotation);
+            avatarLossyScale = new AvatarConfigVector3(toCopy.avatarLossyScale);
+            wearableLossyScale = new AvatarConfigVector3(toCopy.wearableLossyScale);
         }
     }
 }

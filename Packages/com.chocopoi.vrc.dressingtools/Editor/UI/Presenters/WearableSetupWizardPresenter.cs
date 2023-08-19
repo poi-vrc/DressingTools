@@ -163,7 +163,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                 foreach (var trans in transforms)
                 {
-                    toggles.Add(new DTAnimationToggle()
+                    toggles.Add(new AnimationToggle()
                     {
                         path = DTRuntimeUtils.GetRelativePath(trans, _view.TargetWearable.transform),
                         state = true
@@ -236,7 +236,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                         {
                             if (System.Array.IndexOf(avatarBlendshapes, wearableBlendshape) != -1)
                             {
-                                blendshapeSyncs.Add(new DTAnimationBlendshapeSync()
+                                blendshapeSyncs.Add(new AnimationBlendshapeSync()
                                 {
                                     avatarBlendshapeName = wearableBlendshape,
                                     avatarFromValue = 0,
@@ -287,7 +287,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public void GenerateConfig()
         {
-            var config = new DTWearableConfig();
+            var config = new WearableConfig();
 
             DTEditorUtils.PrepareWearableConfig(config, _view.TargetAvatar, _view.TargetWearable);
 

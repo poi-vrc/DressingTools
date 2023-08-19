@@ -23,7 +23,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    public sealed class UnknownModule : DTWearableModuleBase
+    internal sealed class UnknownModule : WearableModuleBase
     {
         public sealed override int ApplyOrder => int.MaxValue;
 
@@ -44,7 +44,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return rawJson;
         }
 
-        public sealed override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
+        public sealed override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             return true;
         }

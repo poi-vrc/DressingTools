@@ -1,7 +1,7 @@
 ﻿/*
- * File: Preferences.cs
+ * File: DTBoneMapping.cs
  * Project: DressingTools
- * Created Date: Saturday, July 22nd 2023, 12:36:56 am
+ * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -17,18 +17,33 @@
 
 using System;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Wearable
 {
     [Serializable]
-    internal class Preferences
+    public enum BoneMappingType
     {
-        public class App
+        DoNothing = 0,
+        MoveToBone = 1,
+        ParentConstraint = 2,
+        IgnoreTransform = 3,
+        CopyDynamics = 4
+    }
+
+    [Serializable]
+    public class BoneMapping
+    {
+        public BoneMappingType mappingType;
+        public string avatarBonePath;
+        public string wearableBonePath;
+
+        public bool Equals(BoneMapping x)
         {
-            public string selectedLanguage;
-            public string updateBranch;
+            return mappingType == x.mappingType && avatarBonePath == x.avatarBonePath && wearableBonePath == x.wearableBonePath;
         }
 
-        public int version;
-        public App app;
+        public override string ToString()
+        {
+            return string.Format("{0}: {1} -> {2}", mappingType, wearableBonePath, avatarBonePath);
+        }
     }
 }

@@ -156,7 +156,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.WearablePreviews.Clear();
             foreach (var wearable in wearables)
             {
-                var config = JsonConvert.DeserializeObject<DTWearableConfig>(wearable.configJson);
+                var config = JsonConvert.DeserializeObject<WearableConfig>(wearable.configJson);
 
                 _view.WearablePreviews.Add(new WearablePreview()
                 {

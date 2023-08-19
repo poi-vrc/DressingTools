@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             _cabinet = cabinet;
         }
 
-        private AnimationGenerationModule FindAnimationGenerationModule(DTWearableConfig config)
+        private AnimationGenerationModule FindAnimationGenerationModule(WearableConfig config)
         {
             foreach (var module in config.modules)
             {
@@ -136,7 +136,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
             for (var i = 0; i < wearables.Length; i++)
             {
-                var config = DTWearableConfig.Deserialize(wearables[i].configJson);
+                var config = WearableConfig.Deserialize(wearables[i].configJson);
                 if (config == null)
                 {
                     if (!EditorUtility.DisplayDialog("DressingTools", "Unable to load configuration for one of the wearables. It will not be dressed.\nDo you want to continue?", "Yes", "No"))

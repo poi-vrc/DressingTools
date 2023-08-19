@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    public class DTDresserSettings
+    internal class DTDresserSettings
     {
         [JsonIgnore]
         public GameObject targetAvatar;

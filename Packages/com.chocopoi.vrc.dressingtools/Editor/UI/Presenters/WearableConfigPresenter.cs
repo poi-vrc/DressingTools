@@ -111,10 +111,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             var deltaPos = _view.TargetWearable.transform.position - _view.TargetAvatar.transform.position;
             var deltaRotation = _view.TargetWearable.transform.rotation * Quaternion.Inverse(_view.TargetAvatar.transform.rotation);
-            _view.Config.targetAvatarConfig.worldPosition = new DTAvatarConfigVector3(deltaPos);
-            _view.Config.targetAvatarConfig.worldRotation = new DTAvatarConfigQuaternion(deltaRotation);
-            _view.Config.targetAvatarConfig.avatarLossyScale = new DTAvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
-            _view.Config.targetAvatarConfig.wearableLossyScale = new DTAvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
+            _view.Config.targetAvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            _view.Config.targetAvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            _view.Config.targetAvatarConfig.avatarLossyScale = new AvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
+            _view.Config.targetAvatarConfig.wearableLossyScale = new AvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
         }
 
         private void OnMetaInfoChange()
@@ -158,7 +158,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddModuleButtonClick()
         {
-            var newModule = (DTWearableModuleBase)Activator.CreateInstance(s_availableModulesCache[_view.SelectedAvailableModule]);
+            var newModule = (WearableModuleBase)Activator.CreateInstance(s_availableModulesCache[_view.SelectedAvailableModule]);
             if (!newModule.AllowMultiple)
             {
                 // check if any existing type
@@ -177,7 +177,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateModulesView();
         }
 
-        private ModuleEditor CreateModuleEditor(DTWearableModuleBase module)
+        private ModuleEditor CreateModuleEditor(IWearableModule module)
         {
             // prepare cache if not yet
             if (s_moduleEditorTypesCache == null)
@@ -216,9 +216,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private static List<Type> GetAllAvailableModules()
         {
-            return System.Reflection.Assembly.GetAssembly(typeof(DTWearableModuleBase))
+            return System.Reflection.Assembly.GetAssembly(typeof(WearableModuleBase))
                 .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(DTWearableModuleBase)) && !t.IsAbstract)
+                .Where(t => t.IsSubclassOf(typeof(WearableModuleBase)) && !t.IsAbstract)
                 .ToList();
         }
 
@@ -351,7 +351,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public bool IsValid()
         {
             // prepare config
-            _view.Config.configVersion = DTWearableConfig.CurrentConfigVersion;
+            _view.Config.configVersion = WearableConfig.CurrentConfigVersion;
 
             // TODO: multiple GUIDs
             if (_view.GuidReferencePrefab != null || _view.TargetAvatar != null)

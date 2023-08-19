@@ -1,7 +1,7 @@
 ﻿/*
- * File: DTContainer.cs
+ * File: DTAnimationToggle.cs
  * Project: DressingTools
- * Created Date: Saturday, July 22nd 2023, 12:36:56 am
+ * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -15,23 +15,14 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using UnityEngine;
+using System;
 
-namespace Chocopoi.DressingTools
+namespace Chocopoi.DressingTools.Wearable
 {
-    public class DTContainer : MonoBehaviour
+    [Serializable]
+    public class AnimationToggle
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        public string path;
+        public bool state;
     }
-
 }

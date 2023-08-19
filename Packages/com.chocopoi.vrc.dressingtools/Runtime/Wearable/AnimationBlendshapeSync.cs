@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTAnimationBlendshapeValue.cs
+ * File: DTAnimationBlendshapeSync.cs
  * Project: DressingTools
  * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -20,10 +20,15 @@ using System;
 namespace Chocopoi.DressingTools.Wearable
 {
     [Serializable]
-    public class DTAnimationBlendshapeValue
+    public class AnimationBlendshapeSync
     {
-        public string path;
-        public string blendshapeName;
-        public float value;
+        public string avatarPath;
+        public string avatarBlendshapeName;
+        public float avatarFromValue;
+        public float avatarToValue;
+        public string wearablePath;
+        public string wearableBlendshapeName;
+        public float wearableFromValue;
+        public float wearableToValue;
     }
 }

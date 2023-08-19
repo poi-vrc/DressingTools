@@ -28,7 +28,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class DTRuntimeUtils
+    internal class DTRuntimeUtils
     {
         private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
 
@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static void HandleBoneMappingOverrides(List<DTBoneMapping> generatedBoneMappings, List<DTBoneMapping> overrideBoneMappings)
+        public static void HandleBoneMappingOverrides(List<BoneMapping> generatedBoneMappings, List<BoneMapping> overrideBoneMappings)
         {
             foreach (var mappingOverride in overrideBoneMappings)
             {

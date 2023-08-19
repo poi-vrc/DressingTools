@@ -43,7 +43,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public BlendshapeSyncModuleEditor BlendshapeSyncModuleEditor { get; set; }
         public GameObject TargetAvatar { get => _dressingSubView.TargetAvatar; set => _dressingSubView.TargetAvatar = value; }
         public GameObject TargetWearable { get => _dressingSubView.TargetWearable; set => _dressingSubView.TargetWearable = value; }
-        public DTWearableConfig Config { get => _dressingSubView.Config; set => _dressingSubView.Config = value; }
+        public WearableConfig Config { get => _dressingSubView.Config; set => _dressingSubView.Config = value; }
         public bool UseArmatureMapping { get => _useArmatureMapping; set => _useArmatureMapping = value; }
         public bool UseMoveRoot { get => _useMoveRoot; set => _useMoveRoot = value; }
         public bool UseAnimationGeneration { get => _useAnimationGeneration; set => _useAnimationGeneration = value; }

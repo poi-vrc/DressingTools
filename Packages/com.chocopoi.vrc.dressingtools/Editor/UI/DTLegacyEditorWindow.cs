@@ -35,7 +35,7 @@ namespace Chocopoi.DressingTools.UI
 
         private static readonly Regex IllegalCharactersRegex = new Regex("[^a-zA-Z0-9_-]");
 
-        private static readonly DTDefaultDresser DefaultDresser = new DTDefaultDresser();
+        private static readonly DefaultDresser DefaultDresser = new DefaultDresser();
 
         private static AnimatorController s_testModeAnimationController;
 
@@ -276,30 +276,30 @@ namespace Chocopoi.DressingTools.UI
             DrawLogEntries(_report.GetLogEntriesAsDictionary());
         }
 
-        private DTDefaultDresserSettings MakeDressSettings()
+        private DefaultDresserSettings MakeDressSettings()
         {
-            DTDefaultDresserDynamicsOption dynamicsOption;
+            DefaultDresserDynamicsOption dynamicsOption;
             switch (_dynamicBoneOption)
             {
                 default:
                 case 0:
-                    dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
+                    dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
                     break;
                 case 1:
-                    dynamicsOption = DTDefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
+                    dynamicsOption = DefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
                     break;
                 case 2:
-                    dynamicsOption = DTDefaultDresserDynamicsOption.IgnoreTransform;
+                    dynamicsOption = DefaultDresserDynamicsOption.IgnoreTransform;
                     break;
                 case 3:
-                    dynamicsOption = DTDefaultDresserDynamicsOption.CopyDynamics;
+                    dynamicsOption = DefaultDresserDynamicsOption.CopyDynamics;
                     break;
                 case 4:
-                    dynamicsOption = DTDefaultDresserDynamicsOption.IgnoreAll;
+                    dynamicsOption = DefaultDresserDynamicsOption.IgnoreAll;
                     break;
             }
 
-            return new DTDefaultDresserSettings()
+            return new DefaultDresserSettings()
             {
                 targetAvatar = _activeAvatar,
                 targetWearable = _clothesToDress,

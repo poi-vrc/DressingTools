@@ -21,11 +21,11 @@ using Chocopoi.DressingTools.Wearable;
 
 namespace Chocopoi.DressingTools.Dresser
 {
-    public interface IDTDresser
+    internal interface IDTDresser
     {
         string FriendlyName { get; }
         DTDresserSettings DeserializeSettings(string serializedJson);
         DTDresserSettings NewSettings();
-        DTReport Execute(DTDresserSettings settings, out List<DTBoneMapping> boneMappings);
+        DTReport Execute(DTDresserSettings settings, out List<BoneMapping> boneMappings);
     }
 }

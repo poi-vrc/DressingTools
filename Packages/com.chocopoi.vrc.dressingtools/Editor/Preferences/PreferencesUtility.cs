@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    public class PreferencesUtility
+    internal class PreferencesUtility
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
 

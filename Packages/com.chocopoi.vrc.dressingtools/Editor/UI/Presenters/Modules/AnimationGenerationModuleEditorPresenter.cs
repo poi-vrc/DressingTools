@@ -73,29 +73,29 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnAvatarOnWearToggleAddEvent()
         {
-            _module.avatarAnimationOnWear.toggles.Add(new DTAnimationToggle());
+            _module.avatarAnimationOnWear.toggles.Add(new AnimationToggle());
             UpdateAnimationGenerationAvatarOnWear();
         }
 
         private void OnAvatarOnWearBlendshapeAddEvent()
         {
-            _module.avatarAnimationOnWear.blendshapes.Add(new DTAnimationBlendshapeValue());
+            _module.avatarAnimationOnWear.blendshapes.Add(new AnimationBlendshapeValue());
             UpdateAnimationGenerationAvatarOnWear();
         }
 
         private void OnWearableOnWearToggleAddEvent()
         {
-            _module.wearableAnimationOnWear.toggles.Add(new DTAnimationToggle());
+            _module.wearableAnimationOnWear.toggles.Add(new AnimationToggle());
             UpdateAnimationGenerationWearableOnWear();
         }
 
         private void OnWearableOnWearBlendshapeAddEvent()
         {
-            _module.wearableAnimationOnWear.blendshapes.Add(new DTAnimationBlendshapeValue());
+            _module.wearableAnimationOnWear.blendshapes.Add(new AnimationBlendshapeValue());
             UpdateAnimationGenerationWearableOnWear();
         }
 
-        private void UpdateAnimationPresetToggles(Transform root, DTAnimationPreset preset, List<ToggleData> toggleDataList)
+        private void UpdateAnimationPresetToggles(Transform root, AnimationPreset preset, List<ToggleData> toggleDataList)
         {
             toggleDataList.Clear();
             foreach (var toggle in preset.toggles)
@@ -147,7 +147,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return names;
         }
 
-        private void UpdateAnimationPresetBlendshapes(Transform root, DTAnimationPreset preset, List<BlendshapeData> blendshapeDataList)
+        private void UpdateAnimationPresetBlendshapes(Transform root, AnimationPreset preset, List<BlendshapeData> blendshapeDataList)
         {
             blendshapeDataList.Clear();
             foreach (var blendshape in preset.blendshapes)
@@ -210,7 +210,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateAnimationPreset(Transform root, DTAnimationPreset preset, PresetData presetData)
+        private void UpdateAnimationPreset(Transform root, AnimationPreset preset, PresetData presetData)
         {
             UpdateAnimationPresetToggles(root, preset, presetData.toggles);
             UpdateAnimationPresetBlendshapes(root, preset, presetData.blendshapes);

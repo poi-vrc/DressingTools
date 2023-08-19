@@ -1,7 +1,7 @@
 ﻿/*
- * File: DTAnimationBlendshapeSync.cs
+ * File: assembly-info.cs
  * Project: DressingTools
- * Created Date: Saturday, July 29th 2023, 10:31:11 am
+ * Created Date: Sunday, August 20th 2023, 2:02:46 am
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -15,20 +15,8 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
+using System.Runtime.CompilerServices;
 
-namespace Chocopoi.DressingTools.Wearable
-{
-    [Serializable]
-    public class DTAnimationBlendshapeSync
-    {
-        public string avatarPath;
-        public string avatarBlendshapeName;
-        public float avatarFromValue;
-        public float avatarToValue;
-        public string wearablePath;
-        public string wearableBlendshapeName;
-        public float wearableFromValue;
-        public float wearableToValue;
-    }
-}
+[assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Editor")]
+[assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Editor.Tests")]
+[assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Runtime.Tests")]

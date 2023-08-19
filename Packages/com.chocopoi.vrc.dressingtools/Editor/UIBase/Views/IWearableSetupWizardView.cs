@@ -27,7 +27,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action PreviousButtonClick;
         event Action NextButtonClick;
 
-        DTWearableConfig Config { get; set; }
+        WearableConfig Config { get; set; }
         ArmatureMappingModule ArmatureMappingModule { get; set; }
         MoveRootModule MoveRootModule { get; set; }
         AnimationGenerationModule AnimationGenerationModule { get; set; }

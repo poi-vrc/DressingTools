@@ -40,7 +40,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public int SelectedAvailableModule { get => _selectedAvailableModule; set => _selectedAvailableModule = value; }
         public GameObject TargetAvatar { get => _viewParent.TargetAvatar; }
         public GameObject TargetWearable { get => _viewParent.TargetWearable; }
-        public DTWearableConfig Config { get => _viewParent.Config; }
+        public WearableConfig Config { get => _viewParent.Config; }
         public List<ModuleData> ModuleDataList { get; set; }
         public bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
         public bool IsInvalidAvatarPrefabGuid { get; set; }

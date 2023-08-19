@@ -30,9 +30,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         protected IModuleEditorViewParent parentView;
 
-        protected DTWearableModuleBase target;
+        protected IWearableModule target;
 
-        public ModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target)
+        public ModuleEditor(IModuleEditorViewParent parentView, IWearableModule target)
         {
             this.parentView = parentView;
             this.target = target;

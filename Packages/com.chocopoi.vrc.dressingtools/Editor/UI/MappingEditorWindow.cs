@@ -28,15 +28,15 @@ namespace Chocopoi.DressingTools.UI
     {
         public GameObject targetAvatar;
         public GameObject targetWearable;
-        public DTBoneMappingMode boneMappingMode;
-        public List<DTBoneMapping> generatedBoneMappings;
-        public List<DTBoneMapping> outputBoneMappings;
+        public BoneMappingMode boneMappingMode;
+        public List<BoneMapping> generatedBoneMappings;
+        public List<BoneMapping> outputBoneMappings;
 
         public DTMappingEditorContainer()
         {
             targetAvatar = null;
             targetWearable = null;
-            boneMappingMode = DTBoneMappingMode.Auto;
+            boneMappingMode = BoneMappingMode.Auto;
             generatedBoneMappings = null;
             outputBoneMappings = null;
         }

@@ -23,7 +23,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    public class BlendshapeSyncModule : DTWearableModuleBase
+    internal class BlendshapeSyncModule : WearableModuleBase
     {
         public static class MessageCode
         {
@@ -35,14 +35,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override bool AllowMultiple => false;
 
-        public List<DTAnimationBlendshapeSync> blendshapeSyncs; // blendshapes to sync from avatar to wearables
+        public List<AnimationBlendshapeSync> blendshapeSyncs; // blendshapes to sync from avatar to wearables
 
         public BlendshapeSyncModule()
         {
-            blendshapeSyncs = new List<DTAnimationBlendshapeSync>();
+            blendshapeSyncs = new List<AnimationBlendshapeSync>();
         }
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             return true;
         }

@@ -39,7 +39,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private IModuleEditorViewParent _parentView;
         private BlendshapeSyncModuleEditorPresenter _presenter;
 
-        public BlendshapeSyncModuleEditor(IModuleEditorViewParent parentView, DTWearableModuleBase target) : base(parentView, target)
+        public BlendshapeSyncModuleEditor(IModuleEditorViewParent parentView, WearableModuleBase target) : base(parentView, target)
         {
             _parentView = parentView;
             _presenter = new BlendshapeSyncModuleEditorPresenter(this, (BlendshapeSyncModule)target);

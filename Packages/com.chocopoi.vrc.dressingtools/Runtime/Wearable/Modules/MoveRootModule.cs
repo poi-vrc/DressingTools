@@ -23,7 +23,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    public class MoveRootModule : DTWearableModuleBase
+    internal class MoveRootModule : WearableModuleBase
     {
         public static class MessageCode
         {
@@ -37,7 +37,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public string avatarPath;
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             return true;
         }

@@ -86,7 +86,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 // show report window if any errors
                 if (report.HasLogType(DTReportLogType.Error))
                 {
-                    DTReportWindow.ShowWindow(report);
+                    ReportWindow.ShowWindow(report);
                     EditorUtility.DisplayDialog("DressingTools", "Error preprocessing avatar, please refer to the report window.", "OK");
                 }
 

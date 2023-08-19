@@ -27,14 +27,14 @@ using UnityEngine.Animations;
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
     [System.Serializable]
-    public enum DTBoneMappingMode
+    internal enum BoneMappingMode
     {
         Auto = 0,
         Override = 1,
         Manual = 2
     }
 
-    public class ArmatureMappingModule : DTWearableModuleBase
+    internal class ArmatureMappingModule : WearableModuleBase
     {
         public static class MessageCode
         {
@@ -58,9 +58,9 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public string wearableArmatureName;
 
-        public DTBoneMappingMode boneMappingMode;
+        public BoneMappingMode boneMappingMode;
 
-        public List<DTBoneMapping> boneMappings;
+        public List<BoneMapping> boneMappings;
 
         public string serializedDresserConfig;
 
@@ -72,14 +72,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         {
             dresserName = null;
             wearableArmatureName = null;
-            boneMappingMode = DTBoneMappingMode.Auto;
+            boneMappingMode = BoneMappingMode.Auto;
             boneMappings = null;
             serializedDresserConfig = "{}";
             removeExistingPrefixSuffix = true;
             groupBones = true;
         }
 
-        private bool GenerateMappings(DTReport report, string avatarArmatureName, string wearableName, GameObject targetAvatar, GameObject targetWearable, out List<DTBoneMapping> resultantBoneMappings)
+        private bool GenerateMappings(DTReport report, string avatarArmatureName, string wearableName, GameObject targetAvatar, GameObject targetWearable, out List<BoneMapping> resultantBoneMappings)
         {
             // execute dresser
             var dresser = DresserRegistry.GetDresserByTypeName(dresserName);
@@ -105,11 +105,11 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
 
             // handle bone overrides
-            if (boneMappingMode == DTBoneMappingMode.Manual)
+            if (boneMappingMode == BoneMappingMode.Manual)
             {
-                resultantBoneMappings = new List<DTBoneMapping>(boneMappings);
+                resultantBoneMappings = new List<BoneMapping>(boneMappings);
             }
-            else if (boneMappingMode == DTBoneMappingMode.Override)
+            else if (boneMappingMode == BoneMappingMode.Override)
             {
                 DTRuntimeUtils.HandleBoneMappingOverrides(resultantBoneMappings, boneMappings);
             }
@@ -117,7 +117,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        private DTBoneMapping GetBoneMappingByWearableBonePath(List<DTBoneMapping> boneMappings, string wearableBonePath)
+        private BoneMapping GetBoneMappingByWearableBonePath(List<BoneMapping> boneMappings, string wearableBonePath)
         {
             foreach (var mapping in boneMappings)
             {
@@ -196,7 +196,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        private bool ApplyBoneMappings(DTReport report, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<DTBoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
+        private bool ApplyBoneMappings(DTReport report, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<BoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
         {
             var wearableChilds = new List<Transform>();
 
@@ -226,7 +226,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                         var avatarBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(avatarDynamics, avatarBone);
                         var wearableBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(wearableDynamics, wearableChild);
 
-                        if (mapping.mappingType == DTBoneMappingType.MoveToBone)
+                        if (mapping.mappingType == BoneMappingType.MoveToBone)
                         {
                             Transform wearableBoneContainer = null;
 
@@ -252,7 +252,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             // TODO: handle custom prefixes?
                             wearableChild.name = string.Format("{0} ({1})", wearableChild.name, wearableName);
                         }
-                        else if (mapping.mappingType == DTBoneMappingType.ParentConstraint)
+                        else if (mapping.mappingType == BoneMappingType.ParentConstraint)
                         {
                             if (wearableBoneDynamics != null)
                             {
@@ -281,7 +281,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                                 return false;
                             }
                         }
-                        else if (mapping.mappingType == DTBoneMappingType.IgnoreTransform)
+                        else if (mapping.mappingType == BoneMappingType.IgnoreTransform)
                         {
                             if (wearableBoneDynamics != null)
                             {
@@ -291,7 +291,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
                             ApplyIgnoreTransforms(wearableName, avatarBoneDynamics, avatarBone, wearableChild);
                         }
-                        else if (mapping.mappingType == DTBoneMappingType.CopyDynamics)
+                        else if (mapping.mappingType == BoneMappingType.CopyDynamics)
                         {
                             if (wearableBoneDynamics != null)
                             {
@@ -341,7 +341,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, DTWearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             // scan for wearable dynamics
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableGameObject);
