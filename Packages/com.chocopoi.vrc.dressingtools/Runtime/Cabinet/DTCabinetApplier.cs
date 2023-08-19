@@ -28,6 +28,7 @@ namespace Chocopoi.DressingTools.Cabinet
     public class DTCabinetApplier
     {
         public const string LogLabel = "DTCabinetApplier";
+        private const string DynamicsContainerName = "DT_Dynamics";
 
         public static class MessageCode
         {
@@ -53,8 +54,8 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public DTCabinetApplier(DTReport report, DTCabinet cabinet)
         {
-            this._report = report;
-            this._cabinet = cabinet;
+            _report = report;
+            _cabinet = cabinet;
         }
 
         private void ApplyTransforms(DTAvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
@@ -116,6 +117,72 @@ namespace Chocopoi.DressingTools.Cabinet
             _cabinet.avatarGameObject.transform.localScale = lastAvatarScale;
         }
 
+        private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
+        {
+            // in case it does not have a root transform
+            if (dynamics.RootTransform == null)
+            {
+                dynamics.RootTransform = dynamics.Transform;
+            }
+
+            // copy to dynamics container
+            DTRuntimeUtils.CopyComponent(dynamics.Component, dynamicsContainer.gameObject);
+
+            // destroy the original one
+            Object.DestroyImmediate(dynamics.Component);
+        }
+
+        private void GroupDynamics(GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
+        {
+            // no need to group if no dynamics
+            if (wearableDynamics.Count == 0)
+            {
+                return;
+            }
+
+            // create dynamics container (reuse if originally have)
+            var dynamicsContainer = wearableGameObject.transform.Find(DynamicsContainerName);
+            if (dynamicsContainer == null)
+            {
+                var obj = new GameObject(DynamicsContainerName);
+                obj.transform.SetParent(wearableGameObject.transform);
+                dynamicsContainer = obj.transform;
+            }
+
+            if (_cabinet.groupDynamicsSeparateGameObjects)
+            {
+                // group them in separate GameObjects
+                var addedNames = new Dictionary<string, int>();
+                foreach (var dynamics in wearableDynamics)
+                {
+                    var name = dynamics.RootTransform.name;
+
+                    // we might occur cases with dynamics' bone name are the same
+                    if (!addedNames.TryGetValue(name, out int count))
+                    {
+                        count = 0;
+                    }
+
+                    // we don't add suffix for the first occurance
+                    var containerName = count == 0 ? name : string.Format("{0}_{1}", name, count);
+                    var container = new GameObject(containerName);
+                    container.transform.SetParent(dynamicsContainer);
+
+                    CopyDynamicsToContainer(dynamics, container);
+
+                    addedNames[name] = ++count;
+                }
+            }
+            else
+            {
+                // we just group them into a single GameObject
+                foreach (var dynamics in wearableDynamics)
+                {
+                    CopyDynamicsToContainer(dynamics, dynamicsContainer.gameObject);
+                }
+            }
+        }
+
         private bool ApplyWearable(DTWearableConfig config, GameObject wearableGameObject)
         {
             GameObject wearableObj;
@@ -147,6 +214,12 @@ namespace Chocopoi.DressingTools.Cabinet
                     _report.LogErrorLocalized(LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
                 }
+            }
+
+            // group dynamics
+            if (_cabinet.groupDynamics)
+            {
+                GroupDynamics(wearableGameObject, wearableDynamics);
             }
 
             RollbackTransform(lastAvatarParent, lastAvatarScale);
