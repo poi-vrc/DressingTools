@@ -17,9 +17,10 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
-using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEngine;
 
@@ -69,21 +70,21 @@ namespace Chocopoi.DressingTools.Animations
             SkinnedMeshRenderer smr;
             if ((smr = obj.GetComponent<SkinnedMeshRenderer>()) == null)
             {
-                _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSkinnedMeshRendererAttached, obj.name);
+                DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredObjectHasNoSkinnedMeshRendererAttached, obj.name);
                 return false;
             }
 
             Mesh mesh;
             if ((mesh = smr.sharedMesh) == null)
             {
-                _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoMeshAttached, obj.name);
+                DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredObjectHasNoMeshAttached, obj.name);
                 return false;
             }
 
             int blendshapeIndex;
             if ((blendshapeIndex = mesh.GetBlendShapeIndex(blendshapeName)) == -1)
             {
-                _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredObjectHasNoSuchBlendshape, obj.name, blendshapeName);
+                DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredObjectHasNoSuchBlendshape, obj.name, blendshapeName);
                 return false;
             }
 
@@ -98,7 +99,7 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = _avatarObject.transform.Find(toggle.path);
                 if (obj == null)
                 {
-                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarToggleObjectNotFound, toggle.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredAvatarToggleObjectNotFound, toggle.path);
                 }
                 else
                 {
@@ -118,13 +119,13 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = _avatarObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _avatarObject.name, blendshape.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _avatarObject.name, blendshape.path);
                     continue;
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
                 {
-                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainAvatarBlendshapeOriginalValue, _avatarObject.name, blendshape.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredCouldNotObtainAvatarBlendshapeOriginalValue, _avatarObject.name, blendshape.path);
                     continue;
                 }
 
@@ -144,7 +145,7 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = _wearableObject.transform.Find(toggle.path);
                 if (obj == null)
                 {
-                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredWearableToggleObjectNotFound, toggle.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredWearableToggleObjectNotFound, toggle.path);
                 }
                 else
                 {
@@ -164,12 +165,12 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = _wearableObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _wearableObject.name, blendshape.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _wearableObject.name, blendshape.path);
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
                 {
-                    _report.LogWarnLocalized(LogLabel, MessageCode.IgnoredCouldNotObtainWearableBlendshapeOriginalValue, _wearableObject.name, blendshape.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredCouldNotObtainWearableBlendshapeOriginalValue, _wearableObject.name, blendshape.path);
                     continue;
                 }
 

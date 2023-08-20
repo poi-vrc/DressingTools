@@ -16,9 +16,11 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
@@ -37,7 +39,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public string avatarPath;
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             return true;
         }

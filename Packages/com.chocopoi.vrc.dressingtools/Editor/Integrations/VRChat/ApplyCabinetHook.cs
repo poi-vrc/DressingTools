@@ -17,7 +17,7 @@
 
 #if VRC_SDK_VRCSDK3
 using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.Lib.Logging;
 using UnityEditor;
 namespace Chocopoi.DressingTools.Integrations.VRChat
 {

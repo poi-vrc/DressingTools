@@ -16,8 +16,8 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Wearable;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Wearable;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 {

@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
@@ -79,7 +80,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             }
             catch (System.Exception ex)
             {
-                report.LogExceptionLocalized(LogLabel, ex, "integrations.vrc.msgCode.error.exceptionProcessAvatar");
+                DTReportUtils.LogExceptionLocalized(report, LogLabel, ex, "integrations.vrc.msgCode.error.exceptionProcessAvatar");
             }
             finally
             {

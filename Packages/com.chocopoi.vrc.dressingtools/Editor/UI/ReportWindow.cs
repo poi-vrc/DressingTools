@@ -16,8 +16,8 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.Logging;
 using UnityEditor;
 using UnityEngine;
 

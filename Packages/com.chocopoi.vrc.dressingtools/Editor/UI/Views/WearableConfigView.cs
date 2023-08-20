@@ -17,11 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
 using UnityEditor;
 using UnityEngine;
 

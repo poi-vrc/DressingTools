@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.UI;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UIBase.Views

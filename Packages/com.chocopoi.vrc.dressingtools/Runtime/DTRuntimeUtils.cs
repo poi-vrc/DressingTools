@@ -20,15 +20,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Proxy;
-using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    internal class DTRuntimeUtils
+    internal static class DTRuntimeUtils
     {
         private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
 

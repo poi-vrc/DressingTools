@@ -16,6 +16,8 @@
  */
 
 using System;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Logging;
 using UnityEngine;
 
@@ -23,30 +25,31 @@ namespace Chocopoi.DressingTools.Cabinet
 {
     [AddComponentMenu("DressingTools/DT Cabinet")]
     [DefaultExecutionOrder(-19999)]
-    public class DTCabinet : DTBaseComponent
+    public class DTCabinet : DTBaseComponent, ICabinet
     {
         private const string LogLabel = "DTCabinet";
 
-        public GameObject avatarGameObject;
-
-        public string avatarArmatureName;
-
-        public bool groupDynamics;
-
-        public bool groupDynamicsSeparateGameObjects;
+        [field: SerializeField] public GameObject AvatarGameObject { get; set; }
+        [field: SerializeField] public string AvatarArmatureName { get; set; }
+        [field: SerializeField] public bool GroupDynamics { get; set; }
+        [field: SerializeField] public bool GroupDynamicsSeparateGameObjects { get; set; }
 
         public DTCabinet()
         {
             // TOOD: Read default settings?
-            avatarGameObject = null;
-            avatarArmatureName = "Armature";
-            groupDynamics = true;
-            groupDynamicsSeparateGameObjects = true;
+            AvatarGameObject = null;
+            AvatarArmatureName = "Armature";
+            GroupDynamics = true;
+            GroupDynamicsSeparateGameObjects = true;
         }
 
         public DTCabinetWearable[] GetWearables()
         {
-            return avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
+            if (AvatarGameObject == null)
+            {
+                return new DTCabinetWearable[0];
+            }
+            return AvatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
         }
 
         public void Apply(DTReport report)
@@ -57,7 +60,7 @@ namespace Chocopoi.DressingTools.Cabinet
             }
             catch (Exception ex)
             {
-                report.LogExceptionLocalized(LogLabel, ex, "cabinet.apply.msgCode.hasException");
+                DTReportUtils.LogExceptionLocalized(report, LogLabel, ex, "cabinet.apply.msgCode.hasException");
             }
         }
 

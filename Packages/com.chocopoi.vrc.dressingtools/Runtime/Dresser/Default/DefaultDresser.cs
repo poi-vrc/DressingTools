@@ -18,8 +18,9 @@
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Dresser
@@ -75,14 +76,14 @@ namespace Chocopoi.DressingTools.Dresser
 
             if (!(settings is DefaultDresserSettings))
             {
-                report.LogErrorLocalized(LogLabel, MessageCode.NotDefaultSettingsSettings);
+                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.NotDefaultSettingsSettings);
                 return report;
             }
 
             // Reject null target avatar/wearable settings
             if (settings.targetAvatar == null || settings.targetWearable == null)
             {
-                report.LogErrorLocalized(LogLabel, MessageCode.NullAvatarOrWearable);
+                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.NullAvatarOrWearable);
                 return report;
             }
 
@@ -94,7 +95,7 @@ namespace Chocopoi.DressingTools.Dresser
                 if (!hook.Evaluate(report, settings, boneMappings))
                 {
                     // hook error and do not continue
-                    report.LogErrorLocalized(LogLabel, MessageCode.HookHasErrors, hook.GetType().Name);
+                    DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.HookHasErrors, hook.GetType().Name);
                     boneMappings = null;
                     return report;
                 }

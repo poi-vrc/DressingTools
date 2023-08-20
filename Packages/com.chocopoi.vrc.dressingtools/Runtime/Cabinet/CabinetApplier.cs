@@ -16,10 +16,11 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
-using Chocopoi.DressingTools.Wearable;
-using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -60,14 +61,14 @@ namespace Chocopoi.DressingTools.Cabinet
 
         private void ApplyTransforms(AvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
         {
-            var targetAvatar = _cabinet.avatarGameObject;
+            var targetAvatar = _cabinet.AvatarGameObject;
 
             // check position delta and adjust
             {
                 var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
                 if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
                 {
-                    _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
+                    DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
                     targetWearable.transform.position += wearableWorldPos;
                 }
             }
@@ -77,24 +78,24 @@ namespace Chocopoi.DressingTools.Cabinet
                 var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
                 if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
                 {
-                    _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
+                    DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
                     targetWearable.transform.rotation *= wearableWorldRot;
                 }
             }
 
             // apply avatar scale
-            lastAvatarParent = _cabinet.avatarGameObject.transform.parent;
+            lastAvatarParent = _cabinet.AvatarGameObject.transform.parent;
             lastAvatarScale = Vector3.zero + targetAvatar.transform.localScale;
             if (lastAvatarParent != null)
             {
                 // tricky workaround to apply lossy world scale is to unparent
-                _cabinet.avatarGameObject.transform.SetParent(null);
+                _cabinet.AvatarGameObject.transform.SetParent(null);
             }
 
             var avatarScaleVec = avatarConfig.avatarLossyScale.ToVector3();
             if (targetAvatar.transform.localScale != avatarScaleVec)
             {
-                _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
+                DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
                 targetAvatar.transform.localScale = avatarScaleVec;
             }
 
@@ -102,7 +103,7 @@ namespace Chocopoi.DressingTools.Cabinet
             var wearableScaleVec = avatarConfig.wearableLossyScale.ToVector3();
             if (targetWearable.transform.localScale != wearableScaleVec)
             {
-                _report.LogInfoLocalized(LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
+                DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
                 targetWearable.transform.localScale = wearableScaleVec;
             }
         }
@@ -112,9 +113,9 @@ namespace Chocopoi.DressingTools.Cabinet
             // restore avatar scale
             if (lastAvatarParent != null)
             {
-                _cabinet.avatarGameObject.transform.SetParent(lastAvatarParent);
+                _cabinet.AvatarGameObject.transform.SetParent(lastAvatarParent);
             }
-            _cabinet.avatarGameObject.transform.localScale = lastAvatarScale;
+            _cabinet.AvatarGameObject.transform.localScale = lastAvatarScale;
         }
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
@@ -149,7 +150,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 dynamicsContainer = obj.transform;
             }
 
-            if (_cabinet.groupDynamicsSeparateGameObjects)
+            if (_cabinet.GroupDynamicsSeparateGameObjects)
             {
                 // group them in separate GameObjects
                 var addedNames = new Dictionary<string, int>();
@@ -186,14 +187,14 @@ namespace Chocopoi.DressingTools.Cabinet
         private bool ApplyWearable(WearableConfig config, GameObject wearableGameObject)
         {
             GameObject wearableObj;
-            if (DTRuntimeUtils.IsGrandParent(_cabinet.avatarGameObject.transform, wearableGameObject.transform))
+            if (DTRuntimeUtils.IsGrandParent(_cabinet.AvatarGameObject.transform, wearableGameObject.transform))
             {
                 wearableObj = wearableGameObject;
             }
             else
             {
                 // instantiate wearable prefab and parent to avatar
-                wearableObj = Object.Instantiate(wearableGameObject, _cabinet.avatarGameObject.transform);
+                wearableObj = Object.Instantiate(wearableGameObject, _cabinet.AvatarGameObject.transform);
             }
 
             // scan for wearable dynamics
@@ -203,7 +204,7 @@ namespace Chocopoi.DressingTools.Cabinet
             ApplyTransforms(config.targetAvatarConfig, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
             // sort modules according to their apply order
-            var modules = new List<IWearableModule>(config.modules);
+            var modules = new List<WearableModuleBase>(config.modules);
             modules.Sort((m1, m2) => m1.ApplyOrder.CompareTo(m2.ApplyOrder));
 
             // do module apply
@@ -211,13 +212,13 @@ namespace Chocopoi.DressingTools.Cabinet
             {
                 if (!module.Apply(_report, _cabinet, _avatarDynamics, config, wearableGameObject))
                 {
-                    _report.LogErrorLocalized(LogLabel, MessageCode.ApplyingModuleHasErrors);
+                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
                 }
             }
 
             // group dynamics
-            if (_cabinet.groupDynamics)
+            if (_cabinet.GroupDynamics)
             {
                 GroupDynamics(wearableGameObject, wearableDynamics);
             }
@@ -230,7 +231,7 @@ namespace Chocopoi.DressingTools.Cabinet
         public void Execute()
         {
             // scan for avatar dynamics
-            _avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabinet.avatarGameObject);
+            _avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabinet.AvatarGameObject);
             var wearables = _cabinet.GetWearables();
 
             foreach (var wearable in wearables)
@@ -241,7 +242,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 // Migration
                 if (config.configVersion > WearableConfig.CurrentConfigVersion)
                 {
-                    _report.LogErrorLocalized(LogLabel, MessageCode.IncompatibleConfigVersion);
+                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.IncompatibleConfigVersion);
                     break;
                 }
                 else if (config.configVersion < WearableConfig.CurrentConfigVersion)
@@ -249,7 +250,7 @@ namespace Chocopoi.DressingTools.Cabinet
                     var result = WearableConfigMigrator.Migrate(wearable.configJson, out var migratedJson);
                     if (!result)
                     {
-                        _report.LogErrorLocalized(LogLabel, MessageCode.ConfigMigrationFailed);
+                        DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ConfigMigrationFailed);
                         break;
                     }
                     wearable.configJson = migratedJson;
@@ -258,13 +259,13 @@ namespace Chocopoi.DressingTools.Cabinet
 
                 if (config == null)
                 {
-                    _report.LogErrorLocalized(LogLabel, MessageCode.UnableToDeserializeConfig);
+                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.UnableToDeserializeConfig);
                     continue;
                 }
 
                 if (!ApplyWearable(config, wearable.wearableGameObject))
                 {
-                    _report.LogErrorLocalized(LogLabel, MessageCode.ApplyingWearableHasErrors, config.info.name);
+                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ApplyingWearableHasErrors, config.info.name);
                     break;
                 }
             }
