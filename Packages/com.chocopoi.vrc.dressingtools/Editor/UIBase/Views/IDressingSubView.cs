@@ -16,6 +16,7 @@
  */
 
 using System;
+using Chocopoi.DressingTools.Lib.UI;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {

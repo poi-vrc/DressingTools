@@ -18,8 +18,9 @@
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.View;
-using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -64,9 +65,9 @@ namespace Chocopoi.DressingTools.UI
             }
 
             var config = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(config, cabinet.avatarGameObject, wearable);
+            DTEditorUtils.PrepareWearableConfig(config, cabinet.AvatarGameObject, wearable);
 
-            var armatureName = cabinet.avatarArmatureName;
+            var armatureName = cabinet.AvatarArmatureName;
 
             // attempt to find wearable armature using avatar armature name
             var armature = DTRuntimeUtils.GuessArmature(wearable, armatureName);
@@ -86,7 +87,7 @@ namespace Chocopoi.DressingTools.UI
 
                 var dresserSettings = new DefaultDresserSettings()
                 {
-                    targetAvatar = cabinet.avatarGameObject,
+                    targetAvatar = cabinet.AvatarGameObject,
                     targetWearable = wearable,
                     dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
                 };
@@ -94,7 +95,7 @@ namespace Chocopoi.DressingTools.UI
                 var dresser = new DefaultDresser();
                 var report = dresser.Execute(dresserSettings, out _);
 
-                if (report.HasLogType(Logging.DTReportLogType.Error))
+                if (report.HasLogType(DTReportLogType.Error))
                 {
                     ReportWindow.ShowWindow(report);
                     EditorUtility.DisplayDialog("DressingTools", "Default dresser has errors processing this wearable automatically, please use the wizard instead.", "OK");

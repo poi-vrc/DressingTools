@@ -16,11 +16,11 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
-using Chocopoi.DressingTools.Wearable;
-using Chocopoi.DressingTools.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
@@ -38,10 +38,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         public override bool AllowMultiple => false;
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
 #if !VRC_SDK_VRCSDK3
-            report.LogWarnLocalized(LogLabel, MessageCode.IgnoredNoVRCSDK);
+            DTReportUtils.LogWarnLocalized(report, LogLabel, MessageCode.IgnoredNoVRCSDK);
 #endif
             return true;
         }

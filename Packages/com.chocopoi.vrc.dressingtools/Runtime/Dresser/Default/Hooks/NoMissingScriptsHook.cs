@@ -16,8 +16,9 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Wearable;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
@@ -32,7 +33,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             {
                 if (components[i] == null)
                 {
-                    report.LogErrorLocalized(DefaultDresser.LogLabel, errorCode, gameObject.name);
+                    DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, errorCode, gameObject.name);
                     return false;
                 }
             }
@@ -55,7 +56,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (!avatarResult)
             {
-                report.LogErrorLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.MissingScriptsDetectedInAvatar);
+                DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MissingScriptsDetectedInAvatar);
             }
 
             //scan wearable missing scripts
@@ -63,7 +64,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (!clothesResult)
             {
-                report.LogErrorLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.MissingScriptsDetectedInWearable);
+                DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MissingScriptsDetectedInWearable);
             }
 
             return avatarResult && clothesResult;

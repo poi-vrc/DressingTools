@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chocopoi.DressingTools.UI.Views.Modules;
+using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
-using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 using UnityEngine;
 
@@ -90,7 +90,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                _view.Config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
+                _view.Config.targetAvatarConfig.armatureName = cabinet.AvatarArmatureName;
             }
 
             // can't do anything
@@ -177,7 +177,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateModulesView();
         }
 
-        private ModuleEditor CreateModuleEditor(IWearableModule module)
+        private ModuleEditor CreateModuleEditor(WearableModuleBase module)
         {
             // prepare cache if not yet
             if (s_moduleEditorTypesCache == null)

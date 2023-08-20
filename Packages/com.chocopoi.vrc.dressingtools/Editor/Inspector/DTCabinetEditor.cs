@@ -33,7 +33,7 @@ namespace Chocopoi.DressingTools
             var cabinet = (DTCabinet)target;
 
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Avatar", cabinet.AvatarGameObject, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Separator();

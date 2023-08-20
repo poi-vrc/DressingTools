@@ -16,8 +16,9 @@
  */
 
 using System;
+using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.Views.Modules;
-using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.UIBase.Views

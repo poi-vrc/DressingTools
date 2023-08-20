@@ -21,8 +21,9 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.AvatarLib.Expressions;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -63,7 +64,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
 
             // get the avatar descriptor
-            var avatarDescriptor = _cabinet.avatarGameObject.GetComponent<VRCAvatarDescriptor>();
+            var avatarDescriptor = _cabinet.AvatarGameObject.GetComponent<VRCAvatarDescriptor>();
 
             // obtain FX layer
             var fxController = CopyAndReplaceLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
@@ -112,7 +113,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             }
             catch (ParameterOverflowException ex)
             {
-                _report.LogExceptionLocalized(LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
+                DTReportUtils.LogExceptionLocalized(_report, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
                 return false;
             }
 
@@ -157,7 +158,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(_report, _cabinet.avatarGameObject, module, wearables[i].wearableGameObject, wearableDynamics);
+                var animationGenerator = new AnimationGenerator(_report, _cabinet.AvatarGameObject, module, wearables[i].wearableGameObject, wearableDynamics);
 
                 // TODO: write defaults settings
                 var wearAnimations = animationGenerator.GenerateWearAnimations(true);

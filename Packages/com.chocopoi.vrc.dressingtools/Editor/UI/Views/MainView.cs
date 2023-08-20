@@ -16,9 +16,9 @@
  */
 
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
-using Chocopoi.DressingTools.UIBase;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
 

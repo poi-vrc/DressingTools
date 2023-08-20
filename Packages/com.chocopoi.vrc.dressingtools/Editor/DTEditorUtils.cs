@@ -16,7 +16,8 @@
  */
 
 using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Wearable;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Wearable;
 using UnityEditor;
 using UnityEngine;
 
@@ -71,8 +72,8 @@ namespace Chocopoi.DressingTools
                 comp = avatar.AddComponent<DTCabinet>();
 
                 // TODO: read default config, scan for armature names?
-                comp.avatarGameObject = avatar;
-                comp.avatarArmatureName = "Armature";
+                comp.AvatarGameObject = avatar;
+                comp.AvatarArmatureName = "Armature";
             }
 
             return comp;
@@ -101,7 +102,7 @@ namespace Chocopoi.DressingTools
 
         public static void RemoveCabinetWearable(DTCabinet cabinet, DTCabinetWearable wearable)
         {
-            var cabinetWearables = cabinet.avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
+            var cabinetWearables = cabinet.AvatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
             foreach (var cabinetWearable in cabinetWearables)
             {
                 if (cabinetWearable == wearable)
@@ -137,7 +138,7 @@ namespace Chocopoi.DressingTools
             }
             else
             {
-                config.targetAvatarConfig.armatureName = cabinet.avatarArmatureName;
+                config.targetAvatarConfig.armatureName = cabinet.AvatarArmatureName;
             }
 
             // can't do anything

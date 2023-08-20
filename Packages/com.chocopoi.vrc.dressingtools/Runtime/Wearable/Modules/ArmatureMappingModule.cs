@@ -17,8 +17,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using UnityEngine;
@@ -100,7 +104,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             // abort on error
             if (dresserReport.HasLogType(DTReportLogType.Error))
             {
-                report.LogErrorLocalized(LogLabel, MessageCode.DresserHasErrors, wearableName);
+                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.DresserHasErrors, wearableName);
                 return false;
             }
 
@@ -277,7 +281,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             }
                             else
                             {
-                                report.LogErrorLocalized(LogLabel, MessageCode.CannotCreateParentConstraintWithExisting, mapping.avatarBonePath, mapping.wearableBonePath);
+                                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.CannotCreateParentConstraintWithExisting, mapping.avatarBonePath, mapping.wearableBonePath);
                                 return false;
                             }
                         }
@@ -321,7 +325,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     }
                     else
                     {
-                        report.LogErrorLocalized(LogLabel, MessageCode.AvatarBonePathNotFound, mapping.avatarBonePath);
+                        DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.AvatarBonePathNotFound, mapping.avatarBonePath);
                         return false;
                     }
                 }
@@ -341,22 +345,22 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public override bool Apply(DTReport report, DTCabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
         {
             // scan for wearable dynamics
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableGameObject);
 
-            if (!GenerateMappings(report, cabinet.avatarArmatureName, config.info.name, cabinet.avatarGameObject, wearableGameObject, out var boneMappings))
+            if (!GenerateMappings(report, cabinet.AvatarArmatureName, config.info.name, cabinet.AvatarGameObject, wearableGameObject, out var boneMappings))
             {
-                report.LogErrorLocalized(LogLabel, MessageCode.MappingGenerationHasErrors);
+                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.MappingGenerationHasErrors);
                 return false;
             }
 
             var generatedName = string.Format("{0}-{1}", config.info.name, RandomString(32));
 
-            if (!ApplyBoneMappings(report, generatedName, avatarDynamics, wearableDynamics, boneMappings, cabinet.avatarGameObject.transform, wearableGameObject.transform, wearableGameObject.transform, ""))
+            if (!ApplyBoneMappings(report, generatedName, avatarDynamics, wearableDynamics, boneMappings, cabinet.AvatarGameObject.transform, wearableGameObject.transform, wearableGameObject.transform, ""))
             {
-                report.LogErrorLocalized(LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
+                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
                 return false;
             }
 

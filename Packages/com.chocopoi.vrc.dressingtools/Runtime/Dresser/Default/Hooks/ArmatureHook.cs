@@ -16,9 +16,10 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Proxy;
-using Chocopoi.DressingTools.Wearable;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
@@ -83,7 +84,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     }
                     else
                     {
-                        report.LogInfoLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.NonMatchingWearableBoneKeptUntouched);
+                        DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NonMatchingWearableBoneKeptUntouched);
                     }
                 }
                 else
@@ -126,7 +127,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                         }
                         else if (settings.dynamicsOption == DefaultDresserDynamicsOption.IgnoreAll) //ignore all
                         {
-                            report.LogInfoLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.DynamicBoneAllIgnored);
+                            DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.DynamicBoneAllIgnored);
                             boneMappings.Add(new BoneMapping()
                             {
                                 mappingType = BoneMappingType.DoNothing,
@@ -176,11 +177,11 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
                 if (avatarArmature)
                 {
-                    report.LogInfoLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.AvatarArmatureObjectGuessed);
+                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.AvatarArmatureObjectGuessed);
                 }
                 else
                 {
-                    report.LogErrorLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoArmatureInAvatar);
+                    DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoArmatureInAvatar);
                 }
             }
 
@@ -191,11 +192,11 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
                 if (wearableArmature)
                 {
-                    report.LogInfoLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.WearableArmatureObjectGuessed);
+                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.WearableArmatureObjectGuessed);
                 }
                 else
                 {
-                    report.LogErrorLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoArmatureInWearable);
+                    DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoArmatureInWearable);
                 }
             }
 
@@ -208,12 +209,12 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (avatarArmature.childCount == 0)
             {
-                report.LogErrorLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoBonesInAvatarArmatureFirstLevel);
+                DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoBonesInAvatarArmatureFirstLevel);
             }
 
             if (wearableArmature.childCount == 0)
             {
-                report.LogErrorLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel);
+                DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NoBonesInWearableArmatureFirstLevel);
             }
 
             if (avatarArmature.childCount == 0 || wearableArmature.childCount == 0)
@@ -227,17 +228,17 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 //otherwise the UI will always just say Compatible but not OK
                 if (IsOnlyOneEnabledChildBone(avatarArmature))
                 {
-                    report.LogInfoLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.MultipleBonesInAvatarArmatureDetectedWarningRemoved);
+                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MultipleBonesInAvatarArmatureDetectedWarningRemoved);
                 }
                 else
                 {
-                    report.LogWarnLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.MultipleBonesInAvatarArmatureFirstLevel);
+                    DTReportUtils.LogWarnLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MultipleBonesInAvatarArmatureFirstLevel);
                 }
             }
 
             if (wearableArmature.childCount > 1)
             {
-                report.LogWarnLocalized(DefaultDresser.LogLabel, DefaultDresser.MessageCode.MultipleBonesInWearableArmatureFirstLevel);
+                DTReportUtils.LogWarnLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MultipleBonesInWearableArmatureFirstLevel);
             }
 
             // Scan dynamics

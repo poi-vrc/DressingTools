@@ -16,7 +16,7 @@
  */
 
 using System;
-using Chocopoi.DressingTools.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UIBase.Views

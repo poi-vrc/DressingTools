@@ -16,9 +16,9 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -75,7 +75,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var armatureName = "Armature";
             if (cabinet != null)
             {
-                armatureName = cabinet.avatarArmatureName;
+                armatureName = cabinet.AvatarArmatureName;
                 _view.ShowAvatarNoCabinetHelpBox = false;
             }
             else

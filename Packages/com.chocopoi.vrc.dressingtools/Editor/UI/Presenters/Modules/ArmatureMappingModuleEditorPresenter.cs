@@ -19,9 +19,10 @@ using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -188,8 +189,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             if (_cabinet != null)
             {
                 _view.IsAvatarAssociatedWithCabinet = true;
-                _view.AvatarArmatureName = _cabinet.avatarArmatureName;
-                _view.DresserSettings.avatarArmatureName = _cabinet.avatarArmatureName;
+                _view.AvatarArmatureName = _cabinet.AvatarArmatureName;
+                _view.DresserSettings.avatarArmatureName = _cabinet.AvatarArmatureName;
             }
             else
             {
