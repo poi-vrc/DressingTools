@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Wearable;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Wearable;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default
 {
-    public class DTDefaultDresserTest : DTTestBase
+    public class DefaultDresserTest : DTTestBase
     {
         [Test]
         public void NotDTDefaultDresserSettings_ReturnsCorrectErrorCode()
         {
-            var dresser = new DTDefaultDresser();
+            var dresser = new DefaultDresser();
             var report = dresser.Execute(new DTDresserSettings(), out var boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.NotDefaultSettingsSettings));
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.NotDefaultSettingsSettings));
         }
 
         [Test]
@@ -23,14 +23,14 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
         {
             var wearableRoot = CreateGameObject("Wearable");
 
-            var dresser = new DTDefaultDresser();
-            var settings = new DTDefaultDresserSettings()
+            var dresser = new DefaultDresser();
+            var settings = new DefaultDresserSettings()
             {
                 targetAvatar = null,
                 targetWearable = wearableRoot
             };
             var report = dresser.Execute(settings, out var boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.NullAvatarOrWearable));
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.NullAvatarOrWearable));
         }
 
         [Test]
@@ -38,26 +38,26 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
         {
             var avatarRoot = CreateGameObject("Avatar");
 
-            var dresser = new DTDefaultDresser();
-            var settings = new DTDefaultDresserSettings()
+            var dresser = new DefaultDresser();
+            var settings = new DefaultDresserSettings()
             {
                 targetAvatar = avatarRoot,
                 targetWearable = null
             };
             var report = dresser.Execute(settings, out var boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.NullAvatarOrWearable));
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.NullAvatarOrWearable));
         }
 
-        private DTReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<DTBoneMapping> boneMappings)
+        private DTReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<BoneMapping> boneMappings)
         {
-            var dresser = new DTDefaultDresser();
-            var settings = new DTDefaultDresserSettings()
+            var dresser = new DefaultDresser();
+            var settings = new DefaultDresserSettings()
             {
                 targetAvatar = avatarRoot,
                 targetWearable = wearableRoot,
                 avatarArmatureName = "Armature",
                 wearableArmatureName = "Armature",
-                dynamicsOption = DTDefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
+                dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
             };
             return dresser.Execute(settings, out boneMappings);
         }
@@ -70,7 +70,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             var wearableRoot = CreateGameObject("Wearable");
             var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
             Assert.Null(boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DTDefaultDresser.MessageCode.HookHasErrors));
+            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.HookHasErrors));
         }
     }
 }

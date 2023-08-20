@@ -262,6 +262,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
+                                wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             // add parent constraint
@@ -291,6 +292,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
+                                wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             ApplyIgnoreTransforms(wearableName, avatarBoneDynamics, avatarBone, wearableChild);
@@ -301,6 +303,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
+                                wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             // copy component with reflection
@@ -345,11 +348,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
         {
-            // scan for wearable dynamics
-            var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableGameObject);
-
             if (!GenerateMappings(report, cabinet.AvatarArmatureName, config.info.name, cabinet.AvatarGameObject, wearableGameObject, out var boneMappings))
             {
                 DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.MappingGenerationHasErrors);

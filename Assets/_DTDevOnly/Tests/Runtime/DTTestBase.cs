@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Dresser;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace Chocopoi.DressingTools.Tests
 {
@@ -13,10 +10,10 @@ namespace Chocopoi.DressingTools.Tests
     {
         private List<GameObject> instantiatedGameObjects;
 
-        protected T LoadEditorTestAsset<T>(string relativePath) where T : Object
+        protected T LoadRuntimeTestAsset<T>(string relativePath) where T : Object
         {
             // load test asset from resources folder
-            var path = "Assets/_DTDevOnly/Tests/Editor/Resources/" + GetType().Name + "/" + relativePath;
+            var path = "Assets/_DTDevOnly/Tests/Runtime/Resources/" + GetType().Name + "/" + relativePath;
             var obj = AssetDatabase.LoadAssetAtPath<T>(path);
             Assert.NotNull(obj, "Could not find test asset at path:" + path);
             return obj;
@@ -41,10 +38,10 @@ namespace Chocopoi.DressingTools.Tests
             return obj;
         }
 
-        protected GameObject InstantiateEditorTestPrefab(string relativePath, Transform parent = null)
+        protected GameObject InstantiateRuntimeTestPrefab(string relativePath, Transform parent = null)
         {
             // load test prefab and instantiate it
-            var prefab = LoadEditorTestAsset<GameObject>(relativePath);
+            var prefab = LoadRuntimeTestAsset<GameObject>(relativePath);
             var obj = Object.Instantiate(prefab);
             instantiatedGameObjects.Add(obj);
 

@@ -44,7 +44,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Modules
             return rawJson;
         }
 
-        public sealed override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public sealed override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
         {
             return true;
         }

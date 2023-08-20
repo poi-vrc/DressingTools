@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Proxy;
@@ -71,7 +72,6 @@ namespace Chocopoi.DressingTools
                     // override on match
                     if (originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
                     {
-                        Debug.Log("match");
                         originalMapping.avatarBonePath = mappingOverride.avatarBonePath;
                         originalMapping.mappingType = mappingOverride.mappingType;
                     }
@@ -111,7 +111,7 @@ namespace Chocopoi.DressingTools
             return false;
         }
 
-        public static List<IDynamicsProxy> ScanDynamics(GameObject obj)
+        public static List<IDynamicsProxy> ScanDynamics(GameObject obj, bool doNotScanContainingWearables = false)
         {
             var dynamicsList = new List<IDynamicsProxy>();
 
@@ -127,6 +127,10 @@ namespace Chocopoi.DressingTools
                 var dynBones = obj.GetComponentsInChildren(DynamicBoneType);
                 foreach (var dynBone in dynBones)
                 {
+                    if (doNotScanContainingWearables && IsOriginatedFromAnyWearable(obj.transform, dynBone.transform))
+                    {
+                        continue;
+                    }
                     dynamicsList.Add(new DynamicBoneProxy(dynBone));
                 }
             }
@@ -137,6 +141,10 @@ namespace Chocopoi.DressingTools
                 var physBones = obj.GetComponentsInChildren(PhysBoneType);
                 foreach (var physBone in physBones)
                 {
+                    if (doNotScanContainingWearables && IsOriginatedFromAnyWearable(obj.transform, physBone.transform))
+                    {
+                        continue;
+                    }
                     dynamicsList.Add(new PhysBoneProxy(physBone));
                 }
             }
@@ -301,6 +309,26 @@ namespace Chocopoi.DressingTools
             BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
                                  BindingFlags.Instance | BindingFlags.DeclaredOnly;
             return t.GetFields(flags).Concat(GetAllFields(t.BaseType));
+        }
+
+        public static bool IsOriginatedFromAnyWearable(Transform root, Transform transform)
+        {
+            var found = false;
+            while (transform != null)
+            {
+                transform = transform.parent;
+                if (transform == root || transform == null)
+                {
+                    break;
+                }
+
+                if (transform.TryGetComponent<DTCabinetWearable>(out var _))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
         }
     }
 }
