@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         public override bool AllowMultiple => false;
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
         {
 #if !VRC_SDK_VRCSDK3
             DTReportUtils.LogWarnLocalized(report, LogLabel, MessageCode.IgnoredNoVRCSDK);

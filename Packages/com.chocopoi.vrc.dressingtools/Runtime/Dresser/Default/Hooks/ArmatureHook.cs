@@ -242,8 +242,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
 
             // Scan dynamics
-            var avatarDynamicsList = DTRuntimeUtils.ScanDynamics(settings.targetAvatar);
-            var wearableDynamicsList = DTRuntimeUtils.ScanDynamics(settings.targetWearable);
+            var avatarDynamicsList = DTRuntimeUtils.ScanDynamics(settings.targetAvatar, true);
+            var wearableDynamicsList = DTRuntimeUtils.ScanDynamics(settings.targetWearable, false);
 
             // Process Armature
             ProcessBone(report, (DefaultDresserSettings)settings, avatarDynamicsList, wearableDynamicsList, 0, avatarArmature, wearableArmature, boneMappings);

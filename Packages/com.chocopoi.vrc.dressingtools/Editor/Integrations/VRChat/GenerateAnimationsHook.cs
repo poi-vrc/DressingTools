@@ -148,7 +148,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 }
 
                 EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.info.name + "...", i / (float)wearables.Length * 100);
-                var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearables[i].wearableGameObject);
+                var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearables[i].wearableGameObject, false);
 
                 // find the animation generation module
                 var module = FindAnimationGenerationModule(config);

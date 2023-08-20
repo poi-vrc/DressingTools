@@ -50,7 +50,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             wearableCustomizables = new List<WearableCustomizable>();
         }
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
         {
             return true;
         }

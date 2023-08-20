@@ -183,24 +183,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 foreach (var avatarSmr in avatarSmrs)
                 {
                     // transverse up to see if it is originated from ours or an existing wearable
-                    var transform = avatarSmr.transform;
-                    var cabinetWearableFound = false;
-                    while (transform != null)
-                    {
-                        transform = transform.parent;
-                        if (transform != null && (transform == _view.TargetWearable.transform || transform.TryGetComponent<DTCabinetWearable>(out var _)))
-                        {
-                            cabinetWearableFound = true;
-                            break;
-                        }
-
-                        if (cabinetWearableFound)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (cabinetWearableFound)
+                    if (DTRuntimeUtils.IsOriginatedFromAnyWearable(_view.TargetWearable.transform, avatarSmr.transform))
                     {
                         // skip this SMR
                         continue;

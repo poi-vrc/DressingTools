@@ -114,7 +114,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Modules
             return JsonConvert.SerializeObject(this, new WearableModuleConverter());
         }
 
-        public abstract bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject);
+        public abstract bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics);
 
         public override string ToString()
         {

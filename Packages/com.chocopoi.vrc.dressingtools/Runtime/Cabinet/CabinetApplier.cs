@@ -21,6 +21,7 @@ using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -120,14 +121,16 @@ namespace Chocopoi.DressingTools.Cabinet
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
         {
-            // in case it does not have a root transform
-            if (dynamics.RootTransform == null)
+            // in our PhysBoneProxy, we return the current transform if rootTransform is null
+            // so if we move it away, the controlling transform will be incorrect. so we are
+            // setting the transform again here.
+            if (dynamics is PhysBoneProxy && dynamics.RootTransform == dynamics.Transform)
             {
                 dynamics.RootTransform = dynamics.Transform;
             }
 
             // copy to dynamics container
-            DTRuntimeUtils.CopyComponent(dynamics.Component, dynamicsContainer.gameObject);
+            DTRuntimeUtils.CopyComponent(dynamics.Component, dynamicsContainer);
 
             // destroy the original one
             Object.DestroyImmediate(dynamics.Component);
@@ -197,9 +200,6 @@ namespace Chocopoi.DressingTools.Cabinet
                 wearableObj = Object.Instantiate(wearableGameObject, _cabinet.AvatarGameObject.transform);
             }
 
-            // scan for wearable dynamics
-            var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj);
-
             // apply translation and scaling
             ApplyTransforms(config.targetAvatarConfig, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
@@ -207,10 +207,13 @@ namespace Chocopoi.DressingTools.Cabinet
             var modules = new List<WearableModuleBase>(config.modules);
             modules.Sort((m1, m2) => m1.ApplyOrder.CompareTo(m2.ApplyOrder));
 
+            // scan for wearable dynamics
+            var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj, false);
+
             // do module apply
             foreach (var module in modules)
             {
-                if (!module.Apply(_report, _cabinet, _avatarDynamics, config, wearableGameObject))
+                if (!module.Apply(_report, _cabinet, _avatarDynamics, config, wearableGameObject, wearableDynamics))
                 {
                     DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
@@ -231,13 +234,29 @@ namespace Chocopoi.DressingTools.Cabinet
         public void Execute()
         {
             // scan for avatar dynamics
-            _avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabinet.AvatarGameObject);
+            _avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabinet.AvatarGameObject, true);
             var wearables = _cabinet.GetWearables();
 
             foreach (var wearable in wearables)
             {
                 // deserialize the config
-                var config = JsonConvert.DeserializeObject<WearableConfig>(wearable.configJson);
+                WearableConfig config = null;
+                try
+                {
+                    config = JsonConvert.DeserializeObject<WearableConfig>(wearable.configJson);
+                }
+                catch (JsonReaderException ex)
+                {
+                    DTReportUtils.LogExceptionLocalized(_report, LogLabel, ex);
+                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.UnableToDeserializeConfig);
+                    continue;
+                }
+
+                if (config == null)
+                {
+                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.UnableToDeserializeConfig);
+                    continue;
+                }
 
                 // Migration
                 if (config.configVersion > WearableConfig.CurrentConfigVersion)
@@ -255,12 +274,6 @@ namespace Chocopoi.DressingTools.Cabinet
                     }
                     wearable.configJson = migratedJson;
                     config = JsonConvert.DeserializeObject<WearableConfig>(migratedJson);
-                }
-
-                if (config == null)
-                {
-                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.UnableToDeserializeConfig);
-                    continue;
                 }
 
                 if (!ApplyWearable(config, wearable.wearableGameObject))

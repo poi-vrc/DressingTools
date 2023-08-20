@@ -44,7 +44,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             blendshapeSyncs = new List<AnimationBlendshapeSync>();
         }
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject)
+        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
         {
             return true;
         }

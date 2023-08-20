@@ -584,8 +584,8 @@ namespace Chocopoi.DressingTools.UI
 
             _report = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
 
-            var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar);
-            var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable);
+            var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar, true);
+            var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable, false);
 
             throw new System.NotImplementedException("extract v2 ArmatureMappingModule stuff here");
 

@@ -32,7 +32,7 @@ namespace Chocopoi.DressingTools.Logging
 
         public static void LogExceptionLocalized(DTReport report, string label, Exception exception, string extraCode = null, params object[] args)
         {
-            report.LogException(label, exception, t._(extraCode, args), extraCode);
+            report.LogException(label, exception, extraCode != null ? t._(extraCode, args) : null, extraCode);
         }
 
         public static void LogErrorLocalized(DTReport report, string label, string code, params object[] args)
