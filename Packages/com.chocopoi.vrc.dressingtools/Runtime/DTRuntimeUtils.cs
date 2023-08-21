@@ -66,15 +66,24 @@ namespace Chocopoi.DressingTools
         {
             foreach (var mappingOverride in overrideBoneMappings)
             {
+                var matched = false;
+
                 foreach (var originalMapping in generatedBoneMappings)
                 {
-                    Debug.Log(string.Format("{0} vs {1} {2} vs {3}", originalMapping.avatarBonePath, mappingOverride.avatarBonePath, originalMapping.wearableBonePath, mappingOverride.wearableBonePath));
                     // override on match
                     if (originalMapping.wearableBonePath == mappingOverride.wearableBonePath)
                     {
                         originalMapping.avatarBonePath = mappingOverride.avatarBonePath;
                         originalMapping.mappingType = mappingOverride.mappingType;
+                        matched = true;
+                        break;
                     }
+                }
+
+                if (!matched)
+                {
+                    // add mapping if not matched
+                    generatedBoneMappings.Add(mappingOverride);
                 }
             }
         }
@@ -192,6 +201,9 @@ namespace Chocopoi.DressingTools
                 LoadBoneNameMappings();
             }
 
+            // trim the string
+            childBoneName = childBoneName.Trim();
+
             // check if there is a prefix
             if (childBoneName.StartsWith("("))
             {
@@ -296,19 +308,6 @@ namespace Chocopoi.DressingTools
             }
 
             return destComp;
-        }
-
-        // referenced from http://stackoverflow.com/questions/10261824/how-can-i-get-all-constants-of-a-type-by-reflection
-        private static IEnumerable<FieldInfo> GetAllFields(Type t)
-        {
-            if (t == null)
-            {
-                return Enumerable.Empty<FieldInfo>();
-            }
-
-            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
-                                 BindingFlags.Instance | BindingFlags.DeclaredOnly;
-            return t.GetFields(flags).Concat(GetAllFields(t.BaseType));
         }
 
         public static bool IsOriginatedFromAnyWearable(Transform root, Transform transform)
