@@ -1,13 +1,11 @@
 {
     "name": "com.chocopoi.vrc.dressingtools.Runtime.Tests",
     "references": [
-        "UnityEngine.TestRunner",
-        "com.chocopoi.vrc.dressingtools.Runtime",
-        "com.chocopoi.vrc.dressingtools.lib.Runtime"
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:85e555d1cc87ace4d8e14fcfe9062453",
+        "GUID:dcaf16fd99f37914888e6e13bdf533ea"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

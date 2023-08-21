@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Wearable;
@@ -118,6 +119,20 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             {
                 Assert.AreEqual(dynamicsContainer, wearableDynamics.Transform);
             }
+        }
+
+        [Test]
+        public void ApplyErrors_ReturnsCorrectErrorCodes()
+        {
+            var avatarRoot = InstantiateRuntimeTestPrefab("DTTest_PhysBoneAvatarWithWearableModuleError.prefab");
+            var cabinet = avatarRoot.GetComponent<DTCabinet>();
+
+            var report = new DTReport();
+            cabinet.Apply(report);
+
+            Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoArmatureInWearable), "Should have NoArmatureInWearable error");
+            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ApplyingModuleHasErrors), "Should have ApplyingModuleHasErrors error");
+            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ApplyingWearableHasErrors), "Should have ApplyingWearableHasErrors error");
         }
     }
 }
