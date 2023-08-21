@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -127,6 +128,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     preset.toggles.Remove(toggle);
                     toggleDataList.Remove(toggleData);
+                    UpdateAnimationGenerationAvatarOnWear();
+                    UpdateAnimationGenerationWearableOnWear();
                 };
 
                 toggleDataList.Add(toggleData);
@@ -217,12 +220,99 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             UpdateAnimationPresetBlendshapes(root, preset, presetData.blendshapes);
         }
 
+        private bool IsGameObjectUsedInToggles(GameObject go, List<ToggleData> toggleData)
+        {
+            foreach (var toggle in toggleData)
+            {
+                if (toggle.gameObject == go)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void UpdateAvatarOnWearToggleSuggestions(PresetData presetData)
+        {
+            var targetAvatar = _parentView.TargetAvatar;
+            var targetWearable = _parentView.TargetWearable;
+
+            presetData.toggleSuggestions.Clear();
+            var cabinet = DTEditorUtils.GetAvatarCabinet(targetAvatar);
+            if (cabinet == null)
+            {
+                return;
+            }
+
+            var armatureName = cabinet.AvatarArmatureName;
+            var avatarTrans = targetAvatar.transform;
+
+            // iterate through childs
+            for (var i = 0; i < avatarTrans.childCount; i++)
+            {
+                var childTrans = avatarTrans.GetChild(i);
+                if (childTrans != targetWearable.transform && childTrans.name != armatureName && !IsGameObjectUsedInToggles(childTrans.gameObject, presetData.toggles))
+                {
+                    var toggleSuggestion = new ToggleSuggestionData
+                    {
+                        gameObject = childTrans.gameObject,
+                        state = !childTrans.gameObject.activeSelf,
+                        addButtonClickEvent = () =>
+                        {
+                            _module.avatarAnimationOnWear.toggles.Add(new AnimationToggle()
+                            {
+                                path = AnimationUtils.GetRelativePath(childTrans, avatarTrans),
+                                state = !childTrans.gameObject.activeSelf
+                            });
+                            UpdateAnimationGenerationAvatarOnWear();
+                        }
+                    };
+                    presetData.toggleSuggestions.Add(toggleSuggestion);
+                }
+            }
+        }
+
+        private void UpdateWearableOnWearToggleSuggestions(PresetData presetData)
+        {
+            var targetWearable = _parentView.TargetWearable;
+
+            presetData.toggleSuggestions.Clear();
+            var wearableTrans = targetWearable.transform;
+
+            // TODO: we can't obtain wearable armature name here, listing everything at the root for now
+
+            // iterate through childs
+            for (var i = 0; i < wearableTrans.childCount; i++)
+            {
+                var childTrans = wearableTrans.GetChild(i);
+                if (childTrans != targetWearable.transform && !IsGameObjectUsedInToggles(childTrans.gameObject, presetData.toggles))
+                {
+                    var toggleSuggestion = new ToggleSuggestionData
+                    {
+                        gameObject = childTrans.gameObject,
+                        state = childTrans.gameObject.activeSelf,
+                        addButtonClickEvent = () =>
+                        {
+                            _module.wearableAnimationOnWear.toggles.Add(new AnimationToggle()
+                            {
+                                path = AnimationUtils.GetRelativePath(childTrans, wearableTrans),
+                                state = !childTrans.gameObject.activeSelf
+                            });
+                            UpdateAnimationGenerationWearableOnWear();
+                        }
+                    };
+                    presetData.toggleSuggestions.Add(toggleSuggestion);
+                }
+            }
+        }
+
         private void UpdateAnimationGenerationAvatarOnWear()
         {
             if (_parentView.TargetAvatar != null)
             {
                 _view.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = false;
                 UpdateAnimationPreset(_parentView.TargetAvatar.transform, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData);
+                UpdateAvatarOnWearToggleSuggestions(_view.AvatarOnWearPresetData);
             }
             else
             {
@@ -236,6 +326,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             {
                 _view.ShowCannotRenderPresetWithoutTargetWearableHelpBox = false;
                 UpdateAnimationPreset(_parentView.TargetWearable.transform, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData);
+                UpdateWearableOnWearToggleSuggestions(_view.WearableOnWearPresetData);
             }
             else
             {

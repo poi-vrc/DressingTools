@@ -77,17 +77,21 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             _foldoutWearableAnimationPresetBlendshapes = false;
         }
 
-        private void DrawAnimationPresetToggles(List<ToggleData> toggles, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetToggles)
+        private void DrawAnimationPresetToggles(List<ToggleData> toggles, List<ToggleSuggestionData> toggleSuggestions, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetToggles)
         {
             BeginFoldoutBox(ref foldoutAnimationPresetToggles, "Toggles");
             if (foldoutAnimationPresetToggles)
             {
                 HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
 
-                Button("+ Add", addButtonOnClickedEvent, GUILayout.ExpandWidth(false));
+                BeginHorizontal();
+                {
+                    Button("+ Add", addButtonOnClickedEvent, GUILayout.ExpandWidth(false));
+                }
+                EndHorizontal();
 
-                var copy = new List<ToggleData>(toggles);
-                foreach (var toggle in copy)
+                var toggleDataCopy = new List<ToggleData>(toggles);
+                foreach (var toggle in toggleDataCopy)
                 {
                     if (toggle.isInvalid)
                     {
@@ -98,6 +102,28 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                         GameObjectField(ref toggle.gameObject, true, toggle.changeEvent);
                         Toggle(ref toggle.state, toggle.changeEvent);
                         Button("x", toggle.removeButtonClickEvent, GUILayout.ExpandWidth(false));
+                    }
+                    EndHorizontal();
+                }
+
+                HorizontalLine();
+
+                Label("Suggestions:");
+
+                Separator();
+
+                var toggleSuggestionCopy = new List<ToggleSuggestionData>(toggleSuggestions);
+                foreach (var toggleSuggestion in toggleSuggestionCopy)
+                {
+                    BeginHorizontal();
+                    {
+                        Button("+", toggleSuggestion.addButtonClickEvent, GUILayout.ExpandWidth(false));
+                        BeginDisabled(true);
+                        {
+                            GameObjectField(ref toggleSuggestion.gameObject, true, null);
+                            Toggle(ref toggleSuggestion.state, null);
+                        }
+                        EndDisabled();
                     }
                     EndHorizontal();
                 }
@@ -163,7 +189,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
             Separator();
 
-            DrawAnimationPresetToggles(presetData.toggles, toggleAddEvent, ref foldoutAnimationPresetToggles);
+            DrawAnimationPresetToggles(presetData.toggles, presetData.toggleSuggestions, toggleAddEvent, ref foldoutAnimationPresetToggles);
             DrawAnimationPresetBlendshapes(presetData.blendshapes, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
         }
 
