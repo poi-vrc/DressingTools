@@ -15,11 +15,13 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
+    [ExcludeFromCodeCoverage]
     internal static class DTLogo
     {
         private const string LogoGuid = "7f5e245331889a94bb6e4a077cbd97a6";

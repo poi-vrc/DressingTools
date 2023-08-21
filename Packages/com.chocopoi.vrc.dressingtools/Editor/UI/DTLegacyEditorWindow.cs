@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
@@ -27,6 +28,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
+    [ExcludeFromCodeCoverage]
     public class DTLegacyEditorWindow : EditorWindow
     {
         private static I18n t = I18n.GetInstance();

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Localization;
@@ -27,6 +28,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
+    [ExcludeFromCodeCoverage]
     internal class WearableConfigView : EditorViewBase, IWearableConfigView
     {
         private static readonly I18n t = I18n.GetInstance();

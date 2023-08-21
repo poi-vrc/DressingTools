@@ -16,6 +16,7 @@
  */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.Presenters;
@@ -25,6 +26,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
+    [ExcludeFromCodeCoverage]
     internal class DressingSubView : EditorViewBase, IDressingSubView, IWearableConfigViewParent
     {
         public event Action TargetAvatarOrWearableChange;

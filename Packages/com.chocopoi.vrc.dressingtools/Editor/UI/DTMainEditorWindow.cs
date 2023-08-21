@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
@@ -28,6 +29,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
+    [ExcludeFromCodeCoverage]
     public class DTMainEditorWindow : EditorWindow
     {
         // note that in order for a menu item in "GameObject/" to be propagated to the

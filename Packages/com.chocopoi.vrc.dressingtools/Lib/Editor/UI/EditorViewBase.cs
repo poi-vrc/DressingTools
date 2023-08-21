@@ -16,11 +16,13 @@
  */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib.UI
 {
+    [ExcludeFromCodeCoverage]
     public abstract class EditorViewBase : IEditorView
     {
         public event Action ForceUpdateView;

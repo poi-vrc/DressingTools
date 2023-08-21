@@ -72,5 +72,12 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             Assert.Null(boneMappings);
             Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.HookHasErrors));
         }
+
+        [Test]
+        public void NewSettingsTest()
+        {
+            var dresser = new DefaultDresser();
+            Assert.NotNull(dresser.NewSettings());
+        }
     }
 }

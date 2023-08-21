@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
 using Chocopoi.DressingTools.Lib.Logging;
@@ -67,6 +68,7 @@ namespace Chocopoi.DressingTools.Dresser
             new ArmatureHook()
         };
 
+        [ExcludeFromCodeCoverage]
         public string FriendlyName => "Default Dresser";
 
         public DTReport Execute(DTDresserSettings settings, out List<BoneMapping> boneMappings)

@@ -16,6 +16,7 @@
  */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.Presenters;
@@ -27,6 +28,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
+    [ExcludeFromCodeCoverage]
     internal class WearableSetupWizardView : EditorViewBase, IWearableSetupWizardView
     {
         public event Action TargetAvatarOrWearableChange { add { _dressingSubView.TargetAvatarOrWearableChange += value; } remove { _dressingSubView.TargetAvatarOrWearableChange -= value; } }

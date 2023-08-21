@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -43,6 +44,7 @@ namespace Chocopoi.DressingTools.Dresser
         }
 
 #if UNITY_EDITOR
+        [ExcludeFromCodeCoverage]
         public virtual bool DrawEditorGUI()
         {
             // draws the editor GUI and returns whether it is modified or not

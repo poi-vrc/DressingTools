@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -25,6 +26,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.View
 {
+    [ExcludeFromCodeCoverage]
     internal class MappingEditorView : EditorViewBase, IMappingEditorView
     {
         public event Action BoneMappingModeChange;
