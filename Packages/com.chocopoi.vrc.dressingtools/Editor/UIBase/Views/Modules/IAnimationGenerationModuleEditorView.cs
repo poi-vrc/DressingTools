@@ -38,6 +38,19 @@ namespace Chocopoi.DressingTools.UIBase.Views
         }
     }
 
+    internal class ToggleSuggestionData
+    {
+        public GameObject gameObject;
+        public bool state;
+        public Action addButtonClickEvent;
+
+        public ToggleSuggestionData()
+        {
+            gameObject = null;
+            state = false;
+        }
+    }
+
     internal class BlendshapeData
     {
         public bool isInvalid;
@@ -63,6 +76,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
     internal class PresetData
     {
         public List<ToggleData> toggles;
+        public List<ToggleSuggestionData> toggleSuggestions;
         public List<BlendshapeData> blendshapes;
         public string[] savedPresetKeys;
         public int selectedPresetIndex;
@@ -70,6 +84,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         public PresetData()
         {
             toggles = new List<ToggleData>();
+            toggleSuggestions = new List<ToggleSuggestionData>();
             blendshapes = new List<BlendshapeData>();
             savedPresetKeys = new string[] { "---" };
             selectedPresetIndex = 0;
