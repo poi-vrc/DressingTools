@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.Dresser.Default
@@ -38,37 +39,20 @@ namespace Chocopoi.DressingTools.Dresser.Default
             dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
         }
 
-        private DefaultDresserDynamicsOption ConvertIntToDynamicsOption(int dynamicsOption)
-        {
-            switch (dynamicsOption)
-            {
-                case 1:
-                    return DefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
-                case 2:
-                    return DefaultDresserDynamicsOption.IgnoreTransform;
-                case 3:
-                    return DefaultDresserDynamicsOption.CopyDynamics;
-                case 4:
-                    return DefaultDresserDynamicsOption.IgnoreAll;
-                default:
-                case 0:
-                    return DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint;
-            }
-        }
-
 #if UNITY_EDITOR
+        [ExcludeFromCodeCoverage]
         public override bool DrawEditorGUI()
         {
             var modified = base.DrawEditorGUI();
 
             // Dynamics Option
-            var newDynamicsOption = ConvertIntToDynamicsOption(EditorGUILayout.Popup("Dynamics Option", (int)dynamicsOption, new string[] {
+            var newDynamicsOption = (DefaultDresserDynamicsOption)EditorGUILayout.Popup("Dynamics Option", (int)dynamicsOption, new string[] {
                         "Remove wearable dynamics and ParentConstraint",
                         "Keep wearable dynamics and ParentConstraint if needed",
                         "Remove wearable dynamics and IgnoreTransform",
                         "Copy avatar dynamics data to wearable",
                         "Ignore all dynamics"
-                    }));
+                    });
 
             modified |= dynamicsOption != newDynamicsOption;
             dynamicsOption = newDynamicsOption;

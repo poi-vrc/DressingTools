@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
@@ -27,6 +28,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
+    [ExcludeFromCodeCoverage]
     [CustomModuleEditor(typeof(BlendshapeSyncModule))]
     internal class BlendshapeSyncModuleEditor : ModuleEditor, IBlendshapeSyncModuleEditorView
     {

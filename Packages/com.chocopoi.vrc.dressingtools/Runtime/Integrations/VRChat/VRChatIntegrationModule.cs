@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
@@ -34,10 +35,13 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         private const string LogLabel = "VRChatIntegrationModule";
 
+        [ExcludeFromCodeCoverage]
         public override int ApplyOrder => int.MaxValue;
 
+        [ExcludeFromCodeCoverage]
         public override bool AllowMultiple => false;
 
+        [ExcludeFromCodeCoverage]
         public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
         {
 #if !VRC_SDK_VRCSDK3

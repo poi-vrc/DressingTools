@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.UIBase.Views;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
+    [ExcludeFromCodeCoverage]
     internal class SettingsSubView : ISettingsSubView
     {
         public SettingsSubView(IMainView mainView)

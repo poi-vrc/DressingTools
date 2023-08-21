@@ -16,6 +16,7 @@
  */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
@@ -26,6 +27,7 @@ using UnityEditor;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
+    [ExcludeFromCodeCoverage]
     [CustomModuleEditor(typeof(ArmatureMappingModule))]
     internal class ArmatureMappingModuleEditor : ModuleEditor, IArmatureMappingModuleEditorView
     {

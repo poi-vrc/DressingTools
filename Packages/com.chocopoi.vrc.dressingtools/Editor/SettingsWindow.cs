@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
+    [ExcludeFromCodeCoverage]
     internal class SettingsWindow : EditorWindow
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();

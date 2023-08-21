@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Localization;
 using UnityEditor;
@@ -23,6 +24,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
+    [ExcludeFromCodeCoverage]
     internal class ReportWindow : EditorWindow
     {
         private static readonly I18n t = I18n.GetInstance();

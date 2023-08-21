@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.UI.Presenters;
@@ -24,6 +25,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.View
 {
+    [ExcludeFromCodeCoverage]
     internal class MainView : EditorViewBase, IMainView
     {
         public int SelectedTab { get => _selectedTab; set => _selectedTab = value; }

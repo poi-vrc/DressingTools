@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.UI.Presenters;
@@ -25,6 +26,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
+    [ExcludeFromCodeCoverage]
     internal class CabinetSubView : EditorViewBase, ICabinetSubView
     {
         public event Action CreateCabinetButtonClick;
