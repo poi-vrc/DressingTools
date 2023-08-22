@@ -47,11 +47,11 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             _cabinet = cabinet;
         }
 
-        private AnimationGenerationModule FindAnimationGenerationModule(WearableConfig config)
+        private AnimationGenerationModuleConfig FindAnimationGenerationModuleConfig(WearableConfig config)
         {
-            foreach (var module in config.modules)
+            foreach (var module in config.Modules)
             {
-                if (module is AnimationGenerationModule agm)
+                if (module.config is AnimationGenerationModuleConfig agm)
                 {
                     return agm;
                 }
@@ -147,14 +147,14 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                     continue;
                 }
 
-                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.info.name + "...", i / (float)wearables.Length * 100);
+                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.Info.name + "...", i / (float)wearables.Length * 100);
                 var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearables[i].wearableGameObject, false);
 
                 // find the animation generation module
-                var module = FindAnimationGenerationModule(config);
+                var module = FindAnimationGenerationModuleConfig(config);
                 if (module == null)
                 {
-                    Debug.Log("[DressingTools] [BuildDTCabinetCallback] [GenerateAnimationHook] " + config.info.name + " has no AnimationGenerationModule, skipping this wearable generation");
+                    Debug.Log("[DressingTools] [BuildDTCabinetCallback] [GenerateAnimationHook] " + config.Info.name + " has no AnimationGenerationModule, skipping this wearable generation");
                     continue;
                 }
 
@@ -166,7 +166,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 AssetDatabase.CreateAsset(wearAnimations.Item1, BuildDTCabinetCallback.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
                 // generate expression menu
-                subMenu.AddToggle(config.info.name, "cpDT_Cabinet", i + 1);
+                subMenu.AddToggle(config.Info.name, "cpDT_Cabinet", i + 1);
             }
 
             AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, true, null, refTransition);

@@ -120,7 +120,7 @@ namespace Chocopoi.DressingTools
 
         public static void PrepareWearableConfig(WearableConfig config, GameObject targetAvatar, GameObject targetWearable)
         {
-            config.configVersion = WearableConfig.CurrentConfigVersion;
+            config.Version = WearableConfig.CurrentConfigVersion;
 
             AddWearableMetaInfo(config, targetWearable);
             AddWearableTargetAvatarConfig(config, targetAvatar, targetWearable);
@@ -134,11 +134,11 @@ namespace Chocopoi.DressingTools
             if (cabinet == null)
             {
                 // leave it empty
-                config.targetAvatarConfig.armatureName = "";
+                config.AvatarConfig.armatureName = "";
             }
             else
             {
-                config.targetAvatarConfig.armatureName = cabinet.AvatarArmatureName;
+                config.AvatarConfig.armatureName = cabinet.AvatarArmatureName;
             }
 
             // can't do anything
@@ -147,24 +147,24 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            config.targetAvatarConfig.name = targetAvatar.name;
+            config.AvatarConfig.name = targetAvatar.name;
 
             var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            config.targetAvatarConfig.guids.Clear();
+            config.AvatarConfig.guids.Clear();
             if (!invalidAvatarPrefabGuid)
             {
                 // TODO: multiple guids
-                config.targetAvatarConfig.guids.Add(avatarPrefabGuid);
+                config.AvatarConfig.guids.Add(avatarPrefabGuid);
             }
 
             var deltaPos = targetWearable.transform.position - targetAvatar.transform.position;
             var deltaRotation = targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation);
-            config.targetAvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
-            config.targetAvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
-            config.targetAvatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
-            config.targetAvatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
+            config.AvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            config.AvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            config.AvatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
+            config.AvatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
         }
 
         public static void AddWearableMetaInfo(WearableConfig config, GameObject targetWearable)
@@ -174,9 +174,9 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            config.info.name = targetWearable.name;
-            config.info.author = "";
-            config.info.description = "";
+            config.Info.name = targetWearable.name;
+            config.Info.author = "";
+            config.Info.description = "";
         }
     }
 }

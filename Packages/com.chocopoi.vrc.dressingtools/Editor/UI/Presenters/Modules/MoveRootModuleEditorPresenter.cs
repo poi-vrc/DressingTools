@@ -25,9 +25,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     {
         private IMoveRootModuleEditorView _view;
         private IModuleEditorViewParent _parentView;
-        private MoveRootModule _module;
+        private MoveRootModuleConfig _module;
 
-        public MoveRootModuleEditorPresenter(IMoveRootModuleEditorView view, IModuleEditorViewParent parentView, MoveRootModule module)
+        public MoveRootModuleEditorPresenter(IMoveRootModuleEditorView view, IModuleEditorViewParent parentView, MoveRootModuleConfig module)
         {
             _view = view;
             _parentView = parentView;

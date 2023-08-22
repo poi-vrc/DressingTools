@@ -29,10 +29,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action NextButtonClick;
 
         WearableConfig Config { get; set; }
-        ArmatureMappingModule ArmatureMappingModule { get; set; }
-        MoveRootModule MoveRootModule { get; set; }
-        AnimationGenerationModule AnimationGenerationModule { get; set; }
-        BlendshapeSyncModule BlendshapeSyncModule { get; set; }
+        ArmatureMappingModuleConfig ArmatureMappingModuleConfig { get; set; }
+        MoveRootModuleConfig MoveRootModuleConfig { get; set; }
+        AnimationGenerationModuleConfig AnimationGenerationModuleConfig { get; set; }
+        BlendshapeSyncModuleConfig BlendshapeSyncModuleConfig { get; set; }
         ArmatureMappingModuleEditor ArmatureMappingModuleEditor { get; set; }
         MoveRootModuleEditor MoveRootModuleEditor { get; set; }
         AnimationGenerationModuleEditor AnimationGenerationModuleEditor { get; set; }

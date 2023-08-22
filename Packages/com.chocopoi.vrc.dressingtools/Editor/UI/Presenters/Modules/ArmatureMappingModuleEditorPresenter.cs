@@ -34,13 +34,13 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     {
         private IArmatureMappingModuleEditorView _view;
         private IModuleEditorViewParent _parentView;
-        private ArmatureMappingModule _module;
+        private ArmatureMappingModuleConfig _module;
 
         private DTReport _dresserReport = null;
         private DTMappingEditorContainer _mappingEditorContainer;
         private DTCabinet _cabinet;
 
-        public ArmatureMappingModuleEditorPresenter(IArmatureMappingModuleEditorView view, IModuleEditorViewParent parentView, ArmatureMappingModule module)
+        public ArmatureMappingModuleEditorPresenter(IArmatureMappingModuleEditorView view, IModuleEditorViewParent parentView, ArmatureMappingModuleConfig module)
         {
             _view = view;
             _parentView = parentView;

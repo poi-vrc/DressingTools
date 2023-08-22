@@ -18,7 +18,9 @@
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -131,7 +133,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 if (_view.UseArmatureMapping)
                 {
                     // skip the armature if used armature mapping
-                    var wearableArmature = DTRuntimeUtils.GuessArmature(_view.TargetWearable, _view.ArmatureMappingModule.wearableArmatureName);
+                    var wearableArmature = DTRuntimeUtils.GuessArmature(_view.TargetWearable, _view.ArmatureMappingModuleConfig.wearableArmatureName);
                     for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
                         // do not auto add wearable toggle if state is disabled initially
@@ -156,8 +158,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 }
 
-                var toggles = _view.AnimationGenerationModule.wearableAnimationOnWear.toggles;
-                var blendshapes = _view.AnimationGenerationModule.wearableAnimationOnWear.blendshapes;
+                var toggles = _view.AnimationGenerationModuleConfig.wearableAnimationOnWear.toggles;
+                var blendshapes = _view.AnimationGenerationModuleConfig.wearableAnimationOnWear.blendshapes;
                 toggles.Clear();
                 blendshapes.Clear();
 
@@ -174,7 +176,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // generate blendshape syncs
             {
                 // clear old syncs
-                var blendshapeSyncs = _view.BlendshapeSyncModule.blendshapeSyncs;
+                var blendshapeSyncs = _view.BlendshapeSyncModuleConfig.blendshapeSyncs;
                 blendshapeSyncs.Clear();
 
                 // find all avatar blendshapes
@@ -276,22 +278,38 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (_view.UseArmatureMapping)
             {
-                config.modules.Add(_view.ArmatureMappingModule);
+                config.Modules.Add(new WearableModule()
+                {
+                    moduleName = ArmatureMappingModuleProvider.Identifier,
+                    config = _view.ArmatureMappingModuleConfig,
+                });
             }
 
             if (_view.UseMoveRoot)
             {
-                config.modules.Add(_view.MoveRootModule);
+                config.Modules.Add(new WearableModule()
+                {
+                    moduleName = MoveRootModuleProvider.Identifier,
+                    config = _view.MoveRootModuleConfig,
+                });
             }
 
             if (_view.UseAnimationGeneration)
             {
-                config.modules.Add(_view.AnimationGenerationModule);
+                config.Modules.Add(new WearableModule()
+                {
+                    moduleName = AnimationGenerationModuleProvider.Identifier,
+                    config = _view.AnimationGenerationModuleConfig,
+                });
             }
 
             if (_view.UseBlendshapeSync)
             {
-                config.modules.Add(_view.BlendshapeSyncModule);
+                config.Modules.Add(new WearableModule()
+                {
+                    moduleName = BlendshapeSyncModuleProvider.Identifier,
+                    config = _view.BlendshapeSyncModuleConfig,
+                });
             }
 
             _view.Config = config;

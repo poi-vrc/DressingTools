@@ -1,7 +1,7 @@
 ﻿/*
- * File: ModuleEditorAttribute.cs
+ * File: IWearableConfigSerializer.cs
  * Project: DressingTools
- * Created Date: Tuesday, August 1st 2023, 12:37:10 am
+ * Created Date: Saturday, Aug 22nd 2023, 16:35:11 pm
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -16,16 +16,16 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Newtonsoft.Json;
 
-namespace Chocopoi.DressingTools.Lib.UI
+namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
 {
-    public class CustomModuleEditor : Attribute
+    public interface IWearableConfigSerializer
     {
-        public Type ModuleProviderType { get; private set; }
-
-        public CustomModuleEditor(Type moduleType)
-        {
-            ModuleProviderType = moduleType;
-        }
+        string Serialize(WearableConfig config);
+        WearableConfig Deserialize(string json);
     }
 }

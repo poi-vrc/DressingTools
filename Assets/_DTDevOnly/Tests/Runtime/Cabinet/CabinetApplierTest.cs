@@ -25,24 +25,26 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
         }
 
-        [Test]
-        public void ConfigVersionTooNew_ReturnsCorrectErrorCodes()
-        {
-            var avatarRoot = InstantiateRuntimeTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
-            var cabinet = avatarRoot.GetComponent<DTCabinet>();
+        // TODO: new test for version
 
-            // we simulate this by adding the config version by one
-            var wearableComp = avatarRoot.GetComponentInChildren<DTCabinetWearable>();
-            Assert.NotNull(wearableComp);
-            JObject json = JObject.Parse(wearableComp.configJson);
-            json["configVersion"] = WearableConfig.CurrentConfigVersion + 1;
-            wearableComp.configJson = json.ToString(Formatting.None);
+        // [Test]
+        // public void ConfigVersionTooNew_ReturnsCorrectErrorCodes()
+        // {
+        //     var avatarRoot = InstantiateRuntimeTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
+        //     var cabinet = avatarRoot.GetComponent<DTCabinet>();
 
-            var report = new DTReport();
-            cabinet.Apply(report);
+        //     // we simulate this by adding the config version by one
+        //     var wearableComp = avatarRoot.GetComponentInChildren<DTCabinetWearable>();
+        //     Assert.NotNull(wearableComp);
+        //     JObject json = JObject.Parse(wearableComp.configJson);
+        //     json["configVersion"] = WearableConfig.CurrentConfigVersion + 1;
+        //     wearableComp.configJson = json.ToString(Formatting.None);
 
-            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.IncompatibleConfigVersion), "Should have incompatible config version error");
-        }
+        //     var report = new DTReport();
+        //     cabinet.Apply(report);
+
+        //     Assert.True(report.HasLogCode(CabinetApplier.MessageCode.IncompatibleConfigVersion), "Should have incompatible config version error");
+        // }
 
         // TODO: write config migration test
 

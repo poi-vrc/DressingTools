@@ -16,43 +16,51 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class AnimationGenerationModule : WearableModuleBase
+    internal class AnimationGenerationModuleConfig : ModuleConfig
     {
-        public static class MessageCode
-        {
-        }
-
-        private const string LogLabel = "AnimationGenerationModule";
-
-        public override int ApplyOrder => 4;
-
-        public override bool AllowMultiple => false;
-
         public AnimationPreset avatarAnimationOnWear; // execute on wear
-
         public AnimationPreset wearableAnimationOnWear;
-
         public List<WearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
 
-        public AnimationGenerationModule()
+        public AnimationGenerationModuleConfig()
         {
             avatarAnimationOnWear = new AnimationPreset();
             wearableAnimationOnWear = new AnimationPreset();
             wearableCustomizables = new List<WearableCustomizable>();
         }
-
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
-        {
-            return true;
-        }
     }
+
+    [InitializeOnLoad]
+    internal class AnimationGenerationModuleProvider : ModuleProviderBase
+    {
+        public const string Identifier = "com.chocopoi.dressingtools.built-in.animation-generation";
+
+        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
+        [ExcludeFromCodeCoverage] public override string FriendlyName => "Animation Generation";
+        [ExcludeFromCodeCoverage] public override int ApplyOrder => 4;
+        [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
+
+        static AnimationGenerationModuleProvider()
+        {
+            ModuleProviderLocator.Instance.Register(new AnimationGenerationModuleProvider());
+        }
+
+        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<AnimationGenerationModuleConfig>();
+
+        public override ModuleConfig NewModuleConfig() => new AnimationGenerationModuleConfig();
+    }
+
 }

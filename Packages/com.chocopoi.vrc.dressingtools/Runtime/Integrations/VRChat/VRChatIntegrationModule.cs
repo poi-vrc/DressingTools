@@ -15,39 +15,35 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Proxy;
-using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
-using UnityEngine;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {
-    internal class VRChatIntegrationModule : WearableModuleBase
+    internal class VRChatIntegrationModuleConfig : ModuleConfig
     {
-        public static class MessageCode
+    }
+
+    [InitializeOnLoad]
+    internal class VRChatIntegrationModuleProvider : ModuleProviderBase
+    {
+        public const string Identifier = "com.chocopoi.dressingtools.integrations.vrchat";
+
+        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
+        [ExcludeFromCodeCoverage] public override string FriendlyName => "Integration: VRChat";
+        [ExcludeFromCodeCoverage] public override int ApplyOrder => int.MaxValue;
+        [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
+
+        static VRChatIntegrationModuleProvider()
         {
-            public const string IgnoredNoVRCSDK = "modules.vrchatIntegrationModule.msgCode.warn.ignoredNoVRCSDK";
+            ModuleProviderLocator.Instance.Register(new VRChatIntegrationModuleProvider());
         }
 
-        private const string LogLabel = "VRChatIntegrationModule";
+        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<VRChatIntegrationModuleConfig>();
 
-        [ExcludeFromCodeCoverage]
-        public override int ApplyOrder => int.MaxValue;
-
-        [ExcludeFromCodeCoverage]
-        public override bool AllowMultiple => false;
-
-        [ExcludeFromCodeCoverage]
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
-        {
-#if !VRC_SDK_VRCSDK3
-            DTReportUtils.LogWarnLocalized(report, LogLabel, MessageCode.IgnoredNoVRCSDK);
-#endif
-            return true;
-        }
+        public override ModuleConfig NewModuleConfig() => new VRChatIntegrationModuleConfig();
     }
 }

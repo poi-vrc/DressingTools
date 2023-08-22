@@ -1,7 +1,7 @@
 ﻿/*
- * File: ModuleEditorAttribute.cs
+ * File: ApplyContext.cs
  * Project: DressingTools
- * Created Date: Tuesday, August 1st 2023, 12:37:10 am
+ * Created Date: Saturday, Aug 22th 2023, 11:25:01 am
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -15,17 +15,26 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
+using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable;
+using UnityEngine;
 
-namespace Chocopoi.DressingTools.Lib.UI
+namespace Chocopoi.DressingTools.Lib
 {
-    public class CustomModuleEditor : Attribute
+    public class ApplyCabinetContext
     {
-        public Type ModuleProviderType { get; private set; }
+        public DTReport report;
+        public ICabinet cabinet;
+        public List<IDynamicsProxy> avatarDynamics;
+    }
 
-        public CustomModuleEditor(Type moduleType)
-        {
-            ModuleProviderType = moduleType;
-        }
+    public class ApplyWearableContext
+    {
+        public WearableConfig config;
+        public GameObject wearableGameObject;
+        public List<IDynamicsProxy> wearableDynamics;
     }
 }
