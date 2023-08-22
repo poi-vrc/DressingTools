@@ -16,6 +16,7 @@
  */
 
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.Lib.UI
@@ -28,11 +29,14 @@ namespace Chocopoi.DressingTools.Lib.UI
 
         protected IModuleEditorViewParent parentView;
 
-        protected WearableModuleBase target;
+        protected ModuleProviderBase provider;
 
-        public ModuleEditor(IModuleEditorViewParent parentView, WearableModuleBase target)
+        protected ModuleConfig target;
+
+        public ModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, ModuleConfig target)
         {
             this.parentView = parentView;
+            this.provider = provider;
             this.target = target;
         }
 

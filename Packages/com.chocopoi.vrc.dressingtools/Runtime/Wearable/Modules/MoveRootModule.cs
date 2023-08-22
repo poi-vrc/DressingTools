@@ -16,32 +16,41 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class MoveRootModule : WearableModuleBase
+    internal class MoveRootModuleConfig : ModuleConfig
     {
-        public static class MessageCode
-        {
-        }
-
-        private const string LogLabel = "MoveRootModule";
-
-        public override int ApplyOrder => 2;
-
-        public override bool AllowMultiple => false;
-
         public string avatarPath;
+    }
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
+    [InitializeOnLoad]
+    internal class MoveRootModuleProvider : ModuleProviderBase
+    {
+        public const string Identifier = "com.chocopoi.dressingtools.built-in.move-root";
+
+        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
+        [ExcludeFromCodeCoverage] public override string FriendlyName => "Move Root";
+        [ExcludeFromCodeCoverage] public override int ApplyOrder => 2;
+        [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
+
+        static MoveRootModuleProvider()
         {
-            return true;
+            ModuleProviderLocator.Instance.Register(new MoveRootModuleProvider());
         }
+
+        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<MoveRootModuleConfig>();
+
+        public override ModuleConfig NewModuleConfig() => new MoveRootModuleConfig();
     }
 }

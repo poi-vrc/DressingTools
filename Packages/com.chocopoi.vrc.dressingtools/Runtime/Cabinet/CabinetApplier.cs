@@ -16,13 +16,14 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
@@ -35,41 +36,42 @@ namespace Chocopoi.DressingTools.Cabinet
         public static class MessageCode
         {
             // Info
-            public const string AdjustedWearablePositionFromDelta = "appliers.default.msgCode.info.adjustedWearablePositionFromDelta";
-            public const string AdjustedWearableRotationFromDelta = "appliers.default.msgCode.info.adjustedWearableRotationFromDelta";
-            public const string AdjustedAvatarScale = "appliers.default.msgCode.info.adjustedAvatarScale";
-            public const string AdjustedWearableScale = "appliers.default.msgCode.info.adjustedWearableScale";
+            public const string AdjustedWearablePositionFromDelta = "cabinet.applier.msgCode.info.adjustedWearablePositionFromDelta";
+            public const string AdjustedWearableRotationFromDelta = "cabinet.applier.msgCode.info.adjustedWearableRotationFromDelta";
+            public const string AdjustedAvatarScale = "cabinet.applier.msgCode.info.adjustedAvatarScale";
+            public const string AdjustedWearableScale = "cabinet.applier.msgCode.info.adjustedWearableScale";
 
             // Error
-            public const string UnableToDeserializeConfig = "appliers.default.msgCode.error.unableToDeserializeConfig";
-            public const string ApplyingModuleHasErrors = "appliers.default.msgCode.error.applyingModuleHasErrors";
-            public const string ApplyingWearableHasErrors = "appliers.default.msgCode.error.applyingWearableHasErrors";
-            public const string IncompatibleConfigVersion = "appliers.default.msgCode.error.incompatibleConfigVersion";
-            public const string ConfigMigrationFailed = "appliers.default.msgCode.error.configMigrationFailed";
+            public const string UnableToDeserializeConfig = "cabinet.applier.msgCode.error.unableToDeserializeConfig";
+            public const string ApplyingModuleHasErrors = "cabinet.applier.msgCode.error.applyingModuleHasErrors";
+            public const string ApplyingWearableHasErrors = "cabinet.applier.msgCode.error.applyingWearableHasErrors";
+            public const string IncompatibleConfigVersion = "cabinet.applier.msgCode.error.incompatibleConfigVersion";
+            public const string ConfigMigrationFailed = "cabinet.applier.msgCode.error.configMigrationFailed";
+            public const string ModuleHasNoProviderAvailable = "cabinet.applier.msgCode.error.moduleHasNoProviderAvailable";
         }
 
-        private DTReport _report;
-
-        private DTCabinet _cabinet;
-
-        private List<IDynamicsProxy> _avatarDynamics;
+        private ApplyCabinetContext _cabCtx;
 
         public CabinetApplier(DTReport report, DTCabinet cabinet)
         {
-            _report = report;
-            _cabinet = cabinet;
+            _cabCtx = new ApplyCabinetContext()
+            {
+                report = report,
+                cabinet = cabinet,
+                avatarDynamics = new List<IDynamicsProxy>()
+            };
         }
 
         private void ApplyTransforms(AvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
         {
-            var targetAvatar = _cabinet.AvatarGameObject;
+            var targetAvatar = _cabCtx.cabinet.AvatarGameObject;
 
             // check position delta and adjust
             {
                 var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
                 if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
                 {
-                    DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
+                    DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
                     targetWearable.transform.position += wearableWorldPos;
                 }
             }
@@ -79,24 +81,24 @@ namespace Chocopoi.DressingTools.Cabinet
                 var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
                 if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
                 {
-                    DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
+                    DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
                     targetWearable.transform.rotation *= wearableWorldRot;
                 }
             }
 
             // apply avatar scale
-            lastAvatarParent = _cabinet.AvatarGameObject.transform.parent;
+            lastAvatarParent = _cabCtx.cabinet.AvatarGameObject.transform.parent;
             lastAvatarScale = Vector3.zero + targetAvatar.transform.localScale;
             if (lastAvatarParent != null)
             {
                 // tricky workaround to apply lossy world scale is to unparent
-                _cabinet.AvatarGameObject.transform.SetParent(null);
+                _cabCtx.cabinet.AvatarGameObject.transform.SetParent(null);
             }
 
             var avatarScaleVec = avatarConfig.avatarLossyScale.ToVector3();
             if (targetAvatar.transform.localScale != avatarScaleVec)
             {
-                DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
+                DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
                 targetAvatar.transform.localScale = avatarScaleVec;
             }
 
@@ -104,7 +106,7 @@ namespace Chocopoi.DressingTools.Cabinet
             var wearableScaleVec = avatarConfig.wearableLossyScale.ToVector3();
             if (targetWearable.transform.localScale != wearableScaleVec)
             {
-                DTReportUtils.LogInfoLocalized(_report, LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
+                DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
                 targetWearable.transform.localScale = wearableScaleVec;
             }
         }
@@ -114,9 +116,9 @@ namespace Chocopoi.DressingTools.Cabinet
             // restore avatar scale
             if (lastAvatarParent != null)
             {
-                _cabinet.AvatarGameObject.transform.SetParent(lastAvatarParent);
+                _cabCtx.cabinet.AvatarGameObject.transform.SetParent(lastAvatarParent);
             }
-            _cabinet.AvatarGameObject.transform.localScale = lastAvatarScale;
+            _cabCtx.cabinet.AvatarGameObject.transform.localScale = lastAvatarScale;
         }
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
@@ -153,7 +155,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 dynamicsContainer = obj.transform;
             }
 
-            if (_cabinet.GroupDynamicsSeparateGameObjects)
+            if (_cabCtx.cabinet.GroupDynamicsSeparateGameObjects)
             {
                 // group them in separate GameObjects
                 var addedNames = new Dictionary<string, int>();
@@ -187,25 +189,40 @@ namespace Chocopoi.DressingTools.Cabinet
             }
         }
 
-        private bool ApplyWearable(WearableConfig config, GameObject wearableGameObject)
+        private bool ApplyWearable(ApplyWearableContext wearCtx)
         {
             GameObject wearableObj;
-            if (DTRuntimeUtils.IsGrandParent(_cabinet.AvatarGameObject.transform, wearableGameObject.transform))
+            if (DTRuntimeUtils.IsGrandParent(_cabCtx.cabinet.AvatarGameObject.transform, wearCtx.wearableGameObject.transform))
             {
-                wearableObj = wearableGameObject;
+                wearableObj = wearCtx.wearableGameObject;
             }
             else
             {
                 // instantiate wearable prefab and parent to avatar
-                wearableObj = Object.Instantiate(wearableGameObject, _cabinet.AvatarGameObject.transform);
+                wearableObj = Object.Instantiate(wearCtx.wearableGameObject, _cabCtx.cabinet.AvatarGameObject.transform);
             }
 
             // apply translation and scaling
-            ApplyTransforms(config.targetAvatarConfig, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
+            ApplyTransforms(wearCtx.config.AvatarConfig, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
 
             // sort modules according to their apply order
-            var modules = new List<WearableModuleBase>(config.modules);
-            modules.Sort((m1, m2) => m1.ApplyOrder.CompareTo(m2.ApplyOrder));
+            var modules = new List<WearableModule>(wearCtx.config.Modules);
+            modules.Sort((m1, m2) =>
+            {
+                var m1Provider = ModuleProviderLocator.Instance.GetProvider(m1.moduleName);
+                var m2Provider = ModuleProviderLocator.Instance.GetProvider(m2.moduleName);
+
+                if (m1Provider == null)
+                {
+                    return -1;
+                }
+                else if (m2Provider == null)
+                {
+                    return 1;
+                }
+
+                return m1Provider.ApplyOrder.CompareTo(m2Provider.ApplyOrder);
+            });
 
             // scan for wearable dynamics
             var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableObj, false);
@@ -213,17 +230,26 @@ namespace Chocopoi.DressingTools.Cabinet
             // do module apply
             foreach (var module in modules)
             {
-                if (!module.Apply(_report, _cabinet, _avatarDynamics, config, wearableGameObject, wearableDynamics))
+                // locate the module provider
+                var provider = ModuleProviderLocator.Instance.GetProvider(module.moduleName);
+
+                if (provider == null)
                 {
-                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ApplyingModuleHasErrors);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ModuleHasNoProviderAvailable, module.moduleName);
+                    return false;
+                }
+
+                if (!provider.OnApplyWearable(_cabCtx, wearCtx, module.config))
+                {
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
                 }
             }
 
             // group dynamics
-            if (_cabinet.GroupDynamics)
+            if (_cabCtx.cabinet.GroupDynamics)
             {
-                GroupDynamics(wearableGameObject, wearableDynamics);
+                GroupDynamics(wearCtx.wearableGameObject, wearableDynamics);
             }
 
             RollbackTransform(lastAvatarParent, lastAvatarScale);
@@ -234,8 +260,8 @@ namespace Chocopoi.DressingTools.Cabinet
         public void Execute()
         {
             // scan for avatar dynamics
-            _avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabinet.AvatarGameObject, true);
-            var wearables = _cabinet.GetWearables();
+            _cabCtx.avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabCtx.cabinet.AvatarGameObject, true);
+            var wearables = _cabCtx.cabinet.GetWearables();
 
             foreach (var wearable in wearables)
             {
@@ -243,42 +269,31 @@ namespace Chocopoi.DressingTools.Cabinet
                 WearableConfig config = null;
                 try
                 {
-                    config = JsonConvert.DeserializeObject<WearableConfig>(wearable.configJson);
+                    config = WearableConfig.Deserialize(wearable.configJson);
                 }
-                catch (JsonReaderException ex)
+                catch (System.Exception ex)
                 {
-                    DTReportUtils.LogExceptionLocalized(_report, LogLabel, ex);
-                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.UnableToDeserializeConfig);
+                    DTReportUtils.LogExceptionLocalized(_cabCtx.report, LogLabel, ex);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeConfig);
                     continue;
                 }
 
                 if (config == null)
                 {
-                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.UnableToDeserializeConfig);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeConfig);
                     continue;
                 }
 
-                // Migration
-                if (config.configVersion > WearableConfig.CurrentConfigVersion)
+                var wearCtx = new ApplyWearableContext()
                 {
-                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.IncompatibleConfigVersion);
-                    break;
-                }
-                else if (config.configVersion < WearableConfig.CurrentConfigVersion)
-                {
-                    var result = WearableConfigMigrator.Migrate(wearable.configJson, out var migratedJson);
-                    if (!result)
-                    {
-                        DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ConfigMigrationFailed);
-                        break;
-                    }
-                    wearable.configJson = migratedJson;
-                    config = JsonConvert.DeserializeObject<WearableConfig>(migratedJson);
-                }
+                    config = config,
+                    wearableGameObject = wearable.wearableGameObject,
+                    wearableDynamics = DTRuntimeUtils.ScanDynamics(wearable.wearableGameObject, false)
+                };
 
-                if (!ApplyWearable(config, wearable.wearableGameObject))
+                if (!ApplyWearable(wearCtx))
                 {
-                    DTReportUtils.LogErrorLocalized(_report, LogLabel, MessageCode.ApplyingWearableHasErrors, config.info.name);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingWearableHasErrors, config.Info.name);
                     break;
                 }
             }

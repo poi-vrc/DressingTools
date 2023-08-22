@@ -29,9 +29,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     {
         private IAnimationGenerationModuleEditorView _view;
         private IModuleEditorViewParent _parentView;
-        private AnimationGenerationModule _module;
+        private AnimationGenerationModuleConfig _module;
 
-        public AnimationGenerationModuleEditorPresenter(IAnimationGenerationModuleEditorView view, IModuleEditorViewParent parentView, AnimationGenerationModule module)
+        public AnimationGenerationModuleEditorPresenter(IAnimationGenerationModuleEditorView view, IModuleEditorViewParent parentView, AnimationGenerationModuleConfig module)
         {
             _view = view;
             _parentView = parentView;

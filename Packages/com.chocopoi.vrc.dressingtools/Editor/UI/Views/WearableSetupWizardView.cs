@@ -35,10 +35,10 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action PreviousButtonClick;
         public event Action NextButtonClick;
 
-        public ArmatureMappingModule ArmatureMappingModule { get; set; }
-        public MoveRootModule MoveRootModule { get; set; }
-        public AnimationGenerationModule AnimationGenerationModule { get; set; }
-        public BlendshapeSyncModule BlendshapeSyncModule { get; set; }
+        public ArmatureMappingModuleConfig ArmatureMappingModuleConfig { get; set; }
+        public MoveRootModuleConfig MoveRootModuleConfig { get; set; }
+        public AnimationGenerationModuleConfig AnimationGenerationModuleConfig { get; set; }
+        public BlendshapeSyncModuleConfig BlendshapeSyncModuleConfig { get; set; }
         public ArmatureMappingModuleEditor ArmatureMappingModuleEditor { get; set; }
         public MoveRootModuleEditor MoveRootModuleEditor { get; set; }
         public AnimationGenerationModuleEditor AnimationGenerationModuleEditor { get; set; }
@@ -71,15 +71,17 @@ namespace Chocopoi.DressingTools.UI.Views
             _dressingSubView = dressingSubView;
             _presenter = new WearableSetupWizardPresenter(this);
 
-            ArmatureMappingModule = new ArmatureMappingModule();
-            MoveRootModule = new MoveRootModule();
-            AnimationGenerationModule = new AnimationGenerationModule();
-            BlendshapeSyncModule = new BlendshapeSyncModule();
+            ArmatureMappingModuleConfig = new ArmatureMappingModuleConfig();
+            MoveRootModuleConfig = new MoveRootModuleConfig();
+            AnimationGenerationModuleConfig = new AnimationGenerationModuleConfig();
+            BlendshapeSyncModuleConfig = new BlendshapeSyncModuleConfig();
 
-            ArmatureMappingModuleEditor = new ArmatureMappingModuleEditor(this, ArmatureMappingModule);
-            MoveRootModuleEditor = new MoveRootModuleEditor(this, MoveRootModule);
-            AnimationGenerationModuleEditor = new AnimationGenerationModuleEditor(this, AnimationGenerationModule);
-            BlendshapeSyncModuleEditor = new BlendshapeSyncModuleEditor(this, BlendshapeSyncModule);
+            // TODO: do not pass null to provider argument
+
+            ArmatureMappingModuleEditor = new ArmatureMappingModuleEditor(this, null, ArmatureMappingModuleConfig);
+            MoveRootModuleEditor = new MoveRootModuleEditor(this, null, MoveRootModuleConfig);
+            AnimationGenerationModuleEditor = new AnimationGenerationModuleEditor(this, null, AnimationGenerationModuleConfig);
+            BlendshapeSyncModuleEditor = new BlendshapeSyncModuleEditor(this, null, BlendshapeSyncModuleConfig);
         }
 
         public void GenerateConfig() => _presenter.GenerateConfig();

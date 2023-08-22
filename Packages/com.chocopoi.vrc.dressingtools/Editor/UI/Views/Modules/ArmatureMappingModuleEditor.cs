@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
@@ -28,7 +29,7 @@ using UnityEditor;
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
     [ExcludeFromCodeCoverage]
-    [CustomModuleEditor(typeof(ArmatureMappingModule))]
+    [CustomModuleEditor(typeof(ArmatureMappingModuleProvider))]
     internal class ArmatureMappingModuleEditor : ModuleEditor, IArmatureMappingModuleEditorView
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
@@ -57,10 +58,10 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _removeExistingPrefixSuffix;
         private bool _groupBones;
 
-        public ArmatureMappingModuleEditor(IModuleEditorViewParent parentView, WearableModuleBase target) : base(parentView, target)
+        public ArmatureMappingModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, ModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
-            _presenter = new ArmatureMappingModuleEditorPresenter(this, parentView, (ArmatureMappingModule)target);
+            _presenter = new ArmatureMappingModuleEditorPresenter(this, parentView, (ArmatureMappingModuleConfig)target);
             _selectedDresserIndex = 0;
             _avatarArmatureName = null;
             _foldoutDresserReportLogEntries = true;

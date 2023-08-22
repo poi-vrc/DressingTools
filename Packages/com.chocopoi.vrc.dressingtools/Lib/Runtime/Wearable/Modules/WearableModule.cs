@@ -1,7 +1,7 @@
 ﻿/*
- * File: UnknownModule.cs
+ * File: DTWearableModuleBase.cs
  * Project: DressingTools
- * Created Date: Saturday, July 29th 2023, 10:31:11 am
+ * Created Date: Tuesday, August 1st 2023, 12:37:10 am
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -15,38 +15,31 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib.Wearable.Modules
 {
-    public sealed class UnknownModule : WearableModuleBase
+    public class WearableModule
     {
-        public sealed override int ApplyOrder => int.MaxValue;
+        public string moduleName;
+        public ModuleConfig config;
+    }
 
-        public override bool AllowMultiple => true;
+    public abstract class ModuleConfig { }
 
-        public readonly string moduleTypeName;
-
-        public readonly string rawJson;
-
-        public UnknownModule(string moduleTypeName, string rawJson)
+    public class UnknownModuleConfig : ModuleConfig
+    {
+        public string RawJson { get; private set; }
+        public UnknownModuleConfig(string rawJson)
         {
-            this.moduleTypeName = moduleTypeName;
-            this.rawJson = rawJson;
-        }
-
-        public sealed override string Serialize()
-        {
-            return rawJson;
-        }
-
-        public sealed override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
-        {
-            return true;
+            RawJson = rawJson;
         }
     }
 }

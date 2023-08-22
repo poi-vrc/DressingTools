@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
@@ -29,7 +30,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
     [ExcludeFromCodeCoverage]
-    [CustomModuleEditor(typeof(AnimationGenerationModule))]
+    [CustomModuleEditor(typeof(AnimationGenerationModuleProvider))]
     internal class AnimationGenerationModuleEditor : ModuleEditor, IAnimationGenerationModuleEditorView
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
@@ -59,10 +60,10 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _foldoutWearableAnimationPresetToggles;
         private bool _foldoutWearableAnimationPresetBlendshapes;
 
-        public AnimationGenerationModuleEditor(IModuleEditorViewParent parentView, WearableModuleBase target) : base(parentView, target)
+        public AnimationGenerationModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, ModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
-            _presenter = new AnimationGenerationModuleEditorPresenter(this, parentView, (AnimationGenerationModule)target);
+            _presenter = new AnimationGenerationModuleEditorPresenter(this, parentView, (AnimationGenerationModuleConfig)target);
 
             ShowCannotRenderPresetWithoutTargetAvatarHelpBox = true;
             ShowCannotRenderPresetWithoutTargetWearableHelpBox = true;
@@ -229,7 +230,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         public override void OnGUI()
         {
-            var module = (AnimationGenerationModule)target;
+            var module = (AnimationGenerationModuleConfig)target;
 
             DrawAnimationGenerationAvatarOnWear();
             DrawAnimationGenerationWearableOnWear();

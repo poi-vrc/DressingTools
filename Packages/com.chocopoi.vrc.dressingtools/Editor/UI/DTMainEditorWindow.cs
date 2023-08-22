@@ -21,6 +21,7 @@ using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UI.View;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
@@ -104,7 +105,7 @@ namespace Chocopoi.DressingTools.UI
                     return;
                 }
 
-                var armatureMappingModule = new ArmatureMappingModule
+                var armatureMappingModule = new ArmatureMappingModuleConfig
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armature.name,
@@ -115,7 +116,11 @@ namespace Chocopoi.DressingTools.UI
                     groupBones = true
                 };
 
-                config.modules.Add(armatureMappingModule);
+                config.Modules.Add(new WearableModule()
+                {
+                    moduleName = ArmatureMappingModuleProvider.Identifier,
+                    config = armatureMappingModule
+                });
             }
 
             DTEditorUtils.AddCabinetWearable(cabinet, config, wearable);

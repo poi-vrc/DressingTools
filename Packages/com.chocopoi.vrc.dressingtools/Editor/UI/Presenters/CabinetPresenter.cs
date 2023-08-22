@@ -156,11 +156,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.WearablePreviews.Clear();
             foreach (var wearable in wearables)
             {
-                var config = JsonConvert.DeserializeObject<WearableConfig>(wearable.configJson);
+                var config = WearableConfig.Deserialize(wearable.configJson);
 
                 _view.WearablePreviews.Add(new WearablePreview()
                 {
-                    name = config != null ? config.info.name : "(Unable to load configuration)",
+                    name = config != null ? config.Info.name : "(Unable to load configuration)",
                     RemoveButtonClick = () =>
                     {
                         DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);

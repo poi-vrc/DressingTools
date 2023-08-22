@@ -16,37 +16,46 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class BlendshapeSyncModule : WearableModuleBase
+    internal class BlendshapeSyncModuleConfig : ModuleConfig
     {
-        public static class MessageCode
-        {
-        }
-
-        private const string LogLabel = "BlendshapeSyncModule";
-
-        public override int ApplyOrder => 6;
-
-        public override bool AllowMultiple => false;
-
         public List<AnimationBlendshapeSync> blendshapeSyncs; // blendshapes to sync from avatar to wearables
 
-        public BlendshapeSyncModule()
+        public BlendshapeSyncModuleConfig()
         {
             blendshapeSyncs = new List<AnimationBlendshapeSync>();
         }
+    }
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
+    [InitializeOnLoad]
+    internal class BlendshapeSyncModuleProvider : ModuleProviderBase
+    {
+        public const string Identifier = "com.chocopoi.dressingtools.built-in.blendshape-sync";
+
+        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
+        [ExcludeFromCodeCoverage] public override string FriendlyName => "Blendshape Sync";
+        [ExcludeFromCodeCoverage] public override int ApplyOrder => 6;
+        [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
+
+        static BlendshapeSyncModuleProvider()
         {
-            return true;
+            ModuleProviderLocator.Instance.Register(new BlendshapeSyncModuleProvider());
         }
+
+        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<BlendshapeSyncModuleConfig>();
+
+        public override ModuleConfig NewModuleConfig() => new BlendshapeSyncModuleConfig();
     }
 }

@@ -28,7 +28,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
     [ExcludeFromCodeCoverage]
-    [CustomModuleEditor(typeof(MoveRootModule))]
+    [CustomModuleEditor(typeof(MoveRootModuleProvider))]
     internal class MoveRootModuleEditor : ModuleEditor, IMoveRootModuleEditorView
     {
         private static Localization.I18n t = Localization.I18n.GetInstance();
@@ -42,10 +42,10 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private IModuleEditorViewParent _parentView;
         private GameObject _moveToGameObject;
 
-        public MoveRootModuleEditor(IModuleEditorViewParent parentView, WearableModuleBase target) : base(parentView, target)
+        public MoveRootModuleEditor(IModuleEditorViewParent parentView, MoveRootModuleProvider provider, ModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
-            _presenter = new MoveRootModuleEditorPresenter(this, parentView, (MoveRootModule)target);
+            _presenter = new MoveRootModuleEditorPresenter(this, parentView, (MoveRootModuleConfig)target);
             ShowSelectAvatarFirstHelpBox = true;
             IsGameObjectInvalid = true;
         }

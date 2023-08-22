@@ -25,9 +25,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     internal class BlendshapeSyncModuleEditorPresenter
     {
         private IBlendshapeSyncModuleEditorView _view;
-        private BlendshapeSyncModule _module;
+        private BlendshapeSyncModuleConfig _module;
 
-        public BlendshapeSyncModuleEditorPresenter(IBlendshapeSyncModuleEditorView view, BlendshapeSyncModule module)
+        public BlendshapeSyncModuleEditorPresenter(IBlendshapeSyncModuleEditorView view, BlendshapeSyncModuleConfig module)
         {
             _view = view;
             _module = module;

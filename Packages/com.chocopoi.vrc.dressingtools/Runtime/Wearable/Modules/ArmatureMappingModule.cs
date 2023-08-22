@@ -16,15 +16,20 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -38,26 +43,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         Manual = 2
     }
 
-    internal class ArmatureMappingModule : WearableModuleBase
+    internal class ArmatureMappingModuleConfig : ModuleConfig
     {
-        public static class MessageCode
-        {
-            // Error
-            public const string DresserHasErrors = "appliers.default.msgCode.error.dresserHasErrors";
-            public const string CannotCreateParentConstraintWithExisting = "appliers.default.msgCode.error.cannotCreateParentConstraintWithExisting";
-            public const string AvatarBonePathNotFound = "appliers.default.msgCode.error.avatarBonePathNotFound";
-            public const string MappingGenerationHasErrors = "appliers.default.msgCode.error.mappingGenerationHasErrors";
-            public const string ApplyingBoneMappingHasErrors = "appliers.default.msgCode.error.applyingBoneMappingHasErrors";
-        }
-
-        private static System.Random random = new System.Random();
-
-        private const string LogLabel = "ArmatureModule";
-
-        public override int ApplyOrder => 2;
-
-        public override bool AllowMultiple => false;
-
         public string dresserName;
 
         public string wearableArmatureName;
@@ -72,7 +59,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public bool groupBones;
 
-        public ArmatureMappingModule()
+        public ArmatureMappingModuleConfig()
         {
             dresserName = null;
             wearableArmatureName = null;
@@ -82,46 +69,69 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             removeExistingPrefixSuffix = true;
             groupBones = true;
         }
+    }
 
-        private bool GenerateMappings(DTReport report, string avatarArmatureName, string wearableName, GameObject targetAvatar, GameObject targetWearable, out List<BoneMapping> resultantBoneMappings)
+    [InitializeOnLoad]
+    internal class ArmatureMappingModuleProvider : ModuleProviderBase
+    {
+        public const string Identifier = "com.chocopoi.dressingtools.built-in.armature-mapping";
+        public static class MessageCode
+        {
+            // Error
+            public const string DresserHasErrors = "appliers.default.msgCode.error.dresserHasErrors";
+            public const string CannotCreateParentConstraintWithExisting = "appliers.default.msgCode.error.cannotCreateParentConstraintWithExisting";
+            public const string AvatarBonePathNotFound = "appliers.default.msgCode.error.avatarBonePathNotFound";
+            public const string MappingGenerationHasErrors = "appliers.default.msgCode.error.mappingGenerationHasErrors";
+            public const string ApplyingBoneMappingHasErrors = "appliers.default.msgCode.error.applyingBoneMappingHasErrors";
+        }
+
+        private static readonly System.Random Random = new System.Random();
+        private const string LogLabel = "ArmatureModule";
+
+        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
+        [ExcludeFromCodeCoverage] public override string FriendlyName => "Armature Mapping";
+        [ExcludeFromCodeCoverage] public override int ApplyOrder => 2;
+        [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
+
+        private static bool GenerateMappings(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ArmatureMappingModuleConfig moduleConfig, string wearableName, out List<BoneMapping> resultantBoneMappings)
         {
             // execute dresser
-            var dresser = DresserRegistry.GetDresserByTypeName(dresserName);
-            var dresserSettings = dresser.DeserializeSettings(serializedDresserConfig);
+            var dresser = DresserRegistry.GetDresserByTypeName(moduleConfig.dresserName);
+            var dresserSettings = dresser.DeserializeSettings(moduleConfig.serializedDresserConfig);
             if (dresserSettings == null)
             {
                 // fallback to become a empty
                 dresserSettings = dresser.NewSettings();
             }
-            dresserSettings.targetAvatar = targetAvatar;
-            dresserSettings.targetWearable = targetWearable;
-            dresserSettings.avatarArmatureName = avatarArmatureName;
-            dresserSettings.wearableArmatureName = wearableArmatureName;
+            dresserSettings.targetAvatar = cabCtx.cabinet.AvatarGameObject;
+            dresserSettings.targetWearable = wearCtx.wearableGameObject;
+            dresserSettings.avatarArmatureName = cabCtx.cabinet.AvatarArmatureName;
+            dresserSettings.wearableArmatureName = moduleConfig.wearableArmatureName;
 
             var dresserReport = dresser.Execute(dresserSettings, out resultantBoneMappings);
-            report.AppendReport(dresserReport);
+            cabCtx.report.AppendReport(dresserReport);
 
             // abort on error
             if (dresserReport.HasLogType(DTReportLogType.Error))
             {
-                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.DresserHasErrors, wearableName);
+                DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.DresserHasErrors, wearableName);
                 return false;
             }
 
             // handle bone overrides
-            if (boneMappingMode == BoneMappingMode.Manual)
+            if (moduleConfig.boneMappingMode == BoneMappingMode.Manual)
             {
-                resultantBoneMappings = new List<BoneMapping>(boneMappings);
+                resultantBoneMappings = new List<BoneMapping>(moduleConfig.boneMappings);
             }
-            else if (boneMappingMode == BoneMappingMode.Override)
+            else if (moduleConfig.boneMappingMode == BoneMappingMode.Override)
             {
-                DTRuntimeUtils.HandleBoneMappingOverrides(resultantBoneMappings, boneMappings);
+                DTRuntimeUtils.HandleBoneMappingOverrides(resultantBoneMappings, moduleConfig.boneMappings);
             }
 
             return true;
         }
 
-        private BoneMapping GetBoneMappingByWearableBonePath(List<BoneMapping> boneMappings, string wearableBonePath)
+        private static BoneMapping GetBoneMappingByWearableBonePath(List<BoneMapping> boneMappings, string wearableBonePath)
         {
             foreach (var mapping in boneMappings)
             {
@@ -133,7 +143,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return null;
         }
 
-        private void RemoveExistingPrefixSuffix(Transform wearableChild)
+        private static void RemoveExistingPrefixSuffix(Transform wearableChild)
         {
             // check if there is a prefix
             if (wearableChild.name.StartsWith("("))
@@ -158,7 +168,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        private void ApplyIgnoreTransforms(string wearableName, IDynamicsProxy avatarDynamics, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot)
+        private static void ApplyIgnoreTransforms(string wearableName, IDynamicsProxy avatarDynamics, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot)
         {
             string name = avatarDynamicsRoot.name + "_DBExcluded";
             var dynBoneChild = avatarDynamicsRoot.Find(name);
@@ -200,7 +210,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        private bool ApplyBoneMappings(DTReport report, string wearableName, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, List<BoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
+        private static bool ApplyBoneMappings(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ArmatureMappingModuleConfig moduleConfig, string wearableName, List<BoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
         {
             var wearableChilds = new List<Transform>();
 
@@ -216,7 +226,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 var path = previousPath + boneName;
                 var mapping = GetBoneMappingByWearableBonePath(boneMappings, path);
 
-                if (removeExistingPrefixSuffix)
+                if (moduleConfig.removeExistingPrefixSuffix)
                 {
                     RemoveExistingPrefixSuffix(wearableChild);
                 }
@@ -227,14 +237,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
                     if (avatarBone != null)
                     {
-                        var avatarBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(avatarDynamics, avatarBone);
-                        var wearableBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(wearableDynamics, wearableChild);
+                        var avatarBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(cabCtx.avatarDynamics, avatarBone);
+                        var wearableBoneDynamics = DTRuntimeUtils.FindDynamicsWithRoot(wearCtx.wearableDynamics, wearableChild);
 
                         if (mapping.mappingType == BoneMappingType.MoveToBone)
                         {
                             Transform wearableBoneContainer = null;
 
-                            if (groupBones)
+                            if (moduleConfig.groupBones)
                             {
                                 // group bones in a {boneName}_DT container
                                 string name = avatarBone.name + "_DT";
@@ -262,7 +272,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                wearableDynamics.Remove(wearableBoneDynamics);
+                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             // add parent constraint
@@ -282,7 +292,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             }
                             else
                             {
-                                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.CannotCreateParentConstraintWithExisting, mapping.avatarBonePath, mapping.wearableBonePath);
+                                DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.CannotCreateParentConstraintWithExisting, mapping.avatarBonePath, mapping.wearableBonePath);
                                 return false;
                             }
                         }
@@ -292,7 +302,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                wearableDynamics.Remove(wearableBoneDynamics);
+                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             ApplyIgnoreTransforms(wearableName, avatarBoneDynamics, avatarBone, wearableChild);
@@ -303,7 +313,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                wearableDynamics.Remove(wearableBoneDynamics);
+                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             // copy component with reflection
@@ -328,12 +338,12 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     }
                     else
                     {
-                        DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.AvatarBonePathNotFound, mapping.avatarBonePath);
+                        DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AvatarBonePathNotFound, mapping.avatarBonePath);
                         return false;
                     }
                 }
 
-                ApplyBoneMappings(report, wearableName, avatarDynamics, wearableDynamics, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/");
+                ApplyBoneMappings(cabCtx, wearCtx, moduleConfig, wearableName, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/");
             }
 
             return true;
@@ -345,26 +355,37 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings?page=1&tab=scoredesc#tab-top
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
-        public override bool Apply(DTReport report, ICabinet cabinet, List<IDynamicsProxy> avatarDynamics, WearableConfig config, GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)
+        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ModuleConfig moduleConfig)
         {
-            if (!GenerateMappings(report, cabinet.AvatarArmatureName, config.info.name, cabinet.AvatarGameObject, wearableGameObject, out var boneMappings))
+            var armatureMappingConfig = (ArmatureMappingModuleConfig)moduleConfig;
+
+            if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.config.Info.name, out var boneMappings))
             {
-                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.MappingGenerationHasErrors);
+                DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.MappingGenerationHasErrors);
                 return false;
             }
 
-            var generatedName = string.Format("{0}-{1}", config.info.name, RandomString(32));
+            var generatedName = string.Format("{0}-{1}", wearCtx.config.Info.name, RandomString(32));
 
-            if (!ApplyBoneMappings(report, generatedName, avatarDynamics, wearableDynamics, boneMappings, cabinet.AvatarGameObject.transform, wearableGameObject.transform, wearableGameObject.transform, ""))
+            if (!ApplyBoneMappings(cabCtx, wearCtx, armatureMappingConfig, generatedName, boneMappings, cabCtx.cabinet.AvatarGameObject.transform, wearCtx.wearableGameObject.transform, wearCtx.wearableGameObject.transform, ""))
             {
-                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
+                DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
                 return false;
             }
 
             return true;
         }
+
+        static ArmatureMappingModuleProvider()
+        {
+            ModuleProviderLocator.Instance.Register(new ArmatureMappingModuleProvider());
+        }
+
+        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<ArmatureMappingModuleConfig>();
+
+        public override ModuleConfig NewModuleConfig() => new ArmatureMappingModuleConfig();
     }
 }
