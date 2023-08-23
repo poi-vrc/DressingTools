@@ -143,11 +143,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeSyncData.avatarGameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeSyncData.avatarGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(_view.TargetAvatar.transform, blendshapeSyncData.avatarGameObject.transform))
+                    if (blendshapeSyncData.avatarGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTEditorUtils.IsGrandParent(_view.TargetAvatar.transform, blendshapeSyncData.avatarGameObject.transform))
                     {
                         // renew path if changed
                         blendshapeSyncData.isAvatarGameObjectInvalid = false;
-                        blendshapeSync.avatarPath = DTRuntimeUtils.GetRelativePath(blendshapeSyncData.avatarGameObject.transform, _view.TargetAvatar.transform);
+                        blendshapeSync.avatarPath = DTEditorUtils.GetRelativePath(blendshapeSyncData.avatarGameObject.transform, _view.TargetAvatar.transform);
 
                         // generate blendshape names
                         blendshapeSyncData.avatarAvailableBlendshapeNames = GetBlendshapeNames(newMesh);
@@ -167,11 +167,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeSyncData.wearableGameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeSyncData.wearableGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(_view.TargetWearable.transform, blendshapeSyncData.wearableGameObject.transform))
+                    if (blendshapeSyncData.wearableGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTEditorUtils.IsGrandParent(_view.TargetWearable.transform, blendshapeSyncData.wearableGameObject.transform))
                     {
                         // renew path if changed
                         blendshapeSyncData.isWearableGameObjectInvalid = false;
-                        blendshapeSync.wearablePath = DTRuntimeUtils.GetRelativePath(blendshapeSyncData.wearableGameObject.transform, _view.TargetWearable.transform);
+                        blendshapeSync.wearablePath = DTEditorUtils.GetRelativePath(blendshapeSyncData.wearableGameObject.transform, _view.TargetWearable.transform);
 
                         // generate blendshape names
                         blendshapeSyncData.wearableAvailableBlendshapeNames = GetBlendshapeNames(newMesh);

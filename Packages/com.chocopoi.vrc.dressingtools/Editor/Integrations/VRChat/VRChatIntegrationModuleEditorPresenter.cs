@@ -17,8 +17,6 @@
 
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
 using Chocopoi.DressingTools.Lib.UI;
-using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat
 {

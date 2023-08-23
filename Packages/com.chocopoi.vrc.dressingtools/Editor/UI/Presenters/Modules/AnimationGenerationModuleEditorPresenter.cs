@@ -112,11 +112,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 };
                 toggleData.changeEvent = () =>
                 {
-                    if (toggleData.gameObject != null && DTRuntimeUtils.IsGrandParent(root, toggleData.gameObject.transform))
+                    if (toggleData.gameObject != null && DTEditorUtils.IsGrandParent(root, toggleData.gameObject.transform))
                     {
                         // renew path if changed
                         toggleData.isInvalid = false;
-                        toggle.path = DTRuntimeUtils.GetRelativePath(toggleData.gameObject.transform, root);
+                        toggle.path = DTEditorUtils.GetRelativePath(toggleData.gameObject.transform, root);
                         toggle.state = toggleData.state;
                     }
                     else
@@ -183,11 +183,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeData.gameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeData.gameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTRuntimeUtils.IsGrandParent(root, blendshapeData.gameObject.transform))
+                    if (blendshapeData.gameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTEditorUtils.IsGrandParent(root, blendshapeData.gameObject.transform))
                     {
                         // renew path if changed
                         blendshapeData.isInvalid = false;
-                        blendshape.path = DTRuntimeUtils.GetRelativePath(blendshapeData.gameObject.transform, root);
+                        blendshape.path = DTEditorUtils.GetRelativePath(blendshapeData.gameObject.transform, root);
 
                         // generate blendshape names
                         blendshapeData.availableBlendshapeNames = GetBlendshapeNames(newMesh);
@@ -244,7 +244,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 return;
             }
 
-            var armatureName = cabinet.AvatarArmatureName;
+            var armatureName = cabinet.avatarArmatureName;
             var avatarTrans = targetAvatar.transform;
 
             // iterate through childs

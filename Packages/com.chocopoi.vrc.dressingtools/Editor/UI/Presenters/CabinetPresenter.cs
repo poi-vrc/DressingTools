@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
-using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -75,8 +74,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
-            cabinet.AvatarArmatureName = _view.CabinetAvatarArmatureName;
-            cabinet.AvatarGameObject = _view.CabinetAvatarGameObject;
+            cabinet.avatarArmatureName = _view.CabinetAvatarArmatureName;
+            cabinet.avatarGameObject = _view.CabinetAvatarGameObject;
         }
 
         private void OnForceUpdateView()
@@ -118,7 +117,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             string[] cabinetOptions = new string[cabinets.Length];
             for (var i = 0; i < cabinets.Length; i++)
             {
-                cabinetOptions[i] = cabinets[i].AvatarGameObject != null ? cabinets[i].AvatarGameObject.name : string.Format("Cabinet {0} (No GameObject Attached)", i + 1);
+                cabinetOptions[i] = cabinets[i].avatarGameObject != null ? cabinets[i].avatarGameObject.name : string.Format("Cabinet {0} (No GameObject Attached)", i + 1);
             }
             _view.AvailableCabinetSelections = cabinetOptions;
         }
@@ -148,10 +147,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // update selected cabinet view
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
-            _view.CabinetAvatarGameObject = cabinet.AvatarGameObject;
-            _view.CabinetAvatarArmatureName = cabinet.AvatarArmatureName;
+            _view.CabinetAvatarGameObject = cabinet.avatarGameObject;
+            _view.CabinetAvatarArmatureName = cabinet.avatarArmatureName;
 
-            var wearables = cabinet.GetWearables();
+            var wearables = DTEditorUtils.GetCabinetWearables(cabinet);
 
             _view.WearablePreviews.Clear();
             foreach (var wearable in wearables)

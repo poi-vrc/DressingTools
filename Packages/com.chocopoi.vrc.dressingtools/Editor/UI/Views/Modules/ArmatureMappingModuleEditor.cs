@@ -17,7 +17,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Lib.Dresser;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public event Action ViewReportButtonClick;
 
         public ReportData DresserReportData { get; set; }
-        public DTDresserSettings DresserSettings { get; set; }
+        public DresserSettings DresserSettings { get; set; }
         public string[] AvailableDresserKeys { get; set; }
         public int SelectedDresserIndex { get => _selectedDresserIndex; set => _selectedDresserIndex = value; }
         public bool IsAvatarAssociatedWithCabinet { get; set; }

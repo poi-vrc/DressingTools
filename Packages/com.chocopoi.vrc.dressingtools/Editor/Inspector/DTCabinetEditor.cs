@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +33,7 @@ namespace Chocopoi.DressingTools
             var cabinet = (DTCabinet)target;
 
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Avatar", cabinet.AvatarGameObject, typeof(GameObject), true);
+            EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Separator();

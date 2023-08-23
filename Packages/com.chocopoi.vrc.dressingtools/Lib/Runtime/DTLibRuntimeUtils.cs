@@ -16,36 +16,19 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Cabinet;
 
 namespace Chocopoi.DressingTools.Lib
 {
     internal static class DTLibRuntimeUtils
     {
-        private static Dictionary<string, System.Type> s_reflectionTypeCache = new Dictionary<string, System.Type>();
-
-        public static System.Type FindType(string typeName)
+        public enum LifecycleStage
         {
-            // try getting from cache to avoid scanning the assemblies again
-            if (s_reflectionTypeCache.ContainsKey(typeName))
-            {
-                return s_reflectionTypeCache[typeName];
-            }
-
-            // scan from assemblies and save to cache
-            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
-            {
-                var type = assembly.GetType(typeName);
-                if (type != null)
-                {
-                    s_reflectionTypeCache[typeName] = type;
-                    return type;
-                }
-            }
-
-            // no such type found
-            return null;
+            Awake,
+            Start
         }
+
+        public delegate void OnCabinetLifecycleDelegate(LifecycleStage stage, DTCabinet cabinet);
+        public static OnCabinetLifecycleDelegate OnCabinetLifecycle = (stage, cabinet) => { };
     }
 }

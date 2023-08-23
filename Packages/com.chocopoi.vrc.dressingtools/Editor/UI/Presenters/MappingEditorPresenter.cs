@@ -127,7 +127,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (_view.SelectedBoneMappingMode == 1 && _view.SelectedBoneMappingDisplayMode == 1)
             {
                 var previewBoneMappings = new List<BoneMapping>(_container.generatedBoneMappings);
-                DTRuntimeUtils.HandleBoneMappingOverrides(previewBoneMappings, _container.outputBoneMappings);
+                DTEditorUtils.HandleBoneMappingOverrides(previewBoneMappings, _container.outputBoneMappings);
                 UpdateAvatarHierarchy(previewBoneMappings, _container.targetAvatar.transform, _view.AvatarHierachyNodes);
             }
             else

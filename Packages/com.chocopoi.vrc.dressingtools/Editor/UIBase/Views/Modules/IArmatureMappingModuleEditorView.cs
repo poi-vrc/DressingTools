@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Lib.Dresser;
 using Chocopoi.DressingTools.Lib.UI;
 
 namespace Chocopoi.DressingTools.UIBase.Views
@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action ViewReportButtonClick;
 
         ReportData DresserReportData { get; set; }
-        DTDresserSettings DresserSettings { get; set; }
+        DresserSettings DresserSettings { get; set; }
         string[] AvailableDresserKeys { get; set; }
         int SelectedDresserIndex { get; set; }
         bool IsAvatarAssociatedWithCabinet { get; set; }

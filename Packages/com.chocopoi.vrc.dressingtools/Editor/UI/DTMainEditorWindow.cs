@@ -16,9 +16,9 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
@@ -68,12 +68,12 @@ namespace Chocopoi.DressingTools.UI
             }
 
             var config = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(config, cabinet.AvatarGameObject, wearable);
+            DTEditorUtils.PrepareWearableConfig(config, cabinet.avatarGameObject, wearable);
 
-            var armatureName = cabinet.AvatarArmatureName;
+            var armatureName = cabinet.avatarArmatureName;
 
             // attempt to find wearable armature using avatar armature name
-            var armature = DTRuntimeUtils.GuessArmature(wearable, armatureName);
+            var armature = DTEditorUtils.GuessArmature(wearable, armatureName);
 
             if (armature == null)
             {
@@ -90,7 +90,7 @@ namespace Chocopoi.DressingTools.UI
 
                 var dresserSettings = new DefaultDresserSettings()
                 {
-                    targetAvatar = cabinet.AvatarGameObject,
+                    targetAvatar = cabinet.avatarGameObject,
                     targetWearable = wearable,
                     dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
                 };
