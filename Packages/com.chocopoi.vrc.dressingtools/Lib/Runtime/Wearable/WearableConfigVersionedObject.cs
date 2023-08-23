@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable
                 throw new Exception("Incompatible object version for deserialization");
             }
 
-            serializer.DeserializeFrom(this, jObject);
+            serializer.Deserialize(this, jObject);
         }
 
         public virtual JObject Serialize()
@@ -58,7 +58,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable
                 throw new Exception("Incompatible object version for serialization");
             }
 
-            return serializer.SerializeFrom(this);
+            return serializer.Serialize(this);
         }
     }
 }

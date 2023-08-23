@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
 {
     public interface ISerializer
     {
-        JObject SerializeFrom(object obj);
-        void DeserializeFrom(object obj, JObject jObject);
+        JObject Serialize(object obj);
+        void Deserialize(object obj, JObject jObject);
     }
 }
