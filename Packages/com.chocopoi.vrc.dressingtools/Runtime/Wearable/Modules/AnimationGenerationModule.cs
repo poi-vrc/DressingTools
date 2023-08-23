@@ -61,6 +61,56 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<AnimationGenerationModuleConfig>();
 
         public override IModuleConfig NewModuleConfig() => new AnimationGenerationModuleConfig();
+
+        public override bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        {
+            var agm = (AnimationGenerationModuleConfig)module.config;
+            var avatarGameObject = cabinet.AvatarGameObject;
+
+            // invert avatar toggles
+            foreach (var toggle in agm.avatarAnimationOnWear.toggles)
+            {
+                var avatarToggleObj = avatarGameObject.transform.Find(toggle.path);
+                if (avatarToggleObj == null)
+                {
+                    Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Avatar toggle GameObject not found at path: " + toggle.path);
+                    continue;
+                }
+                avatarToggleObj.gameObject.SetActive(!toggle.state);
+            }
+
+            // invert wearable toggles
+            foreach (var toggle in agm.wearableAnimationOnWear.toggles)
+            {
+                var wearableToggleObj = wearableGameObject.transform.Find(toggle.path);
+                if (wearableGameObject == null)
+                {
+                    Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Wearable toggle GameObject not found at path: " + toggle.path);
+                    continue;
+                }
+                wearableToggleObj.gameObject.SetActive(!toggle.state);
+            }
+
+            // set wearable dynamics inactive
+            var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableGameObject, false);
+            var visitedDynamicsTransforms = new List<Transform>();
+            foreach (var dynamics in wearableDynamics)
+            {
+                if (visitedDynamicsTransforms.Contains(dynamics.Transform))
+                {
+                    // skip duplicates since it's meaningless
+                    continue;
+                }
+
+                // we toggle GameObjects instead of components
+                dynamics.GameObject.SetActive(false);
+
+                // mark as visited
+                visitedDynamicsTransforms.Add(dynamics.Transform);
+            }
+
+            return true;
+        }
     }
 
 }

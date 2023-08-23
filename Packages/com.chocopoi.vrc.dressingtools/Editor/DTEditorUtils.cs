@@ -18,6 +18,7 @@
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -80,8 +81,14 @@ namespace Chocopoi.DressingTools
             return comp;
         }
 
-        public static void AddCabinetWearable(DTCabinet cabinet, WearableConfig config, GameObject wearableGameObject)
+        public static bool AddCabinetWearable(DTCabinet cabinet, WearableConfig config, GameObject wearableGameObject)
         {
+            // do not add if there's an existing component
+            if (wearableGameObject.GetComponent<DTCabinetWearable>() != null)
+            {
+                return false;
+            }
+
             if (PrefabUtility.IsPartOfAnyPrefab(wearableGameObject) && PrefabUtility.GetPrefabInstanceStatus(wearableGameObject) == PrefabInstanceStatus.NotAPrefab)
             {
                 // if not in scene, we instantiate it with a prefab connection
@@ -91,14 +98,31 @@ namespace Chocopoi.DressingTools
             // parent to avatar
             wearableGameObject.transform.SetParent(cabinet.transform);
 
-            if (wearableGameObject.GetComponent<DTCabinetWearable>() == null)
-            {
-                // add cabinet wearable component
-                var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
+            // add cabinet wearable component
+            var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
 
-                cabinetWearable.wearableGameObject = wearableGameObject;
-                cabinetWearable.configJson = config.Serialize().ToString(Formatting.None);
+            cabinetWearable.wearableGameObject = wearableGameObject;
+            cabinetWearable.configJson = config.Serialize().ToString(Formatting.None);
+
+            // do provider hooks
+            var providers = ModuleProviderLocator.Instance.GetAllProviders();
+            foreach (var provider in providers)
+            {
+                var module = DTRuntimeUtils.FindWearableModule(config, provider.ModuleIdentifier);
+                if (module == null)
+                {
+                    // config does not have such module
+                    continue;
+                }
+
+                if (!provider.OnAddWearableToCabinet(cabinet, config, wearableGameObject, module))
+                {
+                    Debug.LogWarning("[DressingTools] [AddCabinetWearable] Error processing provider OnAddWearableToCabinet hook: " + provider.ModuleIdentifier);
+                    return false;
+                }
             }
+
+            return true;
         }
 
         public static void RemoveCabinetWearable(DTCabinet cabinet, DTCabinetWearable wearable)
