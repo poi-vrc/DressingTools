@@ -134,7 +134,7 @@ namespace Chocopoi.DressingTools
             // scan dynbones
             if (DynamicBoneType != null)
             {
-                var dynBones = obj.GetComponentsInChildren(DynamicBoneType);
+                var dynBones = obj.GetComponentsInChildren(DynamicBoneType, true);
                 foreach (var dynBone in dynBones)
                 {
                     if (doNotScanContainingWearables && IsOriginatedFromAnyWearable(obj.transform, dynBone.transform))
@@ -148,7 +148,7 @@ namespace Chocopoi.DressingTools
             // scan physbones
             if (PhysBoneType != null)
             {
-                var physBones = obj.GetComponentsInChildren(PhysBoneType);
+                var physBones = obj.GetComponentsInChildren(PhysBoneType, true);
                 foreach (var physBone in physBones)
                 {
                     if (doNotScanContainingWearables && IsOriginatedFromAnyWearable(obj.transform, physBone.transform))
