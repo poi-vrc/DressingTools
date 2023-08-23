@@ -95,7 +95,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
         private const string KeyAvatarConfig = "avatarConfig";
         private const string KeyModules = "modules";
 
-        public void DeserializeFrom(object obj, JObject jObject)
+        public void Deserialize(object obj, JObject jObject)
         {
             // TODO: perform schema check here
             var config = (WearableConfig)obj;
@@ -127,7 +127,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
             }
         }
 
-        public JObject SerializeFrom(object obj)
+        public JObject Serialize(object obj)
         {
             var config = (WearableConfig)obj;
             var jObject = new JObject
