@@ -25,6 +25,12 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {
     internal class VRChatIntegrationModuleConfig : IModuleConfig
     {
+        public string customCabinetToggleName;
+
+        public VRChatIntegrationModuleConfig()
+        {
+            customCabinetToggleName = null;
+        }
     }
 
     [InitializeOnLoad]

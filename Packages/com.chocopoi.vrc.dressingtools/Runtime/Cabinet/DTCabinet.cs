@@ -33,6 +33,7 @@ namespace Chocopoi.DressingTools.Cabinet
         [field: SerializeField] public string AvatarArmatureName { get; set; }
         [field: SerializeField] public bool GroupDynamics { get; set; }
         [field: SerializeField] public bool GroupDynamicsSeparateGameObjects { get; set; }
+        [field: SerializeField] public bool AnimationGenerationWriteDefaults { get; set; }
 
         public DTCabinet()
         {
@@ -41,6 +42,7 @@ namespace Chocopoi.DressingTools.Cabinet
             AvatarArmatureName = "Armature";
             GroupDynamics = true;
             GroupDynamicsSeparateGameObjects = true;
+            AnimationGenerationWriteDefaults = true;
         }
 
         public DTCabinetWearable[] GetWearables()
