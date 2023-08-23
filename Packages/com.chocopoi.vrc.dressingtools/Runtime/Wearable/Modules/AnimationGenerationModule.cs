@@ -29,7 +29,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class AnimationGenerationModuleConfig : ModuleConfig
+    internal class AnimationGenerationModuleConfig : IModuleConfig
     {
         public AnimationPreset avatarAnimationOnWear; // execute on wear
         public AnimationPreset wearableAnimationOnWear;
@@ -58,9 +58,9 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             ModuleProviderLocator.Instance.Register(new AnimationGenerationModuleProvider());
         }
 
-        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<AnimationGenerationModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<AnimationGenerationModuleConfig>();
 
-        public override ModuleConfig NewModuleConfig() => new AnimationGenerationModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new AnimationGenerationModuleConfig();
     }
 
 }

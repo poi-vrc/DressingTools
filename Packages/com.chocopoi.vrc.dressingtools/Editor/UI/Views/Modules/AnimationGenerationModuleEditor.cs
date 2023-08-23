@@ -60,7 +60,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _foldoutWearableAnimationPresetToggles;
         private bool _foldoutWearableAnimationPresetBlendshapes;
 
-        public AnimationGenerationModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, ModuleConfig target) : base(parentView, provider, target)
+        public AnimationGenerationModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, IModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
             _presenter = new AnimationGenerationModuleEditorPresenter(this, parentView, (AnimationGenerationModuleConfig)target);

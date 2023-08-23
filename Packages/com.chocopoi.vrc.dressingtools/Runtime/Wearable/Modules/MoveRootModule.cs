@@ -29,7 +29,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class MoveRootModuleConfig : ModuleConfig
+    internal class MoveRootModuleConfig : IModuleConfig
     {
         public string avatarPath;
     }
@@ -49,8 +49,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             ModuleProviderLocator.Instance.Register(new MoveRootModuleProvider());
         }
 
-        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<MoveRootModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<MoveRootModuleConfig>();
 
-        public override ModuleConfig NewModuleConfig() => new MoveRootModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new MoveRootModuleConfig();
     }
 }

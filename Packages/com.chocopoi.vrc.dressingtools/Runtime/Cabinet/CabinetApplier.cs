@@ -24,6 +24,7 @@ using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
@@ -269,7 +270,8 @@ namespace Chocopoi.DressingTools.Cabinet
                 WearableConfig config = null;
                 try
                 {
-                    config = WearableConfig.Deserialize(wearable.configJson);
+                    var jObject = JObject.Parse(wearable.configJson);
+                    config = WearableConfig.Deserialize(jObject);
                 }
                 catch (System.Exception ex)
                 {

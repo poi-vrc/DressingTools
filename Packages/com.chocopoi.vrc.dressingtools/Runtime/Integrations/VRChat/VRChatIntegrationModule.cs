@@ -23,7 +23,7 @@ using UnityEditor;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {
-    internal class VRChatIntegrationModuleConfig : ModuleConfig
+    internal class VRChatIntegrationModuleConfig : IModuleConfig
     {
     }
 
@@ -42,8 +42,8 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             ModuleProviderLocator.Instance.Register(new VRChatIntegrationModuleProvider());
         }
 
-        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<VRChatIntegrationModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<VRChatIntegrationModuleConfig>();
 
-        public override ModuleConfig NewModuleConfig() => new VRChatIntegrationModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new VRChatIntegrationModuleConfig();
     }
 }

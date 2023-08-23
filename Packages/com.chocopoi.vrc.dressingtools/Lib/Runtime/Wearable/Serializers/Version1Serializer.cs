@@ -25,7 +25,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
 {
-    public class Version1Serializer : IWearableConfigSerializer
+    public class Version1Serializer : ISerializer
     {
         private class ModuleConverter : JsonConverter
         {
@@ -35,7 +35,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
                 // we do this serialization ourselves
-                if (objectType == typeof(ModuleConfig))
+                if (objectType == typeof(IModuleConfig))
                 {
                     return null;
                 }
@@ -79,7 +79,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
             var moduleName = jObject["moduleName"].Value<string>();
             var provider = ModuleProviderLocator.Instance.GetProvider(moduleName);
 
-            ModuleConfig moduleConfig = provider == null ?
+            IModuleConfig moduleConfig = provider == null ?
                 new UnknownModuleConfig(configJObject.ToString(Formatting.None)) :
                 provider.DeserializeModuleConfig(configJObject);
 
@@ -95,12 +95,10 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
         private const string KeyAvatarConfig = "avatarConfig";
         private const string KeyModules = "modules";
 
-        public WearableConfig Deserialize(string json)
+        public void DeserializeFrom(object obj, JObject jObject)
         {
             // TODO: perform schema check here
-
-            var config = new WearableConfig();
-            JObject jObject = JObject.Parse(json);
+            var config = (WearableConfig)obj;
 
             if (!jObject.ContainsKey(KeyVersion) || jObject[KeyVersion].Type != JTokenType.String ||
                  !jObject.ContainsKey(KeyInfo) || jObject[KeyInfo].Type != JTokenType.Object ||
@@ -127,12 +125,11 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
                 var module = DeserializeModule((JObject)moduleJtoken);
                 config.Modules.Add(module);
             }
-
-            return config;
         }
 
-        public string Serialize(WearableConfig config)
+        public JObject SerializeFrom(object obj)
         {
+            var config = (WearableConfig)obj;
             var jObject = new JObject
             {
                 [KeyVersion] = config.Version.ToString(),
@@ -147,7 +144,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
             }
             jObject[KeyModules] = modulesArray;
 
-            return jObject.ToString(Formatting.None);
+            return jObject;
         }
     }
 

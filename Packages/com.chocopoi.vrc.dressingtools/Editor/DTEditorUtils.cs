@@ -18,6 +18,7 @@
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -96,7 +97,7 @@ namespace Chocopoi.DressingTools
                 var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
 
                 cabinetWearable.wearableGameObject = wearableGameObject;
-                cabinetWearable.configJson = config.Serialize();
+                cabinetWearable.configJson = config.Serialize().ToString(Formatting.None);
             }
         }
 

@@ -36,101 +36,17 @@ namespace Chocopoi.DressingTools.Lib.Wearable
         }
     }
 
-    public class WearableConfigVersion
-    {
-        public int Major { get; private set; }
-        public int Minor { get; private set; }
-        public int Patch { get; private set; }
-        public string Extra { get; private set; }
-
-        public WearableConfigVersion(int major, int minor, int patch)
-        {
-            Major = major;
-            Minor = minor;
-            Patch = patch;
-            Extra = null;
-        }
-
-        public WearableConfigVersion(int major, int minor, int patch, string extra)
-        {
-            Major = major;
-            Minor = minor;
-            Patch = patch;
-            Extra = extra;
-        }
-
-        public WearableConfigVersion(string str)
-        {
-            var hyphenIndex = str.IndexOf('-');
-            string versionStr = null;
-            if (hyphenIndex != -1)
-            {
-                Extra = str.Substring(hyphenIndex + 1);
-                versionStr = str.Substring(0, hyphenIndex);
-            }
-            else
-            {
-                versionStr = str;
-            }
-
-            if (versionStr.Length == 0)
-            {
-                throw new ArgumentException("Version part is empty");
-            }
-
-            var splits = versionStr.Split('.');
-            if (splits.Length < 2)
-            {
-                throw new ArgumentException("Version string is not in major, minor or optionally patch format");
-            }
-
-            if (!int.TryParse(splits[0], out var major))
-            {
-                throw new ArgumentException("Could not parse major: " + splits[0]);
-            }
-            Major = major;
-
-            if (!int.TryParse(splits[1], out var minor))
-            {
-                throw new ArgumentException("Could not parse minor: " + splits[1]);
-            }
-            Minor = minor;
-
-            if (splits.Length > 2)
-            {
-                if (!int.TryParse(splits[2], out var patch))
-                {
-                    throw new ArgumentException("Could not parse patch: " + splits[2]);
-                }
-                Patch = patch;
-            }
-            else
-            {
-                Patch = 0;
-            }
-        }
-
-        public override string ToString()
-        {
-            var output = string.Format("{0}.{1}.{2}", Major, Minor, Patch);
-            if (Extra != null)
-            {
-                output += "-" + Extra;
-            }
-            return output;
-        }
-    }
-
-    public class WearableConfig
+    public class WearableConfig : WearableConfigVersionedObject
     {
         public static readonly WearableConfigVersion CurrentConfigVersion = new WearableConfigVersion(1, 0, 0);
-        private static readonly Dictionary<int, IWearableConfigSerializer> Serializers = new Dictionary<int, IWearableConfigSerializer>() {
+        private static readonly Dictionary<int, ISerializer> Serializers = new Dictionary<int, ISerializer>() {
             { 1, new Version1Serializer() },
         };
 
-        public WearableConfigVersion Version { get; set; }
+        public override WearableConfigVersion Version { get; set; }
         public WearableInfo Info { get; set; }
         public AvatarConfig AvatarConfig { get; set; }
+
         public List<WearableModule> Modules;
 
         public WearableConfig()
@@ -147,39 +63,38 @@ namespace Chocopoi.DressingTools.Lib.Wearable
             Modules = new List<WearableModule>();
         }
 
-        public string Serialize()
+        public override ISerializer GetSerializerByVersion(WearableConfigVersion version)
         {
-            var serializer = Serializers[CurrentConfigVersion.Major];
-            return serializer.Serialize(this);
+            if (version == null)
+            {
+                return null;
+            }
+            return Serializers.ContainsKey(version.Major) ? Serializers[version.Major] : null;
         }
 
         public static WearableConfig Deserialize(string json)
         {
-            JObject jObject = JObject.Parse(json);
-            if (!jObject.ContainsKey("version"))
-            {
-                throw new JsonException("Config does not contain version");
-            }
-            var configVersion = new WearableConfigVersion(jObject["version"].Value<string>());
+            // TODO: perform schema check
+            var jObject = JObject.Parse(json);
+            return Deserialize(jObject);
+        }
 
-            if (!Serializers.ContainsKey(configVersion.Major))
-            {
-                throw new Exception("Incompatible config version: " + configVersion.Major);
-            }
-
-            var serializer = Serializers[configVersion.Major];
-            return serializer.Deserialize(json);
+        public static WearableConfig Deserialize(JObject jObject)
+        {
+            var config = new WearableConfig();
+            config.DeserializeFrom(jObject);
+            return config;
         }
 
         public WearableConfig Clone()
         {
-            // a tricky and easier way to copy 
+            // a tricky and easier way to copy
             return Deserialize(Serialize());
         }
 
         public override string ToString()
         {
-            return Serialize();
+            return Serialize().ToString(Formatting.None);
         }
     }
 }
