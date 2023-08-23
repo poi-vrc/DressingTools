@@ -1,7 +1,7 @@
 ﻿/*
- * File: DTCabinet.cs
+ * File: IVRChatIntegrationModuleEditorView.cs
  * Project: DressingTools
- * Created Date: Thursday, August 10th 2023, 11:42:41 pm
+ * Created Date: Wednesday, August 23th 2023, 7:56:36 pm
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -15,25 +15,17 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingTools.Lib.Logging;
+using System;
+using Chocopoi.DressingTools.Lib.UI;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Lib.Cabinet
+namespace Chocopoi.DressingTools.Integrations.VRChat
 {
-    public interface ICabinet
+    internal interface IVRChatIntegrationModuleEditorView : IEditorView
     {
-        GameObject AvatarGameObject { get; set; }
+        event Action ConfigChange;
 
-        string AvatarArmatureName { get; set; }
-
-        bool GroupDynamics { get; set; }
-
-        bool GroupDynamicsSeparateGameObjects { get; set; }
-
-        bool AnimationGenerationWriteDefaults { get; set; }
-
-        DTCabinetWearable[] GetWearables();
-
-        void Apply(DTReport report);
+        bool UseCustomCabinetToggleName { get; set; }
+        string CustomCabinetToggleName { get; set; }
     }
 }
