@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
@@ -58,7 +59,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override IModuleConfig NewModuleConfig() => new BlendshapeSyncModuleConfig();
 
-        public override bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        private static void FollowBlendshapeSyncValues(ICabinet cabinet, GameObject wearableGameObject, WearableModule module)
         {
             var avatarGameObject = cabinet.AvatarGameObject;
             var bsm = (BlendshapeSyncModuleConfig)module.config;
@@ -111,7 +112,38 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 // copy value from avatar to wearable
                 wearableSmr.SetBlendShapeWeight(wearableBlendshapeIndex, avatarSmr.GetBlendShapeWeight(avatarBlendshapeIndex));
             }
+        }
 
+        public override bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        {
+            FollowBlendshapeSyncValues(cabinet, wearableGameObject, module);
+            return true;
+        }
+
+        public override bool OnAfterApplyCabinet(ApplyCabinetContext ctx)
+        {
+            var wearables = ctx.cabinet.GetWearables();
+
+            foreach (var wearable in wearables)
+            {
+                var config = WearableConfig.Deserialize(wearable.configJson);
+
+                if (config == null)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncModule] Unable to deserialize one of the wearable configuration: " + wearable.name);
+                    return false;
+                }
+
+                var module = DTRuntimeUtils.FindWearableModule(config, Identifier);
+
+                if (module == null)
+                {
+                    // no blendshape sync module, skipping
+                    continue;
+                }
+
+                FollowBlendshapeSyncValues(ctx.cabinet, wearable.wearableGameObject, module);
+            }
             return true;
         }
     }

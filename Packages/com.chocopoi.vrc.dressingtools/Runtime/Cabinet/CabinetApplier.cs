@@ -49,6 +49,8 @@ namespace Chocopoi.DressingTools.Cabinet
             public const string IncompatibleConfigVersion = "cabinet.applier.msgCode.error.incompatibleConfigVersion";
             public const string ConfigMigrationFailed = "cabinet.applier.msgCode.error.configMigrationFailed";
             public const string ModuleHasNoProviderAvailable = "cabinet.applier.msgCode.error.moduleHasNoProviderAvailable";
+            public const string BeforeApplyCabinetProviderHookHasErrors = "cabinet.applier.msgCode.error.beforeApplyCabinetProviderHookHasErrors";
+            public const string AfterApplyCabinetProviderHookHasErrors = "cabinet.applier.msgCode.error.afterApplyCabinetProviderHookHasErrors";
         }
 
         private ApplyCabinetContext _cabCtx;
@@ -240,7 +242,7 @@ namespace Chocopoi.DressingTools.Cabinet
                     return false;
                 }
 
-                if (!provider.OnApplyWearable(_cabCtx, wearCtx, module.config))
+                if (!provider.OnApplyWearable(_cabCtx, wearCtx, module))
                 {
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
@@ -258,10 +260,46 @@ namespace Chocopoi.DressingTools.Cabinet
             return true;
         }
 
+        private static bool DoBeforeApplyCabinetProviderHooks(ApplyCabinetContext ctx)
+        {
+            // do provider hooks
+            var providers = ModuleProviderLocator.Instance.GetAllProviders();
+            foreach (var provider in providers)
+            {
+                if (!provider.OnBeforeApplyCabinet(ctx))
+                {
+                    DTReportUtils.LogErrorLocalized(ctx.report, LogLabel, MessageCode.BeforeApplyCabinetProviderHookHasErrors, provider.ModuleIdentifier);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool DoAfterApplyCabinetProviderHooks(ApplyCabinetContext ctx)
+        {
+            // do provider hooks
+            var providers = ModuleProviderLocator.Instance.GetAllProviders();
+            foreach (var provider in providers)
+            {
+                if (!provider.OnAfterApplyCabinet(ctx))
+                {
+                    DTReportUtils.LogErrorLocalized(ctx.report, LogLabel, MessageCode.AfterApplyCabinetProviderHookHasErrors, provider.ModuleIdentifier);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public void Execute()
         {
             // scan for avatar dynamics
             _cabCtx.avatarDynamics = DTRuntimeUtils.ScanDynamics(_cabCtx.cabinet.AvatarGameObject, true);
+
+            if (!DoBeforeApplyCabinetProviderHooks(_cabCtx))
+            {
+                return;
+            }
+
             var wearables = _cabCtx.cabinet.GetWearables();
 
             foreach (var wearable in wearables)
@@ -298,6 +336,11 @@ namespace Chocopoi.DressingTools.Cabinet
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingWearableHasErrors, config.Info.name);
                     break;
                 }
+            }
+
+            if (!DoAfterApplyCabinetProviderHooks(_cabCtx))
+            {
+                return;
             }
         }
     }

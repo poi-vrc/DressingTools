@@ -358,9 +358,9 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
-        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, IModuleConfig moduleConfig)
+        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
         {
-            var armatureMappingConfig = (ArmatureMappingModuleConfig)moduleConfig;
+            var armatureMappingConfig = (ArmatureMappingModuleConfig)module.config;
 
             if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.config.Info.name, out var boneMappings))
             {

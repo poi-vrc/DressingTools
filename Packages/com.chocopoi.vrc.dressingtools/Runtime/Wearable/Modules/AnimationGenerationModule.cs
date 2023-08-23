@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
@@ -62,7 +63,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override IModuleConfig NewModuleConfig() => new AnimationGenerationModuleConfig();
 
-        public override bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        private static void InvertToggleStates(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
         {
             var agm = (AnimationGenerationModuleConfig)module.config;
             var avatarGameObject = cabinet.AvatarGameObject;
@@ -90,23 +91,61 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 }
                 wearableToggleObj.gameObject.SetActive(!toggle.state);
             }
+        }
 
-            // set wearable dynamics inactive
-            var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearableGameObject, false);
-            var visitedDynamicsTransforms = new List<Transform>();
-            foreach (var dynamics in wearableDynamics)
+        public override bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        {
+            if (module == null)
             {
-                if (visitedDynamicsTransforms.Contains(dynamics.Transform))
+                // we need the wearable to have our module installed
+                return true;
+            }
+
+            InvertToggleStates(cabinet, config, wearableGameObject, module);
+            return true;
+        }
+
+        public override bool OnAfterApplyCabinet(ApplyCabinetContext ctx)
+        {
+            var wearables = ctx.cabinet.GetWearables();
+
+            foreach (var wearable in wearables)
+            {
+                var config = WearableConfig.Deserialize(wearable.configJson);
+
+                if (config == null)
                 {
-                    // skip duplicates since it's meaningless
+                    Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Unable to deserialize one of the wearable configuration: " + wearable.name);
+                    return false;
+                }
+
+                var module = DTRuntimeUtils.FindWearableModule(config, Identifier);
+
+                if (module == null)
+                {
+                    // no animation generation module, skipping
                     continue;
                 }
 
-                // we toggle GameObjects instead of components
-                dynamics.GameObject.SetActive(false);
+                InvertToggleStates(ctx.cabinet, config, wearable.wearableGameObject, module);
 
-                // mark as visited
-                visitedDynamicsTransforms.Add(dynamics.Transform);
+                // set wearable dynamics inactive
+                var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearable.wearableGameObject, false);
+                var visitedDynamicsTransforms = new List<Transform>();
+                foreach (var dynamics in wearableDynamics)
+                {
+                    if (visitedDynamicsTransforms.Contains(dynamics.Transform))
+                    {
+                        // skip duplicates since it's meaningless
+                        continue;
+                    }
+
+                    // we toggle GameObjects instead of components
+                    dynamics.GameObject.SetActive(false);
+
+                    // mark as visited
+                    visitedDynamicsTransforms.Add(dynamics.Transform);
+                }
             }
 
             return true;
