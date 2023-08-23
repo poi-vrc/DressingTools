@@ -28,11 +28,11 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Modules.Providers
         public abstract int ApplyOrder { get; }
         public abstract bool AllowMultiple { get; }
 
-        public abstract ModuleConfig DeserializeModuleConfig(JObject jObject);
-        public virtual string SerializeModuleConfig(ModuleConfig moduleConfig) => JsonConvert.SerializeObject(moduleConfig);
-        public abstract ModuleConfig NewModuleConfig();
-        public virtual bool OnBeforeApplyCabinet(ApplyCabinetContext ctx, ModuleConfig moduleConfig) => true;
-        public virtual bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ModuleConfig moduleConfig) => true;
-        public virtual bool OnAfterApplyCabinet(ApplyCabinetContext ctx, ModuleConfig moduleConfig) => true;
+        public abstract IModuleConfig DeserializeModuleConfig(JObject jObject);
+        public virtual string SerializeModuleConfig(IModuleConfig moduleConfig) => JsonConvert.SerializeObject(moduleConfig);
+        public abstract IModuleConfig NewModuleConfig();
+        public virtual bool OnBeforeApplyCabinet(ApplyCabinetContext ctx, IModuleConfig moduleConfig) => true;
+        public virtual bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, IModuleConfig moduleConfig) => true;
+        public virtual bool OnAfterApplyCabinet(ApplyCabinetContext ctx, IModuleConfig moduleConfig) => true;
     }
 }

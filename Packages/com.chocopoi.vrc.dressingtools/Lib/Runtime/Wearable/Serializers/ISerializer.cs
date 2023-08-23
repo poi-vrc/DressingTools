@@ -1,5 +1,5 @@
 ﻿/*
- * File: IWearableConfigSerializer.cs
+ * File: ISerializer.cs
  * Project: DressingTools
  * Created Date: Saturday, Aug 22nd 2023, 16:35:11 pm
  * Author: chocopoi (poi@chocopoi.com)
@@ -20,12 +20,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Chocopoi.DressingTools.Lib.Wearable.Serializers
 {
-    public interface IWearableConfigSerializer
+    public interface ISerializer
     {
-        string Serialize(WearableConfig config);
-        WearableConfig Deserialize(string json);
+        JObject SerializeFrom(object obj);
+        void DeserializeFrom(object obj, JObject jObject);
     }
 }

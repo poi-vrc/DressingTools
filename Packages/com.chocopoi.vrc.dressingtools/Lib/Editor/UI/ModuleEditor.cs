@@ -31,9 +31,9 @@ namespace Chocopoi.DressingTools.Lib.UI
 
         protected ModuleProviderBase provider;
 
-        protected ModuleConfig target;
+        protected IModuleConfig target;
 
-        public ModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, ModuleConfig target)
+        public ModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, IModuleConfig target)
         {
             this.parentView = parentView;
             this.provider = provider;

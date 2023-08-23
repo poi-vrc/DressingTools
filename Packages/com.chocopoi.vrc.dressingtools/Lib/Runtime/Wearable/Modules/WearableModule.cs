@@ -20,26 +20,29 @@ using System.Collections.Generic;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Wearable.Serializers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib.Wearable.Modules
 {
-    public class WearableModule
-    {
-        public string moduleName;
-        public ModuleConfig config;
-    }
+    public interface IModuleConfig { }
 
-    public abstract class ModuleConfig { }
+    public abstract class VersionedModuleConfig : WearableConfigVersionedObject, IModuleConfig { }
 
-    public class UnknownModuleConfig : ModuleConfig
+    public class UnknownModuleConfig : IModuleConfig
     {
         public string RawJson { get; private set; }
         public UnknownModuleConfig(string rawJson)
         {
             RawJson = rawJson;
         }
+    }
+
+    public class WearableModule
+    {
+        public string moduleName;
+        public IModuleConfig config;
     }
 }

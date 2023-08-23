@@ -29,7 +29,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class BlendshapeSyncModuleConfig : ModuleConfig
+    internal class BlendshapeSyncModuleConfig : IModuleConfig
     {
         public List<AnimationBlendshapeSync> blendshapeSyncs; // blendshapes to sync from avatar to wearables
 
@@ -54,8 +54,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             ModuleProviderLocator.Instance.Register(new BlendshapeSyncModuleProvider());
         }
 
-        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<BlendshapeSyncModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<BlendshapeSyncModuleConfig>();
 
-        public override ModuleConfig NewModuleConfig() => new BlendshapeSyncModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new BlendshapeSyncModuleConfig();
     }
 }

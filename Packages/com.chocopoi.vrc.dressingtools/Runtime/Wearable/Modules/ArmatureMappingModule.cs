@@ -43,7 +43,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         Manual = 2
     }
 
-    internal class ArmatureMappingModuleConfig : ModuleConfig
+    internal class ArmatureMappingModuleConfig : IModuleConfig
     {
         public string dresserName;
 
@@ -358,7 +358,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
-        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ModuleConfig moduleConfig)
+        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, IModuleConfig moduleConfig)
         {
             var armatureMappingConfig = (ArmatureMappingModuleConfig)moduleConfig;
 
@@ -384,8 +384,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             ModuleProviderLocator.Instance.Register(new ArmatureMappingModuleProvider());
         }
 
-        public override ModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<ArmatureMappingModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<ArmatureMappingModuleConfig>();
 
-        public override ModuleConfig NewModuleConfig() => new ArmatureMappingModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new ArmatureMappingModuleConfig();
     }
 }

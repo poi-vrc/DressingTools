@@ -190,7 +190,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateModulesView();
         }
 
-        private ModuleEditor CreateModuleEditor(ModuleProviderBase provider, ModuleConfig module)
+        private ModuleEditor CreateModuleEditor(ModuleProviderBase provider, IModuleConfig module)
         {
             // prepare cache if not yet
             if (s_moduleEditorTypesCache == null)

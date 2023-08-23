@@ -58,7 +58,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _removeExistingPrefixSuffix;
         private bool _groupBones;
 
-        public ArmatureMappingModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, ModuleConfig target) : base(parentView, provider, target)
+        public ArmatureMappingModuleEditor(IModuleEditorViewParent parentView, ModuleProviderBase provider, IModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
             _presenter = new ArmatureMappingModuleEditorPresenter(this, parentView, (ArmatureMappingModuleConfig)target);
