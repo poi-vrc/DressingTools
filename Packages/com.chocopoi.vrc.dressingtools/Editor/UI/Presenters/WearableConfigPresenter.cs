@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
@@ -91,7 +90,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                _view.Config.AvatarConfig.armatureName = cabinet.AvatarArmatureName;
+                _view.Config.AvatarConfig.armatureName = cabinet.avatarArmatureName;
             }
 
             // can't do anything

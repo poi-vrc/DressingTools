@@ -16,7 +16,6 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -77,7 +76,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var armatureName = "Armature";
             if (cabinet != null)
             {
-                armatureName = cabinet.AvatarArmatureName;
+                armatureName = cabinet.avatarArmatureName;
                 _view.ShowAvatarNoCabinetHelpBox = false;
             }
             else
@@ -86,7 +85,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // attempt to find wearable armature using avatar armature name
-            var armature = DTRuntimeUtils.GuessArmature(_view.TargetWearable, armatureName);
+            var armature = DTEditorUtils.GuessArmature(_view.TargetWearable, armatureName);
 
             if (armature == null)
             {
@@ -133,7 +132,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 if (_view.UseArmatureMapping)
                 {
                     // skip the armature if used armature mapping
-                    var wearableArmature = DTRuntimeUtils.GuessArmature(_view.TargetWearable, _view.ArmatureMappingModuleConfig.wearableArmatureName);
+                    var wearableArmature = DTEditorUtils.GuessArmature(_view.TargetWearable, _view.ArmatureMappingModuleConfig.wearableArmatureName);
                     for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
                         // do not auto add wearable toggle if state is disabled initially
@@ -167,7 +166,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     toggles.Add(new AnimationToggle()
                     {
-                        path = DTRuntimeUtils.GetRelativePath(trans, _view.TargetWearable.transform),
+                        path = DTEditorUtils.GetRelativePath(trans, _view.TargetWearable.transform),
                         state = true
                     });
                 }
@@ -185,7 +184,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 foreach (var avatarSmr in avatarSmrs)
                 {
                     // transverse up to see if it is originated from ours or an existing wearable
-                    if (DTRuntimeUtils.IsOriginatedFromAnyWearable(_view.TargetWearable.transform, avatarSmr.transform))
+                    if (DTEditorUtils.IsOriginatedFromAnyWearable(_view.TargetWearable.transform, avatarSmr.transform))
                     {
                         // skip this SMR
                         continue;
@@ -229,8 +228,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                                     wearableFromValue = 0,
                                     wearableToValue = 100,
                                     wearableBlendshapeName = wearableBlendshape,
-                                    avatarPath = DTRuntimeUtils.GetRelativePath(avatarSmr.transform, _view.TargetAvatar.transform),
-                                    wearablePath = DTRuntimeUtils.GetRelativePath(wearableSmr.transform, _view.TargetWearable.transform)
+                                    avatarPath = DTEditorUtils.GetRelativePath(avatarSmr.transform, _view.TargetAvatar.transform),
+                                    wearablePath = DTEditorUtils.GetRelativePath(wearableSmr.transform, _view.TargetWearable.transform)
                                 });
                                 found = true;
                                 break;

@@ -189,7 +189,7 @@ namespace Chocopoi.DressingTools.Animations
             var disableClip = new AnimationClip();
 
             // prevent unexpected behaviour
-            if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
+            if (!DTEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
@@ -204,7 +204,7 @@ namespace Chocopoi.DressingTools.Animations
             var visitedDynamicsTransforms = new List<Transform>();
             foreach (var dynamics in _wearableDynamics)
             {
-                if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, dynamics.Transform))
+                if (!DTEditorUtils.IsGrandParent(_avatarObject.transform, dynamics.Transform))
                 {
                     throw new System.Exception(string.Format("Dynamics {0} is not inside avatar {1}, aborting", dynamics.Transform.name, _avatarObject.name));
                 }
@@ -238,7 +238,7 @@ namespace Chocopoi.DressingTools.Animations
         public Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations(bool writeDefaults)
         {
             // prevent unexpected behaviour
-            if (!DTRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
+            if (!DTEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }

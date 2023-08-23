@@ -540,7 +540,7 @@ namespace Chocopoi.DressingTools.UI
                 targetAvatar.transform.position = newAvatarPosition;
 
                 // if clothes is not inside avatar, we instantiate a new copy
-                if (!DTRuntimeUtils.IsGrandParent(_activeAvatar.transform, _clothesToDress.transform))
+                if (!DTEditorUtils.IsGrandParent(_activeAvatar.transform, _clothesToDress.transform))
                 {
                     targetWearable = Instantiate(_clothesToDress);
 
@@ -586,8 +586,8 @@ namespace Chocopoi.DressingTools.UI
 
             _report = DefaultDresser.Execute(MakeDressSettings(), out var boneMappings);
 
-            var avatarDynamics = DTRuntimeUtils.ScanDynamics(targetAvatar, true);
-            var wearableDynamics = DTRuntimeUtils.ScanDynamics(targetWearable, false);
+            var avatarDynamics = DTEditorUtils.ScanDynamics(targetAvatar, true);
+            var wearableDynamics = DTEditorUtils.ScanDynamics(targetWearable, false);
 
             throw new System.NotImplementedException("extract v2 ArmatureMappingModule stuff here");
 

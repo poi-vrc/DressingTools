@@ -80,12 +80,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ApplyMoveToGameObjectFieldChanges()
         {
-            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DTRuntimeUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
+            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DTEditorUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
             {
                 _view.IsGameObjectInvalid = false;
 
                 // renew path if valid
-                _module.avatarPath = DTRuntimeUtils.GetRelativePath(_view.MoveToGameObject.transform, _parentView.TargetAvatar.transform);
+                _module.avatarPath = DTEditorUtils.GetRelativePath(_view.MoveToGameObject.transform, _parentView.TargetAvatar.transform);
             }
             else
             {

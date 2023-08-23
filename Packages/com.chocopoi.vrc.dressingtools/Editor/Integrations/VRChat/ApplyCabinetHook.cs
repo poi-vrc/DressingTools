@@ -17,6 +17,7 @@
 
 #if VRC_SDK_VRCSDK3
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using UnityEditor;
 namespace Chocopoi.DressingTools.Integrations.VRChat
@@ -37,7 +38,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         {
             EditorUtility.DisplayProgressBar("DressingTools", "Applying cabinet...", 0);
 
-            _cabinet.Apply(_report);
+            new CabinetApplier(_report, _cabinet).Execute();
 
             return !_report.HasLogType(DTReportLogType.Error);
         }

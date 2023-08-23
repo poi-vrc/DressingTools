@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.AvatarLib.Expressions;
 using Chocopoi.DressingTools.Animations;
-using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
 
             // get the avatar descriptor
-            var avatarDescriptor = _cabinet.AvatarGameObject.GetComponent<VRCAvatarDescriptor>();
+            var avatarDescriptor = _cabinet.avatarGameObject.GetComponent<VRCAvatarDescriptor>();
 
             // obtain FX layer
             var fxController = CopyAndReplaceLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
@@ -120,7 +120,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             };
 
             // get wearables
-            var wearables = _cabinet.GetWearables();
+            var wearables = DTEditorUtils.GetCabinetWearables(_cabinet);
 
             for (var i = 0; i < wearables.Length; i++)
             {
@@ -135,7 +135,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 }
 
                 // obtain module
-                var vrcm = DTRuntimeUtils.FindWearableModuleConfig<VRChatIntegrationModuleConfig>(config);
+                var vrcm = DTEditorUtils.FindWearableModuleConfig<VRChatIntegrationModuleConfig>(config);
                 if (vrcm == null)
                 {
                     // use default settings if no module
@@ -143,20 +143,20 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 }
 
                 EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.Info.name + "...", i / (float)wearables.Length * 100);
-                var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearables[i].wearableGameObject, false);
+                var wearableDynamics = DTEditorUtils.ScanDynamics(wearables[i].wearableGameObject, false);
 
                 // find the animation generation module
-                var agm = DTRuntimeUtils.FindWearableModuleConfig<AnimationGenerationModuleConfig>(config);
+                var agm = DTEditorUtils.FindWearableModuleConfig<AnimationGenerationModuleConfig>(config);
                 if (agm == null)
                 {
                     Debug.Log("[DressingTools] [BuildDTCabinetCallback] [GenerateAnimationHook] " + config.Info.name + " has no AnimationGenerationModule, skipping this wearable generation");
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(_report, _cabinet.AvatarGameObject, agm, wearables[i].wearableGameObject, wearableDynamics);
+                var animationGenerator = new AnimationGenerator(_report, _cabinet.avatarGameObject, agm, wearables[i].wearableGameObject, wearableDynamics);
 
                 // TODO: merge disable clips and check for conflicts
-                var wearAnimations = animationGenerator.GenerateWearAnimations(_cabinet.AnimationGenerationWriteDefaults);
+                var wearAnimations = animationGenerator.GenerateWearAnimations(_cabinet.animationGenerationWriteDefaults);
                 pairs.Add(i + 1, wearAnimations.Item1); // enable clip
                 AssetDatabase.CreateAsset(wearAnimations.Item1, BuildDTCabinetCallback.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
@@ -164,7 +164,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 subMenu.AddToggle(vrcm.customCabinetToggleName ?? config.Info.name, "cpDT_Cabinet", i + 1);
             }
 
-            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, _cabinet.AnimationGenerationWriteDefaults, null, refTransition);
+            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, _cabinet.animationGenerationWriteDefaults, null, refTransition);
 
             EditorUtility.DisplayProgressBar("DressingTools", "Generating expression menu...", 0);
             subMenu.CreateAsset(BuildDTCabinetCallback.GeneratedAssetsPath + "/cpDT_Cabinet.asset")

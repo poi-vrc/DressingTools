@@ -17,7 +17,6 @@
 
 using System;
 using Chocopoi.DressingTools.Lib.UI;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat
 {
