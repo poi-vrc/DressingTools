@@ -23,6 +23,7 @@ using System.Reflection;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -308,6 +309,30 @@ namespace Chocopoi.DressingTools
             }
 
             return destComp;
+        }
+
+        public static T FindWearableModuleConfig<T>(WearableConfig config) where T : IModuleConfig
+        {
+            foreach (var module in config.Modules)
+            {
+                if (module.config is T moduleConfig)
+                {
+                    return moduleConfig;
+                }
+            }
+            return default;
+        }
+
+        public static WearableModule FindWearableModule(WearableConfig config, string moduleName)
+        {
+            foreach (var module in config.Modules)
+            {
+                if (moduleName == module.moduleName)
+                {
+                    return module;
+                }
+            }
+            return null;
         }
 
         public static bool IsOriginatedFromAnyWearable(Transform root, Transform transform)

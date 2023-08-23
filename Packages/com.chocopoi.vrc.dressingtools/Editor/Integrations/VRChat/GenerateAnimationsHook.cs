@@ -47,18 +47,6 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             _cabinet = cabinet;
         }
 
-        private AnimationGenerationModuleConfig FindAnimationGenerationModuleConfig(WearableConfig config)
-        {
-            foreach (var module in config.Modules)
-            {
-                if (module.config is AnimationGenerationModuleConfig agm)
-                {
-                    return agm;
-                }
-            }
-            return null;
-        }
-
         public bool OnPreprocessAvatar()
         {
             EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
@@ -151,7 +139,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 var wearableDynamics = DTRuntimeUtils.ScanDynamics(wearables[i].wearableGameObject, false);
 
                 // find the animation generation module
-                var module = FindAnimationGenerationModuleConfig(config);
+                var module = DTRuntimeUtils.FindWearableModuleConfig<AnimationGenerationModuleConfig>(config);
                 if (module == null)
                 {
                     Debug.Log("[DressingTools] [BuildDTCabinetCallback] [GenerateAnimationHook] " + config.Info.name + " has no AnimationGenerationModule, skipping this wearable generation");

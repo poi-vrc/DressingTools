@@ -57,5 +57,62 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<BlendshapeSyncModuleConfig>();
 
         public override IModuleConfig NewModuleConfig() => new BlendshapeSyncModuleConfig();
+
+        public override bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        {
+            var avatarGameObject = cabinet.AvatarGameObject;
+            var bsm = (BlendshapeSyncModuleConfig)module.config;
+
+            // follow blendshape sync
+            foreach (var bs in bsm.blendshapeSyncs)
+            {
+                var avatarSmrObj = avatarGameObject.transform.Find(bs.avatarPath);
+                if (avatarSmrObj == null)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync avatar GameObject at path not found: " + bs.avatarPath);
+                    continue;
+                }
+
+                var avatarSmr = avatarSmrObj.GetComponent<SkinnedMeshRenderer>();
+                if (avatarSmr == null || avatarSmr.sharedMesh == null)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync avatar GameObject at path does not have SkinnedMeshRenderer or Mesh attached: " + bs.avatarPath);
+                    continue;
+                }
+
+                var avatarBlendshapeIndex = avatarSmr.sharedMesh.GetBlendShapeIndex(bs.avatarBlendshapeName);
+                if (avatarBlendshapeIndex == -1)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync avatar GameObject does not have blendshape: " + bs.avatarBlendshapeName);
+                    continue;
+                }
+
+                var wearableSmrObj = wearableGameObject.transform.Find(bs.wearablePath);
+                if (wearableSmrObj == null)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync wearable GameObject at path not found: " + bs.wearablePath);
+                    continue;
+                }
+
+                var wearableSmr = wearableSmrObj.GetComponent<SkinnedMeshRenderer>();
+                if (wearableSmr == null)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync wearable GameObject at path does not have SkinnedMeshRenderer or Mesh attached: " + bs.avatarPath);
+                    continue;
+                }
+
+                var wearableBlendshapeIndex = wearableSmr.sharedMesh.GetBlendShapeIndex(bs.wearableBlendshapeName);
+                if (wearableBlendshapeIndex == -1)
+                {
+                    Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync wearable GameObject does not have blendshape: " + bs.wearableBlendshapeName);
+                    continue;
+                }
+
+                // copy value from avatar to wearable
+                wearableSmr.SetBlendShapeWeight(wearableBlendshapeIndex, avatarSmr.GetBlendShapeWeight(avatarBlendshapeIndex));
+            }
+
+            return true;
+        }
     }
 }

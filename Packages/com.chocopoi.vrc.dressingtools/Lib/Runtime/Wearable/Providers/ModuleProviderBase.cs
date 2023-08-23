@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib.Wearable.Modules.Providers
 {
@@ -34,5 +36,6 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Modules.Providers
         public virtual bool OnBeforeApplyCabinet(ApplyCabinetContext ctx, IModuleConfig moduleConfig) => true;
         public virtual bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, IModuleConfig moduleConfig) => true;
         public virtual bool OnAfterApplyCabinet(ApplyCabinetContext ctx, IModuleConfig moduleConfig) => true;
+        public virtual bool OnAddWearableToCabinet(ICabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module) => true;
     }
 }
