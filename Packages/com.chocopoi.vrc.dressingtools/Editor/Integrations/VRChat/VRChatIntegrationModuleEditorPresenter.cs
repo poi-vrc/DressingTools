@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#if VRC_SDK_VRCSDK3
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
 using Chocopoi.DressingTools.Lib.UI;
 
@@ -93,3 +94,4 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         }
     }
 }
+#endif

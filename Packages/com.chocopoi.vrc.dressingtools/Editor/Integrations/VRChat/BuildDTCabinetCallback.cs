@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.UI;
@@ -44,10 +45,6 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         {
             Debug.Log("Preprocess avatar");
 
-            // remove previous generated files
-            AssetDatabase.DeleteAsset(GeneratedAssetsPath);
-            AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
-
             var cabinet = DTEditorUtils.GetAvatarCabinet(avatarGameObject);
             if (cabinet == null)
             {
@@ -63,20 +60,8 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             try
             {
                 // create hook instances
-                var hooks = new IBuildDTCabinetHook[]
-                {
-                    new ApplyCabinetHook(report, cabinet),
-                    new GenerateAnimationsHook(report, cabinet),
-                };
-
-                // execute hooks
-                foreach (var hook in hooks)
-                {
-                    if (!hook.OnPreprocessAvatar())
-                    {
-                        break;
-                    }
-                }
+                EditorUtility.DisplayProgressBar("DressingTools", "Applying cabinet...", 0);
+                new CabinetApplier(report, cabinet).Execute();
             }
             catch (System.Exception ex)
             {
@@ -105,7 +90,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         }
     }
 
-#region IEditorOnly Workaround
+    #region IEditorOnly Workaround
     // temporary workaround with VRCSDK to not remove IEditorOnly objects at early stage which causes problems
     // code referenced from MA: https://github.com/bdunderscore/modular-avatar/blob/main/Packages/nadena.dev.modular-avatar/Editor/PreventStripTagObjects.cs
     // https://feedback.vrchat.com/sdk-bug-reports/p/ieditoronly-components-should-be-destroyed-late-in-the-build-process
@@ -162,7 +147,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             return true;
         }
     }
-#endregion IEditorOnly Workaround
+    #endregion IEditorOnly Workaround
 
 }
 #endif
