@@ -25,11 +25,11 @@ namespace Chocopoi.DressingTools.UIBase.Views
 {
     internal class ModuleData
     {
-        public ModuleEditor editor;
+        public WearableModuleEditor editor;
         public Action removeButtonOnClickEvent;
     }
 
-    internal interface IWearableConfigView : IEditorView, IModuleEditorViewParent
+    internal interface IWearableConfigView : IEditorView, IWearableModuleEditorViewParent
     {
         event Action TargetAvatarConfigChange;
         event Action MetaInfoChange;

@@ -18,10 +18,10 @@
 using System.Collections.Generic;
 using System.IO;
 using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
-using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -75,22 +75,23 @@ namespace Chocopoi.DressingTools
 
                 // TODO: read default config, scan for armature names?
                 comp.avatarGameObject = avatar;
-                comp.avatarArmatureName = "Armature";
+                var config = new CabinetConfig();
+                comp.configJson = config.ToString();
             }
 
             return comp;
         }
 
-        public static DTCabinetWearable[] GetCabinetWearables(DTCabinet cabinet)
+        public static DTCabinetWearable[] GetCabinetWearables(GameObject avatarGameObject)
         {
-            if (cabinet.avatarGameObject == null)
+            if (avatarGameObject == null)
             {
                 return new DTCabinetWearable[0];
             }
-            return cabinet.avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
+            return avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
         }
 
-        public static bool AddCabinetWearable(DTCabinet cabinet, WearableConfig config, GameObject wearableGameObject)
+        public static bool AddCabinetWearable(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
         {
             // do not add if there's an existing component
             if (wearableGameObject.GetComponent<DTCabinetWearable>() != null)
@@ -105,26 +106,26 @@ namespace Chocopoi.DressingTools
             }
 
             // parent to avatar
-            wearableGameObject.transform.SetParent(cabinet.transform);
+            wearableGameObject.transform.SetParent(avatarGameObject.transform);
 
             // add cabinet wearable component
             var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
 
             cabinetWearable.wearableGameObject = wearableGameObject;
-            cabinetWearable.configJson = config.Serialize().ToString(Formatting.None);
+            cabinetWearable.configJson = wearableConfig.Serialize().ToString(Formatting.None);
 
             // do provider hooks
-            var providers = ModuleProviderLocator.Instance.GetAllProviders();
+            var providers = WearableModuleProviderLocator.Instance.GetAllProviders();
             foreach (var provider in providers)
             {
-                var module = FindWearableModule(config, provider.ModuleIdentifier);
+                var module = FindWearableModule(wearableConfig, provider.ModuleIdentifier);
                 if (module == null)
                 {
                     // config does not have such module
                     continue;
                 }
 
-                if (!provider.OnAddWearableToCabinet(cabinet, config, wearableGameObject, module))
+                if (!provider.OnAddWearableToCabinet(cabinetConfig, avatarGameObject, wearableConfig, wearableGameObject, module))
                 {
                     Debug.LogWarning("[DressingTools] [AddCabinetWearable] Error processing provider OnAddWearableToCabinet hook: " + provider.ModuleIdentifier);
                     return false;
@@ -152,15 +153,15 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        public static void PrepareWearableConfig(WearableConfig config, GameObject targetAvatar, GameObject targetWearable)
+        public static void PrepareWearableConfig(WearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable)
         {
-            config.Version = WearableConfig.CurrentConfigVersion;
+            wearableConfig.Version = WearableConfig.CurrentConfigVersion;
 
-            AddWearableMetaInfo(config, targetWearable);
-            AddWearableTargetAvatarConfig(config, targetAvatar, targetWearable);
+            AddWearableMetaInfo(wearableConfig, targetWearable);
+            AddWearableTargetAvatarConfig(wearableConfig, targetAvatar, targetWearable);
         }
 
-        public static void AddWearableTargetAvatarConfig(WearableConfig config, GameObject targetAvatar, GameObject targetWearable)
+        public static void AddWearableTargetAvatarConfig(WearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable)
         {
             var cabinet = DTEditorUtils.GetAvatarCabinet(targetAvatar);
 
@@ -168,11 +169,18 @@ namespace Chocopoi.DressingTools
             if (cabinet == null)
             {
                 // leave it empty
-                config.AvatarConfig.armatureName = "";
+                wearableConfig.AvatarConfig.armatureName = "";
             }
             else
             {
-                config.AvatarConfig.armatureName = cabinet.avatarArmatureName;
+                if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                {
+                    wearableConfig.AvatarConfig.armatureName = cabinetConfig.AvatarArmatureName;
+                }
+                else
+                {
+                    wearableConfig.AvatarConfig.armatureName = "";
+                }
             }
 
             // can't do anything
@@ -181,24 +189,24 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            config.AvatarConfig.name = targetAvatar.name;
+            wearableConfig.AvatarConfig.name = targetAvatar.name;
 
             var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            config.AvatarConfig.guids.Clear();
+            wearableConfig.AvatarConfig.guids.Clear();
             if (!invalidAvatarPrefabGuid)
             {
                 // TODO: multiple guids
-                config.AvatarConfig.guids.Add(avatarPrefabGuid);
+                wearableConfig.AvatarConfig.guids.Add(avatarPrefabGuid);
             }
 
             var deltaPos = targetWearable.transform.position - targetAvatar.transform.position;
             var deltaRotation = targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation);
-            config.AvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
-            config.AvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
-            config.AvatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
-            config.AvatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
+            wearableConfig.AvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            wearableConfig.AvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            wearableConfig.AvatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
+            wearableConfig.AvatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
         }
 
         public static void AddWearableMetaInfo(WearableConfig config, GameObject targetWearable)

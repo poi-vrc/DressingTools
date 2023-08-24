@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEngine;
@@ -111,7 +112,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            DTEditorUtils.AddCabinetWearable(cabinet, _view.Config, _view.TargetWearable);
+            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            {
+                // TODO: handle deserialization error
+                Debug.Log("[DressingTools] Could not deserialize cabinet config");
+                return;
+            }
+
+            DTEditorUtils.AddCabinetWearable(cabinetConfig, _view.TargetAvatar, _view.Config, _view.TargetWearable);
 
             // reset and return
             _view.ResetWizardAndConfigView();

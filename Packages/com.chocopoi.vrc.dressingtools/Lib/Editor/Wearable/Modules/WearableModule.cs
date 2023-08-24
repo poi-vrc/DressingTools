@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTWearableModuleBase.cs
+ * File: WearableModule.cs
  * Project: DressingTools
  * Created Date: Tuesday, August 1st 2023, 12:37:10 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -15,21 +15,11 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Serialization;
+
 namespace Chocopoi.DressingTools.Lib.Wearable.Modules
 {
-    public interface IModuleConfig { }
-
-    public abstract class VersionedModuleConfig : WearableConfigVersionedObject, IModuleConfig { }
-
-    public class UnknownModuleConfig : IModuleConfig
-    {
-        public string RawJson { get; private set; }
-        public UnknownModuleConfig(string rawJson)
-        {
-            RawJson = rawJson;
-        }
-    }
-
     public class WearableModule
     {
         public string moduleName;

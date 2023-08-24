@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTCabinetApplier.cs
+ * File: AutoPlayModeApply.cs
  * Project: DressingTools
  * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)

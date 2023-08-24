@@ -1,4 +1,5 @@
-﻿using Chocopoi.DressingTools.Cabinet;
+﻿using System.Runtime.InteropServices;
+using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
@@ -18,6 +19,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         {
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
+            Assert.NotNull(cabinet);
 
             var report = new DTReport();
             ApplyCabinet(report, cabinet);
@@ -49,10 +51,11 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         // TODO: write config migration test
 
         [Test]
-        public void ConfigDeserializationFailure_ReturnsCorrectErrorCodes()
+        public void WearableConfigDeserializationFailure_ReturnsCorrectErrorCodes()
         {
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
+            Assert.NotNull(cabinet);
 
             // we simulate this by destroying the config json
             var wearableComp = avatarRoot.GetComponentInChildren<DTCabinetWearable>();
@@ -62,7 +65,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var report = new DTReport();
             ApplyCabinet(report, cabinet);
 
-            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.UnableToDeserializeConfig), "Should have deserialization error");
+            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.UnableToDeserializeWearableConfig), "Should have deserialization error");
         }
 
         [Test]
@@ -70,10 +73,12 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         {
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearableOtherDynamics.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
+            Assert.NotNull(cabinet);
+            Assert.True(CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig));
 
             var report = new DTReport();
-            cabinet.groupDynamics = true;
-            cabinet.groupDynamicsSeparateGameObjects = true;
+            cabinetConfig.GroupDynamics = true;
+            cabinetConfig.GroupDynamicsSeparateGameObjects = true;
             ApplyCabinet(report, cabinet);
 
             Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
@@ -99,10 +104,13 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         {
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearableOtherDynamics.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
+            Assert.NotNull(cabinet);
+            Assert.True(CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig));
 
             var report = new DTReport();
-            cabinet.groupDynamics = true;
-            cabinet.groupDynamicsSeparateGameObjects = false;
+            cabinetConfig.GroupDynamics = true;
+            cabinetConfig.GroupDynamicsSeparateGameObjects = false;
+            cabinet.configJson = cabinetConfig.ToString();
             ApplyCabinet(report, cabinet);
 
             Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
@@ -128,6 +136,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         {
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearableModuleError.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
+            Assert.NotNull(cabinet);
 
             var report = new DTReport();
             ApplyCabinet(report, cabinet);

@@ -24,18 +24,12 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
     public class DTCabinet : DTBaseComponent
     {
         public GameObject avatarGameObject;
-        public string avatarArmatureName;
-        public bool groupDynamics;
-        public bool groupDynamicsSeparateGameObjects;
-        public bool animationGenerationWriteDefaults;
+        public string configJson;
 
         public DTCabinet()
         {
             avatarGameObject = null;
-            avatarArmatureName = "Armature";
-            groupDynamics = true;
-            groupDynamicsSeparateGameObjects = true;
-            animationGenerationWriteDefaults = true;
+            configJson = null;
         }
 
         public void Awake()

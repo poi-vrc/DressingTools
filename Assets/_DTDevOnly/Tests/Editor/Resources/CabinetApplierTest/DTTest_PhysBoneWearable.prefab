@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 1243495146914979364}
   - component: {fileID: 3241273329118283243}
   m_Layer: 0
-  m_Name: DTTest_PhysBoneWearable 1
+  m_Name: DTTest_PhysBoneWearable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wearableGameObject: {fileID: 1243495146914979365}
-  configJson: '{"version":"1.0.0","info":{"uuid":"1f0ae78b-1455-42b2-9e40-950759322c48","name":"DTTest_PhysBoneWearable","author":"","description":"","createdTime":"2023-08-24T01:06:13.1422017Z","updatedTime":"2023-08-24T01:06:13.1422017Z"},"avatarConfig":{"guids":[],"name":"DTTest_PhysBoneAvatarWithWearable","armatureName":"Armature","worldPosition":{"x":-20.0,"y":0.0,"z":0.0},"worldRotation":{"x":0.0,"y":0.0,"z":0.0,"w":1.0},"avatarLossyScale":{"x":1.0,"y":1.0,"z":1.0},"wearableLossyScale":{"x":1.0,"y":1.0,"z":1.0}},"modules":[{"moduleName":"com.chocopoi.dressingtools.built-in.armature-mapping","config":{"dresserName":"Chocopoi.DressingTools.Dresser.DefaultDresser","wearableArmatureName":"Armature","boneMappingMode":0,"boneMappings":null,"serializedDresserConfig":"{\"dynamicsOption\":0}","removeExistingPrefixSuffix":true,"groupBones":true}}]}'
+  configJson: '{"version":"1.0.0","info":{"uuid":"1f0ae78b-1455-42b2-9e40-950759322c48","name":"DTTest_PhysBoneWearable","author":"","description":"","createdTime":"2023-08-24T01:06:13.1422017Z","updatedTime":"2023-08-24T01:06:13.1422017Z"},"avatarConfig":{"guids":[],"name":"DTTest_PhysBoneAvatarWithWearable","armatureName":"Armature","worldPosition":{"x":-20.0,"y":0.0,"z":0.0},"worldRotation":{"x":0.0,"y":0.0,"z":0.0,"w":1.0},"avatarLossyScale":{"x":1.0,"y":1.0,"z":1.0},"wearableLossyScale":{"x":1.0,"y":1.0,"z":1.0}},"modules":[{"moduleName":"com.chocopoi.dressingtools.built-in.wearable.armature-mapping","config":{"dresserName":"Chocopoi.DressingTools.Dresser.DefaultDresser","wearableArmatureName":"Armature","boneMappingMode":0,"boneMappings":null,"serializedDresserConfig":"{\"dynamicsOption\":0}","removeExistingPrefixSuffix":true,"groupBones":true}}]}'
 --- !u!1 &7622984608769625282
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,12 +18,14 @@
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class CabinetPresenter
     {
         private ICabinetSubView _view;
+        private CabinetConfig _cabinetConfig;
 
         public CabinetPresenter(ICabinetSubView view)
         {
@@ -74,8 +76,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
-            cabinet.avatarArmatureName = _view.CabinetAvatarArmatureName;
             cabinet.avatarGameObject = _view.CabinetAvatarGameObject;
+
+            if (_cabinetConfig == null)
+            {
+                _cabinetConfig = new CabinetConfig();
+            }
+            _cabinetConfig.AvatarArmatureName = _view.CabinetAvatarArmatureName;
+            cabinet.configJson = _cabinetConfig.ToString();
         }
 
         private void OnForceUpdateView()
@@ -147,10 +155,18 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // update selected cabinet view
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
-            _view.CabinetAvatarGameObject = cabinet.avatarGameObject;
-            _view.CabinetAvatarArmatureName = cabinet.avatarArmatureName;
+            // cabinet json is broken, ask user whether to make a new one or not
+            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out _cabinetConfig))
+            {
+                // TODO: ask user
+                Debug.LogError("[DressingTools] [CabinetPresenter] Unable to deserialize cabinet config!");
+                return;
+            }
 
-            var wearables = DTEditorUtils.GetCabinetWearables(cabinet);
+            _view.CabinetAvatarGameObject = cabinet.avatarGameObject;
+            _view.CabinetAvatarArmatureName = _cabinetConfig.AvatarArmatureName;
+
+            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.avatarGameObject);
 
             _view.WearablePreviews.Clear();
             foreach (var wearable in wearables)

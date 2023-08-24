@@ -35,14 +35,14 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action PreviousButtonClick;
         public event Action NextButtonClick;
 
-        public ArmatureMappingModuleConfig ArmatureMappingModuleConfig { get; set; }
-        public MoveRootModuleConfig MoveRootModuleConfig { get; set; }
-        public AnimationGenerationModuleConfig AnimationGenerationModuleConfig { get; set; }
-        public BlendshapeSyncModuleConfig BlendshapeSyncModuleConfig { get; set; }
-        public ArmatureMappingModuleEditor ArmatureMappingModuleEditor { get; set; }
-        public MoveRootModuleEditor MoveRootModuleEditor { get; set; }
-        public AnimationGenerationModuleEditor AnimationGenerationModuleEditor { get; set; }
-        public BlendshapeSyncModuleEditor BlendshapeSyncModuleEditor { get; set; }
+        public ArmatureMappingWearableModuleConfig ArmatureMappingModuleConfig { get; set; }
+        public MoveRootWearableModuleConfig MoveRootModuleConfig { get; set; }
+        public AnimationGenerationWearableModuleConfig AnimationGenerationModuleConfig { get; set; }
+        public BlendshapeSyncWearableModuleConfig BlendshapeSyncModuleConfig { get; set; }
+        public ArmatureMappingWearableModuleEditor ArmatureMappingModuleEditor { get; set; }
+        public MoveRootWearableModuleEditor MoveRootModuleEditor { get; set; }
+        public AnimationGenerationWearableModuleEditor AnimationGenerationModuleEditor { get; set; }
+        public BlendshapeSyncWearableModuleEditor BlendshapeSyncModuleEditor { get; set; }
         public GameObject TargetAvatar { get => _dressingSubView.TargetAvatar; set => _dressingSubView.TargetAvatar = value; }
         public GameObject TargetWearable { get => _dressingSubView.TargetWearable; set => _dressingSubView.TargetWearable = value; }
         public WearableConfig Config { get => _dressingSubView.Config; set => _dressingSubView.Config = value; }
@@ -54,6 +54,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowAvatarNoCabinetHelpBox { get; set; }
         public bool ShowArmatureNotFoundHelpBox { get; set; }
         public bool ShowArmatureGuessedHelpBox { get; set; }
+        public bool ShowCabinetConfigErrorHelpBox { get; set; }
 
 
         private WearableSetupWizardPresenter _presenter;
@@ -71,17 +72,17 @@ namespace Chocopoi.DressingTools.UI.Views
             _dressingSubView = dressingSubView;
             _presenter = new WearableSetupWizardPresenter(this);
 
-            ArmatureMappingModuleConfig = new ArmatureMappingModuleConfig();
-            MoveRootModuleConfig = new MoveRootModuleConfig();
-            AnimationGenerationModuleConfig = new AnimationGenerationModuleConfig();
-            BlendshapeSyncModuleConfig = new BlendshapeSyncModuleConfig();
+            ArmatureMappingModuleConfig = new ArmatureMappingWearableModuleConfig();
+            MoveRootModuleConfig = new MoveRootWearableModuleConfig();
+            AnimationGenerationModuleConfig = new AnimationGenerationWearableModuleConfig();
+            BlendshapeSyncModuleConfig = new BlendshapeSyncWearableModuleConfig();
 
             // TODO: do not pass null to provider argument
 
-            ArmatureMappingModuleEditor = new ArmatureMappingModuleEditor(this, null, ArmatureMappingModuleConfig);
-            MoveRootModuleEditor = new MoveRootModuleEditor(this, null, MoveRootModuleConfig);
-            AnimationGenerationModuleEditor = new AnimationGenerationModuleEditor(this, null, AnimationGenerationModuleConfig);
-            BlendshapeSyncModuleEditor = new BlendshapeSyncModuleEditor(this, null, BlendshapeSyncModuleConfig);
+            ArmatureMappingModuleEditor = new ArmatureMappingWearableModuleEditor(this, null, ArmatureMappingModuleConfig);
+            MoveRootModuleEditor = new MoveRootWearableModuleEditor(this, null, MoveRootModuleConfig);
+            AnimationGenerationModuleEditor = new AnimationGenerationWearableModuleEditor(this, null, AnimationGenerationModuleConfig);
+            BlendshapeSyncModuleEditor = new BlendshapeSyncWearableModuleEditor(this, null, BlendshapeSyncModuleConfig);
         }
 
         public void GenerateConfig() => _presenter.GenerateConfig();
@@ -202,6 +203,10 @@ namespace Chocopoi.DressingTools.UI.Views
 
             if (_currentStep == 0)
             {
+                if (ShowCabinetConfigErrorHelpBox)
+                {
+                    HelpBox("Auto-setup: Unable to load cabinet config!", MessageType.Error);
+                }
                 if (ShowAvatarNoCabinetHelpBox)
                 {
                     HelpBox("Auto-setup: Selected avatar has no cabinet, using default settings", MessageType.Warning);

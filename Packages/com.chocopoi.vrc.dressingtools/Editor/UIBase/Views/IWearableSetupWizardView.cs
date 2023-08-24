@@ -23,20 +23,20 @@ using Chocopoi.DressingTools.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {
-    internal interface IWearableSetupWizardView : IEditorView, IModuleEditorViewParent
+    internal interface IWearableSetupWizardView : IEditorView, IWearableModuleEditorViewParent
     {
         event Action PreviousButtonClick;
         event Action NextButtonClick;
 
         WearableConfig Config { get; set; }
-        ArmatureMappingModuleConfig ArmatureMappingModuleConfig { get; set; }
-        MoveRootModuleConfig MoveRootModuleConfig { get; set; }
-        AnimationGenerationModuleConfig AnimationGenerationModuleConfig { get; set; }
-        BlendshapeSyncModuleConfig BlendshapeSyncModuleConfig { get; set; }
-        ArmatureMappingModuleEditor ArmatureMappingModuleEditor { get; set; }
-        MoveRootModuleEditor MoveRootModuleEditor { get; set; }
-        AnimationGenerationModuleEditor AnimationGenerationModuleEditor { get; set; }
-        BlendshapeSyncModuleEditor BlendshapeSyncModuleEditor { get; set; }
+        ArmatureMappingWearableModuleConfig ArmatureMappingModuleConfig { get; set; }
+        MoveRootWearableModuleConfig MoveRootModuleConfig { get; set; }
+        AnimationGenerationWearableModuleConfig AnimationGenerationModuleConfig { get; set; }
+        BlendshapeSyncWearableModuleConfig BlendshapeSyncModuleConfig { get; set; }
+        ArmatureMappingWearableModuleEditor ArmatureMappingModuleEditor { get; set; }
+        MoveRootWearableModuleEditor MoveRootModuleEditor { get; set; }
+        AnimationGenerationWearableModuleEditor AnimationGenerationModuleEditor { get; set; }
+        BlendshapeSyncWearableModuleEditor BlendshapeSyncModuleEditor { get; set; }
         bool UseArmatureMapping { get; set; }
         bool UseMoveRoot { get; set; }
         bool UseAnimationGeneration { get; set; }
@@ -45,6 +45,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool ShowAvatarNoCabinetHelpBox { get; set; }
         bool ShowArmatureNotFoundHelpBox { get; set; }
         bool ShowArmatureGuessedHelpBox { get; set; }
+        bool ShowCabinetConfigErrorHelpBox { get; set; }
 
         void GenerateConfig();
         void RaiseDoAddToCabinetEvent();

@@ -50,11 +50,11 @@ namespace Chocopoi.DressingTools.Animations
 
         private GameObject _wearableObject;
 
-        private AnimationGenerationModuleConfig _module;
+        private AnimationGenerationWearableModuleConfig _module;
 
         private List<IDynamicsProxy> _wearableDynamics;
 
-        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> wearableDynamics)
+        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> wearableDynamics)
         {
             _report = report;
             _avatarObject = avatarObject;
