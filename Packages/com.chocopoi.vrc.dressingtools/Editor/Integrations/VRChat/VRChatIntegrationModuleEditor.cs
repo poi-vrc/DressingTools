@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#if VRC_SDK_VRCSDK3
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
@@ -62,3 +63,4 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         public override bool IsValid() => _presenter.IsValid();
     }
 }
+#endif

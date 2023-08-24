@@ -26,6 +26,7 @@ using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Cabinet
@@ -33,6 +34,10 @@ namespace Chocopoi.DressingTools.Cabinet
     internal class CabinetApplier
     {
         public const string LogLabel = "DTCabinetApplier";
+
+        public const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
+        public const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
+
         private const string DynamicsContainerName = "DT_Dynamics";
 
         public static class MessageCode
@@ -261,7 +266,8 @@ namespace Chocopoi.DressingTools.Cabinet
         private static bool DoBeforeApplyCabinetProviderHooks(ApplyCabinetContext ctx)
         {
             // do provider hooks
-            var providers = ModuleProviderLocator.Instance.GetAllProviders();
+            var providers = new List<ModuleProviderBase>(ModuleProviderLocator.Instance.GetAllProviders());
+            providers.Sort((p1, p2) => p1.ApplyOrder.CompareTo(p2.ApplyOrder));
             foreach (var provider in providers)
             {
                 if (!provider.OnBeforeApplyCabinet(ctx))
@@ -276,7 +282,8 @@ namespace Chocopoi.DressingTools.Cabinet
         private static bool DoAfterApplyCabinetProviderHooks(ApplyCabinetContext ctx)
         {
             // do provider hooks
-            var providers = ModuleProviderLocator.Instance.GetAllProviders();
+            var providers = new List<ModuleProviderBase>(ModuleProviderLocator.Instance.GetAllProviders());
+            providers.Sort((p1, p2) => p1.ApplyOrder.CompareTo(p2.ApplyOrder));
             foreach (var provider in providers)
             {
                 if (!provider.OnAfterApplyCabinet(ctx))
@@ -290,6 +297,10 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public void Execute()
         {
+            // remove previous generated files
+            AssetDatabase.DeleteAsset(GeneratedAssetsPath);
+            AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
+
             // scan for avatar dynamics
             _cabCtx.avatarDynamics = DTEditorUtils.ScanDynamics(_cabCtx.cabinet.avatarGameObject, true);
 
