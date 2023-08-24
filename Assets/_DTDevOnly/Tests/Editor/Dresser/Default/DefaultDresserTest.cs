@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default
 {
-    public class DefaultDresserTest : DTTestBase
+    public class DefaultDresserTest : DTEditorTestBase
     {
         [Test]
         public void NotDTDefaultDresserSettings_ReturnsCorrectErrorCode()

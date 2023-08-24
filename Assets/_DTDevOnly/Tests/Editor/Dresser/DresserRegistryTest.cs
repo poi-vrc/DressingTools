@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.Dresser
 {
-    public class DresserRegistryTest : DTTestBase
+    public class DresserRegistryTest : DTEditorTestBase
     {
         [Test]
         public void GetDresserByTypeNameTest()

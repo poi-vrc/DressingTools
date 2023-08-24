@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
-    public class NoMissingScriptsHookTest : DTTestBase
+    public class NoMissingScriptsHookTest : DTEditorTestBase
     {
         private bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DTReport report)
         {

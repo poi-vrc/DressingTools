@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests
 {
-    public class DTRuntimeUtilsTest : DTTestBase
+    public class DTEditorUtilsTest : DTEditorTestBase
     {
         public class DummyClass1 { }
         public class DummyClass2 { }

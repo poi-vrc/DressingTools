@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
-    public class ArmatureHookTest : DTTestBase
+    public class ArmatureHookTest : DTEditorTestBase
     {
         private static bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DTReport report, out List<BoneMapping> boneMappings, DefaultDresserDynamicsOption dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint)
         {
