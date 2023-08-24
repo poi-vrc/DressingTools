@@ -81,8 +81,9 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             // invert wearable toggles
             foreach (var toggle in agm.wearableAnimationOnWear.toggles)
             {
+                Debug.Log("toggle: " + toggle != null);
                 var wearableToggleObj = wearableGameObject.transform.Find(toggle.path);
-                if (wearableGameObject == null)
+                if (wearableToggleObj == null)
                 {
                     Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Wearable toggle GameObject not found at path: " + toggle.path);
                     continue;
