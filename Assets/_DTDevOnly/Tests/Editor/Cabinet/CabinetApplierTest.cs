@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.Cabinet
 {
-    public class CabinetApplierTest : DTTestBase
+    public class CabinetApplierTest : DTEditorTestBase
     {
         private static void ApplyCabinet(DTReport report, DTCabinet cabinet)
         {

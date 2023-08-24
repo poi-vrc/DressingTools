@@ -228,9 +228,6 @@ namespace Chocopoi.DressingTools.Cabinet
                 return m1Provider.ApplyOrder.CompareTo(m2Provider.ApplyOrder);
             });
 
-            // scan for wearable dynamics
-            var wearableDynamics = DTEditorUtils.ScanDynamics(wearableObj, false);
-
             // do module apply
             foreach (var module in modules)
             {
@@ -253,7 +250,7 @@ namespace Chocopoi.DressingTools.Cabinet
             // group dynamics
             if (_cabCtx.cabinet.groupDynamics)
             {
-                GroupDynamics(wearCtx.wearableGameObject, wearableDynamics);
+                GroupDynamics(wearCtx.wearableGameObject, wearCtx.wearableDynamics);
             }
 
             RollbackTransform(lastAvatarParent, lastAvatarScale);
@@ -316,13 +313,13 @@ namespace Chocopoi.DressingTools.Cabinet
                 {
                     DTReportUtils.LogExceptionLocalized(_cabCtx.report, LogLabel, ex);
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeConfig);
-                    continue;
+                    return;
                 }
 
                 if (config == null)
                 {
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeConfig);
-                    continue;
+                    return;
                 }
 
                 var wearCtx = new ApplyWearableContext()
@@ -335,7 +332,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 if (!ApplyWearable(wearCtx))
                 {
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingWearableHasErrors, config.Info.name);
-                    break;
+                    return;
                 }
             }
 

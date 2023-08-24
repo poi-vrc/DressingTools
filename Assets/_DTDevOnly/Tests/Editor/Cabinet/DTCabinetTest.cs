@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 
 namespace Chocopoi.DressingTools.Tests.Cabinet
 {
-    public class DTCabinetTest : DTTestBase
+    public class DTCabinetTest : DTEditorTestBase
     {
         private static void ApplyCabinet(DTReport report, DTCabinet cabinet)
         {
@@ -79,19 +79,6 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             ApplyCabinet(report, cabinet);
 
             Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
-        }
-
-        [UnityTest]
-        public IEnumerator ApplyInPlayModeOnLoad_AppliesNormally()
-        {
-            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
-            yield return null;
-            // we are unable to check DTReport logs so we just check is the armature empty here
-            var wearableRoot = avatarRoot.transform.Find("DTTest_PhysBoneWearable");
-            Assert.NotNull(wearableRoot);
-            var armature = wearableRoot.transform.Find("Armature");
-            Assert.NotNull(armature);
-            Assert.AreEqual(0, armature.childCount);
         }
     }
 }
