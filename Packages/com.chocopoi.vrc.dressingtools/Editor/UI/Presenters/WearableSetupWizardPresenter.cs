@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -72,11 +73,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             // cabinet
             var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            {
+                _view.ShowCabinetConfigErrorHelpBox = true;
+                return;
+            }
+            _view.ShowCabinetConfigErrorHelpBox = false;
 
             var armatureName = "Armature";
             if (cabinet != null)
             {
-                armatureName = cabinet.avatarArmatureName;
+                armatureName = cabinetConfig.AvatarArmatureName;
                 _view.ShowAvatarNoCabinetHelpBox = false;
             }
             else
@@ -271,47 +278,47 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public void GenerateConfig()
         {
-            var config = new WearableConfig();
+            var wearableConfig = new WearableConfig();
 
-            DTEditorUtils.PrepareWearableConfig(config, _view.TargetAvatar, _view.TargetWearable);
+            DTEditorUtils.PrepareWearableConfig(wearableConfig, _view.TargetAvatar, _view.TargetWearable);
 
             if (_view.UseArmatureMapping)
             {
-                config.Modules.Add(new WearableModule()
+                wearableConfig.Modules.Add(new WearableModule()
                 {
-                    moduleName = ArmatureMappingModuleProvider.Identifier,
+                    moduleName = ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.ArmatureMappingModuleConfig,
                 });
             }
 
             if (_view.UseMoveRoot)
             {
-                config.Modules.Add(new WearableModule()
+                wearableConfig.Modules.Add(new WearableModule()
                 {
-                    moduleName = MoveRootModuleProvider.Identifier,
+                    moduleName = MoveRootWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.MoveRootModuleConfig,
                 });
             }
 
             if (_view.UseAnimationGeneration)
             {
-                config.Modules.Add(new WearableModule()
+                wearableConfig.Modules.Add(new WearableModule()
                 {
-                    moduleName = AnimationGenerationModuleProvider.Identifier,
+                    moduleName = AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.AnimationGenerationModuleConfig,
                 });
             }
 
             if (_view.UseBlendshapeSync)
             {
-                config.Modules.Add(new WearableModule()
+                wearableConfig.Modules.Add(new WearableModule()
                 {
-                    moduleName = BlendshapeSyncModuleProvider.Identifier,
+                    moduleName = BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.BlendshapeSyncModuleConfig,
                 });
             }
 
-            _view.Config = config;
+            _view.Config = wearableConfig;
         }
 
         private void OnNextButtonClick()

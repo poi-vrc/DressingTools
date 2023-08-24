@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Lib.Wearable.Serializers;
 using Newtonsoft.Json;
@@ -25,24 +26,14 @@ using Newtonsoft.Json.Linq;
 
 namespace Chocopoi.DressingTools.Lib.Wearable
 {
-    public class WearableConfigMigrator
+    public class WearableConfig : VersionedObject
     {
-        public static bool Migrate(string inputJson, out string outputJson)
-        {
-            // TODO: do migration if necessary
-            outputJson = inputJson;
-            return false;
-        }
-    }
-
-    public class WearableConfig : WearableConfigVersionedObject
-    {
-        public static readonly WearableConfigVersion CurrentConfigVersion = new WearableConfigVersion(1, 0, 0);
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
         private static readonly Dictionary<int, ISerializer> Serializers = new Dictionary<int, ISerializer>() {
-            { 1, new Version1Serializer() },
+            { 1, new WearableV1Serializer() },
         };
 
-        public override WearableConfigVersion Version { get; set; }
+        public override SerializationVersion Version { get; set; }
         public WearableInfo Info { get; set; }
         public AvatarConfig AvatarConfig { get; set; }
 
@@ -51,6 +42,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable
         public WearableConfig()
         {
             // initialize some fields
+            Version = CurrentConfigVersion;
             var isoTimeStr = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
             Info = new WearableInfo
             {
@@ -62,7 +54,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable
             Modules = new List<WearableModule>();
         }
 
-        public override ISerializer GetSerializerByVersion(WearableConfigVersion version)
+        public override ISerializer GetSerializerByVersion(SerializationVersion version)
         {
             if (version == null)
             {

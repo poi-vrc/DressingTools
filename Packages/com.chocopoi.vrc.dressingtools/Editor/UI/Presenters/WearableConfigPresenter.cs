@@ -17,10 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
-using Chocopoi.DressingTools.Lib.Wearable.Modules.Providers;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEngine;
@@ -32,7 +33,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
         private IWearableConfigView _view;
-        private ModuleProviderBase[] _moduleProviders;
+        private WearableModuleProviderBase[] _moduleProviders;
 
         public WearableConfigPresenter(IWearableConfigView view)
         {
@@ -90,7 +91,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                _view.Config.AvatarConfig.armatureName = cabinet.avatarArmatureName;
+                if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                {
+                    _view.Config.AvatarConfig.armatureName = cabinetConfig.AvatarArmatureName;
+                }
+                else
+                {
+                    _view.Config.AvatarConfig.armatureName = "";
+                }
             }
 
             // can't do anything
@@ -189,7 +197,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateModulesView();
         }
 
-        private ModuleEditor CreateModuleEditor(ModuleProviderBase provider, IModuleConfig module)
+        private WearableModuleEditor CreateModuleEditor(WearableModuleProviderBase provider, IModuleConfig module)
         {
             // prepare cache if not yet
             if (s_moduleEditorTypesCache == null)
@@ -202,8 +210,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     foreach (var type in assembly.GetTypes())
                     {
-                        var attributes = type.GetCustomAttributes(typeof(CustomModuleEditor), true);
-                        foreach (CustomModuleEditor attribute in attributes)
+                        var attributes = type.GetCustomAttributes(typeof(CustomWearableModuleEditor), true);
+                        foreach (CustomWearableModuleEditor attribute in attributes)
                         {
                             if (s_moduleEditorTypesCache.ContainsKey(attribute.ModuleProviderType))
                             {
@@ -219,11 +227,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // obtain from cache and create an editor instance
             if (s_moduleEditorTypesCache.TryGetValue(provider.GetType(), out var moduleEditorType))
             {
-                return (ModuleEditor)Activator.CreateInstance(moduleEditorType, _view, provider, module);
+                return (WearableModuleEditor)Activator.CreateInstance(moduleEditorType, _view, provider, module);
             }
 
             // default module
-            return new ModuleEditor(_view, provider, module);
+            return new WearableModuleEditor(_view, provider, module);
         }
 
         private void UpdateModulesView()
@@ -231,7 +239,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // this will clear the list and causing foldout to be closed (default state is false)
             // TODO: do not clear but update necessary only?
 
-            _moduleProviders = ModuleProviderLocator.Instance.GetAllProviders();
+            _moduleProviders = WearableModuleProviderLocator.Instance.GetAllProviders();
             var keys = new string[_moduleProviders.Length];
             for (var i = 0; i < _moduleProviders.Length; i++)
             {
@@ -248,7 +256,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             foreach (var module in _view.Config.Modules)
             {
-                var provider = ModuleProviderLocator.Instance.GetProvider(module.moduleName);
+                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
 
                 if (provider == null)
                 {

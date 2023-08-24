@@ -67,10 +67,16 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
-            var config = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(config, cabinet.avatarGameObject, wearable);
+            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            {
+                EditorUtility.DisplayDialog("DressingTools", "Unable to load cabinet configuration! Please either check or recreate a new cabinet!", "OK");
+                return;
+            }
 
-            var armatureName = cabinet.avatarArmatureName;
+            var wearableConfig = new WearableConfig();
+            DTEditorUtils.PrepareWearableConfig(wearableConfig, cabinet.avatarGameObject, wearable);
+
+            var armatureName = cabinetConfig.AvatarArmatureName;
 
             // attempt to find wearable armature using avatar armature name
             var armature = DTEditorUtils.GuessArmature(wearable, armatureName);
@@ -105,7 +111,7 @@ namespace Chocopoi.DressingTools.UI
                     return;
                 }
 
-                var armatureMappingModule = new ArmatureMappingModuleConfig
+                var armatureMappingModule = new ArmatureMappingWearableModuleConfig
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armature.name,
@@ -116,14 +122,14 @@ namespace Chocopoi.DressingTools.UI
                     groupBones = true
                 };
 
-                config.Modules.Add(new WearableModule()
+                wearableConfig.Modules.Add(new WearableModule()
                 {
-                    moduleName = ArmatureMappingModuleProvider.Identifier,
+                    moduleName = ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER,
                     config = armatureMappingModule
                 });
             }
 
-            DTEditorUtils.AddCabinetWearable(cabinet, config, wearable);
+            DTEditorUtils.AddCabinetWearable(cabinetConfig, cabinet.avatarGameObject, wearableConfig, wearable);
         }
 
         [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true, MenuItemPriority)]

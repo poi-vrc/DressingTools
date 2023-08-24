@@ -23,30 +23,13 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var obj = CreateGameObject("SomeGameObject");
             cabinet.avatarGameObject = obj;
             Assert.AreEqual(obj, cabinet.avatarGameObject);
-
-            var randomString = "SomeString";
-            cabinet.avatarArmatureName = randomString;
-            Assert.AreEqual(randomString, cabinet.avatarArmatureName);
-
-            var val = !cabinet.groupDynamics;
-            cabinet.groupDynamics = val;
-            Assert.AreEqual(val, cabinet.groupDynamics);
-
-            val = !cabinet.groupDynamicsSeparateGameObjects;
-            cabinet.groupDynamicsSeparateGameObjects = val;
-            Assert.AreEqual(val, cabinet.groupDynamicsSeparateGameObjects);
         }
 
         [Test]
         public void GetWearables_NoAvatarGameObject_ReturnsEmptyArray()
         {
             var cabinetGo = CreateGameObject("GetWearablesGameObject");
-            var cabinet = cabinetGo.AddComponent<DTCabinet>();
-            cabinet.avatarGameObject = null;
-
-            Assert.IsNull(cabinet.avatarGameObject);
-
-            var wearables = DTEditorUtils.GetCabinetWearables(cabinet);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabinetGo);
             Assert.NotNull(wearables);
             Assert.AreEqual(0, wearables.Length);
         }
@@ -58,8 +41,9 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
 
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
+            Assert.NotNull(cabinet.avatarGameObject);
 
-            var wearables = DTEditorUtils.GetCabinetWearables(cabinet);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.avatarGameObject);
             Assert.NotNull(wearables);
             Assert.AreEqual(1, wearables.Length);
 
