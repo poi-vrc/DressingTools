@@ -267,12 +267,10 @@ namespace Chocopoi.DressingTools.Cabinet
             return true;
         }
 
-        private static bool DoBeforeApplyCabinetProviderHooks(ApplyCabinetContext ctx)
+        private static bool DoBeforeApplyCabinetProviderHooks(ApplyCabinetContext ctx, List<WearableModuleProviderBase> wearableModuleProviders)
         {
             // do provider hooks
-            var providers = new List<WearableModuleProviderBase>(WearableModuleProviderLocator.Instance.GetAllProviders());
-            providers.Sort((p1, p2) => p1.CallOrder.CompareTo(p2.CallOrder));
-            foreach (var provider in providers)
+            foreach (var provider in wearableModuleProviders)
             {
                 if (!provider.OnBeforeApplyCabinet(ctx))
                 {
@@ -283,12 +281,10 @@ namespace Chocopoi.DressingTools.Cabinet
             return true;
         }
 
-        private static bool DoAfterApplyCabinetProviderHooks(ApplyCabinetContext ctx)
+        private static bool DoAfterApplyCabinetProviderHooks(ApplyCabinetContext ctx, List<WearableModuleProviderBase> wearableModuleProviders)
         {
             // do provider hooks
-            var providers = new List<WearableModuleProviderBase>(WearableModuleProviderLocator.Instance.GetAllProviders());
-            providers.Sort((p1, p2) => p1.CallOrder.CompareTo(p2.CallOrder));
-            foreach (var provider in providers)
+            foreach (var provider in wearableModuleProviders)
             {
                 if (!provider.OnAfterApplyCabinet(ctx))
                 {
@@ -313,6 +309,10 @@ namespace Chocopoi.DressingTools.Cabinet
                 return;
             }
 
+            // sort providers
+            var wearableModuleProviders = new List<WearableModuleProviderBase>(WearableModuleProviderLocator.Instance.GetAllProviders());
+            wearableModuleProviders.Sort((p1, p2) => p1.CallOrder.CompareTo(p2.CallOrder));
+
             // remove previous generated files
             AssetDatabase.DeleteAsset(GeneratedAssetsPath);
             AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
@@ -320,7 +320,7 @@ namespace Chocopoi.DressingTools.Cabinet
             // scan for avatar dynamics
             _cabCtx.avatarDynamics = DTEditorUtils.ScanDynamics(_cabCtx.avatarGameObject, true);
 
-            if (!DoBeforeApplyCabinetProviderHooks(_cabCtx))
+            if (!DoBeforeApplyCabinetProviderHooks(_cabCtx, wearableModuleProviders))
             {
                 return;
             }
@@ -362,7 +362,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 }
             }
 
-            if (!DoAfterApplyCabinetProviderHooks(_cabCtx))
+            if (!DoAfterApplyCabinetProviderHooks(_cabCtx, wearableModuleProviders))
             {
                 return;
             }
