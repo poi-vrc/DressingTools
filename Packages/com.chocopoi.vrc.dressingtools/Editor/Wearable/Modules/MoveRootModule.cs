@@ -35,7 +35,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => "Move Root";
-        [ExcludeFromCodeCoverage] public override int ApplyOrder => 2;
+        [ExcludeFromCodeCoverage] public override int CallOrder => 2;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
         static MoveRootModuleProvider()

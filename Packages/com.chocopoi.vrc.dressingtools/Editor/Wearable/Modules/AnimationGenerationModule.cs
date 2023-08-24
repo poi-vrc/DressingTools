@@ -49,7 +49,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => "Animation Generation";
-        [ExcludeFromCodeCoverage] public override int ApplyOrder => 4;
+        [ExcludeFromCodeCoverage] public override int CallOrder => 4;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
         static AnimationGenerationModuleProvider()
@@ -81,7 +81,6 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             // invert wearable toggles
             foreach (var toggle in agm.wearableAnimationOnWear.toggles)
             {
-                Debug.Log("toggle: " + toggle != null);
                 var wearableToggleObj = wearableGameObject.transform.Find(toggle.path);
                 if (wearableToggleObj == null)
                 {
@@ -94,11 +93,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override bool OnAddWearableToCabinet(DTCabinet cabinet, WearableConfig config, GameObject wearableGameObject, WearableModule module)
         {
-            if (module == null)
-            {
-                // we need the wearable to have our module installed
-                return true;
-            }
+            // we need the wearable to have our module installed
+            if (module == null) return true;
 
             InvertToggleStates(cabinet, config, wearableGameObject, module);
             return true;

@@ -198,7 +198,7 @@ namespace Chocopoi.DressingTools.Cabinet
             }
         }
 
-        private bool ApplyWearable(ApplyWearableContext wearCtx)
+        private bool ApplyWearable(ApplyWearableContext wearCtx, List<ModuleProviderBase> sortedProviders)
         {
             GameObject wearableObj;
             if (DTEditorUtils.IsGrandParent(_cabCtx.cabinet.avatarGameObject.transform, wearCtx.wearableGameObject.transform))
@@ -230,20 +230,25 @@ namespace Chocopoi.DressingTools.Cabinet
                     return 1;
                 }
 
-                return m1Provider.ApplyOrder.CompareTo(m2Provider.ApplyOrder);
+                return m1Provider.CallOrder.CompareTo(m2Provider.CallOrder);
             });
 
-            // do module apply
+            // check if unknown modules
             foreach (var module in modules)
             {
-                // locate the module provider
                 var provider = ModuleProviderLocator.Instance.GetProvider(module.moduleName);
-
                 if (provider == null)
                 {
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ModuleHasNoProviderAvailable, module.moduleName);
                     return false;
                 }
+            }
+
+            // do provider hooks
+            foreach (var provider in sortedProviders)
+            {
+                // could be null if config does not have such module, provider should handle this
+                var module = DTEditorUtils.FindWearableModule(wearCtx.config, provider.ModuleIdentifier);
 
                 if (!provider.OnApplyWearable(_cabCtx, wearCtx, module))
                 {
@@ -263,12 +268,10 @@ namespace Chocopoi.DressingTools.Cabinet
             return true;
         }
 
-        private static bool DoBeforeApplyCabinetProviderHooks(ApplyCabinetContext ctx)
+        private static bool DoBeforeApplyCabinetProviderHooks(ApplyCabinetContext ctx, List<ModuleProviderBase> sortedProviders)
         {
             // do provider hooks
-            var providers = new List<ModuleProviderBase>(ModuleProviderLocator.Instance.GetAllProviders());
-            providers.Sort((p1, p2) => p1.ApplyOrder.CompareTo(p2.ApplyOrder));
-            foreach (var provider in providers)
+            foreach (var provider in sortedProviders)
             {
                 if (!provider.OnBeforeApplyCabinet(ctx))
                 {
@@ -279,12 +282,10 @@ namespace Chocopoi.DressingTools.Cabinet
             return true;
         }
 
-        private static bool DoAfterApplyCabinetProviderHooks(ApplyCabinetContext ctx)
+        private static bool DoAfterApplyCabinetProviderHooks(ApplyCabinetContext ctx, List<ModuleProviderBase> sortedProviders)
         {
             // do provider hooks
-            var providers = new List<ModuleProviderBase>(ModuleProviderLocator.Instance.GetAllProviders());
-            providers.Sort((p1, p2) => p1.ApplyOrder.CompareTo(p2.ApplyOrder));
-            foreach (var provider in providers)
+            foreach (var provider in sortedProviders)
             {
                 if (!provider.OnAfterApplyCabinet(ctx))
                 {
@@ -304,7 +305,10 @@ namespace Chocopoi.DressingTools.Cabinet
             // scan for avatar dynamics
             _cabCtx.avatarDynamics = DTEditorUtils.ScanDynamics(_cabCtx.cabinet.avatarGameObject, true);
 
-            if (!DoBeforeApplyCabinetProviderHooks(_cabCtx))
+            var sortedProviders = new List<ModuleProviderBase>(ModuleProviderLocator.Instance.GetAllProviders());
+            sortedProviders.Sort((p1, p2) => p1.CallOrder.CompareTo(p2.CallOrder));
+
+            if (!DoBeforeApplyCabinetProviderHooks(_cabCtx, sortedProviders))
             {
                 return;
             }
@@ -340,14 +344,14 @@ namespace Chocopoi.DressingTools.Cabinet
                     wearableDynamics = DTEditorUtils.ScanDynamics(wearable.wearableGameObject, false)
                 };
 
-                if (!ApplyWearable(wearCtx))
+                if (!ApplyWearable(wearCtx, sortedProviders))
                 {
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingWearableHasErrors, config.Info.name);
                     return;
                 }
             }
 
-            if (!DoAfterApplyCabinetProviderHooks(_cabCtx))
+            if (!DoAfterApplyCabinetProviderHooks(_cabCtx, sortedProviders))
             {
                 return;
             }

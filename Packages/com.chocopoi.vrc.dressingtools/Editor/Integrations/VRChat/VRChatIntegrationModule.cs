@@ -56,7 +56,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => "Integration: VRChat";
-        [ExcludeFromCodeCoverage] public override int ApplyOrder => int.MaxValue;
+        [ExcludeFromCodeCoverage] public override int CallOrder => int.MaxValue;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
         static VRChatIntegrationModuleProvider()

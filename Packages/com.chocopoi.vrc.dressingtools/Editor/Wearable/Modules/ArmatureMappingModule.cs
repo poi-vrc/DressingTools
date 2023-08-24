@@ -89,7 +89,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => Identifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => "Armature Mapping";
-        [ExcludeFromCodeCoverage] public override int ApplyOrder => 2;
+        [ExcludeFromCodeCoverage] public override int CallOrder => 2;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
         private static bool GenerateMappings(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ArmatureMappingModuleConfig moduleConfig, string wearableName, out List<BoneMapping> resultantBoneMappings)
@@ -359,6 +359,9 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
         {
+            // no module in config
+            if (module == null) return true;
+
             var armatureMappingConfig = (ArmatureMappingModuleConfig)module.config;
 
             if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.config.Info.name, out var boneMappings))

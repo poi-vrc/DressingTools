@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Modules.Providers
     {
         public abstract string ModuleIdentifier { get; }
         public abstract string FriendlyName { get; }
-        public abstract int ApplyOrder { get; }
+        public abstract int CallOrder { get; }
         public abstract bool AllowMultiple { get; }
 
         public abstract IModuleConfig DeserializeModuleConfig(JObject jObject);
