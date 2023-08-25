@@ -25,6 +25,7 @@ using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
+using UnityEditor.Presets;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
@@ -40,9 +41,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public event Action AvatarOnWearPresetDeleteEvent;
         public event Action AvatarOnWearToggleAddEvent;
         public event Action AvatarOnWearBlendshapeAddEvent;
-        public event Action WearableOnWearChangeEvent;
-        public event Action WearableOnWearSaveEvent;
-        public event Action WearableOnWearDeleteEvent;
+        public event Action WearableOnWearPresetChangeEvent;
+        public event Action WearableOnWearPresetSaveEvent;
+        public event Action WearableOnWearPresetDeleteEvent;
         public event Action WearableOnWearToggleAddEvent;
         public event Action WearableOnWearBlendshapeAddEvent;
 
@@ -222,7 +223,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 }
                 else
                 {
-                    DrawAnimationPreset(WearableOnWearPresetData, WearableOnWearChangeEvent, WearableOnWearSaveEvent, WearableOnWearDeleteEvent, WearableOnWearToggleAddEvent, WearableOnWearBlendshapeAddEvent, ref _foldoutWearableAnimationPresetToggles, ref _foldoutWearableAnimationPresetBlendshapes);
+                    DrawAnimationPreset(WearableOnWearPresetData, WearableOnWearPresetChangeEvent, WearableOnWearPresetSaveEvent, WearableOnWearPresetDeleteEvent, WearableOnWearToggleAddEvent, WearableOnWearBlendshapeAddEvent, ref _foldoutWearableAnimationPresetToggles, ref _foldoutWearableAnimationPresetBlendshapes);
                 }
             }
             EndFoldoutBox();
@@ -240,6 +241,56 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public override bool IsValid()
         {
             return true;
+        }
+
+        private class InputPresetNamingDialog : EditorWindow
+        {
+            public string PresetName { get; set; }
+            public InputPresetNamingDialog()
+            {
+                titleContent = new GUIContent("DressingTools");
+                position = new Rect(Screen.width / 2, Screen.height / 2, 250, 150);
+            }
+
+            public void OnGUI()
+            {
+                PresetName = EditorGUILayout.TextField("New Preset Name:", PresetName);
+                EditorGUILayout.BeginHorizontal();
+                {
+                    if (GUILayout.Button("Add"))
+                    {
+                        Close();
+                    }
+                    if (GUILayout.Button("Cancel"))
+                    {
+                        PresetName = null;
+                        Close();
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+
+            public static InputPresetNamingDialog Create()
+            {
+                return CreateInstance<InputPresetNamingDialog>();
+            }
+        }
+
+        public string ShowPresetNamingDialog()
+        {
+            var dialog = InputPresetNamingDialog.Create();
+            dialog.ShowModalUtility();
+            return dialog.PresetName;
+        }
+
+        public void ShowDuplicatedPresetNameDialog()
+        {
+            EditorUtility.DisplayDialog("DressingTools", "A preset with the same name exists.", "OK");
+        }
+
+        public bool ShowPresetDeleteConfirmDialog()
+        {
+            return EditorUtility.DisplayDialog("DressingTools", "Are you sure to remove this preset?", "Yes", "No");
         }
     }
 }

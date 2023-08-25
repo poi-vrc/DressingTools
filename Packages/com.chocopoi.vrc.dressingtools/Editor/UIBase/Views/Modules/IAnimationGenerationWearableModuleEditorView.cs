@@ -98,14 +98,18 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action AvatarOnWearPresetDeleteEvent;
         event Action AvatarOnWearToggleAddEvent;
         event Action AvatarOnWearBlendshapeAddEvent;
-        event Action WearableOnWearChangeEvent;
-        event Action WearableOnWearSaveEvent;
-        event Action WearableOnWearDeleteEvent;
+        event Action WearableOnWearPresetChangeEvent;
+        event Action WearableOnWearPresetSaveEvent;
+        event Action WearableOnWearPresetDeleteEvent;
         event Action WearableOnWearToggleAddEvent;
         event Action WearableOnWearBlendshapeAddEvent;
         bool ShowCannotRenderPresetWithoutTargetAvatarHelpBox { get; set; }
         bool ShowCannotRenderPresetWithoutTargetWearableHelpBox { get; set; }
         PresetData AvatarOnWearPresetData { get; set; }
         PresetData WearableOnWearPresetData { get; set; }
+
+        string ShowPresetNamingDialog();
+        void ShowDuplicatedPresetNameDialog();
+        bool ShowPresetDeleteConfirmDialog();
     }
 }

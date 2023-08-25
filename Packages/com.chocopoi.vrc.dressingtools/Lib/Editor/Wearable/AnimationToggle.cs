@@ -24,5 +24,17 @@ namespace Chocopoi.DressingTools.Lib.Wearable
     {
         public string path;
         public bool state;
+
+        public AnimationToggle()
+        {
+            path = null;
+            state = false;
+        }
+
+        public AnimationToggle(AnimationToggle animationToggle)
+        {
+            path = animationToggle.path;
+            state = animationToggle.state;
+        }
     }
 }
