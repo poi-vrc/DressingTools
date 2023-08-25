@@ -31,5 +31,12 @@ namespace Chocopoi.DressingTools.Lib.Wearable
             toggles = new List<AnimationToggle>();
             blendshapes = new List<AnimationBlendshapeValue>();
         }
+
+        public AnimationPreset(AnimationPreset preset)
+        {
+            // deep copy
+            toggles = preset.toggles.ConvertAll(x => new AnimationToggle(x));
+            blendshapes = preset.blendshapes.ConvertAll(x => new AnimationBlendshapeValue(x));
+        }
     }
 }

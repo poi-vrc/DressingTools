@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Cabinet.Modules;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
@@ -507,6 +508,30 @@ namespace Chocopoi.DressingTools
         }
 
         public static WearableModule FindWearableModule(WearableConfig config, string moduleName)
+        {
+            foreach (var module in config.Modules)
+            {
+                if (moduleName == module.moduleName)
+                {
+                    return module;
+                }
+            }
+            return null;
+        }
+
+        public static T FindCabinetModuleConfig<T>(CabinetConfig config) where T : IModuleConfig
+        {
+            foreach (var module in config.Modules)
+            {
+                if (module.config is T moduleConfig)
+                {
+                    return moduleConfig;
+                }
+            }
+            return default;
+        }
+
+        public static CabinetModule FindCabinetModule(CabinetConfig config, string moduleName)
         {
             foreach (var module in config.Modules)
             {

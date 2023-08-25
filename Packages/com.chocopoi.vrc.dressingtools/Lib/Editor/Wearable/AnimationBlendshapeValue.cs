@@ -25,5 +25,19 @@ namespace Chocopoi.DressingTools.Lib.Wearable
         public string path;
         public string blendshapeName;
         public float value;
+
+        public AnimationBlendshapeValue()
+        {
+            path = null;
+            blendshapeName = null;
+            value = 0;
+        }
+
+        public AnimationBlendshapeValue(AnimationBlendshapeValue animationBlendshapeValue)
+        {
+            path = animationBlendshapeValue.path;
+            blendshapeName = animationBlendshapeValue.blendshapeName;
+            value = animationBlendshapeValue.value;
+        }
     }
 }
