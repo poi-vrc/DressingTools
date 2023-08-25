@@ -516,7 +516,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                             moduleName = AnimationGenerationCabinetModuleProvider.MODULE_IDENTIFIER,
                             config = _moduleConfig
                         });
-                        _cabinet.configJson = _moduleConfig.ToString();
+                        _cabinet.configJson = _cabinetConfig.ToString();
                     }
                 }
             }
