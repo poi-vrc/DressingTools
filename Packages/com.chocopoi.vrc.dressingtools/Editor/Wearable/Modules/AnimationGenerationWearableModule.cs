@@ -103,20 +103,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        public override bool OnAfterApplyCabinet(ApplyCabinetContext ctx)
+        public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
         {
-            var wearables = DTEditorUtils.GetCabinetWearables(ctx.avatarGameObject);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
 
             foreach (var wearable in wearables)
             {
-                var config = WearableConfig.Deserialize(wearable.configJson);
-
-                if (config == null)
-                {
-                    Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Unable to deserialize one of the wearable configuration: " + wearable.name);
-                    return false;
-                }
-
+                var wearCtx = cabCtx.wearableContexts[wearable];
+                var config = wearCtx.wearableConfig;
                 var module = DTEditorUtils.FindWearableModule(config, ModuleIdentifier);
 
                 if (module == null)
@@ -125,7 +119,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     continue;
                 }
 
-                InvertToggleStates(ctx.avatarGameObject, config, wearable.wearableGameObject, module);
+                InvertToggleStates(cabCtx.avatarGameObject, config, wearable.wearableGameObject, module);
 
                 // set wearable dynamics inactive
                 var wearableDynamics = DTEditorUtils.ScanDynamics(wearable.wearableGameObject, false);

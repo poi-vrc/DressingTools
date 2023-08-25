@@ -117,20 +117,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        public override bool OnAfterApplyCabinet(ApplyCabinetContext ctx)
+        public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
         {
-            var wearables = DTEditorUtils.GetCabinetWearables(ctx.avatarGameObject);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
 
             foreach (var wearable in wearables)
             {
-                var config = WearableConfig.Deserialize(wearable.configJson);
-
-                if (config == null)
-                {
-                    Debug.LogWarning("[DressingTools] [BlendshapeSyncModule] Unable to deserialize one of the wearable configuration: " + wearable.name);
-                    return false;
-                }
-
+                var wearCtx = cabCtx.wearableContexts[wearable];
+                var config = wearCtx.wearableConfig;
                 var module = DTEditorUtils.FindWearableModule(config, MODULE_IDENTIFIER);
 
                 if (module == null)
@@ -139,7 +133,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     continue;
                 }
 
-                FollowBlendshapeSyncValues(ctx.avatarGameObject, wearable.wearableGameObject, module);
+                FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearable.wearableGameObject, module);
             }
             return true;
         }

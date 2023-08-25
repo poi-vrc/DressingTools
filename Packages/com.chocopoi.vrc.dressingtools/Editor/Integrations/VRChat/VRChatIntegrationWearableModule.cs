@@ -86,10 +86,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             return result;
         }
 
-        public static bool ApplyAnimationsAndMenu(ApplyCabinetContext ctx)
+        public static bool ApplyAnimationsAndMenu(ApplyCabinetContext cabCtx)
         {
             // get the avatar descriptor
-            if (!ctx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
+            if (!cabCtx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
             {
                 // not a vrc avatar
                 return true;
@@ -146,7 +146,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             }
             catch (ParameterOverflowException ex)
             {
-                DTReportUtils.LogExceptionLocalized(ctx.report, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
+                DTReportUtils.LogExceptionLocalized(cabCtx.report, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
                 return false;
             }
 
@@ -166,19 +166,13 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             };
 
             // get wearables
-            var wearables = DTEditorUtils.GetCabinetWearables(ctx.avatarGameObject);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
 
             for (var i = 0; i < wearables.Length; i++)
             {
-                var config = WearableConfig.Deserialize(wearables[i].configJson);
-                if (config == null)
-                {
-                    if (!EditorUtility.DisplayDialog("DressingTools", "Unable to load configuration for one of the wearables. It will not be dressed.\nDo you want to continue?", "Yes", "No"))
-                    {
-                        return false;
-                    }
-                    continue;
-                }
+                // obtain the wearable context
+                var wearCtx = cabCtx.wearableContexts[wearables[i]];
+                var config = wearCtx.wearableConfig;
 
                 // obtain module
                 var vrcm = DTEditorUtils.FindWearableModuleConfig<VRChatIntegrationWearableModuleConfig>(config);
@@ -198,10 +192,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(ctx.report, ctx.avatarGameObject, agm, wearables[i].wearableGameObject, wearableDynamics);
+                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, wearableDynamics);
 
                 // TODO: merge disable clips and check for conflicts
-                var wearAnimations = animationGenerator.GenerateWearAnimations(ctx.cabinetConfig.AnimationWriteDefaults);
+                var wearAnimations = animationGenerator.GenerateWearAnimations(cabCtx.cabinetConfig.AnimationWriteDefaults);
                 pairs.Add(i + 1, wearAnimations.Item1); // enable clip
                 AssetDatabase.CreateAsset(wearAnimations.Item1, CabinetApplier.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
@@ -209,7 +203,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 subMenu.AddToggle(vrcm.customCabinetToggleName ?? config.Info.name, "cpDT_Cabinet", i + 1);
             }
 
-            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, ctx.cabinetConfig.AnimationWriteDefaults, null, refTransition);
+            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, cabCtx.cabinetConfig.AnimationWriteDefaults, null, refTransition);
 
             EditorUtility.DisplayProgressBar("DressingTools", "Generating expression menu...", 0);
             subMenu.CreateAsset(CabinetApplier.GeneratedAssetsPath + "/cpDT_Cabinet.asset")

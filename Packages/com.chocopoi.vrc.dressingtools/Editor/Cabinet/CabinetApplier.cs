@@ -71,7 +71,8 @@ namespace Chocopoi.DressingTools.Cabinet
                 report = report,
                 avatarGameObject = cabinet.avatarGameObject,
                 cabinetConfig = null,
-                avatarDynamics = new List<IDynamicsProxy>()
+                avatarDynamics = new List<IDynamicsProxy>(),
+                wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>()
             };
         }
 
@@ -354,6 +355,7 @@ namespace Chocopoi.DressingTools.Cabinet
                     wearableGameObject = wearable.wearableGameObject,
                     wearableDynamics = DTEditorUtils.ScanDynamics(wearable.wearableGameObject, false)
                 };
+                _cabCtx.wearableContexts[wearable] = wearCtx;
 
                 if (!ApplyWearable(wearCtx))
                 {
