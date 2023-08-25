@@ -42,12 +42,6 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public static class MessageCode
         {
-            // Info
-            public const string AdjustedWearablePositionFromDelta = "cabinet.applier.msgCode.info.adjustedWearablePositionFromDelta";
-            public const string AdjustedWearableRotationFromDelta = "cabinet.applier.msgCode.info.adjustedWearableRotationFromDelta";
-            public const string AdjustedAvatarScale = "cabinet.applier.msgCode.info.adjustedAvatarScale";
-            public const string AdjustedWearableScale = "cabinet.applier.msgCode.info.adjustedWearableScale";
-
             // Error
             public const string UnableToDeserializeCabinetConfig = "cabinet.applier.msgCode.error.unableToDeserializeCabinetConfig";
             public const string UnableToDeserializeWearableConfig = "cabinet.applier.msgCode.error.unableToDeserializeWearableConfig";
@@ -76,64 +70,7 @@ namespace Chocopoi.DressingTools.Cabinet
             };
         }
 
-        private void ApplyTransforms(AvatarConfig avatarConfig, GameObject targetWearable, out Transform lastAvatarParent, out Vector3 lastAvatarScale)
-        {
-            var targetAvatar = _cabCtx.avatarGameObject;
 
-            // check position delta and adjust
-            {
-                var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
-                if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
-                {
-                    DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedWearablePositionFromDelta, wearableWorldPos.ToString());
-                    targetWearable.transform.position += wearableWorldPos;
-                }
-            }
-
-            // check rotation delta and adjust
-            {
-                var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
-                if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
-                {
-                    DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedWearableRotationFromDelta, wearableWorldRot.ToString());
-                    targetWearable.transform.rotation *= wearableWorldRot;
-                }
-            }
-
-            // apply avatar scale
-            lastAvatarParent = _cabCtx.avatarGameObject.transform.parent;
-            lastAvatarScale = Vector3.zero + targetAvatar.transform.localScale;
-            if (lastAvatarParent != null)
-            {
-                // tricky workaround to apply lossy world scale is to unparent
-                _cabCtx.avatarGameObject.transform.SetParent(null);
-            }
-
-            var avatarScaleVec = avatarConfig.avatarLossyScale.ToVector3();
-            if (targetAvatar.transform.localScale != avatarScaleVec)
-            {
-                DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedAvatarScale, avatarScaleVec.ToString());
-                targetAvatar.transform.localScale = avatarScaleVec;
-            }
-
-            // apply wearable scale
-            var wearableScaleVec = avatarConfig.wearableLossyScale.ToVector3();
-            if (targetWearable.transform.localScale != wearableScaleVec)
-            {
-                DTReportUtils.LogInfoLocalized(_cabCtx.report, LogLabel, MessageCode.AdjustedWearableScale, wearableScaleVec.ToString());
-                targetWearable.transform.localScale = wearableScaleVec;
-            }
-        }
-
-        private void RollbackTransform(Transform lastAvatarParent, Vector3 lastAvatarScale)
-        {
-            // restore avatar scale
-            if (lastAvatarParent != null)
-            {
-                _cabCtx.avatarGameObject.transform.SetParent(lastAvatarParent);
-            }
-            _cabCtx.avatarGameObject.transform.localScale = lastAvatarScale;
-        }
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
         {
@@ -216,9 +153,6 @@ namespace Chocopoi.DressingTools.Cabinet
                 wearableObj = Object.Instantiate(wearCtx.wearableGameObject, _cabCtx.avatarGameObject.transform);
             }
 
-            // apply translation and scaling
-            ApplyTransforms(wearCtx.wearableConfig.AvatarConfig, wearableObj, out var lastAvatarParent, out var lastAvatarScale);
-
             // sort modules according to their apply order
             var modules = new List<WearableModule>(wearCtx.wearableConfig.Modules);
             modules.Sort((m1, m2) =>
@@ -262,8 +196,6 @@ namespace Chocopoi.DressingTools.Cabinet
             {
                 GroupDynamics(wearCtx.wearableGameObject, wearCtx.wearableDynamics);
             }
-
-            RollbackTransform(lastAvatarParent, lastAvatarScale);
 
             return true;
         }
