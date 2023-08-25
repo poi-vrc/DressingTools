@@ -368,6 +368,13 @@ namespace Chocopoi.DressingTools.Cabinet
             {
                 return;
             }
+
+            // remove all DT components
+            var dtComps = _cabCtx.avatarGameObject.GetComponentsInChildren<DTBaseComponent>();
+            foreach (var comp in dtComps)
+            {
+                Object.DestroyImmediate(comp);
+            }
         }
     }
 }
