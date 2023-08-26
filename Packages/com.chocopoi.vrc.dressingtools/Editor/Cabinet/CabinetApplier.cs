@@ -83,10 +83,13 @@ namespace Chocopoi.DressingTools.Cabinet
             }
 
             // copy to dynamics container
-            DTEditorUtils.CopyComponent(dynamics.Component, dynamicsContainer);
+            var newComp = DTEditorUtils.CopyComponent(dynamics.Component, dynamicsContainer);
 
             // destroy the original one
             Object.DestroyImmediate(dynamics.Component);
+
+            // set the component in our proxy to the new component
+            dynamics.Component = newComp;
         }
 
         private void GroupDynamics(GameObject wearableGameObject, List<IDynamicsProxy> wearableDynamics)

@@ -183,7 +183,6 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 }
 
                 EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.Info.name + "...", i / (float)wearables.Length * 100);
-                var wearableDynamics = DTEditorUtils.ScanDynamics(wearables[i].wearableGameObject, false);
 
                 // find the animation generation module
                 var agm = DTEditorUtils.FindWearableModuleConfig<AnimationGenerationWearableModuleConfig>(config);
@@ -192,10 +191,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, wearableDynamics);
+                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.cabinetConfig.AnimationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
-                var wearAnimations = animationGenerator.GenerateWearAnimations(cabCtx.cabinetConfig.AnimationWriteDefaults);
+                var wearAnimations = animationGenerator.GenerateWearAnimations();
                 pairs.Add(i + 1, wearAnimations.Item1); // enable clip
                 AssetDatabase.CreateAsset(wearAnimations.Item1, CabinetApplier.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
