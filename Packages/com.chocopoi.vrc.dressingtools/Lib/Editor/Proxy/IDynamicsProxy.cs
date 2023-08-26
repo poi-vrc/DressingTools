@@ -22,7 +22,7 @@ namespace Chocopoi.DressingTools.Lib.Proxy
 {
     public interface IDynamicsProxy
     {
-        Component Component { get; }
+        Component Component { get; set; }
 
         Transform Transform { get; }
 

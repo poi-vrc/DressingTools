@@ -122,9 +122,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 InvertToggleStates(cabCtx.avatarGameObject, config, wearable.wearableGameObject, module);
 
                 // set wearable dynamics inactive
-                var wearableDynamics = DTEditorUtils.ScanDynamics(wearable.wearableGameObject, false);
                 var visitedDynamicsTransforms = new List<Transform>();
-                foreach (var dynamics in wearableDynamics)
+                foreach (var dynamics in wearCtx.wearableDynamics)
                 {
                     if (visitedDynamicsTransforms.Contains(dynamics.Transform))
                     {

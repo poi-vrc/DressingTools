@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.Proxy
             }
         }
 
-        public Component Component { get; }
+        public Component Component { get; set; }
 
         public Transform Transform
         {

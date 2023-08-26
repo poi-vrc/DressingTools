@@ -45,22 +45,22 @@ namespace Chocopoi.DressingTools.Animations
         }
 
         private DTReport _report;
-
         private GameObject _avatarObject;
-
         private GameObject _wearableObject;
-
         private AnimationGenerationWearableModuleConfig _module;
-
+        private List<IDynamicsProxy> _avatarDynamics;
         private List<IDynamicsProxy> _wearableDynamics;
+        private bool _writeDefaults;
 
-        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> wearableDynamics)
+        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, bool writeDefaults)
         {
             _report = report;
             _avatarObject = avatarObject;
             _module = module;
             _wearableObject = wearableObject;
+            _avatarDynamics = avatarDynamics;
             _wearableDynamics = wearableDynamics;
+            _writeDefaults = writeDefaults;
         }
 
         private bool TryGetBlendshapeValue(GameObject obj, string blendshapeName, out float value)
@@ -92,7 +92,7 @@ namespace Chocopoi.DressingTools.Animations
             return true;
         }
 
-        private void GenerateAvatarToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles, bool writeDefaults)
+        private void GenerateAvatarToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles)
         {
             foreach (var toggle in toggles)
             {
@@ -104,7 +104,7 @@ namespace Chocopoi.DressingTools.Animations
                 else
                 {
                     AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, toggle.path, toggle.state);
-                    if (!writeDefaults)
+                    if (!_writeDefaults)
                     {
                         AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, toggle.path, obj.gameObject.activeSelf);
                     }
@@ -112,7 +112,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void GenerateAvatarBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationBlendshapeValue[] blendshapes, bool writeDefaults)
+        private void GenerateAvatarBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationBlendshapeValue[] blendshapes)
         {
             foreach (var blendshape in blendshapes)
             {
@@ -130,7 +130,7 @@ namespace Chocopoi.DressingTools.Animations
                 }
 
                 AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, blendshape.path, blendshape.blendshapeName, blendshape.value);
-                if (!writeDefaults)
+                if (!_writeDefaults)
                 {
                     // write the original value if not write defaults
                     AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, blendshape.path, blendshape.blendshapeName, originalValue);
@@ -138,7 +138,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void GenerateWearableToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles, bool writeDefaults)
+        private void GenerateWearableToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles)
         {
             foreach (var toggle in toggles)
             {
@@ -150,7 +150,7 @@ namespace Chocopoi.DressingTools.Animations
                 else
                 {
                     AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), toggle.state);
-                    if (!writeDefaults)
+                    if (!_writeDefaults)
                     {
                         AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), obj.gameObject.activeSelf);
                     }
@@ -158,7 +158,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void GenerateWearableBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationBlendshapeValue[] blendshapes, bool writeDefaults)
+        private void GenerateWearableBlendshapeAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationBlendshapeValue[] blendshapes)
         {
             foreach (var blendshape in blendshapes)
             {
@@ -175,7 +175,7 @@ namespace Chocopoi.DressingTools.Animations
                 }
 
                 AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), blendshape.blendshapeName, blendshape.value);
-                if (!writeDefaults)
+                if (!_writeDefaults)
                 {
                     // write the original value if not write defaults
                     AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), blendshape.blendshapeName, originalValue);
@@ -183,7 +183,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        public System.Tuple<AnimationClip, AnimationClip> GenerateWearAnimations(bool writeDefaults)
+        public System.Tuple<AnimationClip, AnimationClip> GenerateWearAnimations()
         {
             var enableClip = new AnimationClip();
             var disableClip = new AnimationClip();
@@ -195,10 +195,10 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar toggles
-            GenerateAvatarToggleAnimations(enableClip, disableClip, _module.avatarAnimationOnWear.toggles.ToArray(), writeDefaults);
+            GenerateAvatarToggleAnimations(enableClip, disableClip, _module.avatarAnimationOnWear.toggles.ToArray());
 
             // wearable toggles
-            GenerateWearableToggleAnimations(enableClip, disableClip, _module.wearableAnimationOnWear.toggles.ToArray(), writeDefaults);
+            GenerateWearableToggleAnimations(enableClip, disableClip, _module.wearableAnimationOnWear.toggles.ToArray());
 
             // dynamics
             var visitedDynamicsTransforms = new List<Transform>();
@@ -217,7 +217,7 @@ namespace Chocopoi.DressingTools.Animations
 
                 // enable/disable dynamics object
                 AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform), true);
-                if (!writeDefaults)
+                if (!_writeDefaults)
                 {
                     AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform), false);
                 }
@@ -227,15 +227,15 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // avatar blendshapes
-            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, _module.avatarAnimationOnWear.blendshapes.ToArray(), writeDefaults);
+            GenerateAvatarBlendshapeAnimations(enableClip, disableClip, _module.avatarAnimationOnWear.blendshapes.ToArray());
 
             // wearable blendshapes
-            GenerateWearableBlendshapeAnimations(enableClip, disableClip, _module.wearableAnimationOnWear.blendshapes.ToArray(), writeDefaults);
+            GenerateWearableBlendshapeAnimations(enableClip, disableClip, _module.wearableAnimationOnWear.blendshapes.ToArray());
 
             return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
 
-        public Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations(bool writeDefaults)
+        public Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations()
         {
             // prevent unexpected behaviour
             if (!DTEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
@@ -253,16 +253,16 @@ namespace Chocopoi.DressingTools.Animations
                 if (customizable.type == WearableCustomizableType.Toggle)
                 {
                     // avatar required toggles
-                    GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarRequiredToggles.ToArray(), writeDefaults);
+                    GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarRequiredToggles.ToArray());
 
                     // avatar required blendshapes
-                    GenerateAvatarBlendshapeAnimations(enableClip, disableClip, customizable.avatarRequiredBlendshapes.ToArray(), writeDefaults);
+                    GenerateAvatarBlendshapeAnimations(enableClip, disableClip, customizable.avatarRequiredBlendshapes.ToArray());
 
                     // wearable required blendshapes
-                    GenerateWearableBlendshapeAnimations(enableClip, disableClip, customizable.wearableBlendshapes.ToArray(), writeDefaults);
+                    GenerateWearableBlendshapeAnimations(enableClip, disableClip, customizable.wearableBlendshapes.ToArray());
 
                     // wearable toggle
-                    GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray(), writeDefaults);
+                    GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray());
                 }
                 else if (customizable.type == WearableCustomizableType.Blendshape)
                 {
