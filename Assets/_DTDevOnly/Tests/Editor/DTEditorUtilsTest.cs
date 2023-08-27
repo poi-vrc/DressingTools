@@ -308,7 +308,7 @@ namespace Chocopoi.DressingTools.Tests
 
         private class DummyDynamicsProxy : IDynamicsProxy
         {
-            public Component Component => null;
+            public Component Component { get; set; } = null;
             public Transform Transform => null;
             public GameObject GameObject => null;
             public Transform RootTransform { get; set; }
