@@ -63,7 +63,13 @@ namespace Chocopoi.DressingTools.Lib.Wearable.Modules
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value);
+            var module = (WearableModule)value;
+            var jObject = new JObject
+            {
+                { "moduleName", module.moduleName },
+                { "config", JObject.FromObject(module.config) }
+            };
+            jObject.WriteTo(writer);
         }
     }
 
