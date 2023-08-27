@@ -17,6 +17,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -25,7 +26,16 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 {
     internal class MoveRootWearableModuleConfig : IModuleConfig
     {
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+
+        public SerializationVersion version;
         public string avatarPath;
+
+        public MoveRootWearableModuleConfig()
+        {
+            version = CurrentConfigVersion;
+            avatarPath = null;
+        }
     }
 
     [InitializeOnLoad]
@@ -43,7 +53,18 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             WearableModuleProviderLocator.Instance.Register(new MoveRootWearableModuleProvider());
         }
 
-        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<MoveRootWearableModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject)
+        {
+            // TODO: do schema check
+
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > MoveRootWearableModuleConfig.CurrentConfigVersion.Major)
+            {
+                throw new System.Exception("Incompatible MoveRootWearableModuleConfig version: " + version.Major + " > " + MoveRootWearableModuleConfig.CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<MoveRootWearableModuleConfig>();
+        }
 
         public override IModuleConfig NewModuleConfig() => new MoveRootWearableModuleConfig();
     }

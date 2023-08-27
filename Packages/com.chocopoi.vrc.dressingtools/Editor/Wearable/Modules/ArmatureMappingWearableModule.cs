@@ -23,6 +23,7 @@ using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
@@ -44,22 +45,20 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
     internal class ArmatureMappingWearableModuleConfig : IModuleConfig
     {
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+
+        public SerializationVersion version;
         public string dresserName;
-
         public string wearableArmatureName;
-
         public BoneMappingMode boneMappingMode;
-
         public List<BoneMapping> boneMappings;
-
         public string serializedDresserConfig;
-
         public bool removeExistingPrefixSuffix;
-
         public bool groupBones;
 
         public ArmatureMappingWearableModuleConfig()
         {
+            version = CurrentConfigVersion;
             dresserName = null;
             wearableArmatureName = null;
             boneMappingMode = BoneMappingMode.Auto;
@@ -383,7 +382,18 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             WearableModuleProviderLocator.Instance.Register(new ArmatureMappingWearableModuleProvider());
         }
 
-        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<ArmatureMappingWearableModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject)
+        {
+            // TODO: do schema check
+
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > ArmatureMappingWearableModuleConfig.CurrentConfigVersion.Major)
+            {
+                throw new System.Exception("Incompatible ArmatureMappingWearableModuleConfig version: " + version.Major + " > " + ArmatureMappingWearableModuleConfig.CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<ArmatureMappingWearableModuleConfig>();
+        }
 
         public override IModuleConfig NewModuleConfig() => new ArmatureMappingWearableModuleConfig();
     }

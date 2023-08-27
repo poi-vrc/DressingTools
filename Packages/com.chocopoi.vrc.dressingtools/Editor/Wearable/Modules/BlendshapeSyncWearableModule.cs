@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Newtonsoft.Json.Linq;
@@ -30,10 +31,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 {
     internal class BlendshapeSyncWearableModuleConfig : IModuleConfig
     {
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+
+        public SerializationVersion version;
         public List<AnimationBlendshapeSync> blendshapeSyncs; // blendshapes to sync from avatar to wearables
 
         public BlendshapeSyncWearableModuleConfig()
         {
+            version = CurrentConfigVersion;
             blendshapeSyncs = new List<AnimationBlendshapeSync>();
         }
     }
@@ -53,7 +58,18 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             WearableModuleProviderLocator.Instance.Register(new BlendshapeSyncWearableModuleProvider());
         }
 
-        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<BlendshapeSyncWearableModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject)
+        {
+            // TODO: do schema check
+
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > BlendshapeSyncWearableModuleConfig.CurrentConfigVersion.Major)
+            {
+                throw new System.Exception("Incompatible BlendshapeSyncWearableModuleConfig version: " + version.Major + " > " + BlendshapeSyncWearableModuleConfig.CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<BlendshapeSyncWearableModuleConfig>();
+        }
 
         public override IModuleConfig NewModuleConfig() => new BlendshapeSyncWearableModuleConfig();
 

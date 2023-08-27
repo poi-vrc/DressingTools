@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -26,11 +27,15 @@ namespace Chocopoi.DressingTools.Cabinet.Modules
 {
     internal class AnimationGenerationCabinetModuleConfig : IModuleConfig
     {
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+
+        public SerializationVersion version;
         public Dictionary<string, AnimationPreset> savedAvatarPresets;
         public Dictionary<string, AnimationPreset> savedWearablePresets;
 
         public AnimationGenerationCabinetModuleConfig()
         {
+            version = CurrentConfigVersion;
             savedAvatarPresets = new Dictionary<string, AnimationPreset>();
             savedWearablePresets = new Dictionary<string, AnimationPreset>();
         }
@@ -51,7 +56,18 @@ namespace Chocopoi.DressingTools.Cabinet.Modules
             CabinetModuleProviderLocator.Instance.Register(new AnimationGenerationCabinetModuleProvider());
         }
 
-        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<AnimationGenerationCabinetModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject)
+        {
+            // TODO: do schema check
+
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > AnimationGenerationCabinetModuleConfig.CurrentConfigVersion.Major)
+            {
+                throw new System.Exception("Incompatible AnimationGenerationCabinetModule version: " + version.Major + " > " + AnimationGenerationCabinetModuleConfig.CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<AnimationGenerationCabinetModuleConfig>();
+        }
 
         public override IModuleConfig NewModuleConfig() => new AnimationGenerationCabinetModuleConfig();
     }
