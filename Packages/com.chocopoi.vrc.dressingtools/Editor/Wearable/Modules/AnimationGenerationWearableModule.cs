@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Newtonsoft.Json.Linq;
@@ -30,12 +31,15 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 {
     internal class AnimationGenerationWearableModuleConfig : IModuleConfig
     {
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+        public SerializationVersion version;
         public AnimationPreset avatarAnimationOnWear; // execute on wear
         public AnimationPreset wearableAnimationOnWear;
         public List<WearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
 
         public AnimationGenerationWearableModuleConfig()
         {
+            version = CurrentConfigVersion;
             avatarAnimationOnWear = new AnimationPreset();
             wearableAnimationOnWear = new AnimationPreset();
             wearableCustomizables = new List<WearableCustomizable>();
@@ -57,7 +61,18 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             WearableModuleProviderLocator.Instance.Register(new AnimationGenerationWearableModuleProvider());
         }
 
-        public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<AnimationGenerationWearableModuleConfig>();
+        public override IModuleConfig DeserializeModuleConfig(JObject jObject)
+        {
+            // TODO: do schema check
+
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > AnimationGenerationWearableModuleConfig.CurrentConfigVersion.Major)
+            {
+                throw new System.Exception("Incompatible AnimationGenerationWearableModuleConfig version: " + version.Major + " > " + AnimationGenerationWearableModuleConfig.CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<AnimationGenerationWearableModuleConfig>();
+        }
 
         public override IModuleConfig NewModuleConfig() => new AnimationGenerationWearableModuleConfig();
 
