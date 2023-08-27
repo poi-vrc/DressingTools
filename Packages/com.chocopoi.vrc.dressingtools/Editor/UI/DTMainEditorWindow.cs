@@ -76,7 +76,7 @@ namespace Chocopoi.DressingTools.UI
             var wearableConfig = new WearableConfig();
             DTEditorUtils.PrepareWearableConfig(wearableConfig, cabinet.avatarGameObject, wearable);
 
-            var armatureName = cabinetConfig.AvatarArmatureName;
+            var armatureName = cabinetConfig.avatarArmatureName;
 
             // attempt to find wearable armature using avatar armature name
             var armature = DTEditorUtils.GuessArmature(wearable, armatureName);
@@ -122,7 +122,7 @@ namespace Chocopoi.DressingTools.UI
                     groupBones = true
                 };
 
-                wearableConfig.Modules.Add(new WearableModule()
+                wearableConfig.modules.Add(new WearableModule()
                 {
                     moduleName = ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER,
                     config = armatureMappingModule

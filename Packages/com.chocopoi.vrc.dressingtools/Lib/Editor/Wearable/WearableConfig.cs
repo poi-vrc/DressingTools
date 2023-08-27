@@ -20,61 +20,50 @@ using System.Collections.Generic;
 using System.Globalization;
 using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
-using Chocopoi.DressingTools.Lib.Wearable.Serializers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Chocopoi.DressingTools.Lib.Wearable
 {
-    public class WearableConfig : VersionedObject
+    public class WearableConfig
     {
         public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
-        private static readonly Dictionary<int, ISerializer> Serializers = new Dictionary<int, ISerializer>() {
-            { 1, new WearableV1Serializer() },
-        };
 
-        public override SerializationVersion Version { get; set; }
-        public WearableInfo Info { get; set; }
-        public AvatarConfig AvatarConfig { get; set; }
+        public SerializationVersion version;
+        public WearableInfo info { get; set; }
+        public AvatarConfig avatarConfig { get; set; }
 
-        public List<WearableModule> Modules;
+        public List<WearableModule> modules;
 
         public WearableConfig()
         {
             // initialize some fields
-            Version = CurrentConfigVersion;
+            version = CurrentConfigVersion;
             var isoTimeStr = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
-            Info = new WearableInfo
+            info = new WearableInfo
             {
                 uuid = Guid.NewGuid().ToString(),
                 createdTime = isoTimeStr,
                 updatedTime = isoTimeStr
             };
-            AvatarConfig = new AvatarConfig();
-            Modules = new List<WearableModule>();
+            avatarConfig = new AvatarConfig();
+            modules = new List<WearableModule>();
         }
 
-        public override ISerializer GetSerializerByVersion(SerializationVersion version)
-        {
-            if (version == null)
-            {
-                return null;
-            }
-            return Serializers.ContainsKey(version.Major) ? Serializers[version.Major] : null;
-        }
+        public string Serialize() => JsonConvert.SerializeObject(this);
 
         public static WearableConfig Deserialize(string json)
         {
             // TODO: perform schema check
             var jObject = JObject.Parse(json);
-            return Deserialize(jObject);
-        }
 
-        public static WearableConfig Deserialize(JObject jObject)
-        {
-            var config = new WearableConfig();
-            config.DeserializeFrom(jObject);
-            return config;
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > CurrentConfigVersion.Major)
+            {
+                throw new Exception("Incompatbile wearable config version: " + version.Major + " > " + CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<WearableConfig>();
         }
 
         public WearableConfig Clone()
@@ -85,7 +74,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable
 
         public override string ToString()
         {
-            return Serialize().ToString(Formatting.None);
+            return Serialize();
         }
     }
 }

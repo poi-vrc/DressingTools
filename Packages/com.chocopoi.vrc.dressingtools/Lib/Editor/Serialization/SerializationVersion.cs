@@ -33,6 +33,7 @@ namespace Chocopoi.DressingTools.Lib.Serialization
         }
     }
 
+    [JsonConverter(typeof(SerializationVersionConverter))]
     public class SerializationVersion
     {
         public int Major { get; private set; }

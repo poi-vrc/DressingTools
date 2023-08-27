@@ -87,17 +87,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (cabinet == null)
             {
                 // leave it empty
-                _view.Config.AvatarConfig.armatureName = "";
+                _view.Config.avatarConfig.armatureName = "";
             }
             else
             {
                 if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
                 {
-                    _view.Config.AvatarConfig.armatureName = cabinetConfig.AvatarArmatureName;
+                    _view.Config.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }
                 else
                 {
-                    _view.Config.AvatarConfig.armatureName = "";
+                    _view.Config.avatarConfig.armatureName = "";
                 }
             }
 
@@ -110,19 +110,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            _view.Config.AvatarConfig.guids.Clear();
+            _view.Config.avatarConfig.guids.Clear();
             if (!invalidAvatarPrefabGuid)
             {
                 // TODO: multiple guids
-                _view.Config.AvatarConfig.guids.Add(avatarPrefabGuid);
+                _view.Config.avatarConfig.guids.Add(avatarPrefabGuid);
             }
 
             var deltaPos = _view.TargetWearable.transform.position - _view.TargetAvatar.transform.position;
             var deltaRotation = _view.TargetWearable.transform.rotation * Quaternion.Inverse(_view.TargetAvatar.transform.rotation);
-            _view.Config.AvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
-            _view.Config.AvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
-            _view.Config.AvatarConfig.avatarLossyScale = new AvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
-            _view.Config.AvatarConfig.wearableLossyScale = new AvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
+            _view.Config.avatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            _view.Config.avatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            _view.Config.avatarConfig.avatarLossyScale = new AvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
+            _view.Config.avatarConfig.wearableLossyScale = new AvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
         }
 
         private void OnMetaInfoChange()
@@ -132,9 +132,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplyMetaInfoChanges()
         {
-            _view.Config.Info.name = _view.MetaInfoWearableName;
-            _view.Config.Info.author = _view.MetaInfoAuthor;
-            _view.Config.Info.description = _view.MetaInfoDescription;
+            _view.Config.info.name = _view.MetaInfoWearableName;
+            _view.Config.info.author = _view.MetaInfoAuthor;
+            _view.Config.info.description = _view.MetaInfoDescription;
         }
 
         private void OnTargetAvatarOrWearableChange()
@@ -143,12 +143,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.TargetAvatarConfigUseAvatarObjectName = true;
             if (_view.TargetAvatar != null)
             {
-                _view.TargetAvatarConfigAvatarName = _view.Config.AvatarConfig.name = _view.TargetAvatar.name;
+                _view.TargetAvatarConfigAvatarName = _view.Config.avatarConfig.name = _view.TargetAvatar.name;
             }
             _view.MetaInfoUseWearableObjectName = true;
             if (_view.TargetWearable != null)
             {
-                _view.MetaInfoWearableName = _view.Config.Info.name = _view.TargetWearable.name;
+                _view.MetaInfoWearableName = _view.Config.info.name = _view.TargetWearable.name;
             }
 
             // apply guid, world pos changes
@@ -178,7 +178,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (!provider.AllowMultiple)
             {
                 // check if any existing type
-                foreach (var existingModule in _view.Config.Modules)
+                foreach (var existingModule in _view.Config.modules)
                 {
                     if (existingModule.moduleName == provider.ModuleIdentifier)
                     {
@@ -187,7 +187,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 }
             }
-            _view.Config.Modules.Add(new WearableModule()
+            _view.Config.modules.Add(new WearableModule()
             {
                 moduleName = provider.ModuleIdentifier,
                 config = newModuleConfig
@@ -254,7 +254,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             _view.ModuleDataList.Clear();
 
-            foreach (var module in _view.Config.Modules)
+            foreach (var module in _view.Config.modules)
             {
                 var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
 
@@ -272,7 +272,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 moduleData.removeButtonOnClickEvent = () =>
                 {
                     moduleData.editor.OnDisable();
-                    _view.Config.Modules.Remove(module);
+                    _view.Config.modules.Remove(module);
                     _view.ModuleDataList.Remove(moduleData);
                 };
                 _view.ModuleDataList.Add(moduleData);
@@ -301,17 +301,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.IsInvalidAvatarPrefabGuid = invalidAvatarPrefabGuid;
             _view.AvatarPrefabGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;
 
-            _view.TargetAvatarConfigUseAvatarObjectName = _view.TargetAvatar.name == _view.Config.AvatarConfig.name;
-            _view.TargetAvatarConfigAvatarName = _view.Config.AvatarConfig.name;
-            _view.TargetAvatarConfigWorldPosition = _view.Config.AvatarConfig.worldPosition.ToString();
-            _view.TargetAvatarConfigWorldRotation = _view.Config.AvatarConfig.worldRotation.ToString();
-            _view.TargetAvatarConfigWorldAvatarLossyScale = _view.Config.AvatarConfig.avatarLossyScale.ToString();
-            _view.TargetAvatarConfigWorldWearableLossyScale = _view.Config.AvatarConfig.wearableLossyScale.ToString();
+            _view.TargetAvatarConfigUseAvatarObjectName = _view.TargetAvatar.name == _view.Config.avatarConfig.name;
+            _view.TargetAvatarConfigAvatarName = _view.Config.avatarConfig.name;
+            _view.TargetAvatarConfigWorldPosition = _view.Config.avatarConfig.worldPosition.ToString();
+            _view.TargetAvatarConfigWorldRotation = _view.Config.avatarConfig.worldRotation.ToString();
+            _view.TargetAvatarConfigWorldAvatarLossyScale = _view.Config.avatarConfig.avatarLossyScale.ToString();
+            _view.TargetAvatarConfigWorldWearableLossyScale = _view.Config.avatarConfig.wearableLossyScale.ToString();
         }
 
         private void UpdateMetaInfoView()
         {
-            _view.ConfigUuid = _view.Config.Info.uuid;
+            _view.ConfigUuid = _view.Config.info.uuid;
 
             if (_view.TargetWearable == null)
             {
@@ -320,12 +320,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // automatically unset this setting if name is not the same
-            _view.MetaInfoUseWearableObjectName = _view.TargetWearable.name == _view.Config.Info.name;
-            _view.MetaInfoWearableName = _view.Config.Info.name;
-            _view.MetaInfoAuthor = _view.Config.Info.author;
+            _view.MetaInfoUseWearableObjectName = _view.TargetWearable.name == _view.Config.info.name;
+            _view.MetaInfoWearableName = _view.Config.info.name;
+            _view.MetaInfoAuthor = _view.Config.info.author;
 
             // attempts to parse and display the created time
-            if (DateTime.TryParse(_view.Config.Info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
+            if (DateTime.TryParse(_view.Config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
             {
                 _view.MetaInfoCreatedTime = createdTimeDt.ToLocalTime().ToString();
             }
@@ -335,7 +335,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // attempts to parse and display the updated time
-            if (DateTime.TryParse(_view.Config.Info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
+            if (DateTime.TryParse(_view.Config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
             {
                 _view.MetaInfoUpdatedTime = updatedTimeDt.ToLocalTime().ToString();
             }
@@ -344,7 +344,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.MetaInfoUpdatedTime = "(Unable to parse date)";
             }
 
-            _view.MetaInfoDescription = _view.Config.Info.description;
+            _view.MetaInfoDescription = _view.Config.info.description;
         }
 
         private void UpdateView()
@@ -369,7 +369,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public bool IsValid()
         {
             // prepare config
-            _view.Config.Version = WearableConfig.CurrentConfigVersion;
+            _view.Config.version = WearableConfig.CurrentConfigVersion;
 
             // TODO: multiple GUIDs
             if (_view.GuidReferencePrefab != null || _view.TargetAvatar != null)
@@ -378,17 +378,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
                 if (invalidAvatarPrefabGuid)
                 {
-                    if (_view.Config.AvatarConfig.guids.Count > 0)
+                    if (_view.Config.avatarConfig.guids.Count > 0)
                     {
-                        _view.Config.AvatarConfig.guids.Clear();
+                        _view.Config.avatarConfig.guids.Clear();
                     }
                 }
                 else
                 {
-                    if (_view.Config.AvatarConfig.guids.Count != 1)
+                    if (_view.Config.avatarConfig.guids.Count != 1)
                     {
-                        _view.Config.AvatarConfig.guids.Clear();
-                        _view.Config.AvatarConfig.guids.Add(avatarPrefabGuid);
+                        _view.Config.avatarConfig.guids.Clear();
+                        _view.Config.avatarConfig.guids.Add(avatarPrefabGuid);
                     }
                 }
             }

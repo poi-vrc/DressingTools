@@ -109,7 +109,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 dynamicsContainer = obj.transform;
             }
 
-            if (_cabCtx.cabinetConfig.GroupDynamicsSeparateGameObjects)
+            if (_cabCtx.cabinetConfig.groupDynamicsSeparateGameObjects)
             {
                 // group them in separate GameObjects
                 var addedNames = new Dictionary<string, int>();
@@ -157,7 +157,7 @@ namespace Chocopoi.DressingTools.Cabinet
             }
 
             // sort modules according to their apply order
-            var modules = new List<WearableModule>(wearCtx.wearableConfig.Modules);
+            var modules = new List<WearableModule>(wearCtx.wearableConfig.modules);
             modules.Sort((m1, m2) =>
             {
                 var m1Provider = WearableModuleProviderLocator.Instance.GetProvider(m1.moduleName);
@@ -195,7 +195,7 @@ namespace Chocopoi.DressingTools.Cabinet
             }
 
             // group dynamics
-            if (_cabCtx.cabinetConfig.GroupDynamics)
+            if (_cabCtx.cabinetConfig.groupDynamics)
             {
                 GroupDynamics(wearCtx.wearableGameObject, wearCtx.wearableDynamics);
             }
@@ -294,7 +294,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
                 if (!ApplyWearable(wearCtx))
                 {
-                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingWearableHasErrors, wearableConfig.Info.name);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingWearableHasErrors, wearableConfig.info.name);
                     return;
                 }
             }

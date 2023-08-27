@@ -82,7 +82,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 _cabinetConfig = new CabinetConfig();
             }
-            _cabinetConfig.AvatarArmatureName = _view.CabinetAvatarArmatureName;
+            _cabinetConfig.avatarArmatureName = _view.CabinetAvatarArmatureName;
             cabinet.configJson = _cabinetConfig.ToString();
         }
 
@@ -164,7 +164,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             _view.CabinetAvatarGameObject = cabinet.avatarGameObject;
-            _view.CabinetAvatarArmatureName = _cabinetConfig.AvatarArmatureName;
+            _view.CabinetAvatarArmatureName = _cabinetConfig.avatarArmatureName;
 
             var wearables = DTEditorUtils.GetCabinetWearables(cabinet.avatarGameObject);
 
@@ -175,7 +175,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                 _view.WearablePreviews.Add(new WearablePreview()
                 {
-                    name = config != null ? config.Info.name : "(Unable to load configuration)",
+                    name = config != null ? config.info.name : "(Unable to load configuration)",
                     RemoveButtonClick = () =>
                     {
                         DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);

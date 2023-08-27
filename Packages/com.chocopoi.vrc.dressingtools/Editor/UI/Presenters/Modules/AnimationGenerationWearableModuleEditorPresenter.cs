@@ -384,7 +384,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             presetData.toggleSuggestions.Clear();
             if (_cabinetConfig != null)
             {
-                var armatureName = _cabinetConfig.AvatarArmatureName;
+                var armatureName = _cabinetConfig.avatarArmatureName;
                 var avatarTrans = targetAvatar.transform;
 
                 // iterate through childs
@@ -511,7 +511,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                     {
                         // add the cabinet module if not exist
                         _moduleConfig = new AnimationGenerationCabinetModuleConfig();
-                        _cabinetConfig.Modules.Add(new CabinetModule()
+                        _cabinetConfig.modules.Add(new CabinetModule()
                         {
                             moduleName = AnimationGenerationCabinetModuleProvider.MODULE_IDENTIFIER,
                             config = _moduleConfig

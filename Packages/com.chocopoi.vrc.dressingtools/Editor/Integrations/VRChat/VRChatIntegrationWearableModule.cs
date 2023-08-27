@@ -182,7 +182,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     vrcm = new VRChatIntegrationWearableModuleConfig();
                 }
 
-                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.Info.name + "...", i / (float)wearables.Length * 100);
+                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.info.name + "...", i / (float)wearables.Length * 100);
 
                 // find the animation generation module
                 var agm = DTEditorUtils.FindWearableModuleConfig<AnimationGenerationWearableModuleConfig>(config);
@@ -191,7 +191,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.cabinetConfig.AnimationWriteDefaults);
+                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.cabinetConfig.animationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
                 var wearAnimations = animationGenerator.GenerateWearAnimations();
@@ -199,10 +199,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 AssetDatabase.CreateAsset(wearAnimations.Item1, CabinetApplier.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
                 // generate expression menu
-                subMenu.AddToggle(vrcm.customCabinetToggleName ?? config.Info.name, "cpDT_Cabinet", i + 1);
+                subMenu.AddToggle(vrcm.customCabinetToggleName ?? config.info.name, "cpDT_Cabinet", i + 1);
             }
 
-            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, cabCtx.cabinetConfig.AnimationWriteDefaults, null, refTransition);
+            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, cabCtx.cabinetConfig.animationWriteDefaults, null, refTransition);
 
             EditorUtility.DisplayProgressBar("DressingTools", "Generating expression menu...", 0);
             subMenu.CreateAsset(CabinetApplier.GeneratedAssetsPath + "/cpDT_Cabinet.asset")
