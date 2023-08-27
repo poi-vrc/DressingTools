@@ -182,13 +182,13 @@ namespace Chocopoi.DressingTools
             }
 
             // applying scalings
-            ApplyWearableTransforms(wearableConfig.AvatarConfig, avatarGameObject, wearableGameObject);
+            ApplyWearableTransforms(wearableConfig.avatarConfig, avatarGameObject, wearableGameObject);
 
             // add cabinet wearable component
             var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
 
             cabinetWearable.wearableGameObject = wearableGameObject;
-            cabinetWearable.configJson = wearableConfig.Serialize().ToString(Formatting.None);
+            cabinetWearable.configJson = wearableConfig.Serialize();
 
             // do provider hooks
             var providers = WearableModuleProviderLocator.Instance.GetAllProviders();
@@ -231,7 +231,7 @@ namespace Chocopoi.DressingTools
 
         public static void PrepareWearableConfig(WearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable)
         {
-            wearableConfig.Version = WearableConfig.CurrentConfigVersion;
+            wearableConfig.version = WearableConfig.CurrentConfigVersion;
 
             AddWearableMetaInfo(wearableConfig, targetWearable);
             AddWearableTargetAvatarConfig(wearableConfig, targetAvatar, targetWearable);
@@ -245,17 +245,17 @@ namespace Chocopoi.DressingTools
             if (cabinet == null)
             {
                 // leave it empty
-                wearableConfig.AvatarConfig.armatureName = "";
+                wearableConfig.avatarConfig.armatureName = "";
             }
             else
             {
                 if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
                 {
-                    wearableConfig.AvatarConfig.armatureName = cabinetConfig.AvatarArmatureName;
+                    wearableConfig.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }
                 else
                 {
-                    wearableConfig.AvatarConfig.armatureName = "";
+                    wearableConfig.avatarConfig.armatureName = "";
                 }
             }
 
@@ -265,24 +265,24 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            wearableConfig.AvatarConfig.name = targetAvatar.name;
+            wearableConfig.avatarConfig.name = targetAvatar.name;
 
             var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            wearableConfig.AvatarConfig.guids.Clear();
+            wearableConfig.avatarConfig.guids.Clear();
             if (!invalidAvatarPrefabGuid)
             {
                 // TODO: multiple guids
-                wearableConfig.AvatarConfig.guids.Add(avatarPrefabGuid);
+                wearableConfig.avatarConfig.guids.Add(avatarPrefabGuid);
             }
 
             var deltaPos = targetWearable.transform.position - targetAvatar.transform.position;
             var deltaRotation = targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation);
-            wearableConfig.AvatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
-            wearableConfig.AvatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
-            wearableConfig.AvatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
-            wearableConfig.AvatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
+            wearableConfig.avatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            wearableConfig.avatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            wearableConfig.avatarConfig.avatarLossyScale = new AvatarConfigVector3(targetAvatar.transform.lossyScale);
+            wearableConfig.avatarConfig.wearableLossyScale = new AvatarConfigVector3(targetWearable.transform.lossyScale);
         }
 
         public static void AddWearableMetaInfo(WearableConfig config, GameObject targetWearable)
@@ -292,9 +292,9 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            config.Info.name = targetWearable.name;
-            config.Info.author = "";
-            config.Info.description = "";
+            config.info.name = targetWearable.name;
+            config.info.author = "";
+            config.info.description = "";
         }
 
         public static System.Type FindType(string typeName)
@@ -572,7 +572,7 @@ namespace Chocopoi.DressingTools
 
         public static T FindWearableModuleConfig<T>(WearableConfig config) where T : IModuleConfig
         {
-            foreach (var module in config.Modules)
+            foreach (var module in config.modules)
             {
                 if (module.config is T moduleConfig)
                 {
@@ -584,7 +584,7 @@ namespace Chocopoi.DressingTools
 
         public static WearableModule FindWearableModule(WearableConfig config, string moduleName)
         {
-            foreach (var module in config.Modules)
+            foreach (var module in config.modules)
             {
                 if (moduleName == module.moduleName)
                 {
@@ -596,7 +596,7 @@ namespace Chocopoi.DressingTools
 
         public static T FindCabinetModuleConfig<T>(CabinetConfig config) where T : IModuleConfig
         {
-            foreach (var module in config.Modules)
+            foreach (var module in config.modules)
             {
                 if (module.config is T moduleConfig)
                 {
@@ -608,7 +608,7 @@ namespace Chocopoi.DressingTools
 
         public static CabinetModule FindCabinetModule(CabinetConfig config, string moduleName)
         {
-            foreach (var module in config.Modules)
+            foreach (var module in config.modules)
             {
                 if (moduleName == module.moduleName)
                 {

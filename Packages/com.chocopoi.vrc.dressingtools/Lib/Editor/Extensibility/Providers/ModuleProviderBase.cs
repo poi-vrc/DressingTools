@@ -23,8 +23,6 @@ namespace Chocopoi.DressingTools.Lib.Extensibility.Providers
 {
     public interface IModuleConfig { }
 
-    public abstract class VersionedModuleConfig : VersionedObject, IModuleConfig { }
-
     public class UnknownModuleConfig : IModuleConfig
     {
         public string RawJson { get; private set; }

@@ -104,7 +104,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
             dresserSettings.targetAvatar = cabCtx.avatarGameObject;
             dresserSettings.targetWearable = wearCtx.wearableGameObject;
-            dresserSettings.avatarArmatureName = cabCtx.cabinetConfig.AvatarArmatureName;
+            dresserSettings.avatarArmatureName = cabCtx.cabinetConfig.avatarArmatureName;
             dresserSettings.wearableArmatureName = moduleConfig.wearableArmatureName;
 
             var dresserReport = dresser.Execute(dresserSettings, out resultantBoneMappings);
@@ -361,13 +361,13 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         {
             var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)module.config;
 
-            if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.wearableConfig.Info.name, out var boneMappings))
+            if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.wearableConfig.info.name, out var boneMappings))
             {
                 DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.MappingGenerationHasErrors);
                 return false;
             }
 
-            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.Info.name, RandomString(32));
+            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.info.name, RandomString(32));
 
             if (!ApplyBoneMappings(cabCtx, wearCtx, armatureMappingConfig, generatedName, boneMappings, cabCtx.avatarGameObject.transform, wearCtx.wearableGameObject.transform, wearCtx.wearableGameObject.transform, ""))
             {

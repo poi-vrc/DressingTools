@@ -17,59 +17,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using Chocopoi.DressingTools.Lib.Cabinet.Modules;
-using Chocopoi.DressingTools.Lib.Cabinet.Serializers;
 using Chocopoi.DressingTools.Lib.Serialization;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
-using Chocopoi.DressingTools.Lib.Wearable.Serializers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib.Cabinet
 {
-    public class CabinetConfig : VersionedObject
+    public class CabinetConfig
     {
         public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
-        private static readonly Dictionary<int, ISerializer> Serializers = new Dictionary<int, ISerializer>() {
-            { 1, new CabinetV1Serializer() },
-        };
 
-        public override SerializationVersion Version { get; set; }
+        public SerializationVersion version;
+        public string avatarArmatureName;
+        public bool groupDynamics;
+        public bool groupDynamicsSeparateGameObjects;
+        public bool animationWriteDefaults;
 
-        public string AvatarArmatureName { get; set; }
-        public bool GroupDynamics { get; set; }
-        public bool GroupDynamicsSeparateGameObjects { get; set; }
-        public bool AnimationWriteDefaults { get; set; }
-
-        public List<CabinetModule> Modules;
+        public List<CabinetModule> modules;
 
         public CabinetConfig()
         {
-            Version = CurrentConfigVersion;
-            AvatarArmatureName = "Armature";
-            GroupDynamics = true;
-            GroupDynamicsSeparateGameObjects = true;
-            AnimationWriteDefaults = true;
-            Modules = new List<CabinetModule>();
-        }
-
-        public override ISerializer GetSerializerByVersion(SerializationVersion version)
-        {
-            if (version == null)
-            {
-                return null;
-            }
-            return Serializers.ContainsKey(version.Major) ? Serializers[version.Major] : null;
-        }
-
-        public static CabinetConfig Deserialize(string json)
-        {
-            // TODO: perform schema check
-            var jObject = JObject.Parse(json);
-            return Deserialize(jObject);
+            version = CurrentConfigVersion;
+            avatarArmatureName = "Armature";
+            groupDynamics = true;
+            groupDynamicsSeparateGameObjects = true;
+            animationWriteDefaults = true;
+            modules = new List<CabinetModule>();
         }
 
         public static bool TryDeserialize(string json, out CabinetConfig config)
@@ -87,11 +62,20 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
             }
         }
 
-        public static CabinetConfig Deserialize(JObject jObject)
+        public string Serialize() => JsonConvert.SerializeObject(this);
+
+        public static CabinetConfig Deserialize(string json)
         {
-            var config = new CabinetConfig();
-            config.DeserializeFrom(jObject);
-            return config;
+            // TODO: perform schema check
+            var jObject = JObject.Parse(json);
+
+            var version = jObject["version"].ToObject<SerializationVersion>();
+            if (version.Major > CurrentConfigVersion.Major)
+            {
+                throw new Exception("Incompatbile cabinet config version: " + version.Major + " > " + CurrentConfigVersion.Major);
+            }
+
+            return jObject.ToObject<CabinetConfig>();
         }
 
         public CabinetConfig Clone()
@@ -102,7 +86,7 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
 
         public override string ToString()
         {
-            return Serialize().ToString(Formatting.None);
+            return Serialize();
         }
     }
 }

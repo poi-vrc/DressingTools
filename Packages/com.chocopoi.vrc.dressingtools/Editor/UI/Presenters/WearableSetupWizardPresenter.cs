@@ -83,7 +83,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var armatureName = "Armature";
             if (cabinet != null)
             {
-                armatureName = cabinetConfig.AvatarArmatureName;
+                armatureName = cabinetConfig.avatarArmatureName;
                 _view.ShowAvatarNoCabinetHelpBox = false;
             }
             else
@@ -284,7 +284,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (_view.UseArmatureMapping)
             {
-                wearableConfig.Modules.Add(new WearableModule()
+                wearableConfig.modules.Add(new WearableModule()
                 {
                     moduleName = ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.ArmatureMappingModuleConfig,
@@ -293,7 +293,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (_view.UseMoveRoot)
             {
-                wearableConfig.Modules.Add(new WearableModule()
+                wearableConfig.modules.Add(new WearableModule()
                 {
                     moduleName = MoveRootWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.MoveRootModuleConfig,
@@ -302,7 +302,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (_view.UseAnimationGeneration)
             {
-                wearableConfig.Modules.Add(new WearableModule()
+                wearableConfig.modules.Add(new WearableModule()
                 {
                     moduleName = AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.AnimationGenerationModuleConfig,
@@ -311,7 +311,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (_view.UseBlendshapeSync)
             {
-                wearableConfig.Modules.Add(new WearableModule()
+                wearableConfig.modules.Add(new WearableModule()
                 {
                     moduleName = BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER,
                     config = _view.BlendshapeSyncModuleConfig,
