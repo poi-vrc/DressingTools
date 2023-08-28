@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Cabinet.Modules;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
@@ -35,6 +36,8 @@ namespace Chocopoi.DressingTools
         private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
 
         private static Dictionary<string, System.Type> s_reflectionTypeCache = new Dictionary<string, System.Type>();
+
+        private static readonly System.Random Random = new System.Random();
 
         private static List<List<string>> s_boneNameMappings = null;
 
@@ -77,7 +80,7 @@ namespace Chocopoi.DressingTools
                 // TODO: read default config, scan for armature names?
                 comp.avatarGameObject = avatar;
                 var config = new CabinetConfig();
-                comp.configJson = config.ToString();
+                comp.configJson = config.Serialize();
             }
 
             return comp;
@@ -636,6 +639,15 @@ namespace Chocopoi.DressingTools
                 }
             }
             return found;
+        }
+
+        public static string RandomString(int length)
+        {
+            // i just copied from stackoverflow :D
+            // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings?page=1&tab=scoredesc#tab-top
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
     }
 }

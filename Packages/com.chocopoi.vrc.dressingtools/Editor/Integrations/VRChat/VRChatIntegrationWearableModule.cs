@@ -130,10 +130,8 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
             ExpressionMenuUtils.RemoveExpressionParameters(exParams, "^cpDT_Cabinet");
 
-            try
+            var parametersToAdd = new List<VRCExpressionParameters.Parameter>
             {
-                ExpressionMenuUtils.AddExpressionParameters(exParams, new VRCExpressionParameters.Parameter[]
-                {
                 new VRCExpressionParameters.Parameter()
                 {
                     name = "cpDT_Cabinet",
@@ -142,20 +140,13 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     networkSynced = true,
                     saved = true
                 }
-                });
-            }
-            catch (ParameterOverflowException ex)
-            {
-                DTReportUtils.LogExceptionLocalized(cabCtx.report, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
-                return false;
-            }
+            };
 
             ExpressionMenuUtils.RemoveExpressionMenuControls(exMenu, "DT Cabinet");
 
-            var subMenu = new ExpressionMenuBuilder(exMenu)
-                .BeginNewSubMenu("DT Cabinet");
-
-            subMenu.AddToggle("Original", "cpDT_Cabinet", 0);
+            var baseSubMenu = new ExpressionMenuBuilder();
+            baseSubMenu.AddToggle("Original", "cpDT_Cabinet", 0);
+            baseSubMenu.CreateAsset(string.Format("{0}/cpDT_Cabinet.asset", CabinetApplier.GeneratedAssetsPath));
 
             // create an empty clip
             var emptyClip = new AnimationClip();
@@ -167,6 +158,9 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
             // get wearables
             var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
+            var cabinetMenu = baseSubMenu;
+            var cabinetMenuIndex = 0;
+            var originalLayerLength = fxController.layers.Length;
 
             for (var i = 0; i < wearables.Length; i++)
             {
@@ -198,21 +192,122 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 pairs.Add(i + 1, wearAnimations.Item1); // enable clip
                 AssetDatabase.CreateAsset(wearAnimations.Item1, CabinetApplier.GeneratedAssetsPath + "/cpDT_" + wearables[i].name + ".anim");
 
-                // generate expression menu
-                subMenu.AddToggle(vrcm.customCabinetToggleName ?? config.info.name, "cpDT_Cabinet", i + 1);
+                // add a new submenu if going to be full
+                if (cabinetMenu.GetMenu().controls.Count == 7)
+                {
+                    var newSubMenu = new ExpressionMenuBuilder();
+                    newSubMenu.CreateAsset(string.Format("{0}/cpDT_Cabinet_{1}.asset", CabinetApplier.GeneratedAssetsPath, ++cabinetMenuIndex));
+
+                    cabinetMenu.AddSubMenu("Next Page", newSubMenu.GetMenu());
+                    cabinetMenu = newSubMenu;
+                }
+
+                if (agm.wearableCustomizables.Count > 0)
+                {
+                    // Add a submenu for wearables that have customizables
+                    var baseCustomizableSubMenu = new ExpressionMenuBuilder();
+                    baseCustomizableSubMenu.CreateAsset(string.Format("{0}/cpDT_Cabinet_{1}_{2}.asset", CabinetApplier.GeneratedAssetsPath, cabinetMenuIndex, config.info.name));
+                    cabinetMenu.AddSubMenu(vrcm.customCabinetToggleName ?? config.info.name, baseCustomizableSubMenu.GetMenu());
+
+                    // add enable toggle
+                    baseCustomizableSubMenu.AddToggle("Enable", "cpDT_Cabinet", i + 1);
+
+                    var customizableMenu = baseCustomizableSubMenu;
+                    var customizableMenuIndex = 0;
+
+                    var customizableToggleAnimations = animationGenerator.GenerateCustomizableToggleAnimations();
+                    var customizableBlendshapeAnimations = animationGenerator.GenerateCustomizableBlendshapeAnimations();
+
+                    foreach (var wearableCustomizable in agm.wearableCustomizables)
+                    {
+                        // add a new submenu if going to be full
+                        if (customizableMenu.GetMenu().controls.Count == 7)
+                        {
+                            var newSubMenu = new ExpressionMenuBuilder();
+                            newSubMenu.CreateAsset(string.Format("{0}/cpDT_Cabinet_{1}_{2}_{3}.asset", CabinetApplier.GeneratedAssetsPath, cabinetMenuIndex, config.info.name, ++customizableMenuIndex));
+
+                            cabinetMenu.AddSubMenu("Next Page", newSubMenu.GetMenu());
+                            customizableMenu = newSubMenu;
+                        }
+
+                        var parameterName = string.Format("cpDT_Cabinet_{0}_{1}", wearableCustomizable.name, DTEditorUtils.RandomString(8));
+
+                        if (wearableCustomizable.type == WearableCustomizableType.Toggle)
+                        {
+                            AnimationUtils.AddAnimatorParameter(fxController, parameterName, wearableCustomizable.defaultValue > 0);
+                            parametersToAdd.Add(new VRCExpressionParameters.Parameter()
+                            {
+                                name = wearableCustomizable.name,
+                                valueType = VRCExpressionParameters.ValueType.Bool,
+                                defaultValue = wearableCustomizable.defaultValue,
+                                networkSynced = true,
+                                saved = true
+                            });
+
+                            var anims = customizableToggleAnimations[wearableCustomizable];
+                            AssetDatabase.CreateAsset(anims.Item1, string.Format("{0}/{1}_On.anim", CabinetApplier.GeneratedAssetsPath, parameterName));
+                            AssetDatabase.CreateAsset(anims.Item2, string.Format("{0}/{1}_Off.anim", CabinetApplier.GeneratedAssetsPath, parameterName));
+                            AnimationUtils.GenerateSingleToggleLayer(fxController, parameterName, parameterName, anims.Item2, anims.Item1, cabCtx.cabinetConfig.animationWriteDefaults, false, null, refTransition);
+                            customizableMenu.AddToggle(wearableCustomizable.name, parameterName, 1);
+                        }
+                        else if (wearableCustomizable.type == WearableCustomizableType.Blendshape)
+                        {
+                            AnimationUtils.AddAnimatorParameter(fxController, parameterName, wearableCustomizable.defaultValue);
+                            parametersToAdd.Add(new VRCExpressionParameters.Parameter()
+                            {
+                                name = wearableCustomizable.name,
+                                valueType = VRCExpressionParameters.ValueType.Float,
+                                defaultValue = wearableCustomizable.defaultValue,
+                                networkSynced = true,
+                                saved = true
+                            });
+
+                            var toggleAnims = customizableToggleAnimations[wearableCustomizable];
+                            AssetDatabase.CreateAsset(toggleAnims.Item1, string.Format("{0}/{1}_On.anim", CabinetApplier.GeneratedAssetsPath, parameterName));
+                            AssetDatabase.CreateAsset(toggleAnims.Item2, string.Format("{0}/{1}_Off.anim", CabinetApplier.GeneratedAssetsPath, parameterName));
+                            var blendshapeAnim = customizableBlendshapeAnimations[wearableCustomizable];
+                            AssetDatabase.CreateAsset(blendshapeAnim, string.Format("{0}/{1}_MotionTime.anim", CabinetApplier.GeneratedAssetsPath, parameterName));
+                            AnimationUtils.GenerateSingleToggleLayer(fxController, parameterName + "_Toggles", parameterName, toggleAnims.Item2, toggleAnims.Item1, cabCtx.cabinetConfig.animationWriteDefaults, false, null, refTransition);
+                            AnimationUtils.GenerateSingleMotionTimeLayer(fxController, parameterName + "_Blendshapes", parameterName, blendshapeAnim, cabCtx.cabinetConfig.animationWriteDefaults);
+                            customizableMenu.AddRadialPuppet(wearableCustomizable.name, parameterName);
+                        }
+                    }
+                }
+                else
+                {
+                    // Add toggle only
+                    cabinetMenu.AddToggle(vrcm.customCabinetToggleName ?? config.info.name, "cpDT_Cabinet", i + 1);
+                }
             }
 
+            // create cabinet layer
             AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, cabCtx.cabinetConfig.animationWriteDefaults, null, refTransition);
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Generating expression menu...", 0);
-            subMenu.CreateAsset(CabinetApplier.GeneratedAssetsPath + "/cpDT_Cabinet.asset")
-                .EndNewSubMenu();
+            // we push our cabinet layer to the top
+            var layerList = new List<AnimatorControllerLayer>(fxController.layers);
+            var cabinetLayer = layerList[layerList.Count - 1];
+            layerList.Remove(cabinetLayer);
+            layerList.Insert(originalLayerLength, cabinetLayer);
+            fxController.layers = layerList.ToArray();
+
+            EditorUtility.DisplayProgressBar("DressingTools", "Adding expression parameters...", 0);
+
+            try
+            {
+                ExpressionMenuUtils.AddExpressionParameters(exParams, parametersToAdd);
+                ExpressionMenuUtils.AddSubMenu(exMenu, "DT Cabinet", baseSubMenu.GetMenu());
+            }
+            catch (ParameterOverflowException ex)
+            {
+                DTReportUtils.LogExceptionLocalized(cabCtx.report, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
+                return false;
+            }
 
             EditorUtility.SetDirty(fxController);
             EditorUtility.SetDirty(exMenu);
             EditorUtility.SetDirty(exParams);
 
-            EditorUtility.ClearProgressBar();
+            EditorUtility.DisplayProgressBar("DressingTools", "Saving assets...", 0);
             AssetDatabase.SaveAssets();
 
             return true;

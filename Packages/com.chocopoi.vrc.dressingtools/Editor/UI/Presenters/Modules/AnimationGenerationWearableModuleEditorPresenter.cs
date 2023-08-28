@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet.Modules;
@@ -69,6 +70,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.WearableOnWearPresetSaveEvent += OnWearableOnWearPresetSaveEvent;
             _view.WearableOnWearPresetDeleteEvent += OnWearableOnWearPresetDeleteEvent;
 
+            _view.AddCustomizableEvent += OnAddCustomizableEvent;
+
             _parentView.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
         }
 
@@ -93,10 +96,21 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.WearableOnWearPresetSaveEvent -= OnWearableOnWearPresetSaveEvent;
             _view.WearableOnWearPresetDeleteEvent -= OnWearableOnWearPresetDeleteEvent;
 
+            _view.AddCustomizableEvent -= OnAddCustomizableEvent;
+
             _parentView.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
         }
 
-        private void UpdateSelectedPresetData(Dictionary<string, AnimationPreset> savedPresets, PresetData presetData)
+        private void OnAddCustomizableEvent()
+        {
+            _module.wearableCustomizables.Add(new WearableCustomizable()
+            {
+                name = "Customizable-" + DTEditorUtils.RandomString(6)
+            });
+            UpdateCustomizables();
+        }
+
+        private void UpdateSelectedPresetData(Dictionary<string, AnimationPreset> savedPresets, PresetViewData presetData)
         {
             if (presetData.selectedPresetIndex == 0)
             {
@@ -106,7 +120,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _module.avatarAnimationOnWear = new AnimationPreset(savedPresets[key]);
         }
 
-        private void SavePreset(Dictionary<string, AnimationPreset> savedPresets, PresetData presetData, AnimationPreset presetToSave)
+        private void SavePreset(Dictionary<string, AnimationPreset> savedPresets, PresetViewData presetData, AnimationPreset presetToSave)
         {
             var presetName = _view.ShowPresetNamingDialog();
 
@@ -125,11 +139,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             savedPresets.Add(presetName, presetToSave);
 
             // serialize to cabinet
-            _cabinet.configJson = _cabinetConfig.ToString();
+            _cabinet.configJson = _cabinetConfig.Serialize();
             UpdateView();
         }
 
-        private void DeletePreset(Dictionary<string, AnimationPreset> savedPresets, PresetData presetData)
+        private void DeletePreset(Dictionary<string, AnimationPreset> savedPresets, PresetViewData presetData)
         {
             if (presetData.selectedPresetIndex == 0)
             {
@@ -141,7 +155,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             presetData.selectedPresetIndex = 0;
 
             // serialize to cabinet
-            _cabinet.configJson = _cabinetConfig.ToString();
+            _cabinet.configJson = _cabinetConfig.Serialize();
             UpdateView();
         }
 
@@ -229,10 +243,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             UpdateAnimationGenerationWearableOnWear();
         }
 
-        private void UpdateAnimationPresetToggles(Transform root, AnimationPreset preset, List<ToggleData> toggleDataList)
+        private void UpdateToggles(Transform root, List<AnimationToggle> toggles, List<ToggleData> toggleDataList)
         {
             toggleDataList.Clear();
-            foreach (var toggle in preset.toggles)
+            foreach (var toggle in toggles)
             {
                 var transform = toggle.path != null ? root.Find(toggle.path) : null;
 
@@ -258,10 +272,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 };
                 toggleData.removeButtonClickEvent = () =>
                 {
-                    preset.toggles.Remove(toggle);
+                    toggles.Remove(toggle);
                     toggleDataList.Remove(toggleData);
-                    UpdateAnimationGenerationAvatarOnWear();
-                    UpdateAnimationGenerationWearableOnWear();
                 };
 
                 toggleDataList.Add(toggleData);
@@ -283,10 +295,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return names;
         }
 
-        private void UpdateAnimationPresetBlendshapes(Transform root, AnimationPreset preset, List<BlendshapeData> blendshapeDataList)
+        private void UpdateBlendshapes(Transform root, List<AnimationBlendshapeValue> blendshapes, List<BlendshapeData> blendshapeDataList)
         {
             blendshapeDataList.Clear();
-            foreach (var blendshape in preset.blendshapes)
+            foreach (var blendshape in blendshapes)
             {
                 var transform = blendshape.path != null ? root.Find(blendshape.path) : null;
                 var smr = transform?.GetComponent<SkinnedMeshRenderer>();
@@ -338,7 +350,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 blendshapeData.sliderChangeEvent = () => blendshape.value = blendshapeData.value;
                 blendshapeData.removeButtonClickEvent = () =>
                 {
-                    preset.blendshapes.Remove(blendshape);
+                    blendshapes.Remove(blendshape);
                     blendshapeDataList.Remove(blendshapeData);
                 };
 
@@ -346,7 +358,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateAnimationPreset(Transform root, Dictionary<string, AnimationPreset> savedPresets, AnimationPreset preset, PresetData presetData)
+        private void UpdateAnimationPreset(Transform root, Dictionary<string, AnimationPreset> savedPresets, AnimationPreset preset, PresetViewData presetData)
         {
             if (savedPresets != null)
             {
@@ -360,8 +372,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 presetData.savedPresetKeys = new string[] { SavedPresetUnselectedPlaceholder };
             }
 
-            UpdateAnimationPresetToggles(root, preset, presetData.toggles);
-            UpdateAnimationPresetBlendshapes(root, preset, presetData.blendshapes);
+            UpdateToggles(root, preset.toggles, presetData.toggles);
+            UpdateBlendshapes(root, preset.blendshapes, presetData.blendshapes);
         }
 
         private bool IsGameObjectUsedInToggles(GameObject go, List<ToggleData> toggleData)
@@ -376,7 +388,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return false;
         }
 
-        private void UpdateAvatarOnWearToggleSuggestions(PresetData presetData)
+        private void UpdateAvatarOnWearToggleSuggestions(PresetViewData presetData)
         {
             var targetAvatar = _parentView.TargetAvatar;
             var targetWearable = _parentView.TargetWearable;
@@ -413,7 +425,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateWearableOnWearToggleSuggestions(PresetData presetData)
+        private void UpdateWearableOnWearToggleSuggestions(PresetViewData presetData)
         {
             var targetWearable = _parentView.TargetWearable;
 
@@ -495,6 +507,72 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
+        private void UpdateCustomizableAvatarToggles(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateToggles(_parentView.TargetAvatar.transform, wearable.avatarToggles, customizableData.avatarToggles);
+        private void UpdateCustomizableWearableToggles(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateToggles(_parentView.TargetWearable.transform, wearable.wearableToggles, customizableData.wearableToggles);
+        private void UpdateCustomizableAvatarBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateBlendshapes(_parentView.TargetAvatar.transform, wearable.avatarBlendshapes, customizableData.avatarBlendshapes);
+        private void UpdateCustomizableWearableBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateBlendshapes(_parentView.TargetWearable.transform, wearable.wearableBlendshapes, customizableData.wearableBlendshapes);
+
+        private void UpdateCustomizables()
+        {
+            _view.Customizables.Clear();
+
+            if (_parentView.TargetAvatar == null || _parentView.TargetWearable == null)
+            {
+                return;
+            }
+
+            foreach (var wearable in _module.wearableCustomizables)
+            {
+                var customizableData = new CustomizableViewData
+                {
+                    name = wearable.name,
+                    type = (int)wearable.type,
+                    defaultValue = wearable.defaultValue
+                };
+
+                customizableData.removeButtonClickEvent = () =>
+                {
+                    _module.wearableCustomizables.Remove(wearable);
+                    _view.Customizables.Remove(customizableData);
+                };
+
+                customizableData.customizableSettingsChangeEvent = () =>
+                {
+                    wearable.name = customizableData.name;
+                    wearable.type = (WearableCustomizableType)customizableData.type;
+                    wearable.defaultValue = customizableData.defaultValue;
+                };
+
+                customizableData.addAvatarToggleEvent = () =>
+                {
+                    wearable.avatarToggles.Add(new AnimationToggle());
+                    UpdateCustomizableAvatarToggles(wearable, customizableData);
+                };
+                customizableData.addAvatarBlendshapeEvent = () =>
+                {
+                    wearable.avatarBlendshapes.Add(new AnimationBlendshapeValue());
+                    UpdateCustomizableAvatarBlendshapes(wearable, customizableData);
+                };
+                customizableData.addWearableToggleEvent = () =>
+                {
+                    wearable.wearableToggles.Add(new AnimationToggle());
+                    UpdateCustomizableWearableToggles(wearable, customizableData);
+                };
+                customizableData.addWearableBlendshapeEvent = () =>
+                {
+                    wearable.wearableBlendshapes.Add(new AnimationBlendshapeValue());
+                    UpdateCustomizableWearableBlendshapes(wearable, customizableData);
+                };
+
+                UpdateCustomizableAvatarToggles(wearable, customizableData);
+                UpdateCustomizableAvatarBlendshapes(wearable, customizableData);
+                UpdateCustomizableWearableToggles(wearable, customizableData);
+                UpdateCustomizableWearableBlendshapes(wearable, customizableData);
+
+                _view.Customizables.Add(customizableData);
+            }
+        }
+
         private void UpdateView()
         {
             _cabinet = DTEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
@@ -516,7 +594,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                             moduleName = AnimationGenerationCabinetModuleProvider.MODULE_IDENTIFIER,
                             config = _moduleConfig
                         });
-                        _cabinet.configJson = _cabinetConfig.ToString();
+                        _cabinet.configJson = _cabinetConfig.Serialize();
                     }
                 }
             }
@@ -527,7 +605,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             UpdateAnimationGenerationAvatarOnWear();
             UpdateAnimationGenerationWearableOnWear();
-            // TODO: customizables
+            UpdateCustomizables();
         }
 
         private void OnLoad()

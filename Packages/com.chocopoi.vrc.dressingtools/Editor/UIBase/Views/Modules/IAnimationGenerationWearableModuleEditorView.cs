@@ -73,7 +73,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         }
     }
 
-    internal class PresetData
+    internal class PresetViewData
     {
         public List<ToggleData> toggles;
         public List<ToggleSuggestionData> toggleSuggestions;
@@ -81,13 +81,62 @@ namespace Chocopoi.DressingTools.UIBase.Views
         public string[] savedPresetKeys;
         public int selectedPresetIndex;
 
-        public PresetData()
+        public PresetViewData()
         {
             toggles = new List<ToggleData>();
             toggleSuggestions = new List<ToggleSuggestionData>();
             blendshapes = new List<BlendshapeData>();
             savedPresetKeys = new string[] { "---" };
             selectedPresetIndex = 0;
+        }
+    }
+
+
+    internal class CustomizableViewData
+    {
+        public bool foldout;
+        public string name;
+        public int type;
+        public float defaultValue;
+        public Action customizableSettingsChangeEvent;
+        public bool foldoutAvatarToggles;
+        public List<ToggleData> avatarToggles;
+        public List<ToggleSuggestionData> avatarToggleSuggestions;
+        public Action addAvatarToggleEvent;
+        public bool foldoutWearableToggles;
+        public List<ToggleData> wearableToggles;
+        public List<ToggleSuggestionData> wearableToggleSuggestions;
+        public Action addWearableToggleEvent;
+        public bool foldoutAvatarBlendshapes;
+        public List<BlendshapeData> avatarBlendshapes;
+        public Action addAvatarBlendshapeEvent;
+        public bool foldoutWearableBlendshapes;
+        public List<BlendshapeData> wearableBlendshapes;
+        public Action addWearableBlendshapeEvent;
+        public Action removeButtonClickEvent;
+
+        public CustomizableViewData()
+        {
+            foldout = false;
+            name = null;
+            type = 0;
+            defaultValue = 0;
+            customizableSettingsChangeEvent = null;
+            foldoutAvatarToggles = false;
+            avatarToggles = new List<ToggleData>();
+            avatarToggleSuggestions = new List<ToggleSuggestionData>();
+            addAvatarToggleEvent = null;
+            foldoutWearableToggles = false;
+            wearableToggles = new List<ToggleData>();
+            wearableToggleSuggestions = new List<ToggleSuggestionData>();
+            addWearableToggleEvent = null;
+            foldoutAvatarBlendshapes = false;
+            avatarBlendshapes = new List<BlendshapeData>();
+            addAvatarBlendshapeEvent = null;
+            foldoutWearableBlendshapes = false;
+            wearableBlendshapes = new List<BlendshapeData>();
+            addWearableBlendshapeEvent = null;
+            removeButtonClickEvent = null;
         }
     }
 
@@ -103,10 +152,12 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action WearableOnWearPresetDeleteEvent;
         event Action WearableOnWearToggleAddEvent;
         event Action WearableOnWearBlendshapeAddEvent;
+        event Action AddCustomizableEvent;
         bool ShowCannotRenderPresetWithoutTargetAvatarHelpBox { get; set; }
         bool ShowCannotRenderPresetWithoutTargetWearableHelpBox { get; set; }
-        PresetData AvatarOnWearPresetData { get; set; }
-        PresetData WearableOnWearPresetData { get; set; }
+        PresetViewData AvatarOnWearPresetData { get; set; }
+        PresetViewData WearableOnWearPresetData { get; set; }
+        List<CustomizableViewData> Customizables { get; set; }
 
         string ShowPresetNamingDialog();
         void ShowDuplicatedPresetNameDialog();

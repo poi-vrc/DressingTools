@@ -165,7 +165,8 @@ namespace Chocopoi.DressingTools.Animations
                 var obj = _wearableObject.transform.Find(blendshape.path);
                 if (obj == null)
                 {
-                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _wearableObject.name, blendshape.path);
+                    DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredWearableBlendshapeObjectNotFound, _wearableObject.name, blendshape.path);
+                    continue;
                 }
 
                 if (!TryGetBlendshapeValue(obj.gameObject, blendshape.blendshapeName, out var originalValue))
@@ -235,7 +236,7 @@ namespace Chocopoi.DressingTools.Animations
             return new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip);
         }
 
-        public Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableAnimations()
+        public Dictionary<WearableCustomizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableToggleAnimations()
         {
             // prevent unexpected behaviour
             if (!DTEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
@@ -250,14 +251,14 @@ namespace Chocopoi.DressingTools.Animations
                 var enableClip = new AnimationClip();
                 var disableClip = new AnimationClip();
 
+                // avatar required toggles
+                GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarToggles.ToArray());
+
+                // avatar required blendshapes
+                GenerateAvatarBlendshapeAnimations(enableClip, disableClip, customizable.avatarBlendshapes.ToArray());
+
                 if (customizable.type == WearableCustomizableType.Toggle)
                 {
-                    // avatar required toggles
-                    GenerateAvatarToggleAnimations(enableClip, disableClip, customizable.avatarRequiredToggles.ToArray());
-
-                    // avatar required blendshapes
-                    GenerateAvatarBlendshapeAnimations(enableClip, disableClip, customizable.avatarRequiredBlendshapes.ToArray());
-
                     // wearable required blendshapes
                     GenerateWearableBlendshapeAnimations(enableClip, disableClip, customizable.wearableBlendshapes.ToArray());
 
@@ -266,11 +267,48 @@ namespace Chocopoi.DressingTools.Animations
                 }
                 else if (customizable.type == WearableCustomizableType.Blendshape)
                 {
-                    // TODO: we need to create a curve from 0.0f to 100.0f to handle this type of customizable
-                    throw new System.NotImplementedException();
+                    // wearable required toggle
+                    GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray());
+
+                    // we only the toggles here, for radial blendshapes, we need to separate a layer to do that
                 }
 
                 dict.Add(customizable, new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip));
+            }
+
+            return dict;
+        }
+
+        public Dictionary<WearableCustomizable, AnimationClip> GenerateCustomizableBlendshapeAnimations()
+        {
+            // prevent unexpected behaviour
+            if (!DTEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
+            {
+                throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
+            }
+
+            var dict = new Dictionary<WearableCustomizable, AnimationClip>();
+
+            foreach (var customizable in _module.wearableCustomizables)
+            {
+                if (customizable.type == WearableCustomizableType.Blendshape)
+                {
+                    var clip = new AnimationClip();
+
+                    foreach (var wearableBlendshape in customizable.wearableBlendshapes)
+                    {
+                        var obj = _wearableObject.transform.Find(wearableBlendshape.path);
+                        if (obj == null)
+                        {
+                            DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredWearableBlendshapeObjectNotFound, _wearableObject.name, wearableBlendshape.path);
+                            continue;
+                        }
+
+                        AnimationUtils.SetLinearZeroToHundredBlendshapeCurve(clip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), wearableBlendshape.blendshapeName);
+                    }
+
+                    dict.Add(customizable, clip);
+                }
             }
 
             return dict;

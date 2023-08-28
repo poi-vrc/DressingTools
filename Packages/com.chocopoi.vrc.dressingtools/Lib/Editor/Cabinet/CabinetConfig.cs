@@ -83,10 +83,5 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
             // a tricky and easier way to copy
             return Deserialize(Serialize());
         }
-
-        public override string ToString()
-        {
-            return Serialize();
-        }
     }
 }

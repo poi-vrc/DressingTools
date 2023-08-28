@@ -26,6 +26,7 @@ namespace Chocopoi.DressingTools.Lib.Wearable
         public string blendshapeName;
         public float value;
 
+
         public AnimationBlendshapeValue()
         {
             path = null;
