@@ -83,7 +83,6 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             public const string ApplyingBoneMappingHasErrors = "appliers.default.msgCode.error.applyingBoneMappingHasErrors";
         }
 
-        private static readonly System.Random Random = new System.Random();
         private const string LogLabel = "ArmatureModule";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
@@ -347,15 +346,6 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        private static string RandomString(int length)
-        {
-            // i just copied from stackoverflow :D
-            // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings?page=1&tab=scoredesc#tab-top
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[Random.Next(s.Length)]).ToArray());
-        }
-
         public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
         {
             var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)module.config;
@@ -366,7 +356,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return false;
             }
 
-            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.info.name, RandomString(32));
+            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.info.name, DTEditorUtils.RandomString(16));
 
             if (!ApplyBoneMappings(cabCtx, wearCtx, armatureMappingConfig, generatedName, boneMappings, cabCtx.avatarGameObject.transform, wearCtx.wearableGameObject.transform, wearCtx.wearableGameObject.transform, ""))
             {

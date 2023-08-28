@@ -30,18 +30,21 @@ namespace Chocopoi.DressingTools.Lib.Wearable
     [Serializable]
     public class WearableCustomizable
     {
+        public string name;
         public WearableCustomizableType type;
-        public List<AnimationToggle> avatarRequiredToggles;
+        public float defaultValue;
+        public List<AnimationToggle> avatarToggles;
         public List<AnimationToggle> wearableToggles;
-        public List<AnimationBlendshapeValue> avatarRequiredBlendshapes;
+        public List<AnimationBlendshapeValue> avatarBlendshapes;
         public List<AnimationBlendshapeValue> wearableBlendshapes;
 
         public WearableCustomizable()
         {
+            name = null;
             type = WearableCustomizableType.Toggle;
-            avatarRequiredToggles = new List<AnimationToggle>();
+            avatarToggles = new List<AnimationToggle>();
             wearableToggles = new List<AnimationToggle>();
-            avatarRequiredBlendshapes = new List<AnimationBlendshapeValue>();
+            avatarBlendshapes = new List<AnimationBlendshapeValue>();
             wearableBlendshapes = new List<AnimationBlendshapeValue>();
         }
     }

@@ -46,11 +46,13 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public event Action WearableOnWearPresetDeleteEvent;
         public event Action WearableOnWearToggleAddEvent;
         public event Action WearableOnWearBlendshapeAddEvent;
+        public event Action AddCustomizableEvent;
 
         public bool ShowCannotRenderPresetWithoutTargetAvatarHelpBox { get; set; }
         public bool ShowCannotRenderPresetWithoutTargetWearableHelpBox { get; set; }
-        public PresetData AvatarOnWearPresetData { get; set; }
-        public PresetData WearableOnWearPresetData { get; set; }
+        public PresetViewData AvatarOnWearPresetData { get; set; }
+        public PresetViewData WearableOnWearPresetData { get; set; }
+        public List<CustomizableViewData> Customizables { get; set; }
 
         private AnimationGenerationWearableModuleEditorPresenter _presenter;
         private IWearableModuleEditorViewParent _parentView;
@@ -60,6 +62,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _foldoutAvatarAnimationPresetBlendshapes;
         private bool _foldoutWearableAnimationPresetToggles;
         private bool _foldoutWearableAnimationPresetBlendshapes;
+        private bool _foldoutAnimationGenerationCustomizables;
 
         public AnimationGenerationWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProviderBase provider, IModuleConfig target) : base(parentView, provider, target)
         {
@@ -68,8 +71,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
             ShowCannotRenderPresetWithoutTargetAvatarHelpBox = true;
             ShowCannotRenderPresetWithoutTargetWearableHelpBox = true;
-            AvatarOnWearPresetData = new PresetData();
-            WearableOnWearPresetData = new PresetData();
+            AvatarOnWearPresetData = new PresetViewData();
+            WearableOnWearPresetData = new PresetViewData();
+            Customizables = new List<CustomizableViewData>();
 
             _foldoutAnimationGenerationAvatarOnWear = false;
             _foldoutAnimationGenerationWearableOnWear = false;
@@ -79,9 +83,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             _foldoutWearableAnimationPresetBlendshapes = false;
         }
 
-        private void DrawAnimationPresetToggles(List<ToggleData> toggles, List<ToggleSuggestionData> toggleSuggestions, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetToggles)
+        private void DrawToggles(string title, List<ToggleData> toggles, List<ToggleSuggestionData> toggleSuggestions, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetToggles)
         {
-            BeginFoldoutBox(ref foldoutAnimationPresetToggles, "Toggles");
+            BeginFoldoutBox(ref foldoutAnimationPresetToggles, title);
             if (foldoutAnimationPresetToggles)
             {
                 HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
@@ -133,9 +137,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             EndFoldoutBox();
         }
 
-        private void DrawAnimationPresetBlendshapes(List<BlendshapeData> blendshapes, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetBlendshapes)
+        private void DrawBlendshapes(string title, List<BlendshapeData> blendshapes, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetBlendshapes, bool hideSlider = false)
         {
-            BeginFoldoutBox(ref foldoutAnimationPresetBlendshapes, "Blendshapes");
+            BeginFoldoutBox(ref foldoutAnimationPresetBlendshapes, title);
             if (foldoutAnimationPresetBlendshapes)
             {
                 HelpBox("The object must be a child or grand-child of the root, and has a SkinnedMeshRenderer. Or it will not be selected.", MessageType.Info);
@@ -156,7 +160,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                         if (!blendshape.isInvalid)
                         {
                             Popup(ref blendshape.selectedBlendshapeIndex, blendshape.availableBlendshapeNames, blendshape.blendshapeNameChangeEvent);
-                            Slider(ref blendshape.value, 0, 100, blendshape.sliderChangeEvent);
+                            if (!hideSlider) Slider(ref blendshape.value, 0, 100, blendshape.sliderChangeEvent);
                         }
                         else
                         {
@@ -166,7 +170,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                                 var fakeInt = 0;
                                 var fakeFloat = 0.0f;
                                 Popup(ref fakeInt, new string[] { "---" });
-                                Slider(ref fakeFloat, 0, 100);
+                                if (!hideSlider) Slider(ref fakeFloat, 0, 100);
                             }
                             EndDisabled();
                         }
@@ -179,7 +183,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             EndFoldoutBox();
         }
 
-        private void DrawAnimationPreset(PresetData presetData, Action changeEvent, Action saveEvent, Action deleteEvent, Action toggleAddEvent, Action blendshapeAddEvent, ref bool foldoutAnimationPresetToggles, ref bool foldoutAnimationPresetBlendshapes)
+        private void DrawAnimationPreset(PresetViewData presetData, Action changeEvent, Action saveEvent, Action deleteEvent, Action toggleAddEvent, Action blendshapeAddEvent, ref bool foldoutAnimationPresetToggles, ref bool foldoutAnimationPresetBlendshapes)
         {
             BeginHorizontal();
             {
@@ -191,8 +195,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
             Separator();
 
-            DrawAnimationPresetToggles(presetData.toggles, presetData.toggleSuggestions, toggleAddEvent, ref foldoutAnimationPresetToggles);
-            DrawAnimationPresetBlendshapes(presetData.blendshapes, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
+            DrawToggles("Toggles", presetData.toggles, presetData.toggleSuggestions, toggleAddEvent, ref foldoutAnimationPresetToggles);
+            DrawBlendshapes("Blendshapes", presetData.blendshapes, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
         }
 
         private void DrawAnimationGenerationAvatarOnWear()
@@ -229,13 +233,79 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             EndFoldoutBox();
         }
 
+        private void DrawCustomizable(CustomizableViewData customizable)
+        {
+            BeginFoldoutBoxWithButtonRight(ref customizable.foldout, customizable.name, "x Remove", customizable.removeButtonClickEvent);
+            if (customizable.foldout)
+            {
+                TextField("Name", ref customizable.name, customizable.customizableSettingsChangeEvent);
+                Popup("Type:", ref customizable.type, new string[] { "Toggle", "Blendshape" }, customizable.customizableSettingsChangeEvent);
+
+                Separator();
+
+                if (customizable.type == 0)
+                {
+                    // toggle mode
+                    DrawToggles("Wearable Toggles", customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
+
+                    HorizontalLine();
+
+                    DrawToggles("Avatar Toggles", customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
+                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes);
+                }
+                else
+                {
+                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
+
+                    HorizontalLine();
+
+                    // radial blendshape mode
+                    DrawToggles("Avatar Toggles", customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
+                    DrawToggles("Wearable Toggles", customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
+                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                }
+            }
+            EndFoldoutBox();
+
+        }
+
+        private void DrawCustomizables()
+        {
+            BeginFoldoutBox(ref _foldoutAnimationGenerationCustomizables, "Customizables");
+            if (_foldoutAnimationGenerationCustomizables)
+            {
+                if (ShowCannotRenderPresetWithoutTargetWearableHelpBox)
+                {
+                    HelpBox("Cannot render customizables without a target wearable selected.", MessageType.Error);
+                }
+                else
+                {
+                    BeginHorizontal();
+                    {
+                        Button("+ Add", AddCustomizableEvent, GUILayout.ExpandWidth(false));
+                    }
+                    EndHorizontal();
+
+                    Separator();
+
+                    var copy = new List<CustomizableViewData>(Customizables);
+                    foreach (var customizable in copy)
+                    {
+                        DrawCustomizable(customizable);
+                    }
+                }
+            }
+            EndFoldoutBox();
+        }
+
         public override void OnGUI()
         {
             var module = (AnimationGenerationWearableModuleConfig)target;
 
             DrawAnimationGenerationAvatarOnWear();
             DrawAnimationGenerationWearableOnWear();
-            // TODO: customizables
+            DrawCustomizables();
         }
 
         public override bool IsValid()

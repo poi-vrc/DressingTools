@@ -83,7 +83,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _cabinetConfig = new CabinetConfig();
             }
             _cabinetConfig.avatarArmatureName = _view.CabinetAvatarArmatureName;
-            cabinet.configJson = _cabinetConfig.ToString();
+            cabinet.configJson = _cabinetConfig.Serialize();
         }
 
         private void OnForceUpdateView()
