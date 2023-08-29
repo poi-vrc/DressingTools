@@ -121,6 +121,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             DTEditorUtils.AddCabinetWearable(cabinetConfig, _view.TargetAvatar, _view.Config, _view.TargetWearable);
 
+            // remove previews
+            DTEditorUtils.CleanUpPreviewAvatars();
+            DTEditorUtils.FocusGameObjectInSceneView(_view.TargetAvatar);
+
             // reset and return
             _view.ResetWizardAndConfigView();
             _view.SelectTab(0);

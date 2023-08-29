@@ -31,9 +31,12 @@ namespace Chocopoi.DressingTools.UI.Views
     [ExcludeFromCodeCoverage]
     internal class WearableSetupWizardView : EditorViewBase, IWearableSetupWizardView
     {
+        private static readonly Color PreviewButtonActiveColour = new Color(0.5f, 1, 0.5f, 1);
+
         public event Action TargetAvatarOrWearableChange { add { _dressingSubView.TargetAvatarOrWearableChange += value; } remove { _dressingSubView.TargetAvatarOrWearableChange -= value; } }
         public event Action PreviousButtonClick;
         public event Action NextButtonClick;
+        public event Action PreviewButtonClick;
 
         public ArmatureMappingWearableModuleConfig ArmatureMappingModuleConfig { get; set; }
         public MoveRootWearableModuleConfig MoveRootModuleConfig { get; set; }
@@ -55,7 +58,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowArmatureNotFoundHelpBox { get; set; }
         public bool ShowArmatureGuessedHelpBox { get; set; }
         public bool ShowCabinetConfigErrorHelpBox { get; set; }
-
+        public bool PreviewActive => DTEditorUtils.PreviewActive;
 
         private WearableSetupWizardPresenter _presenter;
         private IDressingSubView _dressingSubView;
@@ -181,6 +184,13 @@ namespace Chocopoi.DressingTools.UI.Views
             EndDisabled();
         }
 
+        private void PreviewButton()
+        {
+            if (PreviewActive) GUI.backgroundColor = PreviewButtonActiveColour;
+            Button("Preview", PreviewButtonClick, GUILayout.ExpandWidth(false));
+            GUI.backgroundColor = Color.white;
+        }
+
         public override void OnGUI()
         {
             Toolbar(ref _currentStep, new string[] { " 1.\nMapping", "2.\nAnimate", "3.\nIntegrate", "4.\nOptimize" });
@@ -195,6 +205,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 }
                 EndDisabled();
                 GUILayout.FlexibleSpace();
+                PreviewButton();
                 Button(CurrentStep == 3 ? "Finish!" : "Next >", NextButtonClick);
             }
             EndHorizontal();
@@ -234,5 +245,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 HelpBox("Optimization wizard not implemented", MessageType.Info);
             }
         }
+
+        public void UpdateAvatarPreview() => _presenter.UpdateAvatarPreview();
     }
 }

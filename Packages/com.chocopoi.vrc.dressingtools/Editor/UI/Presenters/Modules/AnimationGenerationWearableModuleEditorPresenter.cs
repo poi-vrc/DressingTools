@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet.Modules;
@@ -25,6 +24,7 @@ using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules
@@ -264,6 +264,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                         toggleData.isInvalid = false;
                         toggle.path = DTEditorUtils.GetRelativePath(toggleData.gameObject.transform, root);
                         toggle.state = toggleData.state;
+                        _parentView.UpdateAvatarPreview();
                     }
                     else
                     {
@@ -274,6 +275,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     toggles.Remove(toggle);
                     toggleDataList.Remove(toggleData);
+                    _parentView.UpdateAvatarPreview();
                 };
 
                 toggleDataList.Add(toggleData);
@@ -340,6 +342,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
                         blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
                         blendshape.value = blendshapeData.value;
+                        _parentView.UpdateAvatarPreview();
                     }
                     else
                     {
@@ -352,6 +355,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     blendshapes.Remove(blendshape);
                     blendshapeDataList.Remove(blendshapeData);
+                    _parentView.UpdateAvatarPreview();
                 };
 
                 blendshapeDataList.Add(blendshapeData);
@@ -390,11 +394,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateAvatarOnWearToggleSuggestions(PresetViewData presetData)
         {
+            presetData.toggleSuggestions.Clear();
+
             var targetAvatar = _parentView.TargetAvatar;
             var targetWearable = _parentView.TargetWearable;
 
-            presetData.toggleSuggestions.Clear();
-            if (_cabinetConfig != null)
+            if (targetAvatar != null && targetWearable != null && _cabinetConfig != null)
             {
                 var armatureName = _cabinetConfig.avatarArmatureName;
                 var avatarTrans = targetAvatar.transform;
@@ -417,6 +422,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                                     state = !childTrans.gameObject.activeSelf
                                 });
                                 UpdateAnimationGenerationAvatarOnWear();
+                                _parentView.UpdateAvatarPreview();
                             }
                         };
                         presetData.toggleSuggestions.Add(toggleSuggestion);
@@ -427,9 +433,15 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateWearableOnWearToggleSuggestions(PresetViewData presetData)
         {
+            presetData.toggleSuggestions.Clear();
+
             var targetWearable = _parentView.TargetWearable;
 
-            presetData.toggleSuggestions.Clear();
+            if (targetWearable != null)
+            {
+                return;
+            }
+
             var wearableTrans = targetWearable.transform;
 
             // TODO: we can't obtain wearable armature name here, listing everything at the root for now
@@ -438,7 +450,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             for (var i = 0; i < wearableTrans.childCount; i++)
             {
                 var childTrans = wearableTrans.GetChild(i);
-                if (childTrans != targetWearable.transform && !IsGameObjectUsedInToggles(childTrans.gameObject, presetData.toggles))
+                if (!IsGameObjectUsedInToggles(childTrans.gameObject, presetData.toggles))
                 {
                     var toggleSuggestion = new ToggleSuggestionData
                     {
@@ -452,6 +464,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                                 state = !childTrans.gameObject.activeSelf
                             });
                             UpdateAnimationGenerationWearableOnWear();
+                            _parentView.UpdateAvatarPreview();
                         }
                     };
                     presetData.toggleSuggestions.Add(toggleSuggestion);

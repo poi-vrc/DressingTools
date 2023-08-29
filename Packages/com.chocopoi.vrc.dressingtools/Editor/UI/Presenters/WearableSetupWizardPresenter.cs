@@ -45,6 +45,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
             _view.PreviousButtonClick += OnPreviousButtonClick;
             _view.NextButtonClick += OnNextButtonClick;
+            _view.PreviewButtonClick += OnPreviewButtonClick;
         }
 
         private void UnsubscribeEvents()
@@ -56,6 +57,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
             _view.PreviousButtonClick -= OnPreviousButtonClick;
             _view.NextButtonClick -= OnNextButtonClick;
+            _view.PreviewButtonClick -= OnPreviewButtonClick;
         }
 
         private void OnForceUpdateView()
@@ -67,6 +69,25 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             UpdateView();
             AutoSetup();
+        }
+
+        private void OnPreviewButtonClick()
+        {
+            if (_view.PreviewActive)
+            {
+                DTEditorUtils.CleanUpPreviewAvatars();
+                DTEditorUtils.FocusGameObjectInSceneView(_view.TargetAvatar);
+            }
+            else
+            {
+                UpdateAvatarPreview();
+            }
+        }
+
+        public void UpdateAvatarPreview()
+        {
+            GenerateConfig();
+            DTEditorUtils.UpdatePreviewAvatar(_view.TargetAvatar, _view.Config, _view.TargetWearable);
         }
 
         private void AutoSetupMapping()

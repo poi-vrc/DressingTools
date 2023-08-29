@@ -25,5 +25,6 @@ namespace Chocopoi.DressingTools.Lib.UI
         event Action TargetAvatarOrWearableChange;
         GameObject TargetAvatar { get; }
         GameObject TargetWearable { get; }
+        void UpdateAvatarPreview();
     }
 }

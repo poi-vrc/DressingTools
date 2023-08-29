@@ -27,6 +27,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
     {
         event Action PreviousButtonClick;
         event Action NextButtonClick;
+        event Action PreviewButtonClick;
 
         WearableConfig Config { get; set; }
         ArmatureMappingWearableModuleConfig ArmatureMappingModuleConfig { get; set; }
@@ -46,6 +47,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool ShowArmatureNotFoundHelpBox { get; set; }
         bool ShowArmatureGuessedHelpBox { get; set; }
         bool ShowCabinetConfigErrorHelpBox { get; set; }
+        bool PreviewActive { get; }
 
         void GenerateConfig();
         void RaiseDoAddToCabinetEvent();

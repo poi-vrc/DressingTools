@@ -18,9 +18,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Cabinet.Modules;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
@@ -34,6 +37,8 @@ namespace Chocopoi.DressingTools
     internal class DTEditorUtils
     {
         private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
+
+        private const string PreviewAvatarNamePrefix = "DTPreview_";
 
         private static Dictionary<string, System.Type> s_reflectionTypeCache = new Dictionary<string, System.Type>();
 
@@ -648,6 +653,143 @@ namespace Chocopoi.DressingTools
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
+        }
+
+        public static bool PreviewActive { get; private set; }
+
+        public static void CleanUpPreviewAvatars()
+        {
+            PreviewActive = false;
+            // remove all existing preview objects;
+            GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
+            foreach (var obj in allObjects)
+            {
+                if (obj != null && obj.name.StartsWith(PreviewAvatarNamePrefix))
+                {
+                    Object.DestroyImmediate(obj);
+                }
+            }
+        }
+
+        public static void UpdatePreviewAvatar(GameObject targetAvatar, WearableConfig newWearableConfig, GameObject newWearable)
+        {
+            PreviewAvatar(targetAvatar, newWearable, out var previewAvatar, out var previewWearable);
+
+            if (previewAvatar == null || previewWearable == null)
+            {
+                return;
+            }
+
+            var cabinet = GetAvatarCabinet(previewAvatar);
+
+            if (cabinet == null)
+            {
+                return;
+            }
+
+            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            {
+                Debug.LogError("[DressingTools] Unable to deserialize cabinet config for preview");
+                return;
+            }
+
+            var report = new DTReport();
+            var cabCtx = new ApplyCabinetContext()
+            {
+                report = report,
+                cabinetConfig = cabinetConfig,
+                avatarGameObject = previewAvatar,
+                avatarDynamics = ScanDynamics(previewAvatar, true),
+                wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>()
+            };
+
+            var providers = WearableModuleProviderLocator.Instance.GetAllProviders();
+            foreach (var provider in providers)
+            {
+                var wearCtx = new ApplyWearableContext()
+                {
+                    wearableConfig = newWearableConfig,
+                    wearableGameObject = previewWearable,
+                    wearableDynamics = ScanDynamics(previewWearable)
+                };
+
+                var module = FindWearableModule(newWearableConfig, provider.ModuleIdentifier);
+                if (!provider.OnPreviewWearable(cabCtx, wearCtx, module))
+                {
+                    Debug.LogError("[DressingTools] Error applying wearable in preview!");
+                    return;
+                }
+            }
+        }
+
+        public static void PreviewAvatar(GameObject targetAvatar, GameObject targetWearable, out GameObject previewAvatar, out GameObject previewWearable)
+        {
+            if (targetAvatar == null || targetWearable == null)
+            {
+                CleanUpPreviewAvatars();
+                PreviewActive = false;
+                previewAvatar = null;
+                previewWearable = null;
+                return;
+            }
+
+            var objName = PreviewAvatarNamePrefix + targetAvatar.name;
+            previewAvatar = GameObject.Find(objName);
+
+            // find path of wearable
+            var path = IsGrandParent(targetAvatar.transform, targetWearable.transform) ?
+                AnimationUtils.GetRelativePath(targetWearable.transform, targetAvatar.transform) :
+                targetWearable.name;
+
+            // return existing preview object if any
+            if (previewAvatar != null)
+            {
+                var wearableTransform = previewAvatar.transform.Find(path);
+
+                // valid preview
+                if (wearableTransform != null)
+                {
+                    PreviewActive = true;
+                    previewWearable = wearableTransform.gameObject;
+                    return;
+                }
+
+                // recreate the preview
+            }
+
+            // clean up and recreate
+            CleanUpPreviewAvatars();
+
+            // create a copy of the avatar and wearable
+            previewAvatar = Object.Instantiate(targetAvatar);
+            previewAvatar.name = objName;
+
+            var newPos = previewAvatar.transform.position;
+            newPos.x -= 20;
+            previewAvatar.transform.position = newPos;
+
+            // if wearable is not inside avatar, we instantiate a new copy
+            if (!IsGrandParent(targetAvatar.transform, targetWearable.transform))
+            {
+                previewWearable = Object.Instantiate(targetWearable);
+                previewWearable.transform.position = newPos;
+                previewWearable.transform.SetParent(previewAvatar.transform);
+            }
+            else
+            {
+                previewWearable = previewAvatar.transform.Find(path).gameObject;
+            }
+
+            // select in sceneview
+            FocusGameObjectInSceneView(previewAvatar);
+
+            PreviewActive = true;
+        }
+
+        public static void FocusGameObjectInSceneView(GameObject go)
+        {
+            Selection.activeGameObject = go;
+            SceneView.FrameLastActiveSceneView();
         }
     }
 }
