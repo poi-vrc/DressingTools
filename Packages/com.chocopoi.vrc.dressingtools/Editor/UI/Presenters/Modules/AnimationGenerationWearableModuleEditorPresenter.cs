@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Cabinet.Modules;
@@ -243,7 +244,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             UpdateAnimationGenerationWearableOnWear();
         }
 
-        private void UpdateToggles(Transform root, List<AnimationToggle> toggles, List<ToggleData> toggleDataList)
+        private void UpdateToggles(Transform root, List<AnimationToggle> toggles, List<ToggleData> toggleDataList, Action updateView = null)
         {
             toggleDataList.Clear();
             foreach (var toggle in toggles)
@@ -276,6 +277,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                     toggles.Remove(toggle);
                     toggleDataList.Remove(toggleData);
                     _parentView.UpdateAvatarPreview();
+                    updateView?.Invoke();
                 };
 
                 toggleDataList.Add(toggleData);
@@ -297,7 +299,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return names;
         }
 
-        private void UpdateBlendshapes(Transform root, List<AnimationBlendshapeValue> blendshapes, List<BlendshapeData> blendshapeDataList)
+        private void UpdateBlendshapes(Transform root, List<AnimationBlendshapeValue> blendshapes, List<BlendshapeData> blendshapeDataList, Action updateView = null)
         {
             blendshapeDataList.Clear();
             foreach (var blendshape in blendshapes)
@@ -349,20 +351,29 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                         blendshapeData.isInvalid = true;
                     }
                 };
-                blendshapeData.blendshapeNameChangeEvent = () => blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
-                blendshapeData.sliderChangeEvent = () => blendshape.value = blendshapeData.value;
+                blendshapeData.blendshapeNameChangeEvent = () =>
+                {
+                    blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
+                    _parentView.UpdateAvatarPreview();
+                };
+                blendshapeData.sliderChangeEvent = () =>
+                {
+                    blendshape.value = blendshapeData.value;
+                    _parentView.UpdateAvatarPreview();
+                };
                 blendshapeData.removeButtonClickEvent = () =>
                 {
                     blendshapes.Remove(blendshape);
                     blendshapeDataList.Remove(blendshapeData);
                     _parentView.UpdateAvatarPreview();
+                    updateView?.Invoke();
                 };
 
                 blendshapeDataList.Add(blendshapeData);
             }
         }
 
-        private void UpdateAnimationPreset(Transform root, Dictionary<string, AnimationPreset> savedPresets, AnimationPreset preset, PresetViewData presetData)
+        private void UpdateAnimationPreset(Transform root, Dictionary<string, AnimationPreset> savedPresets, AnimationPreset preset, PresetViewData presetData, Action updateView)
         {
             if (savedPresets != null)
             {
@@ -376,8 +387,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 presetData.savedPresetKeys = new string[] { SavedPresetUnselectedPlaceholder };
             }
 
-            UpdateToggles(root, preset.toggles, presetData.toggles);
-            UpdateBlendshapes(root, preset.blendshapes, presetData.blendshapes);
+            UpdateToggles(root, preset.toggles, presetData.toggles, updateView);
+            UpdateBlendshapes(root, preset.blendshapes, presetData.blendshapes, updateView);
         }
 
         private bool IsGameObjectUsedInToggles(GameObject go, List<ToggleData> toggleData)
@@ -487,7 +498,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 }
 
                 _view.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = false;
-                UpdateAnimationPreset(_parentView.TargetAvatar.transform, savedPresets, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData);
+                UpdateAnimationPreset(_parentView.TargetAvatar.transform, savedPresets, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData, () => UpdateAnimationGenerationAvatarOnWear());
                 UpdateAvatarOnWearToggleSuggestions(_view.AvatarOnWearPresetData);
             }
             else
@@ -511,7 +522,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 }
 
                 _view.ShowCannotRenderPresetWithoutTargetWearableHelpBox = false;
-                UpdateAnimationPreset(_parentView.TargetWearable.transform, savedPresets, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData);
+                UpdateAnimationPreset(_parentView.TargetWearable.transform, savedPresets, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData, () => UpdateAnimationGenerationWearableOnWear());
                 UpdateWearableOnWearToggleSuggestions(_view.WearableOnWearPresetData);
             }
             else
