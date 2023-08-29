@@ -29,6 +29,7 @@ namespace Chocopoi.DressingTools.Lib.Extensibility.Providers
         public virtual bool OnBeforeApplyCabinet(ApplyCabinetContext ctx) => true;
         public virtual bool OnAfterApplyCabinet(ApplyCabinetContext ctx) => true;
         public virtual bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule moduleConfig) => true;
+        public virtual bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule moduleConfig) => true;
         public virtual bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, WearableModule module) => true;
     }
 }

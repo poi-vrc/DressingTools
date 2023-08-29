@@ -156,6 +156,55 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
             return true;
         }
+
+        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
+        {
+            if (module == null)
+            {
+                return true;
+            }
+
+            var agm = (AnimationGenerationWearableModuleConfig)module.config;
+
+            ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
+            ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);
+
+            return true;
+        }
+
+        private void ApplyAnimationPreset(GameObject go, AnimationPreset preset)
+        {
+            foreach (var toggle in preset.toggles)
+            {
+                var obj = go.transform.Find(toggle.path);
+                if (obj != null)
+                {
+                    obj.gameObject.SetActive(toggle.state);
+                }
+            }
+
+            foreach (var blendshape in preset.blendshapes)
+            {
+                var obj = go.transform.Find(blendshape.path);
+                if (obj != null)
+                {
+                    var smr = obj.GetComponent<SkinnedMeshRenderer>();
+                    if (smr == null || smr.sharedMesh == null)
+                    {
+                        continue;
+                    }
+
+                    var index = smr.sharedMesh.GetBlendShapeIndex(blendshape.blendshapeName);
+
+                    if (index == -1)
+                    {
+                        continue;
+                    }
+
+                    smr.SetBlendShapeWeight(index, blendshape.value);
+                }
+            }
+        }
     }
 
 }

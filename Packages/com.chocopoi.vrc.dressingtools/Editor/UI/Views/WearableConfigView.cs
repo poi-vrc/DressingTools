@@ -218,5 +218,10 @@ namespace Chocopoi.DressingTools.UI.Views
         }
 
         public bool IsValid() => _presenter.IsValid();
+
+        public void UpdateAvatarPreview()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
