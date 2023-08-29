@@ -77,8 +77,8 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             Assert.True(CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig));
 
             var report = new DTReport();
-            cabinetConfig.GroupDynamics = true;
-            cabinetConfig.GroupDynamicsSeparateGameObjects = true;
+            cabinetConfig.groupDynamics = true;
+            cabinetConfig.groupDynamicsSeparateGameObjects = true;
             ApplyCabinet(report, cabinet);
 
             Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
@@ -108,8 +108,8 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             Assert.True(CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig));
 
             var report = new DTReport();
-            cabinetConfig.GroupDynamics = true;
-            cabinetConfig.GroupDynamicsSeparateGameObjects = false;
+            cabinetConfig.groupDynamics = true;
+            cabinetConfig.groupDynamicsSeparateGameObjects = false;
             cabinet.configJson = cabinetConfig.ToString();
             ApplyCabinet(report, cabinet);
 
