@@ -403,10 +403,79 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return false;
         }
 
-        private void UpdateAvatarOnWearToggleSuggestions(PresetViewData presetData)
+        private bool IsGameObjectUsedInBlendshapes(GameObject go, List<BlendshapeData> blendshapeData)
         {
-            presetData.toggleSuggestions.Clear();
+            foreach (var blendshape in blendshapeData)
+            {
+                if (blendshape.gameObject == go)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
+        private void UpdateToggleAndSmrSuggestions(Transform root, List<AnimationToggle> realToggles, List<ToggleData> toggles,
+             List<ToggleSuggestionData> toggleSuggestions, List<AnimationBlendshapeValue> realBlendshapes, List<BlendshapeData> blendshapes,
+              List<SmrSuggestionData> smrSuggestions, Action updateView, bool inverted, string armatureName = null, Transform skipTransform = null)
+        {
+            toggleSuggestions.Clear();
+            smrSuggestions.Clear();
+
+            // iterate through childs
+            for (var i = 0; i < root.childCount; i++)
+            {
+                var childTrans = root.GetChild(i);
+
+                if ((skipTransform == null || skipTransform != childTrans) &&
+                    (armatureName == null || childTrans.name != armatureName))
+                {
+                    if (!IsGameObjectUsedInToggles(childTrans.gameObject, toggles))
+                    {
+                        var toggleSuggestion = new ToggleSuggestionData
+                        {
+                            gameObject = childTrans.gameObject,
+                            state = childTrans.gameObject.activeSelf ^ inverted,
+                            addButtonClickEvent = () =>
+                            {
+                                realToggles.Add(new AnimationToggle()
+                                {
+                                    path = AnimationUtils.GetRelativePath(childTrans, root),
+                                    state = childTrans.gameObject.activeSelf ^ inverted
+                                });
+                                _parentView.UpdateAvatarPreview();
+                                updateView.Invoke();
+                            }
+                        };
+                        toggleSuggestions.Add(toggleSuggestion);
+                    }
+
+                    if (childTrans.TryGetComponent<SkinnedMeshRenderer>(out _) &&
+                        !IsGameObjectUsedInBlendshapes(childTrans.gameObject, blendshapes))
+                    {
+                        var smrSuggestion = new SmrSuggestionData
+                        {
+                            gameObject = childTrans.gameObject,
+                            addButtonClickEvent = () =>
+                            {
+                                realBlendshapes.Add(new AnimationBlendshapeValue()
+                                {
+                                    path = AnimationUtils.GetRelativePath(childTrans, root),
+                                    blendshapeName = "",
+                                    value = 0
+                                });
+                                _parentView.UpdateAvatarPreview();
+                                updateView.Invoke();
+                            }
+                        };
+                        smrSuggestions.Add(smrSuggestion);
+                    }
+                }
+            }
+        }
+
+        private void UpdateAvatarOnWearToggleAndSmrSuggestions(PresetViewData presetData)
+        {
             var targetAvatar = _parentView.TargetAvatar;
             var targetWearable = _parentView.TargetWearable;
 
@@ -414,72 +483,26 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             {
                 var armatureName = _cabinetConfig.avatarArmatureName;
                 var avatarTrans = targetAvatar.transform;
+                var wearableTrans = targetWearable.transform;
 
-                // iterate through childs
-                for (var i = 0; i < avatarTrans.childCount; i++)
-                {
-                    var childTrans = avatarTrans.GetChild(i);
-                    if (childTrans != targetWearable.transform && childTrans.name != armatureName && !IsGameObjectUsedInToggles(childTrans.gameObject, presetData.toggles))
-                    {
-                        var toggleSuggestion = new ToggleSuggestionData
-                        {
-                            gameObject = childTrans.gameObject,
-                            state = !childTrans.gameObject.activeSelf,
-                            addButtonClickEvent = () =>
-                            {
-                                _module.avatarAnimationOnWear.toggles.Add(new AnimationToggle()
-                                {
-                                    path = AnimationUtils.GetRelativePath(childTrans, avatarTrans),
-                                    state = !childTrans.gameObject.activeSelf
-                                });
-                                UpdateAnimationGenerationAvatarOnWear();
-                                _parentView.UpdateAvatarPreview();
-                            }
-                        };
-                        presetData.toggleSuggestions.Add(toggleSuggestion);
-                    }
-                }
+                UpdateToggleAndSmrSuggestions(
+                    avatarTrans, _module.avatarAnimationOnWear.toggles, presetData.toggles, presetData.toggleSuggestions,
+                     _module.avatarAnimationOnWear.blendshapes, presetData.blendshapes, presetData.smrSuggestions,
+                      () => UpdateAnimationGenerationAvatarOnWear(), true, armatureName, wearableTrans);
             }
         }
 
-        private void UpdateWearableOnWearToggleSuggestions(PresetViewData presetData)
+        private void UpdateWearableOnWearToggleAndSmrSuggestions(PresetViewData presetData)
         {
-            presetData.toggleSuggestions.Clear();
-
             var targetWearable = _parentView.TargetWearable;
 
             if (targetWearable != null)
             {
-                return;
-            }
-
-            var wearableTrans = targetWearable.transform;
-
-            // TODO: we can't obtain wearable armature name here, listing everything at the root for now
-
-            // iterate through childs
-            for (var i = 0; i < wearableTrans.childCount; i++)
-            {
-                var childTrans = wearableTrans.GetChild(i);
-                if (!IsGameObjectUsedInToggles(childTrans.gameObject, presetData.toggles))
-                {
-                    var toggleSuggestion = new ToggleSuggestionData
-                    {
-                        gameObject = childTrans.gameObject,
-                        state = childTrans.gameObject.activeSelf,
-                        addButtonClickEvent = () =>
-                        {
-                            _module.wearableAnimationOnWear.toggles.Add(new AnimationToggle()
-                            {
-                                path = AnimationUtils.GetRelativePath(childTrans, wearableTrans),
-                                state = !childTrans.gameObject.activeSelf
-                            });
-                            UpdateAnimationGenerationWearableOnWear();
-                            _parentView.UpdateAvatarPreview();
-                        }
-                    };
-                    presetData.toggleSuggestions.Add(toggleSuggestion);
-                }
+                var wearableTrans = targetWearable.transform;
+                UpdateToggleAndSmrSuggestions(
+                    wearableTrans, _module.wearableAnimationOnWear.toggles, presetData.toggles, presetData.toggleSuggestions,
+                     _module.avatarAnimationOnWear.blendshapes, presetData.blendshapes, presetData.smrSuggestions,
+                      () => UpdateAnimationGenerationWearableOnWear(), false);
             }
         }
 
@@ -499,7 +522,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
                 _view.ShowCannotRenderPresetWithoutTargetAvatarHelpBox = false;
                 UpdateAnimationPreset(_parentView.TargetAvatar.transform, savedPresets, _module.avatarAnimationOnWear, _view.AvatarOnWearPresetData, () => UpdateAnimationGenerationAvatarOnWear());
-                UpdateAvatarOnWearToggleSuggestions(_view.AvatarOnWearPresetData);
+                UpdateAvatarOnWearToggleAndSmrSuggestions(_view.AvatarOnWearPresetData);
             }
             else
             {
@@ -523,7 +546,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
                 _view.ShowCannotRenderPresetWithoutTargetWearableHelpBox = false;
                 UpdateAnimationPreset(_parentView.TargetWearable.transform, savedPresets, _module.wearableAnimationOnWear, _view.WearableOnWearPresetData, () => UpdateAnimationGenerationWearableOnWear());
-                UpdateWearableOnWearToggleSuggestions(_view.WearableOnWearPresetData);
+                UpdateWearableOnWearToggleAndSmrSuggestions(_view.WearableOnWearPresetData);
             }
             else
             {
@@ -531,10 +554,41 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateCustomizableAvatarToggles(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateToggles(_parentView.TargetAvatar.transform, wearable.avatarToggles, customizableData.avatarToggles);
-        private void UpdateCustomizableWearableToggles(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateToggles(_parentView.TargetWearable.transform, wearable.wearableToggles, customizableData.wearableToggles);
-        private void UpdateCustomizableAvatarBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateBlendshapes(_parentView.TargetAvatar.transform, wearable.avatarBlendshapes, customizableData.avatarBlendshapes);
-        private void UpdateCustomizableWearableBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData) => UpdateBlendshapes(_parentView.TargetWearable.transform, wearable.wearableBlendshapes, customizableData.wearableBlendshapes);
+        private void UpdateCustomizableAvatarTogglesAndBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData)
+        {
+            var targetAvatar = _parentView.TargetAvatar;
+            var targetWearable = _parentView.TargetWearable;
+
+            if (targetAvatar != null && targetWearable != null && _cabinetConfig != null)
+            {
+                var armatureName = _cabinetConfig.avatarArmatureName;
+                var avatarTrans = targetAvatar.transform;
+                var wearableTrans = targetWearable.transform;
+
+                UpdateToggles(avatarTrans, wearable.avatarToggles, customizableData.avatarToggles);
+                UpdateBlendshapes(_parentView.TargetAvatar.transform, wearable.avatarBlendshapes, customizableData.avatarBlendshapes);
+                UpdateToggleAndSmrSuggestions(avatarTrans, wearable.avatarToggles, customizableData.avatarToggles, customizableData.avatarToggleSuggestions,
+                    wearable.avatarBlendshapes, customizableData.avatarBlendshapes, customizableData.avatarSmrSuggestions,
+                    () => UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData), true, armatureName, wearableTrans);
+            }
+        }
+
+        private void UpdateCustomizableWearableTogglesAndBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData)
+        {
+            var targetAvatar = _parentView.TargetAvatar;
+            var targetWearable = _parentView.TargetWearable;
+
+            if (targetAvatar != null && targetWearable != null)
+            {
+                var wearableTrans = targetWearable.transform;
+
+                UpdateToggles(wearableTrans, wearable.wearableToggles, customizableData.wearableToggles);
+                UpdateBlendshapes(_parentView.TargetWearable.transform, wearable.wearableBlendshapes, customizableData.wearableBlendshapes);
+                UpdateToggleAndSmrSuggestions(wearableTrans, wearable.wearableToggles, customizableData.wearableToggles, customizableData.wearableToggleSuggestions,
+                    wearable.wearableBlendshapes, customizableData.wearableBlendshapes, customizableData.wearableSmrSuggestions,
+                    () => UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData), true);
+            }
+        }
 
         private void UpdateCustomizables()
         {
@@ -570,28 +624,28 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 customizableData.addAvatarToggleEvent = () =>
                 {
                     wearable.avatarToggles.Add(new AnimationToggle());
-                    UpdateCustomizableAvatarToggles(wearable, customizableData);
+                    UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
                 };
                 customizableData.addAvatarBlendshapeEvent = () =>
                 {
                     wearable.avatarBlendshapes.Add(new AnimationBlendshapeValue());
-                    UpdateCustomizableAvatarBlendshapes(wearable, customizableData);
+                    UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
                 };
                 customizableData.addWearableToggleEvent = () =>
                 {
                     wearable.wearableToggles.Add(new AnimationToggle());
-                    UpdateCustomizableWearableToggles(wearable, customizableData);
+                    UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
                 };
                 customizableData.addWearableBlendshapeEvent = () =>
                 {
                     wearable.wearableBlendshapes.Add(new AnimationBlendshapeValue());
-                    UpdateCustomizableWearableBlendshapes(wearable, customizableData);
+                    UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
                 };
 
-                UpdateCustomizableAvatarToggles(wearable, customizableData);
-                UpdateCustomizableAvatarBlendshapes(wearable, customizableData);
-                UpdateCustomizableWearableToggles(wearable, customizableData);
-                UpdateCustomizableWearableBlendshapes(wearable, customizableData);
+                UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
+                UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
+                UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
+                UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
 
                 _view.Customizables.Add(customizableData);
             }
