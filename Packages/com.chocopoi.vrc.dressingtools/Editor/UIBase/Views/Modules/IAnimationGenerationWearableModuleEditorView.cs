@@ -73,11 +73,23 @@ namespace Chocopoi.DressingTools.UIBase.Views
         }
     }
 
+    internal class SmrSuggestionData
+    {
+        public GameObject gameObject;
+        public Action addButtonClickEvent;
+
+        public SmrSuggestionData()
+        {
+            gameObject = null;
+        }
+    }
+
     internal class PresetViewData
     {
         public List<ToggleData> toggles;
         public List<ToggleSuggestionData> toggleSuggestions;
         public List<BlendshapeData> blendshapes;
+        public List<SmrSuggestionData> smrSuggestions;
         public string[] savedPresetKeys;
         public int selectedPresetIndex;
 
@@ -86,6 +98,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
             toggles = new List<ToggleData>();
             toggleSuggestions = new List<ToggleSuggestionData>();
             blendshapes = new List<BlendshapeData>();
+            smrSuggestions = new List<SmrSuggestionData>();
             savedPresetKeys = new string[] { "---" };
             selectedPresetIndex = 0;
         }
@@ -109,9 +122,11 @@ namespace Chocopoi.DressingTools.UIBase.Views
         public Action addWearableToggleEvent;
         public bool foldoutAvatarBlendshapes;
         public List<BlendshapeData> avatarBlendshapes;
+        public List<SmrSuggestionData> avatarSmrSuggestions;
         public Action addAvatarBlendshapeEvent;
         public bool foldoutWearableBlendshapes;
         public List<BlendshapeData> wearableBlendshapes;
+        public List<SmrSuggestionData> wearableSmrSuggestions;
         public Action addWearableBlendshapeEvent;
         public Action removeButtonClickEvent;
 
@@ -132,9 +147,11 @@ namespace Chocopoi.DressingTools.UIBase.Views
             addWearableToggleEvent = null;
             foldoutAvatarBlendshapes = false;
             avatarBlendshapes = new List<BlendshapeData>();
+            avatarSmrSuggestions = new List<SmrSuggestionData>();
             addAvatarBlendshapeEvent = null;
             foldoutWearableBlendshapes = false;
             wearableBlendshapes = new List<BlendshapeData>();
+            wearableSmrSuggestions = new List<SmrSuggestionData>();
             addWearableBlendshapeEvent = null;
             removeButtonClickEvent = null;
         }

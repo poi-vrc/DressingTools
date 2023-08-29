@@ -137,7 +137,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             EndFoldoutBox();
         }
 
-        private void DrawBlendshapes(string title, List<BlendshapeData> blendshapes, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetBlendshapes, bool hideSlider = false)
+        private void DrawBlendshapes(string title, List<BlendshapeData> blendshapes, List<SmrSuggestionData> smrSuggestions, Action addButtonOnClickedEvent, ref bool foldoutAnimationPresetBlendshapes, bool hideSlider = false)
         {
             BeginFoldoutBox(ref foldoutAnimationPresetBlendshapes, title);
             if (foldoutAnimationPresetBlendshapes)
@@ -179,6 +179,27 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                     }
                     EndHorizontal();
                 }
+
+                HorizontalLine();
+
+                Label("Suggestions:");
+
+                Separator();
+
+                var smrSuggestionCopy = new List<SmrSuggestionData>(smrSuggestions);
+                foreach (var smrSuggestion in smrSuggestionCopy)
+                {
+                    BeginHorizontal();
+                    {
+                        Button("+", smrSuggestion.addButtonClickEvent, GUILayout.ExpandWidth(false));
+                        BeginDisabled(true);
+                        {
+                            GameObjectField(ref smrSuggestion.gameObject, true, null);
+                        }
+                        EndDisabled();
+                    }
+                    EndHorizontal();
+                }
             }
             EndFoldoutBox();
         }
@@ -196,7 +217,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             Separator();
 
             DrawToggles("Toggles", presetData.toggles, presetData.toggleSuggestions, toggleAddEvent, ref foldoutAnimationPresetToggles);
-            DrawBlendshapes("Blendshapes", presetData.blendshapes, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
+            DrawBlendshapes("Blendshapes", presetData.blendshapes, presetData.smrSuggestions, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
         }
 
         private void DrawAnimationGenerationAvatarOnWear()
@@ -251,19 +272,19 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                     HorizontalLine();
 
                     DrawToggles("Avatar Toggles", customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
-                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
-                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes);
+                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes);
                 }
                 else
                 {
-                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
+                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
 
                     HorizontalLine();
 
                     // radial blendshape mode
                     DrawToggles("Avatar Toggles", customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
                     DrawToggles("Wearable Toggles", customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
-                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
                 }
             }
             EndFoldoutBox();
