@@ -153,5 +153,17 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
             return true;
         }
+
+        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
+        {
+            if (module == null)
+            {
+                return true;
+            }
+
+            FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearCtx.wearableGameObject, module);
+
+            return true;
+        }
     }
 }
