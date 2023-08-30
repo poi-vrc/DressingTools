@@ -21,6 +21,7 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
 {
     [AddComponentMenu("DressingTools/DT Cabinet")]
     [DefaultExecutionOrder(-19999)]
+    [ExecuteInEditMode]
     public class DTCabinet : DTBaseComponent
     {
         public GameObject avatarGameObject;
@@ -34,12 +35,26 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
 
         public void Awake()
         {
-            DTLibRuntimeUtils.OnCabinetLifecycle(DTLibRuntimeUtils.LifecycleStage.Awake, this);
+            OnLifecycle(DTLibRuntimeUtils.LifecycleStage.Awake);
         }
 
         public void Start()
         {
-            DTLibRuntimeUtils.OnCabinetLifecycle(DTLibRuntimeUtils.LifecycleStage.Start, this);
+            OnLifecycle(DTLibRuntimeUtils.LifecycleStage.Start);
+        }
+
+        private void OnLifecycle(DTLibRuntimeUtils.LifecycleStage lifecycleStage)
+        {
+#if UNITY_EDITOR
+            var playing = UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode;
+#else
+            var playing = true;
+#endif
+            // ensure we are in play mode and not destroyed
+            if (playing && this != null)
+            {
+                DTLibRuntimeUtils.OnCabinetLifecycle(lifecycleStage, this);
+            }
         }
     }
 }
