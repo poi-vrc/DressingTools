@@ -286,17 +286,22 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private string[] GetBlendshapeNames(Mesh mesh)
         {
+            var names = new List<string>
+            {
+                "---"
+            };
+
             if (mesh == null)
             {
-                return null;
+                return names.ToArray();
             }
 
-            string[] names = new string[mesh.blendShapeCount];
-            for (var i = 0; i < names.Length; i++)
+            for (var i = 0; i < mesh.blendShapeCount; i++)
             {
-                names[i] = mesh.GetBlendShapeName(i);
+                names.Add(mesh.GetBlendShapeName(i));
             }
-            return names;
+
+            return names.ToArray();
         }
 
         private void UpdateBlendshapes(Transform root, List<AnimationBlendshapeValue> blendshapes, List<BlendshapeData> blendshapeDataList, Action updateView = null)
@@ -341,10 +346,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                         blendshapeData.availableBlendshapeNames = GetBlendshapeNames(newMesh);
                         blendshapeData.selectedBlendshapeIndex = 0;
                         blendshapeData.value = 0;
+                        blendshapeData.isInvalid = true;
 
-                        blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
-                        blendshape.value = blendshapeData.value;
-                        _parentView.UpdateAvatarPreview();
+                        // blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
+                        // blendshape.value = blendshapeData.value;
+                        // _parentView.UpdateAvatarPreview();
                     }
                     else
                     {
@@ -353,8 +359,15 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 };
                 blendshapeData.blendshapeNameChangeEvent = () =>
                 {
-                    blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
-                    _parentView.UpdateAvatarPreview();
+                    if (blendshapeData.selectedBlendshapeIndex != 0)
+                    {
+                        blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
+                        _parentView.UpdateAvatarPreview();
+                    }
+                    else
+                    {
+                        blendshapeData.isInvalid = true;
+                    }
                 };
                 blendshapeData.sliderChangeEvent = () =>
                 {
@@ -612,6 +625,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     _module.wearableCustomizables.Remove(wearable);
                     _view.Customizables.Remove(customizableData);
+                    UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
                 };
 
                 customizableData.customizableSettingsChangeEvent = () =>
