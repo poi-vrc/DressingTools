@@ -155,6 +155,35 @@ namespace Chocopoi.DressingTools.UIBase.Views
             addWearableBlendshapeEvent = null;
             removeButtonClickEvent = null;
         }
+
+        public bool IsInvalid()
+        {
+            var result = false;
+
+            result |= name == null || name == "";
+
+            foreach (var toggle in avatarToggles)
+            {
+                result |= toggle.isInvalid;
+            }
+
+            foreach (var toggle in wearableToggles)
+            {
+                result |= toggle.isInvalid;
+            }
+
+            foreach (var blendshape in avatarBlendshapes)
+            {
+                result |= blendshape.isInvalid;
+            }
+
+            foreach (var blendshape in wearableBlendshapes)
+            {
+                result |= blendshape.isInvalid;
+            }
+
+            return result;
+        }
     }
 
     internal interface IAnimationGenerationWearableModuleEditorView : IEditorView

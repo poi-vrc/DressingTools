@@ -259,6 +259,11 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             BeginFoldoutBoxWithButtonRight(ref customizable.foldout, customizable.name, "x Remove", customizable.removeButtonClickEvent);
             if (customizable.foldout)
             {
+                if (customizable.IsInvalid())
+                {
+                    HelpBox("This customizable is invalid.", MessageType.Error);
+                }
+
                 TextField("Name", ref customizable.name, customizable.customizableSettingsChangeEvent);
                 Popup("Type:", ref customizable.type, new string[] { "Toggle", "Blendshape" }, customizable.customizableSettingsChangeEvent);
 
