@@ -226,18 +226,18 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                             var newSubMenu = new ExpressionMenuBuilder();
                             newSubMenu.CreateAsset(string.Format("{0}/cpDT_Cabinet_{1}_{2}_{3}.asset", CabinetApplier.GeneratedAssetsPath, cabinetMenuIndex, config.info.name, ++customizableMenuIndex));
 
-                            cabinetMenu.AddSubMenu("Next Page", newSubMenu.GetMenu());
+                            customizableMenu.AddSubMenu("Next Page", newSubMenu.GetMenu());
                             customizableMenu = newSubMenu;
                         }
 
-                        var parameterName = string.Format("cpDT_Cabinet_{0}_{1}", wearableCustomizable.name, DTEditorUtils.RandomString(8));
+                        var parameterName = string.Format("cpDT_Cabinet_{0}_{1}_{2}_{3}_{4}", cabinetMenuIndex, config.info.name, customizableMenuIndex, wearableCustomizable.name, DTEditorUtils.RandomString(8));
 
                         if (wearableCustomizable.type == WearableCustomizableType.Toggle)
                         {
                             AnimationUtils.AddAnimatorParameter(fxController, parameterName, wearableCustomizable.defaultValue > 0);
                             parametersToAdd.Add(new VRCExpressionParameters.Parameter()
                             {
-                                name = wearableCustomizable.name,
+                                name = parameterName,
                                 valueType = VRCExpressionParameters.ValueType.Bool,
                                 defaultValue = wearableCustomizable.defaultValue,
                                 networkSynced = true,
