@@ -346,7 +346,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                         blendshapeData.availableBlendshapeNames = GetBlendshapeNames(newMesh);
                         blendshapeData.selectedBlendshapeIndex = 0;
                         blendshapeData.value = 0;
-                        blendshapeData.isInvalid = true;
 
                         // blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
                         // blendshape.value = blendshapeData.value;
@@ -463,8 +462,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                         toggleSuggestions.Add(toggleSuggestion);
                     }
 
-                    if (childTrans.TryGetComponent<SkinnedMeshRenderer>(out _) &&
-                        !IsGameObjectUsedInBlendshapes(childTrans.gameObject, blendshapes))
+                    if (childTrans.TryGetComponent<SkinnedMeshRenderer>(out _))
                     {
                         var smrSuggestion = new SmrSuggestionData
                         {
