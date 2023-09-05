@@ -22,10 +22,10 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.AvatarLib.Expressions;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Integrations.VRChat;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.Wearable;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json.Linq;
@@ -102,7 +102,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             avatarDescriptor.customizeAnimationLayers = true;
 
             // obtain FX layer
-            var fxController = CopyAndReplaceLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
+            var fxController = VRCEditorUtils.CopyAndReplaceLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
 
             EditorUtility.DisplayProgressBar("DressingTools", "Removing old animator layers and parameters...", 0);
             AnimationUtils.RemoveAnimatorLayers(fxController, "^cpDT_Cabinet");
@@ -125,8 +125,8 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 conditions = new AnimatorCondition[] { }
             };
 
-            var exParams = CopyAndReplaceExpressionParameters(avatarDescriptor);
-            var exMenu = CopyAndReplaceExpressionMenu(avatarDescriptor);
+            var exParams = VRCEditorUtils.CopyAndReplaceExpressionParameters(avatarDescriptor);
+            var exMenu = VRCEditorUtils.CopyAndReplaceExpressionMenu(avatarDescriptor);
 
             ExpressionMenuUtils.RemoveExpressionParameters(exParams, "^cpDT_Cabinet");
 
@@ -311,134 +311,6 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             AssetDatabase.SaveAssets();
 
             return true;
-        }
-
-        private static AnimatorController GetDefaultLayerAnimator(VRCAvatarDescriptor.AnimLayerType animLayerType)
-        {
-            string defaultControllerName = null;
-            switch (animLayerType)
-            {
-                case VRCAvatarDescriptor.AnimLayerType.Base:
-                    defaultControllerName = "Locomotion";
-                    break;
-                case VRCAvatarDescriptor.AnimLayerType.Additive:
-                    defaultControllerName = "Idle";
-                    break;
-                case VRCAvatarDescriptor.AnimLayerType.Action:
-                    defaultControllerName = "Action";
-                    break;
-                case VRCAvatarDescriptor.AnimLayerType.Gesture:
-                    defaultControllerName = "Hands";
-                    break;
-                case VRCAvatarDescriptor.AnimLayerType.FX:
-                    defaultControllerName = "Face";
-                    break;
-            }
-
-            if (defaultControllerName == null)
-            {
-                return null;
-            }
-
-            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Packages/com.vrchat.avatars/Samples/AV3 Demo Assets/Animation/Controllers/vrc_AvatarV3" + defaultControllerName + "Layer.controller");
-            if (controller == null)
-            {
-                controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/VRCSDK/Examples3/Animation/Controllers/vrc_AvatarV3" + defaultControllerName + "Layer.controller");
-            }
-            return controller;
-        }
-
-        private static VRCExpressionParameters CopyAndReplaceExpressionParameters(VRCAvatarDescriptor avatarDescriptor)
-        {
-            var expressionParameters = avatarDescriptor.expressionParameters;
-
-            if (expressionParameters == null)
-            {
-                expressionParameters = AssetDatabase.LoadAssetAtPath<VRCExpressionParameters>("Packages/com.vrchat.avatars/Samples/AV3 Demo Assets/Expressions Menu/DefaultExpressionParameters.asset");
-                if (expressionParameters == null)
-                {
-                    expressionParameters = AssetDatabase.LoadAssetAtPath<VRCExpressionParameters>("Assets/VRCSDK/Examples3/Animation/Controllers/Expressions Menu/DefaultExpressionParameters.asset");
-                }
-
-                if (expressionParameters == null)
-                {
-                    // we can't obtain the default asset
-                    return null;
-                }
-            }
-
-            var copiedPath = string.Format("{0}/cpDT_ExParams.asset", CabinetApplier.GeneratedAssetsPath);
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(expressionParameters), copiedPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset(copiedPath);
-            var copiedParams = AssetDatabase.LoadAssetAtPath<VRCExpressionParameters>(copiedPath);
-            avatarDescriptor.expressionParameters = copiedParams;
-            return copiedParams;
-        }
-
-        private static VRCExpressionsMenu CopyAndReplaceExpressionMenu(VRCAvatarDescriptor avatarDescriptor)
-        {
-            var expressionsMenu = avatarDescriptor.expressionsMenu;
-
-            if (expressionsMenu == null)
-            {
-                expressionsMenu = AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>("Packages/com.vrchat.avatars/Samples/AV3 Demo Assets/Expressions Menu/DefaultExpressionsMenu.asset");
-                if (expressionsMenu == null)
-                {
-                    expressionsMenu = AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>("Assets/VRCSDK/Examples3/Animation/Controllers/Expressions Menu/DefaultExpressionsMenu.asset");
-                }
-
-                if (expressionsMenu == null)
-                {
-                    // we can't obtain the default asset
-                    return null;
-                }
-            }
-
-            var copiedPath = string.Format("{0}/cpDT_ExMenu.asset", CabinetApplier.GeneratedAssetsPath);
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(expressionsMenu), copiedPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset(copiedPath);
-            var copiedMenu = AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>(copiedPath);
-            avatarDescriptor.expressionsMenu = copiedMenu;
-            return copiedMenu;
-        }
-
-        private static AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType)
-        {
-            var customAnimLayerIndex = -1;
-            for (var i = 0; i < avatarDescriptor.baseAnimationLayers.Length; i++)
-            {
-                if (avatarDescriptor.baseAnimationLayers[i].type == animLayerType)
-                {
-                    customAnimLayerIndex = i;
-                    break;
-                }
-            }
-
-            if (customAnimLayerIndex == -1)
-            {
-                return null;
-            }
-
-            var animLayer = avatarDescriptor.baseAnimationLayers[customAnimLayerIndex];
-            var animator = !animLayer.isDefault && animLayer.animatorController != null ? (AnimatorController)animLayer.animatorController : GetDefaultLayerAnimator(animLayerType);
-
-            // copy to our asset path
-            var copiedPath = string.Format("{0}/cpDT_{1}.controller", CabinetApplier.GeneratedAssetsPath, animLayerType.ToString());
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(animator), copiedPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset(copiedPath);
-
-            // get back here
-            var copiedAnimator = AssetDatabase.LoadAssetAtPath<AnimatorController>(copiedPath);
-            animLayer.animatorController = copiedAnimator;
-            avatarDescriptor.baseAnimationLayers[customAnimLayerIndex] = animLayer;
-
-            return copiedAnimator;
         }
     }
 }

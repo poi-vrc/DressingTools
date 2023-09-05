@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Chocopoi.AvatarLib.Animations;
@@ -27,6 +28,7 @@ using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -198,25 +200,64 @@ namespace Chocopoi.DressingTools
             cabinetWearable.wearableGameObject = wearableGameObject;
             cabinetWearable.configJson = wearableConfig.Serialize();
 
-            // do provider hooks
-            var providers = WearableModuleProviderLocator.Instance.GetAllProviders();
-            foreach (var provider in providers)
+            DoWearableModuleProviderCallbacks(wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
             {
-                var module = FindWearableModule(wearableConfig, provider.ModuleIdentifier);
-                if (module == null)
-                {
-                    // config does not have such module
-                    continue;
-                }
-
-                if (!provider.OnAddWearableToCabinet(cabinetConfig, avatarGameObject, wearableConfig, wearableGameObject, module))
+                if (!provider.OnAddWearableToCabinet(cabinetConfig, avatarGameObject, wearableConfig, wearableGameObject, new ReadOnlyCollection<WearableModule>(modules)))
                 {
                     Debug.LogWarning("[DressingTools] [AddCabinetWearable] Error processing provider OnAddWearableToCabinet hook: " + provider.ModuleIdentifier);
                     return false;
                 }
-            }
+                return true;
+            });
 
             return true;
+        }
+
+        public static bool DoWearableModuleProviderCallbacks(List<WearableModule> modules, System.Func<WearableModuleProviderBase, List<WearableModule>, bool> callback)
+        {
+            var moduleByProvider = new Dictionary<WearableModuleProviderBase, List<WearableModule>>();
+
+            // prepare module by provider
+            foreach (var module in modules)
+            {
+                // locate the module provider
+                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
+
+                if (provider == null)
+                {
+                    Debug.Log("[DressingTools] Missing wearable module provider detected: " + module.moduleName);
+                    return false;
+                }
+
+                if (!moduleByProvider.TryGetValue(provider, out var groupedList))
+                {
+                    groupedList = new List<WearableModule>();
+                    moduleByProvider[provider] = groupedList;
+                }
+                groupedList.Add(module);
+            }
+
+            // sort providers according to their call order
+            var allProviders = WearableModuleProviderLocator.Instance.GetAllProviders();
+            var sortedProviderList = new List<WearableModuleProviderBase>(allProviders);
+            sortedProviderList.Sort((m1, m2) => m1.CallOrder.CompareTo(m2.CallOrder));
+
+            // call provider callbacks
+            foreach (var provider in allProviders)
+            {
+                if (!moduleByProvider.TryGetValue(provider, out var providerModules))
+                {
+                    // create a empty list
+                    providerModules = new List<WearableModule>();
+                }
+
+                if (!callback.Invoke(provider, providerModules))
+                {
+                    return false;
+                }
+            }
+
+            return false;
         }
 
         public static void RemoveCabinetWearable(DTCabinet cabinet, DTCabinetWearable wearable)
@@ -703,23 +744,22 @@ namespace Chocopoi.DressingTools
                 wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>()
             };
 
-            var providers = WearableModuleProviderLocator.Instance.GetAllProviders();
-            foreach (var provider in providers)
+            var wearCtx = new ApplyWearableContext()
             {
-                var wearCtx = new ApplyWearableContext()
-                {
-                    wearableConfig = newWearableConfig,
-                    wearableGameObject = previewWearable,
-                    wearableDynamics = ScanDynamics(previewWearable)
-                };
+                wearableConfig = newWearableConfig,
+                wearableGameObject = previewWearable,
+                wearableDynamics = ScanDynamics(previewWearable)
+            };
 
-                var module = FindWearableModule(newWearableConfig, provider.ModuleIdentifier);
-                if (!provider.OnPreviewWearable(cabCtx, wearCtx, module))
+            DoWearableModuleProviderCallbacks(newWearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
+            {
+                if (!provider.OnPreviewWearable(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(modules)))
                 {
                     Debug.LogError("[DressingTools] Error applying wearable in preview!");
-                    return;
+                    return false;
                 }
-            }
+                return true;
+            });
         }
 
         public static void PreviewAvatar(GameObject targetAvatar, GameObject targetWearable, out GameObject previewAvatar, out GameObject previewWearable)

@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
@@ -106,15 +107,15 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        public override bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, WearableModule module)
+        public override bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, ReadOnlyCollection<WearableModule> modules)
         {
-            if (module == null)
+            if (modules.Count == 0)
             {
                 // we need the wearable to have our module installed
                 return true;
             }
 
-            InvertToggleStates(avatarGameObject, wearableConfig, wearableGameObject, module);
+            InvertToggleStates(avatarGameObject, wearableConfig, wearableGameObject, modules[0]);
             return true;
         }
 
@@ -157,14 +158,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
+        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
         {
-            if (module == null)
+            if (modules.Count == 0)
             {
                 return true;
             }
 
-            var agm = (AnimationGenerationWearableModuleConfig)module.config;
+            var agm = (AnimationGenerationWearableModuleConfig)modules[0].config;
 
             ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
             ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);
