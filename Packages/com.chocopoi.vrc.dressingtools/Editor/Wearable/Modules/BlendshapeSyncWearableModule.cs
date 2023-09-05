@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
@@ -127,9 +128,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        public override bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, WearableModule module)
+        public override bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, ReadOnlyCollection<WearableModule> modules)
         {
-            FollowBlendshapeSyncValues(avatarGameObject, wearableGameObject, module);
+            if (modules.Count == 0)
+            {
+                return true;
+            }
+
+            FollowBlendshapeSyncValues(avatarGameObject, wearableGameObject, modules[0]);
             return true;
         }
 
@@ -154,14 +160,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
+        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
         {
-            if (module == null)
+            if (modules.Count == 0)
             {
                 return true;
             }
 
-            FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearCtx.wearableGameObject, module);
+            FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearCtx.wearableGameObject, modules[0]);
 
             return true;
         }

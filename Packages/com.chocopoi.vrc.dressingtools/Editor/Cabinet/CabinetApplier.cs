@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
@@ -156,43 +157,15 @@ namespace Chocopoi.DressingTools.Cabinet
                 wearableObj = Object.Instantiate(wearCtx.wearableGameObject, _cabCtx.avatarGameObject.transform);
             }
 
-            // sort modules according to their apply order
-            var modules = new List<WearableModule>(wearCtx.wearableConfig.modules);
-            modules.Sort((m1, m2) =>
+            DTEditorUtils.DoWearableModuleProviderCallbacks(wearCtx.wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
             {
-                var m1Provider = WearableModuleProviderLocator.Instance.GetProvider(m1.moduleName);
-                var m2Provider = WearableModuleProviderLocator.Instance.GetProvider(m2.moduleName);
-
-                if (m1Provider == null)
-                {
-                    return -1;
-                }
-                else if (m2Provider == null)
-                {
-                    return 1;
-                }
-
-                return m1Provider.CallOrder.CompareTo(m2Provider.CallOrder);
-            });
-
-            // do module apply
-            foreach (var module in modules)
-            {
-                // locate the module provider
-                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
-
-                if (provider == null)
-                {
-                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ModuleHasNoProviderAvailable, module.moduleName);
-                    return false;
-                }
-
-                if (!provider.OnApplyWearable(_cabCtx, wearCtx, module))
+                if (!provider.OnApplyWearable(_cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(modules)))
                 {
                     DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingModuleHasErrors);
                     return false;
                 }
-            }
+                return true;
+            });
 
             // group dynamics
             if (_cabCtx.cabinetConfig.groupDynamics)

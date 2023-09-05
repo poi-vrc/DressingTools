@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Chocopoi.DressingTools.Dresser;
@@ -346,9 +347,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
-        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule module)
+        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
         {
-            var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)module.config;
+            if (modules.Count == 0)
+            {
+                return true;
+            }
+
+            var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)modules[0].config;
 
             if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.wearableConfig.info.name, out var boneMappings))
             {

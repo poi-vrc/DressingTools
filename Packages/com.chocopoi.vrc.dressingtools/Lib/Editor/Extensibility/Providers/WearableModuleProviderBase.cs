@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
@@ -28,8 +30,8 @@ namespace Chocopoi.DressingTools.Lib.Extensibility.Providers
     {
         public virtual bool OnBeforeApplyCabinet(ApplyCabinetContext ctx) => true;
         public virtual bool OnAfterApplyCabinet(ApplyCabinetContext ctx) => true;
-        public virtual bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule moduleConfig) => true;
-        public virtual bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, WearableModule moduleConfig) => true;
-        public virtual bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, WearableModule module) => true;
+        public virtual bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules) => true;
+        public virtual bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules) => true;
+        public virtual bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, ReadOnlyCollection<WearableModule> modules) => true;
     }
 }
