@@ -71,9 +71,22 @@ namespace Chocopoi.DressingTools.Lib.UI
             GUILayout.Label(text, options);
         }
 
+        public void Label(string text, GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUILayout.Label(text, style, options);
+        }
+
         public void Button(string text, Action onClickEvent = null, params GUILayoutOption[] options)
         {
             if (GUILayout.Button(text, options))
+            {
+                onClickEvent?.Invoke();
+            }
+        }
+
+        public void Button(string text, GUIStyle style, Action onClickEvent = null, params GUILayoutOption[] options)
+        {
+            if (GUILayout.Button(text, style, options))
             {
                 onClickEvent?.Invoke();
             }
