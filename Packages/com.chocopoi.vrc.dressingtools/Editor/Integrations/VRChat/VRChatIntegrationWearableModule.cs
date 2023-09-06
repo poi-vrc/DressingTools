@@ -193,7 +193,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     continue;
                 }
 
-                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.cabinetConfig.animationWriteDefaults);
+                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
                 var wearAnimations = animationGenerator.GenerateWearAnimations();

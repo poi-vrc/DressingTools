@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingTools.Lib.Animations;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
@@ -50,9 +51,10 @@ namespace Chocopoi.DressingTools.Animations
         private AnimationGenerationWearableModuleConfig _module;
         private List<IDynamicsProxy> _avatarDynamics;
         private List<IDynamicsProxy> _wearableDynamics;
+        private IPathRemapper _pathRemapper;
         private bool _writeDefaults;
 
-        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, bool writeDefaults)
+        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
         {
             _report = report;
             _avatarObject = avatarObject;
@@ -60,6 +62,7 @@ namespace Chocopoi.DressingTools.Animations
             _wearableObject = wearableObject;
             _avatarDynamics = avatarDynamics;
             _wearableDynamics = wearableDynamics;
+            _pathRemapper = pathRemapper;
             _writeDefaults = writeDefaults;
         }
 
@@ -92,11 +95,22 @@ namespace Chocopoi.DressingTools.Animations
             return true;
         }
 
+        private Transform GetRemappedAvatarTransform(string avatarPath)
+        {
+            return _avatarObject.transform.Find(_pathRemapper.Remap(avatarPath));
+        }
+
+        private Transform GetRemappedWearableTransform(string wearablePath)
+        {
+            var basePath = AnimationUtils.GetRelativePath(_wearableObject.transform, _avatarObject.transform);
+            return _avatarObject.transform.Find(_pathRemapper.Remap(basePath + "/" + wearablePath));
+        }
+
         private void GenerateAvatarToggleAnimations(AnimationClip enableClip, AnimationClip disableClip, AnimationToggle[] toggles)
         {
             foreach (var toggle in toggles)
             {
-                var obj = _avatarObject.transform.Find(toggle.path);
+                var obj = GetRemappedAvatarTransform(toggle.path);
                 if (obj == null)
                 {
                     DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredAvatarToggleObjectNotFound, toggle.path);
@@ -116,7 +130,7 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var blendshape in blendshapes)
             {
-                var obj = _avatarObject.transform.Find(blendshape.path);
+                var obj = GetRemappedAvatarTransform(blendshape.path);
                 if (obj == null)
                 {
                     DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredAvatarBlendshapeObjectNotFound, _avatarObject.name, blendshape.path);
@@ -142,7 +156,7 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var toggle in toggles)
             {
-                var obj = _wearableObject.transform.Find(toggle.path);
+                var obj = GetRemappedWearableTransform(toggle.path);
                 if (obj == null)
                 {
                     DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredWearableToggleObjectNotFound, toggle.path);
@@ -162,7 +176,7 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var blendshape in blendshapes)
             {
-                var obj = _wearableObject.transform.Find(blendshape.path);
+                var obj = GetRemappedWearableTransform(blendshape.path);
                 if (obj == null)
                 {
                     DTReportUtils.LogWarnLocalized(_report, LogLabel, MessageCode.IgnoredWearableBlendshapeObjectNotFound, _wearableObject.name, blendshape.path);
