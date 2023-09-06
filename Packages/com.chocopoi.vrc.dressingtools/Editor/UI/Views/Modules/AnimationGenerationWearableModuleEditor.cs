@@ -334,9 +334,47 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             DrawCustomizables();
         }
 
+        private static bool IsPresetViewDataValid(PresetViewData viewData)
+        {
+            foreach (var toggle in viewData.toggles)
+            {
+                if (toggle.isInvalid) return false;
+            }
+
+            foreach (var blendshape in viewData.blendshapes)
+            {
+                if (blendshape.isInvalid) return false;
+            }
+            return true;
+        }
+
+        private bool IsCustomizablesValid()
+        {
+            foreach (var customizable in Customizables)
+            {
+                foreach (var toggle in customizable.avatarToggles)
+                {
+                    if (toggle.isInvalid) return false;
+                }
+                foreach (var toggle in customizable.wearableToggles)
+                {
+                    if (toggle.isInvalid) return false;
+                }
+                foreach (var blendshape in customizable.avatarBlendshapes)
+                {
+                    if (blendshape.isInvalid) return false;
+                }
+                foreach (var blendshape in customizable.wearableBlendshapes)
+                {
+                    if (blendshape.isInvalid) return false;
+                }
+            }
+            return true;
+        }
+
         public override bool IsValid()
         {
-            return true;
+            return IsPresetViewDataValid(AvatarOnWearPresetData) && IsPresetViewDataValid(WearableOnWearPresetData) && IsCustomizablesValid();
         }
 
         private class InputPresetNamingDialog : EditorWindow

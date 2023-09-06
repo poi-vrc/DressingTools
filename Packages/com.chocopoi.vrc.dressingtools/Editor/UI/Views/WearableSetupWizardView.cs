@@ -32,6 +32,10 @@ namespace Chocopoi.DressingTools.UI.Views
     internal class WearableSetupWizardView : EditorViewBase, IWearableSetupWizardView
     {
         private static readonly Color PreviewButtonActiveColour = new Color(0.5f, 1, 0.5f, 1);
+        private static readonly Color ToolbarRedColour = new Color(1.0f, 0.5f, 0.5f, 1);
+        private static readonly Color ToolbarDarkerRedColour = new Color(1.0f, 0.25f, 0.25f, 1);
+        private static readonly Color ToolbarDarkerGreyColour = new Color(0.75f, 0.75f, 0.75f, 1);
+        private static readonly string[] ToolbarKeys = new string[] { " 1.\nMapping", "2.\nAnimate", "3.\nIntegrate", "4.\nOptimize" };
 
         public event Action TargetAvatarOrWearableChange { add { _dressingSubView.TargetAvatarOrWearableChange += value; } remove { _dressingSubView.TargetAvatarOrWearableChange -= value; } }
         public event Action PreviousButtonClick;
@@ -69,6 +73,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private bool _useBlendshapeSync;
         private bool _foldoutArmatureMapping;
         private bool _foldoutMoveRoot;
+        private bool[] _toolbarColourReds;
 
         public WearableSetupWizardView(IDressingSubView dressingSubView)
         {
@@ -86,9 +91,21 @@ namespace Chocopoi.DressingTools.UI.Views
             MoveRootModuleEditor = new MoveRootWearableModuleEditor(this, null, MoveRootModuleConfig);
             AnimationGenerationModuleEditor = new AnimationGenerationWearableModuleEditor(this, null, AnimationGenerationModuleConfig);
             BlendshapeSyncModuleEditor = new BlendshapeSyncWearableModuleEditor(this, null, BlendshapeSyncModuleConfig);
+
+            _toolbarColourReds = new bool[ToolbarKeys.Length];
         }
 
         public void GenerateConfig() => _presenter.GenerateConfig();
+
+        public void ShowNoAvatarOrWearableDialog()
+        {
+            EditorUtility.DisplayDialog("DressingTools", "Please select an avatar and a wearable.", "OK");
+        }
+
+        public void ShowInvalidConfigDialog()
+        {
+            EditorUtility.DisplayDialog("DressingTools", "Please fix all invalid configuration.", "OK");
+        }
 
         public bool IsValid()
         {
@@ -97,14 +114,17 @@ namespace Chocopoi.DressingTools.UI.Views
                 return false;
             }
 
-            var valid = true;
+            var mappingValid = true;
+            mappingValid &= !_useArmatureMapping || ArmatureMappingModuleEditor.IsValid();
+            mappingValid &= !_useMoveRoot || MoveRootModuleEditor.IsValid();
+            _toolbarColourReds[0] = !mappingValid;
 
-            valid &= !_useArmatureMapping || ArmatureMappingModuleEditor.IsValid();
-            valid &= !_useMoveRoot || MoveRootModuleEditor.IsValid();
-            valid &= !_useAnimationGeneration || AnimationGenerationModuleEditor.IsValid();
-            valid &= !_useBlendshapeSync || BlendshapeSyncModuleEditor.IsValid();
+            var animateValid = true;
+            animateValid &= !_useAnimationGeneration || AnimationGenerationModuleEditor.IsValid();
+            animateValid &= !_useBlendshapeSync || BlendshapeSyncModuleEditor.IsValid();
+            _toolbarColourReds[1] = !animateValid;
 
-            return valid;
+            return mappingValid && animateValid;
         }
 
         public void RaiseDoAddToCabinetEvent()
@@ -191,9 +211,30 @@ namespace Chocopoi.DressingTools.UI.Views
             GUI.backgroundColor = Color.white;
         }
 
+        private void ColouredToolbar()
+        {
+            BeginHorizontal();
+            {
+                for (var i = 0; i < ToolbarKeys.Length; i++)
+                {
+                    if (_currentStep == i)
+                    {
+                        GUI.backgroundColor = _toolbarColourReds[i] ? ToolbarDarkerRedColour : ToolbarDarkerGreyColour;
+                    }
+                    else
+                    {
+                        if (_toolbarColourReds[i]) GUI.backgroundColor = ToolbarRedColour;
+                    }
+                    Button(ToolbarKeys[i], () => _currentStep = i);
+                    GUI.backgroundColor = Color.white;
+                }
+            }
+            EndHorizontal();
+        }
+
         public override void OnGUI()
         {
-            Toolbar(ref _currentStep, new string[] { " 1.\nMapping", "2.\nAnimate", "3.\nIntegrate", "4.\nOptimize" });
+            ColouredToolbar();
 
             Separator();
 
@@ -206,7 +247,11 @@ namespace Chocopoi.DressingTools.UI.Views
                 EndDisabled();
                 GUILayout.FlexibleSpace();
                 PreviewButton();
-                Button(CurrentStep == 3 ? "Finish!" : "Next >", NextButtonClick);
+                BeginDisabled(!IsValid() && CurrentStep == 3);
+                {
+                    Button(CurrentStep == 3 ? "Finish!" : "Next >", NextButtonClick);
+                }
+                EndDisabled();
             }
             EndHorizontal();
 
