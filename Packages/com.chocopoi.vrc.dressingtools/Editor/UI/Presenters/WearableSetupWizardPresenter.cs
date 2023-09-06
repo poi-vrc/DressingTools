@@ -286,6 +286,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             AutoSetupMapping();
             AutoSetupAnimationGeneration();
+
             UpdateView();
         }
 
@@ -353,13 +354,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 if (_view.TargetAvatar == null || _view.TargetWearable == null)
                 {
-                    Debug.Log("null target avatar/wearable");
+                    _view.ShowNoAvatarOrWearableDialog();
                     return;
                 }
 
                 if (!_view.IsValid())
                 {
-                    Debug.Log("Invalid");
+                    _view.ShowInvalidConfigDialog();
                     return;
                 }
 

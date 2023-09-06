@@ -52,5 +52,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         void GenerateConfig();
         void RaiseDoAddToCabinetEvent();
         bool IsValid();
+        void ShowNoAvatarOrWearableDialog();
+        void ShowInvalidConfigDialog();
     }
 }
