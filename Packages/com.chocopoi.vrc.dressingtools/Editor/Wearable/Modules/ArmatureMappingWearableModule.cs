@@ -238,6 +238,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                         var avatarBoneDynamics = DTEditorUtils.FindDynamicsWithRoot(cabCtx.avatarDynamics, avatarBone);
                         var wearableBoneDynamics = DTEditorUtils.FindDynamicsWithRoot(wearCtx.wearableDynamics, wearableChild);
 
+                        cabCtx.pathRemapper.TagContainerBone(wearableChild.gameObject);
+
                         if (mapping.mappingType == BoneMappingType.MoveToBone)
                         {
                             Transform wearableBoneContainer = null;
@@ -254,6 +256,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                                     obj.transform.SetParent(avatarBone);
                                     wearableBoneContainer = obj.transform;
                                 }
+                                cabCtx.pathRemapper.TagContainerBone(wearableBoneContainer.gameObject);
                             }
                             else
                             {

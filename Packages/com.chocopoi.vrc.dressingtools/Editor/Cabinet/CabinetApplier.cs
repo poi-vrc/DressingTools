@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
@@ -67,11 +68,10 @@ namespace Chocopoi.DressingTools.Cabinet
                 avatarGameObject = cabinet.avatarGameObject,
                 cabinetConfig = null,
                 avatarDynamics = new List<IDynamicsProxy>(),
-                wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>()
+                wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>(),
+                pathRemapper = new PathRemapper(cabinet.avatarGameObject)
             };
         }
-
-
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
         {
