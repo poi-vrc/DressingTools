@@ -137,6 +137,8 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 var copiedController = DTEditorUtils.CopyAssetToPathAndImport<AnimatorController>(controller, copiedPath);
                 _animatorCopies[animLayer.type] = copiedController;
 
+                var visitedMotions = new HashSet<Motion>();
+
                 foreach (var layer in copiedController.layers)
                 {
                     var stack = new Stack<AnimatorStateMachine>();
@@ -148,7 +150,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
                         foreach (var state in stateMachine.states)
                         {
-                            ScanMotion(state.state.motion, (AnimationClip clip) => state.state.motion = clip);
+                            ScanMotion(state.state.motion, visitedMotions, (AnimationClip clip) => state.state.motion = clip);
                         }
 
                         foreach (var childStateMachine in stateMachine.stateMachines)
@@ -160,12 +162,19 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             }
         }
 
-        private void ScanMotion(Motion motion, Action<AnimationClip> dispatchFunc)
+        private void ScanMotion(Motion motion, HashSet<Motion> visitedMotions, Action<AnimationClip> dispatchFunc)
         {
             if (motion == null || VRCEditorUtils.IsProxyAnimation(motion))
             {
                 return;
             }
+
+            // avoid visited motions
+            if (visitedMotions.Contains(motion))
+            {
+                return;
+            }
+            visitedMotions.Add(motion);
 
             if (motion is AnimationClip clip)
             {
@@ -179,7 +188,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             {
                 for (var i = 0; i < tree.children.Length; i++)
                 {
-                    ScanMotion(motion, (AnimationClip newClip) => tree.children[i].motion = newClip);
+                    ScanMotion(motion, visitedMotions, (AnimationClip newClip) => tree.children[i].motion = newClip);
                 }
             }
         }
