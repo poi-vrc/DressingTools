@@ -831,5 +831,14 @@ namespace Chocopoi.DressingTools
             Selection.activeGameObject = go;
             SceneView.FrameLastActiveSceneView();
         }
+
+        public static T CopyAssetToPathAndImport<T>(Object assetObj, string copiedPath) where T : Object
+        {
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(assetObj), copiedPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(copiedPath);
+            return AssetDatabase.LoadAssetAtPath<T>(copiedPath);
+        }
     }
 }

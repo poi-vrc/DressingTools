@@ -68,25 +68,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         public override IModuleConfig NewModuleConfig() => new VRChatIntegrationWearableModuleConfig();
 
-        public override bool OnAfterApplyCabinet(ApplyCabinetContext ctx)
-        {
-            var result = false;
-            try
-            {
-                result = ApplyAnimationsAndMenu(ctx);
-            }
-            catch (System.Exception ex)
-            {
-                ctx.report.LogException(LogLabel, ex);
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-            }
-            return result;
-        }
-
-        public static bool ApplyAnimationsAndMenu(ApplyCabinetContext cabCtx)
+        public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
         {
             // get the avatar descriptor
             if (!cabCtx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
@@ -95,6 +77,32 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 return true;
             }
 
+            var result = false;
+            try
+            {
+                result = ApplyAnimationsAndMenu(cabCtx, avatarDescriptor);
+                ApplyAnimationRemapping(cabCtx, avatarDescriptor);
+            }
+            catch (System.Exception ex)
+            {
+                cabCtx.report.LogException(LogLabel, ex);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+            return result;
+        }
+
+        private static void ApplyAnimationRemapping(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
+        {
+            EditorUtility.DisplayProgressBar("DressingTools", "Remapping animations...", 1.0f);
+            var remapper = new VRCAnimationRemapper(avatarDescriptor, cabCtx.pathRemapper);
+            remapper.PerformRemapping();
+        }
+
+        private static bool ApplyAnimationsAndMenu(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
+        {
             EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
 
             // enable custom expressions and animation layers
@@ -176,7 +184,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     vrcm = new VRChatIntegrationWearableModuleConfig();
                 }
 
-                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.info.name + "...", i / (float)wearables.Length * 100);
+                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.info.name + "...", i / (float)wearables.Length);
 
                 // find the animation generation module
                 var agm = DTEditorUtils.FindWearableModuleConfig<AnimationGenerationWearableModuleConfig>(config);
@@ -290,7 +298,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             layerList.Insert(originalLayerLength, cabinetLayer);
             fxController.layers = layerList.ToArray();
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Adding expression parameters...", 0);
+            EditorUtility.DisplayProgressBar("DressingTools", "Adding expression parameters...", 1.0f);
 
             try
             {
@@ -307,7 +315,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             EditorUtility.SetDirty(exMenu);
             EditorUtility.SetDirty(exParams);
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Saving assets...", 0);
+            EditorUtility.DisplayProgressBar("DressingTools", "Saving assets...", 1.0f);
             AssetDatabase.SaveAssets();
 
             return true;

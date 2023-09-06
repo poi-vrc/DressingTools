@@ -16,6 +16,7 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.Animations;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
@@ -31,6 +32,7 @@ namespace Chocopoi.DressingTools.Lib
         public GameObject avatarGameObject;
         public List<IDynamicsProxy> avatarDynamics;
         public Dictionary<DTCabinetWearable, ApplyWearableContext> wearableContexts;
+        public IPathRemapper pathRemapper;
     }
 
     public class ApplyWearableContext

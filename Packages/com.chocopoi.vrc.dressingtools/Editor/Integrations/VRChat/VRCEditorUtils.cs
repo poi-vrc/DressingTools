@@ -19,6 +19,7 @@
 using Chocopoi.DressingTools.Cabinet;
 using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 
@@ -190,6 +191,16 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/VRCSDK/Examples3/Animation/Controllers/vrc_AvatarV3" + defaultControllerName + ".controller");
             }
             return controller;
+        }
+
+        public static bool IsProxyAnimation(Motion m)
+        {
+            if (m == null)
+            {
+                return false;
+            }
+            var animPath = AssetDatabase.GetAssetPath(m);
+            return animPath != null && animPath != "" && animPath.Contains("/Animation/ProxyAnim/proxy");
         }
     }
 }
