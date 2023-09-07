@@ -47,10 +47,11 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     [InitializeOnLoad]
     internal class BlendshapeSyncWearableModuleProvider : WearableModuleProviderBase
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.blendshape-sync";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => "Blendshape Sync";
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.blendshapeSync.friendlyName");
         [ExcludeFromCodeCoverage] public override int CallOrder => 6;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 

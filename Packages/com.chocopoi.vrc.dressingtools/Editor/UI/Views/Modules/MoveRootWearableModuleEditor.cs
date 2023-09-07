@@ -32,7 +32,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(MoveRootWearableModuleProvider))]
     internal class MoveRootWearableModuleEditor : WearableModuleEditor, IMoveRootWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.Instance;
 
         public event Action MoveToGameObjectFieldChange;
         public bool ShowSelectAvatarFirstHelpBox { get; set; }
@@ -55,15 +55,15 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         {
             if (ShowSelectAvatarFirstHelpBox)
             {
-                HelpBox("Please select an avatar first.", MessageType.Error);
+                HelpBox(t._("modules.wearable.moveRoot.editor.helpbox.selectAvatarFirst"), MessageType.Error);
             }
             else
             {
                 if (IsGameObjectInvalid)
                 {
-                    HelpBox("The selected GameObject is not inside the avatar.", MessageType.Error);
+                    HelpBox(t._("modules.wearable.moveRoot.editor.helpbox.objectNotInsideAvatar"), MessageType.Error);
                 }
-                GameObjectField("Move To", ref _moveToGameObject, true, MoveToGameObjectFieldChange);
+                GameObjectField(t._("modules.wearable.moveRoot.editor.gameObjectField.moveTo"), ref _moveToGameObject, true, MoveToGameObjectFieldChange);
             }
         }
 

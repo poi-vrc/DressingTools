@@ -52,10 +52,11 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
     {
         public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.integrations.vrchat.wearable";
 
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         private const string LogLabel = "VRChatIntegrationModuleProvider";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => "Integration: VRChat";
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("integrations.vrc.modules.integration.friendlyName");
         [ExcludeFromCodeCoverage] public override int CallOrder => int.MaxValue;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
@@ -96,27 +97,24 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 
         private static void ApplyAnimationRemapping(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
         {
-            EditorUtility.DisplayProgressBar("DressingTools", "Remapping animations...", 1.0f);
+            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.remappingAnimations"), 1.0f);
             var remapper = new VRCAnimationRemapper(avatarDescriptor, cabCtx.pathRemapper);
             remapper.PerformRemapping();
         }
 
         private static bool ApplyAnimationsAndMenu(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
         {
-            EditorUtility.DisplayProgressBar("DressingTools", "Generating animations...", 0);
-
             // enable custom expressions and animation layers
             avatarDescriptor.customExpressions = true;
             avatarDescriptor.customizeAnimationLayers = true;
 
+            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.makingAnimatorCopy"), 0);
             // obtain FX layer
             var fxController = VRCEditorUtils.CopyAndReplaceLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Removing old animator layers and parameters...", 0);
             AnimationUtils.RemoveAnimatorLayers(fxController, "^cpDT_Cabinet");
             AnimationUtils.RemoveAnimatorParameters(fxController, "^cpDT_Cabinet");
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Writing animator...", 0);
             AnimationUtils.AddAnimatorParameter(fxController, "cpDT_Cabinet", 0);
             var refTransition = new AnimatorStateTransition
             {
@@ -133,6 +131,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 conditions = new AnimatorCondition[] { }
             };
 
+            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.makingExMenuParamsCopy"), 0);
             var exParams = VRCEditorUtils.CopyAndReplaceExpressionParameters(avatarDescriptor);
             var exMenu = VRCEditorUtils.CopyAndReplaceExpressionMenu(avatarDescriptor);
 
@@ -184,7 +183,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     vrcm = new VRChatIntegrationWearableModuleConfig();
                 }
 
-                EditorUtility.DisplayProgressBar("DressingTools", "Generating animations for " + config.info.name + "...", i / (float)wearables.Length);
+                EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.generatingWearableAnimations", config.info.name), i / (float)wearables.Length);
 
                 // find the animation generation module
                 var agm = DTEditorUtils.FindWearableModuleConfig<AnimationGenerationWearableModuleConfig>(config);
@@ -298,7 +297,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             layerList.Insert(originalLayerLength, cabinetLayer);
             fxController.layers = layerList.ToArray();
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Adding expression parameters...", 1.0f);
+            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.addingExParams"), 1.0f);
 
             try
             {
@@ -315,7 +314,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             EditorUtility.SetDirty(exMenu);
             EditorUtility.SetDirty(exParams);
 
-            EditorUtility.DisplayProgressBar("DressingTools", "Saving assets...", 1.0f);
+            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.savingAssets"), 1.0f);
             AssetDatabase.SaveAssets();
 
             return true;

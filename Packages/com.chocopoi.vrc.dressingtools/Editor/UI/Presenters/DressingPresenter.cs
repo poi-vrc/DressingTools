@@ -58,7 +58,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnDressingModeChange()
         {
             // ask if really switch back to wizard mode
-            if (_view.SelectedDressingMode == 0 && !EditorUtility.DisplayDialog("DressingTools", "Switching back to wizard mode will do auto-setup and wipe your existing configuration here.\nAre you sure?", "Yes", "No"))
+            if (_view.SelectedDressingMode == 0 && !_view.ShowConfirmSwitchWizardModeDialog())
             {
                 _view.SelectedDressingMode = 1;
                 return;
@@ -98,7 +98,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddToCabinetButtonClick()
         {
-            Debug.Log("Add");
             if (!_view.IsConfigValid())
             {
                 Debug.Log("[DressingTools] Invalid configuration. Cannot proceed adding to cabinet");

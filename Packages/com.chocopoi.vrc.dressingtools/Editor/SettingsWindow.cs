@@ -25,7 +25,7 @@ namespace Chocopoi.DressingTools
     [ExcludeFromCodeCoverage]
     internal class SettingsWindow : EditorWindow
     {
-        private static Localization.I18n t = Localization.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.Instance;
 
         private Vector2 _scrollPos;
 

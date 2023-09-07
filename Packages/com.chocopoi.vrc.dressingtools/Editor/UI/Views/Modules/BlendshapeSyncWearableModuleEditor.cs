@@ -33,7 +33,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(BlendshapeSyncWearableModuleProvider))]
     internal class BlendshapeSyncWearableModuleEditor : WearableModuleEditor, IBlendshapeSyncWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.Instance;
 
         public event Action AddBlendshapeSyncButtonClick;
         public GameObject TargetAvatar { get => _parentView.TargetAvatar; }
@@ -57,24 +57,24 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         {
             if (ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox)
             {
-                HelpBox("Cannot render blendshape sync editor without a target avatar and a target wearble selected.", MessageType.Error);
+                HelpBox(t._("modules.wearable.blendshapeSync.editor.helpbox.cannotRenderEditorWithoutAvatarWearable"), MessageType.Error);
             }
             else
             {
-                HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
+                HelpBox(t._("modules.wearable.blendshapeSync.editor.helpbox.objectMustBeAChildOrGrandChildOfRoot"), MessageType.Info);
 
-                Button("+ Add", AddBlendshapeSyncButtonClick, GUILayout.ExpandWidth(false));
+                Button(t._("modules.wearable.blendshapeSync.editor.btn.add"), AddBlendshapeSyncButtonClick, GUILayout.ExpandWidth(false));
 
                 var copy = new List<BlendshapeSyncData>(BlendshapeSyncs);
                 foreach (var blendshapeSync in copy)
                 {
                     if (blendshapeSync.isAvatarGameObjectInvalid)
                     {
-                        HelpBox("The avatar GameObject is invalid.", MessageType.Error);
+                        HelpBox(t._("modules.wearable.blendshapeSync.editor.helpbox.invalidAvatarObject"), MessageType.Error);
                     }
                     if (blendshapeSync.isWearableGameObjectInvalid)
                     {
-                        HelpBox("The wearable GameObject is invalid.", MessageType.Error);
+                        HelpBox(t._("modules.wearable.blendshapeSync.editor.helpbox.invalidWearableObject"), MessageType.Error);
                     }
 
                     BeginHorizontal();

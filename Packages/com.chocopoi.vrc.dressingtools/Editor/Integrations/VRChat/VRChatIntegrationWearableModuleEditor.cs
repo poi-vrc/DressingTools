@@ -30,6 +30,8 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
     [CustomWearableModuleEditor(typeof(VRChatIntegrationWearableModuleProvider))]
     internal class VRChatIntegrationWearableModuleEditor : WearableModuleEditor, IVRChatIntegrationWearableModuleEditorView
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         public event Action ConfigChange;
 
         public bool UseCustomCabinetToggleName { get => _useCustomCabinetToggleName; set => _useCustomCabinetToggleName = value; }
@@ -51,11 +53,11 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
         public override void OnGUI()
         {
-            ToggleLeft("Use custom cabinet toggle name", ref _useCustomCabinetToggleName, ConfigChange);
+            ToggleLeft(t._("integrations.vrc.modules.integration.editor.toggle.useCustomCabinetToggleName"), ref _useCustomCabinetToggleName, ConfigChange);
             BeginDisabled(!_useCustomCabinetToggleName);
             {
                 EditorGUI.indentLevel += 1;
-                TextField("Toggle Name", ref _customCabinetToggleName, ConfigChange);
+                TextField(t._("integrations.vrc.modules.integration.editor.textField.customCabinetToggleName"), ref _customCabinetToggleName, ConfigChange);
                 EditorGUI.indentLevel -= 1;
             }
             EndDisabled();

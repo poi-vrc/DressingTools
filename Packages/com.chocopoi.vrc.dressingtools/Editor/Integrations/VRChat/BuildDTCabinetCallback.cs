@@ -33,18 +33,16 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
     [InitializeOnLoad]
     public class BuildDTCabinetCallback : IVRCSDKPreprocessAvatarCallback, IVRCSDKPostprocessAvatarCallback
     {
-        private const string LogLabel = "BuilDTCabinetCallback";
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private const string LogLabel = "BuildDTCabinetCallback";
 
         public const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
-
         public const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
 
         public int callbackOrder => -25;
 
         public bool OnPreprocessAvatar(GameObject avatarGameObject)
         {
-            Debug.Log("Preprocess avatar");
-
             var cabinet = DTEditorUtils.GetAvatarCabinet(avatarGameObject);
             if (cabinet == null)
             {
@@ -52,15 +50,12 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 return true;
             }
 
-            // display progress bar
-            EditorUtility.DisplayProgressBar("DressingTools", "Preparing to process avatar...", 0);
-
             var report = new DTReport();
 
             try
             {
                 // create hook instances
-                EditorUtility.DisplayProgressBar("DressingTools", "Applying cabinet...", 0);
+                EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.applyingCabinet"), 0);
                 new CabinetApplier(report, cabinet).Execute();
             }
             catch (System.Exception ex)
@@ -73,7 +68,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 if (report.HasLogType(DTReportLogType.Error))
                 {
                     ReportWindow.ShowWindow(report);
-                    EditorUtility.DisplayDialog("DressingTools", "Error preprocessing avatar, please refer to the report window.", "OK");
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("integrations.vrc.dialog.msg.errorPreprocessingReferReportWindow"), t._("common.dialog.btn.ok"));
                 }
 
                 AssetDatabase.SaveAssets();
@@ -86,11 +81,11 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
         public void OnPostprocessAvatar()
         {
-            Debug.Log("Postprocess avatar");
         }
     }
 
 #region IEditorOnly Workaround
+    // Copyright (c) 2022 bd_ under MIT License
     // temporary workaround with VRCSDK to not remove IEditorOnly objects at early stage which causes problems
     // code referenced from MA: https://github.com/bdunderscore/modular-avatar/blob/main/Packages/nadena.dev.modular-avatar/Editor/PreventStripTagObjects.cs
     // https://feedback.vrchat.com/sdk-bug-reports/p/ieditoronly-components-should-be-destroyed-late-in-the-build-process

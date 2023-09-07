@@ -29,6 +29,8 @@ namespace Chocopoi.DressingTools.UI.Views
     [ExcludeFromCodeCoverage]
     internal class DressingSubView : EditorViewBase, IDressingSubView, IWearableConfigViewParent
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         public event Action TargetAvatarOrWearableChange;
         public event Action DoAddToCabinetEvent;
         public event Action DressingModeChange;
@@ -63,6 +65,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
             _wizardView = new WearableSetupWizardView(this);
             _configView = new WearableConfigView(this);
+        }
+
+        public bool ShowConfirmSwitchWizardModeDialog()
+        {
+            return EditorUtility.DisplayDialog(t._("tool.name"), t._("dressing.editor.dialog.msg.switchWizardModeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no"));
         }
 
         public void WizardGenerateConfig()
@@ -130,22 +137,21 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public override void OnGUI()
         {
-            GameObjectField("Avatar", ref _targetAvatar, true, TargetAvatarOrWearableChange);
+            GameObjectField(t._("dressing.editor.gameObjectField.avatar"), ref _targetAvatar, true, TargetAvatarOrWearableChange);
 
             if (ShowAvatarNoExistingCabinetHelpbox)
             {
-                HelpBox("The selected avatar has no existing cabinet.", MessageType.Error);
+                HelpBox(t._("dressing.editor.helpbox.avatarNoExistingCabinet"), MessageType.Error);
             }
 
-            GameObjectField("Wearable", ref _targetWearable, true, TargetAvatarOrWearableChange);
+            GameObjectField(t._("dressing.editor.gameObjectField.wearable"), ref _targetWearable, true, TargetAvatarOrWearableChange);
 
             HorizontalLine();
 
             BeginHorizontal();
             {
                 GUILayout.FlexibleSpace();
-                // TODO: ask wizard to write back data to here on mode change
-                Toolbar(ref _currentMode, new string[] { "Wizard", "Advanced" }, DressingModeChange);
+                Toolbar(ref _currentMode, new string[] { t._("dressing.editor.modes.wizard"), t._("dressing.editor.modes.advanced") }, DressingModeChange);
             }
             EndHorizontal();
 
@@ -167,11 +173,11 @@ namespace Chocopoi.DressingTools.UI.Views
                     {
                         BeginDisabled(DisableAddToCabinetButton);
                         {
-                            Button("Add to cabinet", DoAddToCabinetEvent);
+                            Button(t._("dressing.editor.btn.addToCabinet"), DoAddToCabinetEvent);
                         }
                         EndDisabled();
 
-                        Button("Save to file");
+                        Button(t._("dressing.editor.btn.saveToFile"));
                     }
                     EndDisabled();
                 }

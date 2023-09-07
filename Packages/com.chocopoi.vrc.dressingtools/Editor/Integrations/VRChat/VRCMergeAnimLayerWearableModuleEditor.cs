@@ -31,6 +31,8 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
     [CustomWearableModuleEditor(typeof(VRCMergeAnimLayerWearableModuleProvider))]
     internal class VRCMergeAnimLayerWearableModuleEditor : WearableModuleEditor, IVRCMergeAnimLayerWearableModuleEditorView
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         public event Action ConfigChange;
 
         public string[] AnimLayerKeys { get; set; }
@@ -68,39 +70,39 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
         public override void OnGUI()
         {
-            Popup("Layer To Merge", ref _selectedAnimLayerIndex, AnimLayerKeys, ConfigChange);
-            Popup("Path Mode", ref _selectedPathMode, new string[] { "Relative", "Absolute" }, ConfigChange);
-            ToggleLeft("Remove animator after apply", ref _removeAnimatorAfterApply, ConfigChange);
-            ToggleLeft("Match existing write defaults", ref _matchLayerWriteDefaults, ConfigChange);
+            Popup(t._("integrations.vrc.modules.mergeAnimLayer.editor.popup.layerToMerge"), ref _selectedAnimLayerIndex, AnimLayerKeys, ConfigChange);
+            Popup(t._("integrations.vrc.modules.mergeAnimLayer.editor.popup.pathMode"), ref _selectedPathMode, new string[] { "Relative", "Absolute" }, ConfigChange);
+            ToggleLeft(t._("integrations.vrc.modules.mergeAnimLayer.editor.toggle.removeAnimatorAfterApply"), ref _removeAnimatorAfterApply, ConfigChange);
+            ToggleLeft(t._("integrations.vrc.modules.mergeAnimLayer.editor.toggle.matchExistingWriteDEfaults"), ref _matchLayerWriteDefaults, ConfigChange);
 
             if (ShowNoTargetAvatarOrWearableHelpbox)
             {
-                HelpBox("A target avatar and wearable have to be selected to render this editor.", MessageType.Error);
+                HelpBox(t._("integrations.vrc.modules.mergeAnimLayer.editor.helpbox.noTargetOrWearableSelected"), MessageType.Error);
             }
             else
             {
                 if (_animatorObj == null)
                 {
-                    HelpBox("The wearable root will be used to find the animator component.", MessageType.Info);
+                    HelpBox(t._("integrations.vrc.modules.mergeAnimLayer.editor.helpbox.wearableRootWillBeUsedForFindAnimator"), MessageType.Info);
                 }
                 else
                 {
-                    HelpBox("The following object will be used to find the animator component.", MessageType.Info);
+                    HelpBox(t._("integrations.vrc.modules.mergeAnimLayer.editor.helpbox.objectWillBeUsedForFindAnimator"), MessageType.Info);
                     if (ShowAnimatorObjectPathNotFoundHelpbox)
                     {
-                        HelpBox("GameObject path not found.", MessageType.Error);
+                        HelpBox(t._("integrations.vrc.modules.mergeAnimLayer.editor.helpbox.objectPathNotFound"), MessageType.Error);
                     }
                     else if (ShowNotInWearableHelpbox)
                     {
-                        HelpBox("GameObject is not within wearable.", MessageType.Error);
+                        HelpBox(t._("integrations.vrc.modules.mergeAnimLayer.editor.helpbox.notWithinWearable"), MessageType.Error);
                     }
                 }
 
                 if (ShowNoAnimatorHelpbox)
                 {
-                    HelpBox("The GameObject has no Animator component attached.", MessageType.Error);
+                    HelpBox(t._("integrations.vrc.modules.mergeAnimLayer.editor.helpbox.noAnimatorAttached"), MessageType.Error);
                 }
-                GameObjectField("Animator Location", ref _animatorObj, true, ConfigChange);
+                GameObjectField(t._("integrations.vrc.modules.mergeAnimLayer.editor.gameObjectField.animatorLocation"), ref _animatorObj, true, ConfigChange);
             }
         }
 

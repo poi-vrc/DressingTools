@@ -25,13 +25,15 @@ namespace Chocopoi.DressingTools.UI
     [ExcludeFromCodeCoverage]
     public class DTLegacyEditorWindow : EditorWindow
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         private LegacyView _view;
 
         [MenuItem("Tools/chocopoi/Legacy Editor", false, 0)]
         static void ShowWindow()
         {
             var window = (DTLegacyEditorWindow)GetWindow(typeof(DTLegacyEditorWindow));
-            window.titleContent = new GUIContent("DressingTools Legacy");
+            window.titleContent = new GUIContent(t._("legacy.editor.title"));
             window.Show();
         }
 

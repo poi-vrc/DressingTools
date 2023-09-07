@@ -31,11 +31,17 @@ namespace Chocopoi.DressingTools.UI.Views
     [ExcludeFromCodeCoverage]
     internal class WearableSetupWizardView : EditorViewBase, IWearableSetupWizardView
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         private static readonly Color PreviewButtonActiveColour = new Color(0.5f, 1, 0.5f, 1);
         private static readonly Color ToolbarRedColour = new Color(1.0f, 0.5f, 0.5f, 1);
         private static readonly Color ToolbarDarkerRedColour = new Color(1.0f, 0.25f, 0.25f, 1);
         private static readonly Color ToolbarDarkerGreyColour = new Color(0.75f, 0.75f, 0.75f, 1);
-        private static readonly string[] ToolbarKeys = new string[] { " 1.\nMapping", "2.\nAnimate", "3.\nIntegrate", "4.\nOptimize" };
+        private static readonly string[] ToolbarKeys = new string[] {
+            "1.\n" + t._("dressing.wearableSetupWizard.steps.mapping"),
+            "2.\n" + t._("dressing.wearableSetupWizard.steps.animate"),
+            "3.\n" + t._("dressing.wearableSetupWizard.steps.integrate"),
+            "4.\n" + t._("dressing.wearableSetupWizard.steps.optimize")
+            };
 
         public event Action TargetAvatarOrWearableChange { add { _dressingSubView.TargetAvatarOrWearableChange += value; } remove { _dressingSubView.TargetAvatarOrWearableChange -= value; } }
         public event Action PreviousButtonClick;
@@ -99,12 +105,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void ShowNoAvatarOrWearableDialog()
         {
-            EditorUtility.DisplayDialog("DressingTools", "Please select an avatar and a wearable.", "OK");
+            EditorUtility.DisplayDialog(t._("tool.name"), t._("dressing.wearableSetupWizard.dialog.msg.selectAvatarWearable"), t._("common.dialog.btn.ok"));
         }
 
         public void ShowInvalidConfigDialog()
         {
-            EditorUtility.DisplayDialog("DressingTools", "Please fix all invalid configuration.", "OK");
+            EditorUtility.DisplayDialog(t._("tool.name"), t._("dressing.wearableSetupWizard.dialog.msg.fixInvalidConfig"), t._("common.dialog.btn.ok"));
         }
 
         public bool IsValid()
@@ -154,11 +160,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawMappingStep()
         {
-            ToggleLeft("Perform armature bone mapping", ref _useArmatureMapping);
+            ToggleLeft(t._("dressing.wearableSetupWizard.steps.mapping.toggle.performArmatureMapping"), ref _useArmatureMapping);
 
             BeginDisabled(!_useArmatureMapping);
             {
-                BeginFoldoutBox(ref _foldoutArmatureMapping, "Settings");
+                BeginFoldoutBox(ref _foldoutArmatureMapping, t._("dressing.wearableSetupWizard.foldout.settings"));
                 if (_foldoutArmatureMapping)
                 {
                     ArmatureMappingModuleEditor.OnGUI();
@@ -169,11 +175,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
             Separator();
 
-            ToggleLeft("Move wearable root to avatar object", ref _useMoveRoot);
+            ToggleLeft(t._("dressing.wearableSetupWizard.steps.mapping.toggle.moveWearableRoot"), ref _useMoveRoot);
 
             BeginDisabled(!_useMoveRoot);
             {
-                BeginFoldoutBox(ref _foldoutMoveRoot, "Settings");
+                BeginFoldoutBox(ref _foldoutMoveRoot, t._("dressing.wearableSetupWizard.foldout.settings"));
                 if (_foldoutMoveRoot)
                 {
                     MoveRootModuleEditor.OnGUI();
@@ -185,7 +191,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawAnimateStep()
         {
-            ToggleLeft("Enable animation generation", ref _useAnimationGeneration);
+            ToggleLeft(t._("dressing.wearableSetupWizard.steps.animate.toggle.enableAnimGen"), ref _useAnimationGeneration);
 
             BeginDisabled(!_useAnimationGeneration);
             {
@@ -195,7 +201,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             Separator();
 
-            ToggleLeft("Enable blendshape sync", ref _useBlendshapeSync);
+            ToggleLeft(t._("dressing.wearableSetupWizard.steps.animate.toggle.enableBlendshapeSync"), ref _useBlendshapeSync);
 
             BeginDisabled(!_useBlendshapeSync);
             {
@@ -207,7 +213,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private void PreviewButton()
         {
             if (PreviewActive) GUI.backgroundColor = PreviewButtonActiveColour;
-            Button("Preview", PreviewButtonClick, GUILayout.ExpandWidth(false));
+            Button(t._("dressing.wearableSetupWizard.btn.preview"), PreviewButtonClick, GUILayout.ExpandWidth(false));
             GUI.backgroundColor = Color.white;
         }
 
@@ -242,14 +248,14 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 BeginDisabled(CurrentStep == 0);
                 {
-                    Button("< Previous", PreviousButtonClick);
+                    Button(t._("dressing.wearableSetupWizard.btn.previous"), PreviousButtonClick);
                 }
                 EndDisabled();
                 GUILayout.FlexibleSpace();
                 PreviewButton();
                 BeginDisabled(!IsValid() && CurrentStep == 3);
                 {
-                    Button(CurrentStep == 3 ? "Finish!" : "Next >", NextButtonClick);
+                    Button(CurrentStep == 3 ? t._("dressing.wearableSetupWizard.btn.finish") : t._("dressing.wearableSetupWizard.btn.next"), NextButtonClick);
                 }
                 EndDisabled();
             }
@@ -261,19 +267,19 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 if (ShowCabinetConfigErrorHelpBox)
                 {
-                    HelpBox("Auto-setup: Unable to load cabinet config!", MessageType.Error);
+                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.unableToLoadCabinetConfig"), MessageType.Error);
                 }
                 if (ShowAvatarNoCabinetHelpBox)
                 {
-                    HelpBox("Auto-setup: Selected avatar has no cabinet, using default settings", MessageType.Warning);
+                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.avatarHasNoCabinetUsingDefault"), MessageType.Warning);
                 }
                 if (ShowArmatureNotFoundHelpBox)
                 {
-                    HelpBox("Auto-setup: Wearable armature not found. Armature mapping is not enabled.", MessageType.Warning);
+                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.wearableArmatureNotFound"), MessageType.Warning);
                 }
                 if (ShowArmatureGuessedHelpBox)
                 {
-                    HelpBox("Auto-setup: Wearable armature was guessed.", MessageType.Warning);
+                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.armatureGuessed"), MessageType.Warning);
                 }
                 DrawMappingStep();
             }

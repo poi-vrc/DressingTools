@@ -28,6 +28,8 @@ namespace Chocopoi.DressingTools.UI.View
     [ExcludeFromCodeCoverage]
     internal class MainView : EditorViewBase, IMainView
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         public int SelectedTab { get => _selectedTab; set => _selectedTab = value; }
 
         private MainPresenter _presenter;
@@ -75,7 +77,7 @@ namespace Chocopoi.DressingTools.UI.View
         {
             DTLogo.Show();
 
-            Toolbar(ref _selectedTab, new string[] { "Cabinet", "Dressing", "Settings" });
+            Toolbar(ref _selectedTab, new string[] { t._("main.editor.tabs.cabinet"), t._("main.editor.tabs.dressing"), t._("main.editor.tabs.settings") });
 
             if (_selectedTab == 0)
             {

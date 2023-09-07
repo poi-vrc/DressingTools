@@ -213,6 +213,20 @@ namespace Chocopoi.DressingTools
             return true;
         }
 
+        public static List<string> FindUnknownWearableModuleNames(List<WearableModule> modules)
+        {
+            var list = new List<string>();
+            foreach (var module in modules)
+            {
+                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
+                if (provider == null)
+                {
+                    list.Add(module.moduleName);
+                }
+            }
+            return list;
+        }
+
         public static bool DoWearableModuleProviderCallbacks(List<WearableModule> modules, System.Func<WearableModuleProviderBase, List<WearableModule>, bool> callback)
         {
             var moduleByProvider = new Dictionary<WearableModuleProviderBase, List<WearableModule>>();

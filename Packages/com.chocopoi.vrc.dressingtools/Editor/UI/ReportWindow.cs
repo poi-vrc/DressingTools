@@ -18,7 +18,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Localization;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ namespace Chocopoi.DressingTools.UI
     [ExcludeFromCodeCoverage]
     internal class ReportWindow : EditorWindow
     {
-        private static readonly I18n t = I18n.GetInstance();
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
 
         private DTReport _report;
 
@@ -37,7 +36,7 @@ namespace Chocopoi.DressingTools.UI
         public static void ShowWindow(DTReport report)
         {
             var window = (ReportWindow)GetWindow(typeof(ReportWindow));
-            window.titleContent = new GUIContent("DT Report Window");
+            window.titleContent = new GUIContent(t._("report.editor.title"));
             window.Show();
 
             window._report = report;
@@ -61,24 +60,24 @@ namespace Chocopoi.DressingTools.UI
 
                 if (_report.HasLogType(DTReportLogType.Error))
                 {
-                    EditorGUILayout.HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
+                    EditorGUILayout.HelpBox(t._("report.editor.helpbox.resultError"), MessageType.Error);
                 }
                 else if (_report.HasLogType(DTReportLogType.Warning))
                 {
-                    EditorGUILayout.HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
+                    EditorGUILayout.HelpBox(t._("report.editor.helpbox.resultWarn"), MessageType.Warning);
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
+                    EditorGUILayout.HelpBox(t._("report.editor.helpbox.resultSuccess"), MessageType.Info);
                 }
 
                 EditorGUILayout.Separator();
 
                 EditorGUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("Errors: " + (_logEntries.ContainsKey(DTReportLogType.Error) ? _logEntries[DTReportLogType.Error].Count : 0));
-                    GUILayout.Label("Warnings: " + (_logEntries.ContainsKey(DTReportLogType.Warning) ? _logEntries[DTReportLogType.Warning].Count : 0));
-                    GUILayout.Label("Infos: " + (_logEntries.ContainsKey(DTReportLogType.Info) ? _logEntries[DTReportLogType.Info].Count : 0));
+                    GUILayout.Label(t._("report.editor.label.errors", _logEntries[DTReportLogType.Error].Count));
+                    GUILayout.Label(t._("report.editor.label.warnings", _logEntries[DTReportLogType.Warning].Count));
+                    GUILayout.Label(t._("report.editor.label.infos", _logEntries[DTReportLogType.Info].Count));
                 }
                 EditorGUILayout.EndHorizontal();
 
@@ -114,7 +113,7 @@ namespace Chocopoi.DressingTools.UI
             }
             else
             {
-                EditorGUILayout.HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
+                EditorGUILayout.HelpBox(t._("report.helpbox.noReport"), MessageType.Warning);
             }
         }
     }

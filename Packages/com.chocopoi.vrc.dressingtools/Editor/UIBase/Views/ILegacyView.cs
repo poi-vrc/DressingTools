@@ -43,7 +43,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool RemoveExistingPrefixSuffix { get; set; }
         int DynamicsOption { get; set; }
         ReportData ReportData { get; set; }
-        bool DressNowConfirm { get; set; }
         bool ShowHasCabinetHelpbox { get; set; }
+
+        bool ShowExistingWearableConfigIgnoreConfirmDialog();
+        bool ShowDressConfirmDialog();
+        void ShowCompletedDialog();
     }
 }
