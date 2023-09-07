@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Lib.Dresser;
 using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingTools.UI;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {
@@ -54,5 +55,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         string AvatarArmatureName { get; set; }
         bool RemoveExistingPrefixSuffix { get; set; }
         bool GroupBones { get; set; }
+
+        void StartMappingEditor(DTMappingEditorContainer container);
     }
 }

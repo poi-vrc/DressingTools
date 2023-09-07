@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
-using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
@@ -31,7 +30,7 @@ namespace Chocopoi.DressingTools.UI.Views
     [ExcludeFromCodeCoverage]
     internal class WearableConfigView : EditorViewBase, IWearableConfigView
     {
-        private static readonly I18n t = I18n.GetInstance();
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
 
         public event Action TargetAvatarOrWearableChange { add { _viewParent.TargetAvatarOrWearableChange += value; } remove { _viewParent.TargetAvatarOrWearableChange -= value; } }
         public event Action TargetAvatarConfigChange;
@@ -107,19 +106,24 @@ namespace Chocopoi.DressingTools.UI.Views
             _metaInfoDescription = null;
         }
 
+        public void ShowModuleAddedBeforeDialog()
+        {
+            EditorUtility.DisplayDialog(t._("tool.name"), t._("dressing.wearableConfig.dialog.msg.moduleAddedBeforeCannotMultiple"), t._("common.dialog.btn.ok"));
+        }
+
         private void DrawModulesGUI()
         {
             BeginHorizontal();
             {
-                Popup("Select Module:", ref _selectedAvailableModule, AvailableModuleKeys);
-                Button("Add", AddModuleButtonClick, GUILayout.ExpandWidth(false));
+                Popup(t._("dressing.wearableConfig.popup.selectModule"), ref _selectedAvailableModule, AvailableModuleKeys);
+                Button(t._("dressing.wearableConfig.btn.add"), AddModuleButtonClick, GUILayout.ExpandWidth(false));
             }
             EndHorizontal();
 
             var copy = new List<ModuleData>(ModuleDataList);
             foreach (var moduleData in copy)
             {
-                BeginFoldoutBoxWithButtonRight(ref moduleData.editor.foldout, moduleData.editor.FriendlyName, "x Remove", moduleData.removeButtonOnClickEvent);
+                BeginFoldoutBoxWithButtonRight(ref moduleData.editor.foldout, moduleData.editor.FriendlyName, t._("dressing.wearableConfig.btn.remove"), moduleData.removeButtonOnClickEvent);
                 if (moduleData.editor.foldout)
                 {
                     moduleData.editor.OnGUI();
@@ -130,39 +134,40 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawAvatarConfigsGUI()
         {
-            BeginFoldoutBox(ref _foldoutTargetAvatarConfigs, "Target Avatar Configuration");
+            BeginFoldoutBox(ref _foldoutTargetAvatarConfigs, t._("dressing.wearableConfig.foldout.avatarConfig"));
             if (_foldoutTargetAvatarConfigs)
             {
-                HelpBox("This allows other users to be able to find your configuration for their avatars and wearables once uploaded.", MessageType.Info);
-
                 if (ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox)
                 {
-                    HelpBox("Target avatar and wearable cannot be empty to access this editor.", MessageType.Error);
+                    HelpBox(t._("dressing.wearableConfig.helpbox.noTargetOrWearableSelected"), MessageType.Error);
                 }
                 else
                 {
+                    HelpBox(t._("dressing.wearableConfig.helpbox.guidTip"), MessageType.Info);
+
                     if (IsInvalidAvatarPrefabGuid)
                     {
-                        HelpBox("Your avatar is unpacked and the GUID cannot be found automatically. To help other online users to find your configuration, drag your avatar original unpacked prefab here to get a GUID.", MessageType.Warning);
+                        HelpBox(t._("dressing.wearableConfig.helpbox.unableToFindGuidFromUnpackedAvatar"), MessageType.Warning);
                     }
-                    GameObjectField("GUID Reference Prefab", ref _guidReferencePrefab, true, TargetAvatarConfigChange);
+                    GameObjectField(t._("dressing.wearableConfig.gameObjectField.guidRefPrefab"), ref _guidReferencePrefab, true, TargetAvatarConfigChange);
 
-                    ReadOnlyTextField("GUID", IsInvalidAvatarPrefabGuid ? "(Not available)" : AvatarPrefabGuid);
+                    ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.guid"), IsInvalidAvatarPrefabGuid ? "(Not available)" : AvatarPrefabGuid);
 
-                    ToggleLeft("Use avatar object's name", ref _targetAvatarConfigUseAvatarObjectName, TargetAvatarConfigChange);
+                    ToggleLeft(t._("dressing.wearableConfig.toggle.useAvatarObjectName"), ref _targetAvatarConfigUseAvatarObjectName, TargetAvatarConfigChange);
                     BeginDisabled(_targetAvatarConfigUseAvatarObjectName);
                     {
-                        DelayedTextField("Name", ref _targetAvatarConfigAvatarName, TargetAvatarConfigChange);
+                        DelayedTextField(t._("dressing.wearableConfig.textField.customAvatarObjectName"), ref _targetAvatarConfigAvatarName, TargetAvatarConfigChange);
                     }
                     EndDisabled();
 
-                    ReadOnlyTextField("Armature Name", TargetAvatarConfigArmatureName);
-                    ReadOnlyTextField("Delta World Position", TargetAvatarConfigWorldPosition);
-                    ReadOnlyTextField("Delta World Rotation", TargetAvatarConfigWorldRotation);
-                    ReadOnlyTextField("Avatar Lossy Scale", TargetAvatarConfigWorldAvatarLossyScale);
-                    ReadOnlyTextField("Wearable Lossy Scale", TargetAvatarConfigWorldAvatarLossyScale);
+                    ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.armatureName"), TargetAvatarConfigArmatureName);
+                    ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.deltaWorldPos"), TargetAvatarConfigWorldPosition);
+                    ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.deltaWorldRot"), TargetAvatarConfigWorldRotation);
+                    ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.avatarLossyScale"), TargetAvatarConfigWorldAvatarLossyScale);
+                    ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.wearableLossyScale"), TargetAvatarConfigWorldAvatarLossyScale);
 
-                    HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
+                    // TODO: multiple GUIDs
+                    // HelpBox("If you modified the FBX or created the prefab on your own, the GUID will be unlikely the original one. If that is the case, please create a new avatar configuration and drag the original prefab here.", MessageType.Info);
                 }
             }
             EndFoldoutBox();
@@ -170,23 +175,23 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void DrawMetaInfoGUI()
         {
-            BeginFoldoutBox(ref _foldoutMetaInfo, "Meta Information");
+            BeginFoldoutBox(ref _foldoutMetaInfo, t._("dressing.wearableConfig.foldout.metaInfo"));
             if (_foldoutMetaInfo)
             {
-                ReadOnlyTextField("UUID", ConfigUuid);
+                ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.uuid"), ConfigUuid);
 
-                ToggleLeft("Use wearable object's name", ref _metaInfoUseWearableObjectName, MetaInfoChange);
+                ToggleLeft(t._("dressing.wearableConfig.toggle.useWearableObjectName"), ref _metaInfoUseWearableObjectName, MetaInfoChange);
                 BeginDisabled(_metaInfoUseWearableObjectName);
                 {
-                    DelayedTextField("Name", ref _metaInfoWearableName, MetaInfoChange);
+                    DelayedTextField(t._("dressing.wearableConfig.textField.customWearableObjectName"), ref _metaInfoWearableName, MetaInfoChange);
                 }
                 EndDisabled();
-                DelayedTextField("Author", ref _metaInfoAuthor, MetaInfoChange);
+                DelayedTextField(t._("dressing.wearableConfig.textField.author"), ref _metaInfoAuthor, MetaInfoChange);
 
-                ReadOnlyTextField("Created Time", MetaInfoCreatedTime);
-                ReadOnlyTextField("Updated Time", MetaInfoUpdatedTime);
+                ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.createdTime"), MetaInfoCreatedTime);
+                ReadOnlyTextField(t._("dressing.wearableConfig.readOnlyTextField.updatedTime"), MetaInfoUpdatedTime);
 
-                Label("Description");
+                Label(t._("dressing.wearableConfig.label.description"));
                 TextArea(ref _metaInfoDescription, MetaInfoChange);
             }
             EndFoldoutBox();

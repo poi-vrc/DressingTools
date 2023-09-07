@@ -47,10 +47,8 @@ namespace Chocopoi.DressingTools.Cabinet
             // Error
             public const string UnableToDeserializeCabinetConfig = "cabinet.applier.msgCode.error.unableToDeserializeCabinetConfig";
             public const string UnableToDeserializeWearableConfig = "cabinet.applier.msgCode.error.unableToDeserializeWearableConfig";
-            public const string ApplyingModuleHasErrors = "cabinet.applier.msgCode.error.applyingModuleHasErrors";
+            public const string ModuleProviderHookHasErrors = "cabinet.applier.msgCode.error.moduleProviderHookHasErrors";
             public const string ApplyingWearableHasErrors = "cabinet.applier.msgCode.error.applyingWearableHasErrors";
-            public const string IncompatibleConfigVersion = "cabinet.applier.msgCode.error.incompatibleConfigVersion";
-            public const string ConfigMigrationFailed = "cabinet.applier.msgCode.error.configMigrationFailed";
             public const string ModuleHasNoProviderAvailable = "cabinet.applier.msgCode.error.moduleHasNoProviderAvailable";
             public const string BeforeApplyCabinetProviderHookHasErrors = "cabinet.applier.msgCode.error.beforeApplyCabinetProviderHookHasErrors";
             public const string AfterApplyCabinetProviderHookHasErrors = "cabinet.applier.msgCode.error.afterApplyCabinetProviderHookHasErrors";
@@ -157,11 +155,22 @@ namespace Chocopoi.DressingTools.Cabinet
                 wearableObj = Object.Instantiate(wearCtx.wearableGameObject, _cabCtx.avatarGameObject.transform);
             }
 
+            // detect unknown modules and report them
+            var unknownModules = DTEditorUtils.FindUnknownWearableModuleNames(wearCtx.wearableConfig.modules);
+            if (unknownModules.Count > 0)
+            {
+                foreach (var name in unknownModules)
+                {
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ModuleHasNoProviderAvailable, name);
+                }
+                return false;
+            }
+
             DTEditorUtils.DoWearableModuleProviderCallbacks(wearCtx.wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
             {
                 if (!provider.OnApplyWearable(_cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(modules)))
                 {
-                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ApplyingModuleHasErrors);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.ModuleProviderHookHasErrors, provider.ModuleIdentifier);
                     return false;
                 }
                 return true;
@@ -214,7 +223,7 @@ namespace Chocopoi.DressingTools.Cabinet
             catch (System.Exception ex)
             {
                 DTReportUtils.LogExceptionLocalized(_cabCtx.report, LogLabel, ex);
-                DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeCabinetConfig);
+                DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeCabinetConfig, _cabCtx.avatarGameObject.gameObject.name);
                 return;
             }
 
@@ -247,13 +256,13 @@ namespace Chocopoi.DressingTools.Cabinet
                 catch (System.Exception ex)
                 {
                     DTReportUtils.LogExceptionLocalized(_cabCtx.report, LogLabel, ex);
-                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeWearableConfig);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeWearableConfig, wearable.gameObject.name);
                     return;
                 }
 
                 if (wearableConfig == null)
                 {
-                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeWearableConfig);
+                    DTReportUtils.LogErrorLocalized(_cabCtx.report, LogLabel, MessageCode.UnableToDeserializeWearableConfig, wearable.gameObject.name);
                     return;
                 }
 

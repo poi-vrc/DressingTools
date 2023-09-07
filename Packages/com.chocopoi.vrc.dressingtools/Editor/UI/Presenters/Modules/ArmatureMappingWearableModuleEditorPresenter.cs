@@ -111,15 +111,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             UpdateDresserReport();
         }
 
-        public void StartMappingEditor()
-        {
-            var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
-
-            boneMappingEditorWindow.SetContainer(_mappingEditorContainer);
-            boneMappingEditorWindow.titleContent = new GUIContent("DT Mapping Editor");
-            boneMappingEditorWindow.Show();
-        }
-
         private void InitializeDresserSettings()
         {
             var dresser = DresserRegistry.GetDresserByName(_view.AvailableDresserKeys != null ? _view.AvailableDresserKeys[_view.SelectedDresserIndex] : "Default Dresser");
@@ -245,7 +236,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnViewEditMappingsButtonClick()
         {
-            StartMappingEditor();
+            _view.StartMappingEditor(_mappingEditorContainer);
         }
 
         public void UpdateView()

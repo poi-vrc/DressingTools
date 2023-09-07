@@ -57,5 +57,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         string MetaInfoCreatedTime { get; set; }
         string MetaInfoUpdatedTime { get; set; }
         string MetaInfoDescription { get; set; }
+
+        void ShowModuleAddedBeforeDialog();
     }
 }

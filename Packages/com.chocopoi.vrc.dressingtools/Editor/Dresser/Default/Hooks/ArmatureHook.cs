@@ -80,12 +80,12 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 {
                     if (level == 0)
                     {
-                        report.LogWarn(DefaultDresser.LogLabel, DefaultDresser.MessageCode.BonesNotMatchingInArmatureFirstLevel);
+                        report.LogWarn(DefaultDresser.LogLabel, DefaultDresser.MessageCode.BonesNotMatchingInArmatureFirstLevel, child.name);
                         continue;
                     }
                     else
                     {
-                        DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NonMatchingWearableBoneKeptUntouched);
+                        DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.NonMatchingWearableBoneKeptUntouched, child.name);
                     }
                 }
                 else
@@ -178,7 +178,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
                 if (avatarArmature)
                 {
-                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.AvatarArmatureObjectGuessed);
+                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.AvatarArmatureObjectGuessed, avatarArmature.name);
                 }
                 else
                 {
@@ -193,7 +193,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
                 if (wearableArmature)
                 {
-                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.WearableArmatureObjectGuessed);
+                    DTReportUtils.LogInfoLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.WearableArmatureObjectGuessed, wearableArmature.name);
                 }
                 else
                 {

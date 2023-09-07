@@ -73,21 +73,22 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     [InitializeOnLoad]
     internal class ArmatureMappingWearableModuleProvider : WearableModuleProviderBase
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.armature-mapping";
         public static class MessageCode
         {
             // Error
-            public const string DresserHasErrors = "appliers.default.msgCode.error.dresserHasErrors";
-            public const string CannotCreateParentConstraintWithExisting = "appliers.default.msgCode.error.cannotCreateParentConstraintWithExisting";
-            public const string AvatarBonePathNotFound = "appliers.default.msgCode.error.avatarBonePathNotFound";
-            public const string MappingGenerationHasErrors = "appliers.default.msgCode.error.mappingGenerationHasErrors";
-            public const string ApplyingBoneMappingHasErrors = "appliers.default.msgCode.error.applyingBoneMappingHasErrors";
+            public const string DresserHasErrors = "modules.wearable.armatureMapping.msgCode.error.dresserHasErrors";
+            public const string CannotCreateParentConstraintWithExisting = "modules.wearable.armatureMapping.msgCode.error.cannotCreateParentConstraintWithExisting";
+            public const string AvatarBonePathNotFound = "modules.wearable.armatureMapping.msgCode.error.avatarBonePathNotFound";
+            public const string MappingGenerationHasErrors = "modules.wearable.armatureMapping.msgCode.error.mappingGenerationHasErrors";
+            public const string ApplyingBoneMappingHasErrors = "modules.wearable.armatureMapping.msgCode.error.applyingBoneMappingHasErrors";
         }
 
         private const string LogLabel = "ArmatureModule";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => "Armature Mapping";
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.armatureMapping.friendlyName");
         [ExcludeFromCodeCoverage] public override int CallOrder => 2;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 

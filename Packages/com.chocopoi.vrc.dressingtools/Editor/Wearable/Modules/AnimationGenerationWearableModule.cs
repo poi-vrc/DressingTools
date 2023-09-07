@@ -50,10 +50,11 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     [InitializeOnLoad]
     internal class AnimationGenerationWearableModuleProvider : WearableModuleProviderBase
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.animation-generation";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => "Animation Generation";
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.animGen.friendlyName");
         [ExcludeFromCodeCoverage] public override int CallOrder => 4;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 

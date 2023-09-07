@@ -182,7 +182,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     if (existingModule.moduleName == provider.ModuleIdentifier)
                     {
-                        EditorUtility.DisplayDialog("DressingTools", "This module has been added before and cannot have multiple ones.", "OK");
+                        _view.ShowModuleAddedBeforeDialog();
                         return;
                     }
                 }

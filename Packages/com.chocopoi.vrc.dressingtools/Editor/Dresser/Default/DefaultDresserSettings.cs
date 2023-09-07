@@ -32,6 +32,7 @@ namespace Chocopoi.DressingTools.Dresser.Default
 
     internal class DefaultDresserSettings : DresserSettings
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         public DefaultDresserDynamicsOption dynamicsOption;
 
         public DefaultDresserSettings()
@@ -47,12 +48,12 @@ namespace Chocopoi.DressingTools.Dresser.Default
             var modified = base.DrawEditorGUI();
 
             // Dynamics Option
-            var newDynamicsOption = (DefaultDresserDynamicsOption)EditorGUILayout.Popup("Dynamics Option", (int)dynamicsOption, new string[] {
-                        "Remove wearable dynamics and ParentConstraint",
-                        "Keep wearable dynamics and ParentConstraint if needed",
-                        "Remove wearable dynamics and IgnoreTransform",
-                        "Copy avatar dynamics data to wearable",
-                        "Ignore all dynamics"
+            var newDynamicsOption = (DefaultDresserDynamicsOption)EditorGUILayout.Popup(t._("dressers.default.settings.dynamicsOptionPopup.label"), (int)dynamicsOption, new string[] {
+                        t._("dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddParentConstraint"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.keepDynamicsAndAddParentConstraintIfNeeded"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddIgnoreTransform"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.copyAvatarDynamicsData"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.ignoreAllDynamics")
                     });
 
             modified |= dynamicsOption != newDynamicsOption;

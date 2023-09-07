@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(AnimationGenerationWearableModuleProvider))]
     internal class AnimationGenerationWearableModuleEditor : WearableModuleEditor, IAnimationGenerationWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.Instance;
 
         public event Action AvatarOnWearPresetChangeEvent;
         public event Action AvatarOnWearPresetSaveEvent;
@@ -88,11 +88,11 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             BeginFoldoutBox(ref foldoutAnimationPresetToggles, title);
             if (foldoutAnimationPresetToggles)
             {
-                HelpBox("The object must be a child or grand-child of the root. Or it will not be selected.", MessageType.Info);
+                HelpBox(t._("modules.wearable.animGen.editor.helpbox.objectMustBeAChildOrGrandChildOfRoot"), MessageType.Info);
 
                 BeginHorizontal();
                 {
-                    Button("+ Add", addButtonOnClickedEvent, GUILayout.ExpandWidth(false));
+                    Button(t._("modules.wearable.animGen.editor.btn.add"), addButtonOnClickedEvent, GUILayout.ExpandWidth(false));
                 }
                 EndHorizontal();
 
@@ -101,7 +101,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 {
                     if (toggle.isInvalid)
                     {
-                        HelpBox("The following GameObject is invalid.", MessageType.Error);
+                        HelpBox(t._("modules.wearable.animGen.editor.helpbox.invalidGameObject"), MessageType.Error);
                     }
                     BeginHorizontal();
                     {
@@ -114,7 +114,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
                 HorizontalLine();
 
-                Label("Suggestions:");
+                Label(t._("modules.wearable.animGen.editor.label.suggestions"));
 
                 Separator();
 
@@ -142,16 +142,16 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             BeginFoldoutBox(ref foldoutAnimationPresetBlendshapes, title);
             if (foldoutAnimationPresetBlendshapes)
             {
-                HelpBox("The object must be a child or grand-child of the root, and has a SkinnedMeshRenderer. Or it will not be selected.", MessageType.Info);
+                HelpBox(t._("modules.wearable.animGen.editor.helpbox.objectMustBeAChildOrGrandChildOfRootAndHasSmr"), MessageType.Info);
 
-                Button("+ Add", addButtonOnClickedEvent, GUILayout.ExpandWidth(false));
+                Button(t._("modules.wearable.animGen.editor.btn.add"), addButtonOnClickedEvent, GUILayout.ExpandWidth(false));
 
                 var copy = new List<BlendshapeData>(blendshapes);
                 foreach (var blendshape in copy)
                 {
                     if (blendshape.isInvalid)
                     {
-                        HelpBox("The following GameObject is invalid.", MessageType.Error);
+                        HelpBox(t._("modules.wearable.animGen.editor.helpbox.invalidGameObject"), MessageType.Error);
                     }
                     BeginHorizontal();
                     {
@@ -182,7 +182,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
                 HorizontalLine();
 
-                Label("Suggestions:");
+                Label(t._("modules.wearable.animGen.editor.label.suggestions"));
 
                 Separator();
 
@@ -208,26 +208,26 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         {
             BeginHorizontal();
             {
-                Popup("Saved Presets", ref presetData.selectedPresetIndex, presetData.savedPresetKeys, changeEvent);
-                Button("Save", saveEvent, GUILayout.ExpandWidth(false));
-                Button("Delete", deleteEvent, GUILayout.ExpandWidth(false));
+                Popup(t._("modules.wearable.animGen.editor.popup.savedPresets"), ref presetData.selectedPresetIndex, presetData.savedPresetKeys, changeEvent);
+                Button(t._("modules.wearable.animGen.editor.btn.save"), saveEvent, GUILayout.ExpandWidth(false));
+                Button(t._("modules.wearable.animGen.editor.btn.delete"), deleteEvent, GUILayout.ExpandWidth(false));
             }
             EndHorizontal();
 
             Separator();
 
-            DrawToggles("Toggles", presetData.toggles, presetData.toggleSuggestions, toggleAddEvent, ref foldoutAnimationPresetToggles);
-            DrawBlendshapes("Blendshapes", presetData.blendshapes, presetData.smrSuggestions, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
+            DrawToggles(t._("modules.wearable.animGen.editor.label.toggles"), presetData.toggles, presetData.toggleSuggestions, toggleAddEvent, ref foldoutAnimationPresetToggles);
+            DrawBlendshapes(t._("modules.wearable.animGen.editor.label.blendshapes"), presetData.blendshapes, presetData.smrSuggestions, blendshapeAddEvent, ref foldoutAnimationPresetBlendshapes);
         }
 
         private void DrawAnimationGenerationAvatarOnWear()
         {
-            BeginFoldoutBox(ref _foldoutAnimationGenerationAvatarOnWear, "Avatar Animation On Wear");
+            BeginFoldoutBox(ref _foldoutAnimationGenerationAvatarOnWear, t._("modules.wearable.animGen.editor.foldout.avatarAnimOnWear"));
             if (_foldoutAnimationGenerationAvatarOnWear)
             {
                 if (ShowCannotRenderPresetWithoutTargetAvatarHelpBox)
                 {
-                    HelpBox("Cannot render preset without a target avatar selected.", MessageType.Error);
+                    HelpBox(t._("modules.wearable.animGen.editor.helpbox.cannotRenderPresetWithoutTargetAvatar"), MessageType.Error);
                 }
                 else
                 {
@@ -239,12 +239,12 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         private void DrawAnimationGenerationWearableOnWear()
         {
-            BeginFoldoutBox(ref _foldoutAnimationGenerationWearableOnWear, "Wearable Animation On Wear");
+            BeginFoldoutBox(ref _foldoutAnimationGenerationWearableOnWear, t._("modules.wearable.animGen.editor.foldout.wearableAnimOnWear"));
             if (_foldoutAnimationGenerationWearableOnWear)
             {
                 if (ShowCannotRenderPresetWithoutTargetWearableHelpBox)
                 {
-                    HelpBox("Cannot render preset without a target wearable selected.", MessageType.Error);
+                    HelpBox(t._("modules.wearable.animGen.editor.helpbox.cannotRenderPresetWithoutTargetWearable"), MessageType.Error);
                 }
                 else
                 {
@@ -256,40 +256,40 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         private void DrawCustomizable(CustomizableViewData customizable)
         {
-            BeginFoldoutBoxWithButtonRight(ref customizable.foldout, customizable.name, "x Remove", customizable.removeButtonClickEvent);
+            BeginFoldoutBoxWithButtonRight(ref customizable.foldout, customizable.name, t._("modules.wearable.animGen.editor.btn.remove"), customizable.removeButtonClickEvent);
             if (customizable.foldout)
             {
                 if (customizable.IsInvalid())
                 {
-                    HelpBox("This customizable is invalid.", MessageType.Error);
+                    HelpBox(t._("modules.wearable.animGen.editor.helpbox.invalidCustomizable"), MessageType.Error);
                 }
 
-                TextField("Name", ref customizable.name, customizable.customizableSettingsChangeEvent);
-                Popup("Type:", ref customizable.type, new string[] { "Toggle", "Blendshape" }, customizable.customizableSettingsChangeEvent);
+                TextField(t._("modules.wearable.animGen.editor.label.name"), ref customizable.name, customizable.customizableSettingsChangeEvent);
+                Popup(t._("modules.wearable.animGen.editor.popup.customizableType"), ref customizable.type, new string[] { t._("modules.wearable.animGen.editor.popup.customizableType.toggle"), t._("modules.wearable.animGen.editor.popup.customizableType.blendshape") }, customizable.customizableSettingsChangeEvent);
 
                 Separator();
 
                 if (customizable.type == 0)
                 {
                     // toggle mode
-                    DrawToggles("Wearable Toggles", customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
+                    DrawToggles(t._("modules.wearable.animGen.editor.foldout.customizableWearableToggles"), customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
 
                     HorizontalLine();
 
-                    DrawToggles("Avatar Toggles", customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
-                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
-                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes);
+                    DrawToggles(t._("modules.wearable.animGen.editor.foldout.customizableAvatarToggles"), customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
+                    DrawBlendshapes(t._("modules.wearable.animGen.editor.foldout.customizableAvatarBlendshapes"), customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                    DrawBlendshapes(t._("modules.wearable.animGen.editor.foldout.customizableWearableBlendshapes"), customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes);
                 }
                 else
                 {
-                    DrawBlendshapes("Wearable Blendshapes", customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
+                    DrawBlendshapes(t._("modules.wearable.animGen.editor.foldout.customizableWearableBlendshapes"), customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
 
                     HorizontalLine();
 
                     // radial blendshape mode
-                    DrawToggles("Avatar Toggles", customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
-                    DrawToggles("Wearable Toggles", customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
-                    DrawBlendshapes("Avatar Blendshapes", customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                    DrawToggles(t._("modules.wearable.animGen.editor.foldout.customizableAvatarToggles"), customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
+                    DrawToggles(t._("modules.wearable.animGen.editor.foldout.customizableWearableToggles"), customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
+                    DrawBlendshapes(t._("modules.wearable.animGen.editor.foldout.customizableAvatarBlendshapes"), customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
                 }
             }
             EndFoldoutBox();
@@ -298,18 +298,18 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         private void DrawCustomizables()
         {
-            BeginFoldoutBox(ref _foldoutAnimationGenerationCustomizables, "Customizables");
+            BeginFoldoutBox(ref _foldoutAnimationGenerationCustomizables, t._("modules.wearable.animGen.editor.foldout.customizables"));
             if (_foldoutAnimationGenerationCustomizables)
             {
                 if (ShowCannotRenderPresetWithoutTargetWearableHelpBox)
                 {
-                    HelpBox("Cannot render customizables without a target wearable selected.", MessageType.Error);
+                    HelpBox(t._("modules.wearable.animGen.editor.helpbox.cannotRenderCustomizablesWithoutTargetWearable"), MessageType.Error);
                 }
                 else
                 {
                     BeginHorizontal();
                     {
-                        Button("+ Add", AddCustomizableEvent, GUILayout.ExpandWidth(false));
+                        Button(t._("modules.wearable.animGen.editor.btn.add"), AddCustomizableEvent, GUILayout.ExpandWidth(false));
                     }
                     EndHorizontal();
 
@@ -382,20 +382,20 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             public string PresetName { get; set; }
             public InputPresetNamingDialog()
             {
-                titleContent = new GUIContent("DressingTools");
+                titleContent = new GUIContent(t._("tool.name"));
                 position = new Rect(Screen.width / 2, Screen.height / 2, 250, 150);
             }
 
             public void OnGUI()
             {
-                PresetName = EditorGUILayout.TextField("New Preset Name:", PresetName);
+                PresetName = EditorGUILayout.TextField(t._("modules.wearable.animGen.editor.presetNamingDialog.label.newPresetName"), PresetName);
                 EditorGUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button("Add"))
+                    if (GUILayout.Button(t._("modules.wearable.animGen.editor.presetNamingDialog.btn.add")))
                     {
                         Close();
                     }
-                    if (GUILayout.Button("Cancel"))
+                    if (GUILayout.Button(t._("modules.wearable.animGen.editor.presetNamingDialog.btn.cancel")))
                     {
                         PresetName = null;
                         Close();
@@ -419,12 +419,12 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         public void ShowDuplicatedPresetNameDialog()
         {
-            EditorUtility.DisplayDialog("DressingTools", "A preset with the same name exists.", "OK");
+            EditorUtility.DisplayDialog(t._("tool.name"), t._("modules.wearable.animGen.editor.dialog.msg.duplicatePresetName"), t._("common.dialog.btn.ok"));
         }
 
         public bool ShowPresetDeleteConfirmDialog()
         {
-            return EditorUtility.DisplayDialog("DressingTools", "Are you sure to remove this preset?", "Yes", "No");
+            return EditorUtility.DisplayDialog(t._("tool.name"), t._("modules.wearable.animGen.editor.dialog.msg.removePresetConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no"));
         }
     }
 }

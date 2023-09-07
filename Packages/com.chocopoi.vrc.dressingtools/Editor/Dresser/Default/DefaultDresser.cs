@@ -34,8 +34,6 @@ namespace Chocopoi.DressingTools.Dresser
         public static class MessageCode
         {
             //Infos
-            public const string GenericInfo = "dressers.default.msgCode.info.generic";
-
             public const string NonMatchingWearableBoneKeptUntouched = "dressers.default.msgCode.info.nonMatchingWearableBoneKeptUntouched";
             public const string DynamicBoneAllIgnored = "dressers.default.msgCode.info.dynamicBoneAllIgnored";
             public const string AvatarArmatureObjectGuessed = "dressers.default.msgCode.info.avatarArmatureObjectGuessed";
@@ -44,15 +42,11 @@ namespace Chocopoi.DressingTools.Dresser
             //only one enabled bone detected, others are disabled (e.g. Maya has a C object that is disabled)
 
             //Warnings
-            public const string GenericWarning = "dressers.default.msgCode.warn.generic";
-
             public const string MultipleBonesInAvatarArmatureFirstLevel = "dressers.default.msgCode.warn.multipleBonesInAvatarArmatureFirstLevel";
             public const string MultipleBonesInWearableArmatureFirstLevel = "dressers.default.msgCode.warn.multipleBonesInWearableArmatureFirstLevel";
             public const string BonesNotMatchingInArmatureFirstLevel = "dressers.default.msgCode.warn.bonesNotMatchingInArmatureFirstLevel";
 
             //Errors
-            public const string GenericError = "dressers.default.msgCode.error.generic";
-
             public const string NotDefaultSettingsSettings = "dressers.default.msgCode.error.notDefaultSettingsSettings";
             public const string NoArmatureInAvatar = "dressers.default.msgCode.error.noArmatureInAvatar";
             public const string NoArmatureInWearable = "dressers.default.msgCode.error.noArmatureInWearable";

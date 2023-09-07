@@ -29,6 +29,8 @@ namespace Chocopoi.DressingTools.UI.View
     [ExcludeFromCodeCoverage]
     internal class LegacyView : EditorViewBase, ILegacyView
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         public DressingToolsUpdater.ParsedVersion CurrentVersion { get; set; }
 
         public event Action TargetAvatarOrWearableChange;
@@ -50,7 +52,6 @@ namespace Chocopoi.DressingTools.UI.View
         public bool RemoveExistingPrefixSuffix { get => _removeExistingPrefixSuffix; set => _removeExistingPrefixSuffix = value; }
         public int DynamicsOption { get => _dynamicsOption; set => _dynamicsOption = value; }
         public ReportData ReportData { get => _reportData; set => _reportData = value; }
-        public bool DressNowConfirm { get => _dressNowConfirm; set => _dressNowConfirm = value; }
         public bool ShowHasCabinetHelpbox { get; set; }
 
         private LegacyPresenter _presenter;
@@ -69,7 +70,6 @@ namespace Chocopoi.DressingTools.UI.View
         private bool _removeExistingPrefixSuffix;
         private int _dynamicsOption;
         private ReportData _reportData;
-        private bool _dressNowConfirm;
 
         public LegacyView()
         {
@@ -90,14 +90,28 @@ namespace Chocopoi.DressingTools.UI.View
             _removeExistingPrefixSuffix = true;
             _dynamicsOption = 0;
             _reportData = null;
-            _dressNowConfirm = false;
+        }
+
+        public bool ShowExistingWearableConfigIgnoreConfirmDialog()
+        {
+            return EditorUtility.DisplayDialog(t._("tool.name"), t._("legacy.editor.dialog.msg.existingWearableConfigIgnoreConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no"));
+        }
+
+        public bool ShowDressConfirmDialog()
+        {
+            return EditorUtility.DisplayDialog(t._("tool.name"), t._("legacy.editor.dialog.msg.dressConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no"));
+        }
+
+        public void ShowCompletedDialog()
+        {
+            EditorUtility.DisplayDialog(t._("tool.name"), t._("legacy.editor.dialog.msg.completed"), t._("common.dialog.btn.ok"));
         }
 
         private void DrawReportResult()
         {
             if (_reportData == null)
             {
-                HelpBox("No dress report generated.", MessageType.Warning);
+                HelpBox(t._("legacy.editor.helpbox.noDressReportGenerated"), MessageType.Warning);
                 return;
             }
 
@@ -105,15 +119,15 @@ namespace Chocopoi.DressingTools.UI.View
 
             if (_reportData.errorMsgs.Count > 0)
             {
-                HelpBox("Error(s) occurred during bone mappings generation.", MessageType.Error);
+                HelpBox(t._("report.editor.helpbox.resultError"), MessageType.Error);
             }
             else if (_reportData.warnMsgs.Count > 0)
             {
-                HelpBox("Warning(s) occurred during bone mappings generation.", MessageType.Warning);
+                HelpBox(t._("report.editor.helpbox.resultWarn"), MessageType.Warning);
             }
             else
             {
-                HelpBox("Bone mappings generation is successful.", MessageType.Info);
+                HelpBox(t._("report.editor.helpbox.resultSuccess"), MessageType.Info);
             }
         }
 
@@ -124,7 +138,7 @@ namespace Chocopoi.DressingTools.UI.View
                 return;
             }
 
-            BeginFoldoutBox(ref _foldoutReportLogEntries, "Logs");
+            BeginFoldoutBox(ref _foldoutReportLogEntries, t._("legacy.editor.foldout.label.logs"));
             if (_foldoutReportLogEntries)
             {
                 foreach (var msg in _reportData.errorMsgs)
@@ -147,37 +161,37 @@ namespace Chocopoi.DressingTools.UI.View
 
         private void DrawCommonClothesConfig()
         {
-            Label("Setup", EditorStyles.boldLabel);
-            HelpBox("Move clothes into place", MessageType.Info);
+            Label(t._("legacy.editor.label.setup"), EditorStyles.boldLabel);
+            HelpBox(t._("legacy.editor.helpbox.moveClothesIntoPlace"), MessageType.Info);
 
-            GameObjectField("Avatar", ref _targetAvatar, true, TargetAvatarOrWearableChange);
-            GameObjectField("Clothes", ref _targetClothes, true, TargetAvatarOrWearableChange);
+            GameObjectField(t._("legacy.editor.gameObjectField.avatar"), ref _targetAvatar, true, TargetAvatarOrWearableChange);
+            GameObjectField(t._("legacy.editor.gameObjectField.clothes"), ref _targetClothes, true, TargetAvatarOrWearableChange);
 
             BeginHorizontal();
             {
                 BeginDisabled(_targetClothes == null);
                 {
-                    TextField("New Clothes", ref _newClothesName);
-                    Button("Rename", RenameClothesNameButtonClick, GUILayout.ExpandWidth(false));
+                    TextField(t._("legacy.editor.textField.newClothesName"), ref _newClothesName);
+                    Button(t._("legacy.editor.btn.renameNewClothesName"), RenameClothesNameButtonClick, GUILayout.ExpandWidth(false));
                 }
                 EndDisabled();
             }
             EndHorizontal();
 
-            ToggleLeft("Use custom armature names", ref _useCustomArmatureNames, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.useCustomArmatureNames"), ref _useCustomArmatureNames, ConfigChange);
             BeginDisabled(!_useCustomArmatureNames);
             {
                 EditorGUI.indentLevel += 1;
                 if (ShowHasCabinetHelpbox)
                 {
-                    HelpBox("The avatar is attached with a cabinet. Change this settings from the cabinet settings.", MessageType.Info);
+                    HelpBox(t._("legacy.editor.helpbox.avatarAttachedToCabinet"), MessageType.Info);
                 }
                 BeginDisabled(ShowHasCabinetHelpbox);
                 {
-                    DelayedTextField("Avatar Armature Name", ref _avatarArmatureObjectName, ConfigChange);
+                    DelayedTextField(t._("legacy.editor.textField.avatarArmatureName"), ref _avatarArmatureObjectName, ConfigChange);
                 }
                 EndDisabled();
-                DelayedTextField("Clothes Armature Name", ref _clothesArmatureObjectName, ConfigChange);
+                DelayedTextField(t._("legacy.editor.textField.clothesArmatureName"), ref _clothesArmatureObjectName, ConfigChange);
                 EditorGUI.indentLevel -= 1;
             }
             EndDisabled();
@@ -194,7 +208,7 @@ namespace Chocopoi.DressingTools.UI.View
 
             Separator();
 
-            Label("Dynamics are automatically grouped and handled in simple mode.");
+            Label(t._("legacy.editor.label.dynamicsAutoGroupedHandledInSimpleMode"));
         }
 
         private void DrawAdvanced()
@@ -203,22 +217,22 @@ namespace Chocopoi.DressingTools.UI.View
 
             HorizontalLine();
 
-            Label("Grouping bones and dynamics", EditorStyles.boldLabel);
+            Label(t._("legacy.editor.label.groupingBonesAndDynamics"), EditorStyles.boldLabel);
 
             Separator();
 
-            ToggleLeft("Group bones", ref _groupBones, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.groupBones"), ref _groupBones, ConfigChange);
             if (ShowHasCabinetHelpbox)
             {
-                HelpBox("The avatar is attached with a cabinet. Change this settings from the cabinet settings.", MessageType.Info);
+                HelpBox(t._("legacy.editor.helpbox.avatarAttachedToCabinet"), MessageType.Info);
             }
             BeginDisabled(ShowHasCabinetHelpbox);
             {
-                ToggleLeft("Group dynamics", ref _groupDynamics, ConfigChange);
+                ToggleLeft(t._("legacy.editor.toggle.groupDynamics"), ref _groupDynamics, ConfigChange);
                 BeginDisabled(!_groupDynamics);
                 {
                     EditorGUI.indentLevel += 1;
-                    ToggleLeft("Separate dynamics into different objects", ref _groupDynamicsSeparateGameObjects, ConfigChange);
+                    ToggleLeft(t._("legacy.editor.toggle.groupDynamicsSeparateGameObjects"), ref _groupDynamicsSeparateGameObjects, ConfigChange);
                     EditorGUI.indentLevel -= 1;
                 }
                 EndDisabled();
@@ -227,29 +241,29 @@ namespace Chocopoi.DressingTools.UI.View
 
             HorizontalLine();
 
-            Label("Prefixes and suffixes", EditorStyles.boldLabel);
-            HelpBox("Prefixes and suffixes are automatically generated and handled internally in v2.", MessageType.Info);
+            Label(t._("legacy.editor.label.prefixesAndSuffixes"), EditorStyles.boldLabel);
+            HelpBox(t._("legacy.editor.label.prefixesAndSuffixesAutoGenAndHandled"), MessageType.Info);
 
-            ToggleLeft("Remove existing prefixes and suffixes", ref _removeExistingPrefixSuffix, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.removeExistingPrefixesAndSuffixes"), ref _removeExistingPrefixSuffix, ConfigChange);
 
             HorizontalLine();
 
-            Label("Dynamics handling", EditorStyles.boldLabel);
+            Label(t._("legacy.editor.label.dynamicsHandling"), EditorStyles.boldLabel);
 
             Separator();
 
             Popup(ref _dynamicsOption, new string[] {
-                "Remove wearable dynamics and ParentConstraint",
-                "Keep wearable dynamics and ParentConstraint if needed",
-                "Remove wearable dynamics and IgnoreTransform",
-                "Copy avatar dynamics data to wearable",
-                "Ignore all dynamics"
+                t._("legacy.editor.popup.dynamicsOption.removeDynamicsAndAddParentConstraint"),
+                t._("legacy.editor.popup.dynamicsOption.keepDynamicsAndAddParentConstraintIfNeeded"),
+                t._("legacy.editor.popup.dynamicsOption.removeDynamicsAndAddIgnoreTransform"),
+                t._("legacy.editor.popup.dynamicsOption.copyAvatarDynamicsData"),
+                t._("legacy.editor.popup.dynamicsOption.ignoreAllDynamics")
             });
         }
 
         private void DrawContent()
         {
-            Toolbar(ref _selectedMode, new string[] { "Simple", "Advanced" });
+            Toolbar(ref _selectedMode, new string[] { t._("legacy.editor.popup.mode.simple"), t._("legacy.editor.popup.mode.advanced") });
 
             HorizontalLine();
 
@@ -266,7 +280,7 @@ namespace Chocopoi.DressingTools.UI.View
 
             HorizontalLine();
 
-            Label("Check and Dress", EditorStyles.boldLabel);
+            Label(t._("legacy.editor.label.checkAndDress"), EditorStyles.boldLabel);
 
             DrawReportResult();
 
@@ -279,13 +293,13 @@ namespace Chocopoi.DressingTools.UI.View
             {
                 BeginDisabled(_targetClothes == null || _targetClothes.name == "");
                 {
-                    Button("Check and Preview", checkBtnStyle, CheckAndPreviewButtonClick, GUILayout.Height(40));
+                    Button(t._("legacy.editor.btn.checkAndPreview"), checkBtnStyle, CheckAndPreviewButtonClick, GUILayout.Height(40));
                 }
                 EndDisabled();
 
                 BeginDisabled(noReportOrHasErrors);
                 {
-                    Button("Test Now", checkBtnStyle, TestNowButtonClick, GUILayout.Height(40));
+                    Button(t._("legacy.editor.btn.testNow"), checkBtnStyle, TestNowButtonClick, GUILayout.Height(40));
                 }
                 EndDisabled();
             }
@@ -293,13 +307,7 @@ namespace Chocopoi.DressingTools.UI.View
 
             BeginDisabled(noReportOrHasErrors);
             {
-                ToggleLeft("I have confirmed", ref _dressNowConfirm);
-            }
-            EndDisabled();
-
-            BeginDisabled(noReportOrHasErrors || !_dressNowConfirm);
-            {
-                Button("Dress Now", checkBtnStyle, DressNowButtonClick, GUILayout.Height(40));
+                Button(t._("legacy.editor.btn.dressNow"), checkBtnStyle, DressNowButtonClick, GUILayout.Height(40));
             }
             EndDisabled();
 
@@ -312,17 +320,17 @@ namespace Chocopoi.DressingTools.UI.View
 
         private void DrawHeader()
         {
-            Label("Legacy Editor");
+            Label(t._("legacy.editor.label.legacyEditor"));
             DTLogo.Show();
             Separator();
-            HelpBox("This legacy editor lacks many v2 features. You should use the new editor instead.", MessageType.Warning);
+            HelpBox(t._("legacy.editor.helpbox.legacyEditorWarning"), MessageType.Warning);
             HorizontalLine();
         }
 
         private void DrawFooter()
         {
             HorizontalLine();
-            Label("Version: " + CurrentVersion?.fullVersionString);
+            Label(t._("legacy.editor.label.toolVersion", CurrentVersion?.fullVersionString));
             // TODO: version checker
             EditorGUILayout.SelectableLabel("https://dressingtools.chocopoi.com");
         }
@@ -332,7 +340,7 @@ namespace Chocopoi.DressingTools.UI.View
             DrawHeader();
             if (Application.isPlaying)
             {
-                HelpBox("Please exit play mode.", MessageType.Warning);
+                HelpBox(t._("legacy.editor.label.exitPlayMode"), MessageType.Warning);
             }
             else
             {

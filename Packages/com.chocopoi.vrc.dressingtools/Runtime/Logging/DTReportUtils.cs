@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools.Logging
     [Serializable]
     public static class DTReportUtils
     {
-        private static readonly Localization.I18n t = Localization.I18n.GetInstance();
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
 
         public static void LogLocalized(DTReport report, DTReportLogType type, string label, string code, params object[] args)
         {

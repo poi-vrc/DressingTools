@@ -110,13 +110,14 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             public const string AnimatorNotFound = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.animatorNotFound";
             public const string NoSuchAnimLayer = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.noSuchAnimLayer";
         }
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         private const string LogLabel = "VRCMergeAnimLayer";
         public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.integration.vrchat.wearable.merge-anim-layer";
 
         private const string GestureAvatarMaskGuid = "b2b8bad9583e56a46a3e21795e96ad92";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => "VRChat: Merge Animation Layer";
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("integrations.vrc.modules.mergeAnimLayer.friendlyName");
         [ExcludeFromCodeCoverage] public override int CallOrder => 6;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => true;
 
@@ -271,7 +272,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 // get animator component
                 if (!animatorTransform.TryGetComponent<Animator>(out var animator))
                 {
-                    DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AnimatorNotFound);
+                    DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AnimatorNotFound, animatorTransform.name);
                     continue;
                 }
 

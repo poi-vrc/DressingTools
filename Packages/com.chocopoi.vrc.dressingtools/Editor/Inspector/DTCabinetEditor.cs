@@ -25,6 +25,8 @@ namespace Chocopoi.DressingTools
     [CustomEditor(typeof(DTCabinet))]
     internal class DTCabinetEditor : Editor
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         public override void OnInspectorGUI()
         {
             // show the tool logo
@@ -32,16 +34,13 @@ namespace Chocopoi.DressingTools
 
             var cabinet = (DTCabinet)target;
 
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField("Avatar", cabinet.avatarGameObject, typeof(GameObject), true);
-            EditorGUI.EndDisabledGroup();
-
+            cabinet.avatarGameObject = (GameObject)EditorGUILayout.ObjectField(t._("cabinet.inspector.settings.avatar"), cabinet.avatarGameObject, typeof(GameObject), true);
             EditorGUILayout.Separator();
 
-            if (GUILayout.Button("Open in Editor", GUILayout.Height(40)))
+            if (GUILayout.Button(t._("cabinet.inspector.btn.openInEditor"), GUILayout.Height(40)))
             {
                 var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
-                window.titleContent = new GUIContent("DressingTools");
+                window.titleContent = new GUIContent(t._("tool.name"));
                 window.Show();
                 window.SelectCabinet(cabinet);
             }

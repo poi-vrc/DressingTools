@@ -205,7 +205,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (targetWearable.TryGetComponent<DTCabinetWearable>(out var existingComp))
             {
-                if (!EditorUtility.DisplayDialog("DressingTools", "The clothes has already a wearable configuration attached.\nContinuing will ignore existing configuration. Are you sure?", "Yes", "No"))
+                if (!_view.ShowExistingWearableConfigIgnoreConfirmDialog())
                 {
                     return;
                 }
@@ -281,7 +281,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            _view.DressNowConfirm = false;
             GenerateMappingsAndPreview();
         }
 
@@ -295,11 +294,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // dry run to see if can generate first
             if (GenerateMappings() == null)
             {
-                EditorUtility.DisplayDialog("DressingTools", "Error validating before adding to cabinet: No mappings generated.", "OK");
                 return;
             }
 
-            if (!EditorUtility.DisplayDialog("DressingTools", "Are you sure to add this clothes?\nYou can remove it later from the cabinet editor or remove directly from the hierachy.", "Yes", "No"))
+            if (!_view.ShowDressConfirmDialog())
             {
                 return;
             }
@@ -317,8 +315,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             CleanUpPreviewObjects();
             UpdateView();
 
-            EditorUtility.DisplayDialog("DressingTools", "Completed.", "OK");
-
+            _view.ShowCompletedDialog();
         }
 
         private void OnForceUpdateView()
@@ -384,7 +381,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 s_testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>(TestModeAnimationControllerPath);
                 if (s_testModeAnimationController == null)
                 {
-                    Debug.LogError("[DressingTools] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
+                    Debug.LogError("[DressingToolsLegacy] Could not load \"TestModeAnimationController\" from \"Assets/chocopoi/DressingTools/Animations\". Did you move it to another location?");
                 }
             }
 

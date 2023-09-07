@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.IO;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -24,7 +23,7 @@ namespace Chocopoi.DressingTools
 {
     internal class PreferencesUtility
     {
-        private static Localization.I18n t = Localization.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.Instance;
 
         private static readonly int TargetPreferencesVersion = 3;
 
@@ -58,8 +57,8 @@ namespace Chocopoi.DressingTools
 
                 if (p == null)
                 {
-                    Debug.LogWarning("[DressingTools] Invalid preferences file detected, using default preferences instead");
-                    EditorUtility.DisplayDialog("DressingTools", t._("dialog_preferences_invalid_preferences_file"), "OK");
+                    Debug.LogWarning("[DressingTools] Invalid preferences detected, using default preferences instead");
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.invalidPrefsUsingDefault"), t._("common.dialog.btn.ok"));
                     return GenerateDefaultPreferences();
                 }
 
@@ -68,17 +67,17 @@ namespace Chocopoi.DressingTools
                 if (version > TargetPreferencesVersion)
                 {
                     Debug.LogWarning("[DressingTools] Incompatible preferences version detected, expected version " + TargetPreferencesVersion + " but preferences file is at a newer version " + version + ", using default preferences file instead");
-                    EditorUtility.DisplayDialog("DressingTools", t._("dialog_preferences_incompatible_preferences_file", version, TargetPreferencesVersion), "OK");
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.incompatiblePrefsVersionUsingDefault", version, TargetPreferencesVersion), t._("common.dialog.btn.ok"));
                     return GenerateDefaultPreferences();
                 }
                 //TODO: do migration if our version is newer
 
                 return p;
             }
-            catch (IOException e)
+            catch (System.Exception e)
             {
                 Debug.LogError(e);
-                EditorUtility.DisplayDialog("DressingTools", t._("dialog_preferences_unable_to_load_preferences_file", e.Message), "OK");
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.unableToLoadPrefsUsingDefault", e.Message), t._("common.dialog.btn.ok"));
                 return GenerateDefaultPreferences();
             }
         }
@@ -89,10 +88,10 @@ namespace Chocopoi.DressingTools
             {
                 EditorPrefs.SetString(EditorPrefsKey, JsonConvert.SerializeObject(_preferences));
             }
-            catch (IOException e)
+            catch (System.Exception e)
             {
                 Debug.LogError(e);
-                EditorUtility.DisplayDialog("DressingTools", t._("dialog_preferences_unable_to_save_preferences_file", e.Message), "OK");
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.unableToSavePreferences", e.Message), t._("common.dialog.btn.ok"));
             }
         }
 

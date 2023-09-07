@@ -24,6 +24,7 @@ using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
@@ -31,7 +32,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(ArmatureMappingWearableModuleProvider))]
     internal class ArmatureMappingWearableModuleEditor : WearableModuleEditor, IArmatureMappingWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.GetInstance();
+        private static Localization.I18n t = Localization.I18n.Instance;
 
         public event Action DresserChange;
         public event Action ModuleSettingsChange;
@@ -72,6 +73,15 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             DresserSettings = null;
         }
 
+        public void StartMappingEditor(DTMappingEditorContainer container)
+        {
+            var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
+
+            boneMappingEditorWindow.SetContainer(container);
+            boneMappingEditorWindow.titleContent = new GUIContent(t._("modules.wearable.armatureMapping.editor.title"));
+            boneMappingEditorWindow.Show();
+        }
+
         private void DrawDresserReportGUI()
         {
             if (DresserReportData != null)
@@ -80,28 +90,28 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
                 if (DresserReportData.errorMsgs.Count > 0)
                 {
-                    HelpBox(t._("helpbox_error_check_result_incompatible"), MessageType.Error);
+                    HelpBox(t._("report.editor.helpbox.resultError"), MessageType.Error);
                 }
                 else if (DresserReportData.warnMsgs.Count > 0)
                 {
-                    HelpBox(t._("helpbox_warn_check_result_compatible"), MessageType.Warning);
+                    HelpBox(t._("report.editor.helpbox.resultWarn"), MessageType.Warning);
                 }
                 else
                 {
-                    HelpBox(t._("helpbox_info_check_result_ok"), MessageType.Info);
+                    HelpBox(t._("report.editor.helpbox.resultSuccess"), MessageType.Info);
                 }
 
                 Separator();
 
                 BeginHorizontal();
                 {
-                    Label("Errors: " + DresserReportData.errorMsgs.Count);
-                    Label("Warnings: " + DresserReportData.warnMsgs.Count);
-                    Label("Infos: " + DresserReportData.infoMsgs.Count);
+                    Label(t._("report.editor.label.errors", DresserReportData.errorMsgs.Count));
+                    Label(t._("report.editor.label.warnings", DresserReportData.warnMsgs.Count));
+                    Label(t._("report.editor.label.infos", DresserReportData.infoMsgs.Count));
                 }
                 EndHorizontal();
 
-                BeginFoldoutBox(ref _foldoutDresserReportLogEntries, "Logs");
+                BeginFoldoutBox(ref _foldoutDresserReportLogEntries, t._("report.editor.label.logs"));
                 if (_foldoutDresserReportLogEntries)
                 {
                     foreach (var msg in DresserReportData.errorMsgs)
@@ -123,30 +133,30 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             }
             else
             {
-                HelpBox(t._("helpbox_warn_no_check_report"), MessageType.Warning);
+                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.noReportGenerated"), MessageType.Warning);
             }
         }
 
         public override void OnGUI()
         {
             // list all available dressers
-            Popup("Dressers", ref _selectedDresserIndex, AvailableDresserKeys, DresserChange);
+            Popup(t._("modules.wearable.armatureMapping.editor.popup.dressers"), ref _selectedDresserIndex, AvailableDresserKeys, DresserChange);
 
             if (IsAvatarAssociatedWithCabinet)
             {
-                HelpBox("The avatar is associated with a cabinet. To change the avatar Armature name, please use the cabinet editor.", MessageType.Info);
+                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.assocatedWithCabinetUseEditorChangeArmatureName"), MessageType.Info);
             }
             if (IsLoadCabinetConfigError)
             {
-                HelpBox("Unable to load cabinet configuration! Please either check or recreate the cabinet.", MessageType.Error);
+                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.unableToLoadCabinetConfig"), MessageType.Error);
             }
             BeginDisabled(IsAvatarAssociatedWithCabinet);
             {
-                DelayedTextField("Avatar Armature Name", ref _avatarArmatureName, ModuleSettingsChange);
+                DelayedTextField(t._("modules.wearable.armatureMapping.editor.textField.avatarArmatureName"), ref _avatarArmatureName, ModuleSettingsChange);
             }
             EndDisabled();
-            ToggleLeft("Remove existing prefixes and suffixes", ref _removeExistingPrefixSuffix, ModuleSettingsChange);
-            ToggleLeft("Group bones", ref _groupBones, ModuleSettingsChange);
+            ToggleLeft(t._("modules.wearable.armatureMapping.editor.toggle.removeExistingPrefixesAndSuffixes"), ref _removeExistingPrefixSuffix, ModuleSettingsChange);
+            ToggleLeft(t._("modules.wearable.armatureMapping.editor.toggle.groupBones"), ref _groupBones, ModuleSettingsChange);
 
             // TODO: the current way to draw dresser settings is not in MVP pattern
             if (DresserSettings != null)
@@ -159,15 +169,15 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             }
             else
             {
-                HelpBox("Unable to render dresser settings.", MessageType.Error);
+                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.unableToRenderDresserSettings"), MessageType.Error);
             }
 
             Separator();
 
             BeginHorizontal();
             {
-                Button("Regenerate Mappings", RegenerateMappingsButtonClick);
-                Button("View/Edit Mappings", ViewEditMappingsButtonClick);
+                Button(t._("modules.wearable.armatureMapping.editor.btn.regenerateMappings"), RegenerateMappingsButtonClick);
+                Button(t._("modules.wearable.armatureMapping.editor.btn.viewEditMappings"), ViewEditMappingsButtonClick);
             }
             EndHorizontal();
 
@@ -175,13 +185,13 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             {
                 BeginDisabled(DresserReportData == null);
                 {
-                    Button("View Report", ViewReportButtonClick);
+                    Button(t._("modules.wearable.armatureMapping.editor.btn.viewReport"), ViewReportButtonClick);
                 }
                 EndDisabled();
                 BeginDisabled(true);
                 {
                     // TODO: handle test now
-                    Button("Test Now");
+                    Button(t._("modules.wearable.armatureMapping.editor.btn.testNow"));
                 }
                 EndDisabled();
             }

@@ -25,12 +25,17 @@ namespace Chocopoi.DressingTools.Localization
     internal class I18n
     {
         private const string DefaultLocale = "en";
-
         private static I18n s_instance = null;
-
-        public static I18n GetInstance()
+        public static I18n Instance
         {
-            return s_instance ?? (s_instance = new I18n());
+            get
+            {
+                if (s_instance == null)
+                {
+                    s_instance = new I18n();
+                }
+                return s_instance;
+            }
         }
 
         private Dictionary<string, JObject> _translations = null;

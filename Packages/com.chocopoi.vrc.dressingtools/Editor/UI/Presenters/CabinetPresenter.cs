@@ -24,6 +24,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class CabinetPresenter
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+
         private ICabinetSubView _view;
         private CabinetConfig _cabinetConfig;
 
@@ -125,7 +127,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             string[] cabinetOptions = new string[cabinets.Length];
             for (var i = 0; i < cabinets.Length; i++)
             {
-                cabinetOptions[i] = cabinets[i].avatarGameObject != null ? cabinets[i].avatarGameObject.name : string.Format("Cabinet {0} (No GameObject Attached)", i + 1);
+                cabinetOptions[i] = cabinets[i].avatarGameObject != null ? cabinets[i].avatarGameObject.name : t._("cabinet.editor.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1);
             }
             _view.AvailableCabinetSelections = cabinetOptions;
         }
@@ -175,7 +177,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                 _view.WearablePreviews.Add(new WearablePreview()
                 {
-                    name = config != null ? config.info.name : "(Unable to load configuration)",
+                    name = config != null ? config.info.name : t._("cabinet.editor.wearablePreview.name.unableToLoadConfiguration"),
                     RemoveButtonClick = () =>
                     {
                         DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);
