@@ -45,11 +45,6 @@ namespace Chocopoi.DressingTools.UI
             window.Show();
         }
 
-        public DTMainEditorWindow()
-        {
-            _view = new MainView();
-        }
-
         public void SelectCabinet(DTCabinet cabinet) => _view.SelectCabinet(cabinet);
 
         public void StartSetupWizard(GameObject avatarGameObject, GameObject wearableGameObject)
@@ -60,17 +55,14 @@ namespace Chocopoi.DressingTools.UI
 
         public void OnEnable()
         {
+            _view = new MainView();
+            rootVisualElement.Add(_view);
             _view.OnEnable();
         }
 
         public void OnDisable()
         {
             _view.OnDisable();
-        }
-
-        public void OnGUI()
-        {
-            _view.OnGUI();
         }
     }
 }

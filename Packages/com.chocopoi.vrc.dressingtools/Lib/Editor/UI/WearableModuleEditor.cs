@@ -21,7 +21,7 @@ using UnityEditor;
 
 namespace Chocopoi.DressingTools.Lib.UI
 {
-    public class WearableModuleEditor : EditorViewBase
+    public class WearableModuleEditor : IMGUIViewBase
     {
         public virtual string FriendlyName => GetType().Name;
 

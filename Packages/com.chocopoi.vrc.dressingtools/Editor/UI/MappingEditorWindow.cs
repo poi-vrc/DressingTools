@@ -51,34 +51,32 @@ namespace Chocopoi.DressingTools.UI
 
         public DTMappingEditorWindow()
         {
-            _view = new MappingEditorView();
             _container = null;
         }
 
         public void SetContainer(DTMappingEditorContainer container)
         {
             _container = container;
-            _view.SetContainer(container);
+            if (_view != null)
+            {
+                _view.SetContainer(_container);
+            }
         }
 
         public void OnEnable()
         {
+            _view = new MappingEditorView();
+            if (_container != null)
+            {
+                _view.SetContainer(_container);
+            }
+            rootVisualElement.Add(_view);
             _view.OnEnable();
         }
 
         public void OnDisable()
         {
             _view.OnDisable();
-        }
-
-        public void OnGUI()
-        {
-            if (_container == null)
-            {
-                Close();
-            }
-
-            _view.OnGUI();
         }
     }
 }

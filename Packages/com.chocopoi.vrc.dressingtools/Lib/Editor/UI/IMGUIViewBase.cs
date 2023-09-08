@@ -1,5 +1,5 @@
 ﻿/*
- * File: EditorViewBase.cs
+ * File: IMGUIViewBase.cs
  * Project: DressingTools
  * Created Date: Saturday, August 12th 2023, 12:21:25 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -17,13 +17,15 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Lib.UI
 {
     [ExcludeFromCodeCoverage]
-    public abstract class EditorViewBase : IEditorView
+    public abstract class IMGUIViewBase : VisualElement, IEditorView
     {
         public event Action ForceUpdateView;
         public event Action Load;
@@ -38,6 +40,7 @@ namespace Chocopoi.DressingTools.Lib.UI
 
         public virtual void OnEnable()
         {
+            Add(new IMGUIContainer(OnGUI));
             Load?.Invoke();
         }
 

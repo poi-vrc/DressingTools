@@ -28,7 +28,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class WearableConfigView : EditorViewBase, IWearableConfigView
+    internal class WearableConfigView : IMGUIViewBase, IWearableConfigView
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 

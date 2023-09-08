@@ -39,22 +39,18 @@ namespace Chocopoi.DressingTools.UI
 
         public DTLegacyEditorWindow()
         {
-            _view = new LegacyView();
         }
 
         public void OnEnable()
         {
+            _view = new LegacyView();
+            rootVisualElement.Add(_view);
             _view.OnEnable();
         }
 
         public void OnDisable()
         {
             _view.OnDisable();
-        }
-
-        public void OnGUI()
-        {
-            _view.OnGUI();
         }
     }
 }

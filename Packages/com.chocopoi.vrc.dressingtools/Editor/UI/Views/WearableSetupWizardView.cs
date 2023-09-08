@@ -29,7 +29,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class WearableSetupWizardView : EditorViewBase, IWearableSetupWizardView
+    internal class WearableSetupWizardView : IMGUIViewBase, IWearableSetupWizardView
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
         private static readonly Color PreviewButtonActiveColour = new Color(0.5f, 1, 0.5f, 1);

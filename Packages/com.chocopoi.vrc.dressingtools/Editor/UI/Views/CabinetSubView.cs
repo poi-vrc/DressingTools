@@ -27,7 +27,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class CabinetSubView : EditorViewBase, ICabinetSubView
+    internal class CabinetSubView : IMGUIViewBase, ICabinetSubView
     {
         public event Action CreateCabinetButtonClick;
         public event Action AddWearableButtonClick;

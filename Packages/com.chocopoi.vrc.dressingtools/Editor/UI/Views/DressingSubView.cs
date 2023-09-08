@@ -27,7 +27,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class DressingSubView : EditorViewBase, IDressingSubView, IWearableConfigViewParent
+    internal class DressingSubView : IMGUIViewBase, IDressingSubView, IWearableConfigViewParent
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
