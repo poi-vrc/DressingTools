@@ -26,7 +26,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.View
 {
     [ExcludeFromCodeCoverage]
-    internal class MainView : EditorViewBase, IMainView
+    internal class MainView : IMGUIViewBase, IMainView
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
