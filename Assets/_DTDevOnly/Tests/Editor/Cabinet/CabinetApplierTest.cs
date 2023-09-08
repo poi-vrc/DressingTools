@@ -110,7 +110,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var report = new DTReport();
             cabinetConfig.groupDynamics = true;
             cabinetConfig.groupDynamicsSeparateGameObjects = false;
-            cabinet.configJson = cabinetConfig.ToString();
+            cabinet.configJson = cabinetConfig.Serialize();
             ApplyCabinet(report, cabinet);
 
             Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
@@ -142,7 +142,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             ApplyCabinet(report, cabinet);
 
             Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoArmatureInWearable), "Should have NoArmatureInWearable error");
-            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ApplyingModuleHasErrors), "Should have ApplyingModuleHasErrors error");
+            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ModuleProviderHookHasErrors), "Should have ApplyingModuleHasErrors error");
             Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ApplyingWearableHasErrors), "Should have ApplyingWearableHasErrors error");
         }
     }
