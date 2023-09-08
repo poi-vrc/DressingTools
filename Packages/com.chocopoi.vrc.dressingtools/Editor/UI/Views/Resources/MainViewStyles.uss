@@ -1,0 +1,9 @@
+#tab ToolbarButton {
+    width: 100%;
+    -unity-text-align: upper-center;
+}
+
+#tab ToolbarButton.active {
+    background-color: #737373;
+    color: #e8e8e8;
+}

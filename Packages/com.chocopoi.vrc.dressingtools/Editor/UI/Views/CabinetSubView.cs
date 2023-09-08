@@ -22,13 +22,22 @@ using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
+using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class CabinetSubView : IMGUIViewBase, ICabinetSubView
+    internal class CabinetSubView : ElementViewBase, ICabinetSubView
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static VisualTreeAsset s_installedThumbnailVisualTree = null;
+        private static VisualTreeAsset s_addWearablePlaceholderVisualTree = null;
+        private static StyleSheet s_wearableThumbnailStyleSheet = null;
+        private static Texture2D s_thumbnailPlaceholder = null;
+
         public event Action CreateCabinetButtonClick;
         public event Action AddWearableButtonClick;
         public event Action SelectedCabinetChange;
@@ -37,10 +46,14 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowCreateCabinetWizard { get; set; }
         public bool ShowCabinetWearables { get; set; }
         public int SelectedCabinetIndex { get => _selectedCabinetIndex; set => _selectedCabinetIndex = value; }
-        public string[] AvailableCabinetSelections { get; set; }
+        public List<string> AvailableCabinetSelections { get; set; }
         public GameObject CabinetAvatarGameObject { get => _cabinetAvatarGameObject; set => _cabinetAvatarGameObject = value; }
         public string CabinetAvatarArmatureName { get => _cabinetAvatarArmatureName; set => _cabinetAvatarArmatureName = value; }
-        public List<WearablePreview> WearablePreviews { get; set; }
+        public bool CabinetGroupDynamics { get; set; }
+        public bool CabinetGroupDynamicsSeparateGameObjects { get; set; }
+        public bool CabinetAnimationWriteDefaults { get; set; }
+        public List<CabinetModulePreview> CabinetModulePreviews { get; set; }
+        public List<WearablePreview> InstalledWearablePreviews { get; set; }
         public GameObject SelectedCreateCabinetGameObject { get => _selectedCreateCabinetGameObject; }
 
         private IMainView _mainView;
@@ -49,17 +62,28 @@ namespace Chocopoi.DressingTools.UI.Views
         private int _selectedCabinetIndex;
         private GameObject _cabinetAvatarGameObject;
         private string _cabinetAvatarArmatureName;
+        private VisualElement _installedWearableImagesContainer;
+        private VisualElement _installedWearableListContainer;
+        private TextField _avatarArmatureNameField;
+        private Toggle _groupDynamicsToggle;
+        private Toggle _groupDynamicsSeparateGameObjectsToggle;
+        private Toggle _animationWriteDefaultsToggle;
+        private VisualElement _cabinetModulesContainer;
+        private Button[] _displayModeBtns;
+        private int _selectedDisplayMode;
 
         public CabinetSubView(IMainView mainView)
         {
             _mainView = mainView;
             _cabinetPresenter = new CabinetPresenter(this);
             _selectedCabinetIndex = 0;
+            _selectedDisplayMode = 0;
 
             ShowCreateCabinetWizard = false;
             ShowCabinetWearables = false;
-            AvailableCabinetSelections = new string[0];
-            WearablePreviews = new List<WearablePreview>();
+            AvailableCabinetSelections = new List<string>() { "" };
+            CabinetModulePreviews = new List<CabinetModulePreview>();
+            InstalledWearablePreviews = new List<WearablePreview>();
         }
 
         public void SelectTab(int selectedTab)
@@ -74,32 +98,273 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void SelectCabinet(DTCabinet cabinet) => _cabinetPresenter.SelectCabinet(cabinet);
 
-        public override void OnGUI()
+        public override void OnEnable()
         {
-            if (ShowCreateCabinetWizard)
+            InitVisualTree();
+            InitCabinetModules();
+            BindCabinetSettings();
+            base.OnEnable();
+            InitCabinetPopup();
+            BindFoldouts();
+            BindDisplayModes();
+        }
+
+        private void InitVisualTree()
+        {
+            var tree = Resources.Load<VisualTreeAsset>("CabinetSubView");
+            tree.CloneTree(this);
+            var styleSheet = Resources.Load<StyleSheet>("CabinetSubViewStyles");
+            if (!styleSheets.Contains(styleSheet))
             {
-                Label("There are no existing cabinets. Create one below for your avatar:");
-                GameObjectField("Avatar", ref _selectedCreateCabinetGameObject, true);
-                Button("Create cabinet", CreateCabinetButtonClick);
+                styleSheets.Add(styleSheet);
             }
 
-            if (ShowCabinetWearables)
+            _installedWearableImagesContainer = Q<VisualElement>("installed-wearable-images-container").First();
+            _installedWearableListContainer = Q<VisualElement>("installed-wearable-list-container").First();
+        }
+
+        private void BindDisplayModes()
+        {
+            var imagesBtn = Q<Button>("btn-display-mode-images");
+            var listBtn = Q<Button>("btn-display-mode-list");
+
+            _displayModeBtns = new Button[] { imagesBtn, listBtn };
+
+            for (var i = 0; i < _displayModeBtns.Length; i++)
             {
-                // create dropdown menu for cabinet selection
-                Popup("Cabinet", ref _selectedCabinetIndex, AvailableCabinetSelections, SelectedCabinetChange);
-
-                GameObjectField("Avatar", ref _cabinetAvatarGameObject, true, CabinetSettingsChange);
-                TextField("Armature Name", ref _cabinetAvatarArmatureName, CabinetSettingsChange);
-
-                var copy = new List<WearablePreview>(WearablePreviews);
-                foreach (var preview in copy)
+                var displayModeIndex = i;
+                _displayModeBtns[i].clicked += () =>
                 {
-                    Label(preview.name);
-                    Button("Remove", preview.RemoveButtonClick);
-                }
-
-                Button("Add Wearable", AddWearableButtonClick);
+                    if (_selectedDisplayMode == displayModeIndex) return;
+                    _selectedDisplayMode = displayModeIndex;
+                    UpdateDisplayModes();
+                };
+                _displayModeBtns[i].EnableInClassList("active", displayModeIndex == _selectedDisplayMode);
             }
+        }
+
+        private void UpdateDisplayModes()
+        {
+            for (var i = 0; i < _displayModeBtns.Length; i++)
+            {
+                _displayModeBtns[i].EnableInClassList("active", i == _selectedDisplayMode);
+            }
+
+            if (_selectedDisplayMode == 0)
+            {
+                _installedWearableListContainer.style.display = DisplayStyle.None;
+                _installedWearableImagesContainer.style.display = DisplayStyle.Flex;
+            }
+            else if (_selectedDisplayMode == 1)
+            {
+                _installedWearableListContainer.style.display = DisplayStyle.Flex;
+                _installedWearableImagesContainer.style.display = DisplayStyle.None;
+            }
+        }
+
+        private void InitCabinetPopup()
+        {
+            var popupContainer = Q<VisualElement>("popup-cabinet-selection").First();
+            var cabinetPopup = new PopupField<string>("Cabinet", AvailableCabinetSelections, 0);
+            cabinetPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                int index = AvailableCabinetSelections.IndexOf(evt.newValue);
+                _selectedCabinetIndex = index;
+                SelectedCabinetChange?.Invoke();
+            });
+            popupContainer.Add(cabinetPopup);
+        }
+
+        private void InitCabinetModules()
+        {
+            // TODO: cabinet module editors
+            _cabinetModulesContainer = Q<VisualElement>("settings-modules-container").First();
+        }
+
+        private void BindCabinetSettings()
+        {
+            _avatarArmatureNameField = Q<TextField>("settings-avatar-armature-name").First();
+            _avatarArmatureNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                CabinetAvatarArmatureName = evt.newValue;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _groupDynamicsToggle = Q<Toggle>("settings-group-dynamics").First();
+            _groupDynamicsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                CabinetGroupDynamics = evt.newValue;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _groupDynamicsSeparateGameObjectsToggle = Q<Toggle>("settings-group-dynamics-separate").First();
+            _groupDynamicsSeparateGameObjectsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                CabinetGroupDynamicsSeparateGameObjects = evt.newValue;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _animationWriteDefaultsToggle = Q<Toggle>("settings-anim-write-defaults").First();
+            _animationWriteDefaultsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                CabinetAnimationWriteDefaults = evt.newValue;
+                CabinetSettingsChange?.Invoke();
+            });
+        }
+
+        private void BindFoldouts()
+        {
+            var settingsFoldout = Q<Foldout>("foldout-settings").First();
+            var settingsContainer = Q<VisualElement>("settings-container").First();
+            settingsFoldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => settingsContainer.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
+
+            var installedWearablesFoldout = Q<Foldout>("foldout-installed-wearables").First();
+            var installedWearablesContainer = Q<VisualElement>("installed-wearables-container").First();
+            installedWearablesFoldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => installedWearablesContainer.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
+
+            // var availableWearablesFoldout = Q<Foldout>("foldout-available-wearables").First();
+            // var availableWearablesContainer = Q<VisualElement>("available-wearables-container").First();
+            // availableWearablesFoldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => availableWearablesContainer.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
+        }
+
+        private VisualElement CreateAddPlaceholderElement()
+        {
+            if (s_addWearablePlaceholderVisualTree == null)
+            {
+                s_addWearablePlaceholderVisualTree = Resources.Load<VisualTreeAsset>("AddWearablePlaceholder");
+            }
+
+            if (s_wearableThumbnailStyleSheet == null)
+            {
+                s_wearableThumbnailStyleSheet = Resources.Load<StyleSheet>("WearableThumbnailStyles");
+            }
+
+            var element = new VisualElement();
+            element.style.width = 128;
+            element.style.height = 128;
+            element.styleSheets.Add(s_wearableThumbnailStyleSheet);
+            s_addWearablePlaceholderVisualTree.CloneTree(element);
+
+            element.RegisterCallback((MouseDownEvent evt) => _mainView.SelectedTab = 1);
+            element.RegisterCallback((MouseEnterEvent evt) => element.EnableInClassList("hover", true));
+            element.RegisterCallback((MouseLeaveEvent evt) => element.EnableInClassList("hover", false));
+
+            return element;
+        }
+
+        private VisualElement CreateInstalledWearableThumbnailElement(string wearableName, Texture2D thumbnail, Action removeBtnClick, Action editBtnClick)
+        {
+            if (s_installedThumbnailVisualTree == null)
+            {
+                s_installedThumbnailVisualTree = Resources.Load<VisualTreeAsset>("CabinetWearableInstalledThumbnail");
+            }
+
+            if (s_wearableThumbnailStyleSheet == null)
+            {
+                s_wearableThumbnailStyleSheet = Resources.Load<StyleSheet>("WearableThumbnailStyles");
+            }
+
+            if (s_thumbnailPlaceholder == null)
+            {
+                s_thumbnailPlaceholder = Resources.Load<Texture2D>("thumbnailPlaceholder");
+            }
+
+            var element = new VisualElement();
+            element.style.width = 128;
+            element.style.height = 128;
+            element.styleSheets.Add(s_wearableThumbnailStyleSheet);
+            s_installedThumbnailVisualTree.CloneTree(element);
+
+            element.Q<Label>("label-name").text = wearableName;
+            element.Q<Button>("btn-remove").clicked += () =>
+            {
+                if (EditorUtility.DisplayDialog(t._("tool.name"), "Are you sure to remove this wearable?", t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                {
+                    removeBtnClick.Invoke();
+                }
+            };
+            element.Q<Button>("btn-edit").clicked += () =>
+            {
+                editBtnClick.Invoke();
+            };
+            element.RegisterCallback((MouseEnterEvent evt) => element.EnableInClassList("hover", true));
+            element.RegisterCallback((MouseLeaveEvent evt) => element.EnableInClassList("hover", false));
+
+            element.style.backgroundImage = new StyleBackground(thumbnail != null ? thumbnail : s_thumbnailPlaceholder);
+
+            return element;
+        }
+
+        private VisualElement CreateWearablePreviewListItem(WearablePreview preview)
+        {
+            var listItem = new VisualElement();
+            listItem.style.flexWrap = new StyleEnum<Wrap>(Wrap.Wrap);
+            listItem.style.flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row);
+            listItem.Add(new Label(preview.name));
+
+            var listItemRemoveBtn = new Button()
+            {
+                text = "Remove"
+            };
+
+            listItemRemoveBtn.clicked += () =>
+            {
+                if (EditorUtility.DisplayDialog(t._("tool.name"), "Are you sure to remove this wearable?", t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                {
+                    preview.RemoveButtonClick.Invoke();
+                }
+            };
+
+            listItem.Add(listItemRemoveBtn);
+
+            return listItem;
+        }
+
+        public void UpdateView()
+        {
+            // update cabinet settings
+            _avatarArmatureNameField.value = CabinetAvatarArmatureName;
+            _groupDynamicsToggle.value = CabinetGroupDynamics;
+            _groupDynamicsSeparateGameObjectsToggle.value = CabinetGroupDynamicsSeparateGameObjects;
+            _animationWriteDefaultsToggle.value = CabinetAnimationWriteDefaults;
+
+            _cabinetModulesContainer.Clear();
+            foreach (var preview in CabinetModulePreviews)
+            {
+                // TODO: cabinet module editor
+                var previewContainer = new VisualElement();
+                previewContainer.style.flexWrap = new StyleEnum<Wrap>(Wrap.Wrap);
+                previewContainer.style.flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row);
+                previewContainer.Add(new Label(preview.name));
+
+                var removeBtn = new Button
+                {
+                    text = "Remove"
+                };
+                removeBtn.clicked += () =>
+                {
+                    if (EditorUtility.DisplayDialog(t._("tool.name"), "Are you sure?", t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                    {
+                        preview.RemoveButtonClick.Invoke();
+                    }
+                };
+
+                previewContainer.Add(removeBtn);
+                _cabinetModulesContainer.Add(previewContainer);
+            }
+
+            // update installed wearable container
+            _installedWearableImagesContainer.Clear();
+            _installedWearableListContainer.Clear();
+            foreach (var preview in InstalledWearablePreviews)
+            {
+                // TODO: edit button
+                var thumbnail = CreateInstalledWearableThumbnailElement(preview.name, preview.thumbnail, preview.RemoveButtonClick, () => EditorUtility.DisplayDialog(t._("tool.name"), "Not implemented.", "OK"));
+                _installedWearableImagesContainer.Add(thumbnail);
+
+                _installedWearableListContainer.Add(CreateWearablePreviewListItem(preview));
+            }
+            _installedWearableImagesContainer.Add(CreateAddPlaceholderElement());
         }
     }
 }

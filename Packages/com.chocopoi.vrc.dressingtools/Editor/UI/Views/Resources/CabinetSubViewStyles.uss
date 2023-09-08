@@ -1,0 +1,20 @@
+.wearable-images-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.wearable-list-container {
+    margin-left: 15px;
+}
+
+.foldout-header {
+    background-color: rgba(65, 65, 65, 255);
+}
+
+#toolbar ToolbarButton.active {
+    background-color: #737373;
+    color: #e8e8e8;
+}

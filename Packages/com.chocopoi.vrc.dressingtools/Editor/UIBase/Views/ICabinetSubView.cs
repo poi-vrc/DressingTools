@@ -26,6 +26,14 @@ namespace Chocopoi.DressingTools.UIBase.Views
     {
         public string name;
         public Action RemoveButtonClick;
+        public Action EditButtonClick;
+        public Texture2D thumbnail;
+    }
+
+    public struct CabinetModulePreview
+    {
+        public string name;
+        public Action RemoveButtonClick;
     }
 
     internal interface ICabinetSubView : IEditorView
@@ -38,13 +46,18 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool ShowCreateCabinetWizard { get; set; }
         bool ShowCabinetWearables { get; set; }
         int SelectedCabinetIndex { get; set; }
-        string[] AvailableCabinetSelections { get; set; }
+        List<string> AvailableCabinetSelections { get; set; }
         GameObject CabinetAvatarGameObject { get; set; }
         string CabinetAvatarArmatureName { get; set; }
-        List<WearablePreview> WearablePreviews { get; set; }
+        bool CabinetGroupDynamics { get; set; }
+        bool CabinetGroupDynamicsSeparateGameObjects { get; set; }
+        bool CabinetAnimationWriteDefaults { get; set; }
+        List<CabinetModulePreview> CabinetModulePreviews { get; set; }
+        List<WearablePreview> InstalledWearablePreviews { get; set; }
         GameObject SelectedCreateCabinetGameObject { get; }
 
         void SelectTab(int selectedTab);
         void StartSetupWizard();
+        void UpdateView();
     }
 }

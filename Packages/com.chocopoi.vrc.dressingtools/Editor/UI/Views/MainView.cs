@@ -22,21 +22,31 @@ using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.UI.View
 {
     [ExcludeFromCodeCoverage]
-    internal class MainView : IMGUIViewBase, IMainView
+    internal class MainView : ElementViewBase, IMainView
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
-        public int SelectedTab { get => _selectedTab; set => _selectedTab = value; }
+        public int SelectedTab
+        {
+            get => _selectedTab;
+            set
+            {
+                _selectedTab = value;
+                UpdateTabs();
+            }
+        }
 
         private MainPresenter _presenter;
         private CabinetSubView _cabinetSubView;
         private DressingSubView _dressingSubView;
         private SettingsSubView _settingsSubView;
         private int _selectedTab;
+        private Button[] _tabBtns;
 
         public MainView()
         {
@@ -62,8 +72,80 @@ namespace Chocopoi.DressingTools.UI.View
         public override void OnEnable()
         {
             base.OnEnable();
+
+            InitVisualTree();
+            BindTabs();
+
             _cabinetSubView.OnEnable();
             _dressingSubView.OnEnable();
+        }
+
+        private void InitVisualTree()
+        {
+            var tree = Resources.Load<VisualTreeAsset>("MainView");
+            tree.CloneTree(this);
+            var styleSheet = Resources.Load<StyleSheet>("MainViewStyles");
+            if (!styleSheets.Contains(styleSheet))
+            {
+                styleSheets.Add(styleSheet);
+            }
+
+            _cabinetSubView.style.display = DisplayStyle.Flex;
+            // hide all
+            _dressingSubView.style.display = DisplayStyle.None;
+            _settingsSubView.style.display = DisplayStyle.None;
+
+            var container = Q<VisualElement>("tab-content").First();
+            container.Add(_cabinetSubView);
+            container.Add(_dressingSubView);
+            container.Add(_settingsSubView);
+        }
+
+        private void BindTabs()
+        {
+            var cabinetBtn = Q<Button>("tab-cabinet");
+            var dressingBtn = Q<Button>("tab-dressing");
+            var settingsBtn = Q<Button>("tab-settings");
+
+            _tabBtns = new Button[] { cabinetBtn, dressingBtn, settingsBtn };
+
+            for (var i = 0; i < _tabBtns.Length; i++)
+            {
+                var tabIndex = i;
+                _tabBtns[i].clicked += () =>
+                {
+                    if (_selectedTab == tabIndex) return;
+                    _selectedTab = tabIndex;
+                    UpdateTabs();
+                };
+                _tabBtns[i].EnableInClassList("active", tabIndex == _selectedTab);
+            }
+        }
+
+        private void UpdateTabs()
+        {
+            for (var i = 0; i < _tabBtns.Length; i++)
+            {
+                _tabBtns[i].EnableInClassList("active", i == _selectedTab);
+            }
+
+            // hide all
+            _cabinetSubView.style.display = DisplayStyle.None;
+            _dressingSubView.style.display = DisplayStyle.None;
+            _settingsSubView.style.display = DisplayStyle.None;
+
+            if (_selectedTab == 0)
+            {
+                _cabinetSubView.style.display = DisplayStyle.Flex;
+            }
+            else if (_selectedTab == 1)
+            {
+                _dressingSubView.style.display = DisplayStyle.Flex;
+            }
+            else if (_selectedTab == 2)
+            {
+                _settingsSubView.style.display = DisplayStyle.Flex;
+            }
         }
 
         public override void OnDisable()
@@ -71,26 +153,6 @@ namespace Chocopoi.DressingTools.UI.View
             base.OnDisable();
             _cabinetSubView.OnDisable();
             _dressingSubView.OnDisable();
-        }
-
-        public override void OnGUI()
-        {
-            DTLogo.Show();
-
-            Toolbar(ref _selectedTab, new string[] { t._("main.editor.tabs.cabinet"), t._("main.editor.tabs.dressing"), t._("main.editor.tabs.settings") });
-
-            if (_selectedTab == 0)
-            {
-                _cabinetSubView.OnGUI();
-            }
-            else if (_selectedTab == 1)
-            {
-                _dressingSubView.OnGUI();
-            }
-            else if (_selectedTab == 2)
-            {
-                _settingsSubView.OnGUI();
-            }
         }
     }
 }

@@ -16,19 +16,20 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.UIBase.Views;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class SettingsSubView : ISettingsSubView
+    internal class SettingsSubView : IMGUIViewBase, ISettingsSubView
     {
         public SettingsSubView(IMainView mainView)
         {
 
         }
 
-        public void OnGUI()
+        public override void OnGUI()
         {
 
         }
