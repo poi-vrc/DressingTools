@@ -57,7 +57,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (!avatarResult)
             {
-                DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MissingScriptsDetectedInAvatar);
+                return false;
             }
 
             //scan wearable missing scripts
@@ -65,7 +65,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             if (!clothesResult)
             {
-                DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, DefaultDresser.MessageCode.MissingScriptsDetectedInWearable);
+                return false;
             }
 
             return avatarResult && clothesResult;

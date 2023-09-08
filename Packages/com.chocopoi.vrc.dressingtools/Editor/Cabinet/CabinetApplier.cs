@@ -166,7 +166,7 @@ namespace Chocopoi.DressingTools.Cabinet
                 return false;
             }
 
-            DTEditorUtils.DoWearableModuleProviderCallbacks(wearCtx.wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
+            if (!DTEditorUtils.DoWearableModuleProviderCallbacks(wearCtx.wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
             {
                 if (!provider.OnApplyWearable(_cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(modules)))
                 {
@@ -174,7 +174,10 @@ namespace Chocopoi.DressingTools.Cabinet
                     return false;
                 }
                 return true;
-            });
+            }))
+            {
+                return false;
+            }
 
             // group dynamics
             if (_cabCtx.cabinetConfig.groupDynamics)

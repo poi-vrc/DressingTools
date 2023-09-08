@@ -271,7 +271,7 @@ namespace Chocopoi.DressingTools
                 }
             }
 
-            return false;
+            return true;
         }
 
         public static void RemoveCabinetWearable(DTCabinet cabinet, DTCabinetWearable wearable)
