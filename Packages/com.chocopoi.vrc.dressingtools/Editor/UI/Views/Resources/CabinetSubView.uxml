@@ -1,30 +1,30 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <uie:Toolbar name="toolbar" style="flex-direction: row; flex-shrink: 1; justify-content: flex-end;">
         <Style src="CabinetSubView.uss" />
-        <uie:ToolbarButton text="Images" name="btn-display-mode-images" />
-        <uie:ToolbarButton text="List" name="btn-display-mode-list" />
+        <uie:ToolbarButton text="@cabinet.editor.displayModes.icons" name="btn-display-mode-icons" />
+        <uie:ToolbarButton text="@cabinet.editor.displayModes.list" name="btn-display-mode-list" />
     </uie:Toolbar>
     <ui:ScrollView style="flex-grow: 1;">
         <Style src="CabinetSubView.uss" />
         <ui:VisualElement name="popup-cabinet-selection" />
-        <ui:Foldout name="foldout-settings" text="Settings" class="foldout-header" />
+        <ui:Foldout name="foldout-settings" text="@cabinet.editor.foldout.settings" class="foldout-header" />
         <ui:VisualElement name="settings-container" style="margin-left: 15px; margin-bottom: 8px;">
-            <ui:TextField picking-mode="Ignore" label="Avatar armature name" value="Armature" text="Armature" name="settings-avatar-armature-name" />
-            <ui:Toggle label="Group dynamics" name="settings-group-dynamics" value="true" />
-            <ui:Toggle label="Separate dynamics" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
-            <ui:Toggle label="Animation write defaults" name="settings-anim-write-defaults" value="true" />
-            <ui:Label text="Installed cabinet modules (WIP)" style="-unity-font-style: bold; margin-top: 8px;" />
+            <ui:TextField picking-mode="Ignore" label="@cabinet.editor.settings.textField.avatarArmatureName" value="Armature" text="Armature" name="settings-avatar-armature-name" />
+            <ui:Toggle label="@cabinet.editor.settings.toggle.groupDynamics" name="settings-group-dynamics" value="true" />
+            <ui:Toggle label="@cabinet.editor.settings.toggle.groupDynamicsSeparate" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
+            <ui:Toggle label="@cabinet.editor.settings.toggle.animationWriteDefaults" name="settings-anim-write-defaults" value="true" />
+            <ui:Label text="@cabinet.editor.settings.label.installedCabinetModules" style="-unity-font-style: bold; margin-top: 8px;" />
             <ui:VisualElement name="settings-modules-container" style="border-left-width: 8px; border-right-width: 8px;" />
         </ui:VisualElement>
-        <ui:Foldout name="foldout-installed-wearables" text="Installed Wearables" class="foldout-header" />
+        <ui:Foldout name="foldout-installed-wearables" text="@cabinet.editor.foldout.installedWearables" class="foldout-header" />
         <ui:VisualElement name="installed-wearables-container">
-            <ui:VisualElement name="installed-wearable-images-container" class="wearable-images-container" />
+            <ui:VisualElement name="installed-wearable-icons-container" class="wearable-icons-container" />
             <ui:VisualElement name="installed-wearable-list-container" class="wearable-list-container" style="display: none;" />
         </ui:VisualElement>
         <!--
         <ui:Foldout name="foldout-available-wearables" text="Available Wearables" class="foldout-header" />
         <ui:VisualElement name="available-wearables-container">
-            <ui:VisualElement name="available-wearable-images-container" class="wearable-images-container" />
+            <ui:VisualElement name="available-wearable-icons-container" class="wearable-icons-container" />
             <ui:VisualElement name="available-wearable-list-container" class="wearable-list-container" style="visibility: hidden;" />
         </ui:VisualElement>
         -->

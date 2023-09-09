@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private int _selectedCabinetIndex;
         private GameObject _cabinetAvatarGameObject;
         private string _cabinetAvatarArmatureName;
-        private VisualElement _installedWearableImagesContainer;
+        private VisualElement _installedWearableIconsContainer;
         private VisualElement _installedWearableListContainer;
         private TextField _avatarArmatureNameField;
         private Toggle _groupDynamicsToggle;
@@ -107,6 +107,8 @@ namespace Chocopoi.DressingTools.UI.Views
             InitCabinetPopup();
             BindFoldouts();
             BindDisplayModes();
+
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -119,16 +121,16 @@ namespace Chocopoi.DressingTools.UI.Views
                 styleSheets.Add(styleSheet);
             }
 
-            _installedWearableImagesContainer = Q<VisualElement>("installed-wearable-images-container").First();
+            _installedWearableIconsContainer = Q<VisualElement>("installed-wearable-icons-container").First();
             _installedWearableListContainer = Q<VisualElement>("installed-wearable-list-container").First();
         }
 
         private void BindDisplayModes()
         {
-            var imagesBtn = Q<Button>("btn-display-mode-images");
+            var iconsBtn = Q<Button>("btn-display-mode-icons");
             var listBtn = Q<Button>("btn-display-mode-list");
 
-            _displayModeBtns = new Button[] { imagesBtn, listBtn };
+            _displayModeBtns = new Button[] { iconsBtn, listBtn };
 
             for (var i = 0; i < _displayModeBtns.Length; i++)
             {
@@ -153,12 +155,12 @@ namespace Chocopoi.DressingTools.UI.Views
             if (_selectedDisplayMode == 0)
             {
                 _installedWearableListContainer.style.display = DisplayStyle.None;
-                _installedWearableImagesContainer.style.display = DisplayStyle.Flex;
+                _installedWearableIconsContainer.style.display = DisplayStyle.Flex;
             }
             else if (_selectedDisplayMode == 1)
             {
                 _installedWearableListContainer.style.display = DisplayStyle.Flex;
-                _installedWearableImagesContainer.style.display = DisplayStyle.None;
+                _installedWearableIconsContainer.style.display = DisplayStyle.None;
             }
         }
 
@@ -244,6 +246,7 @@ namespace Chocopoi.DressingTools.UI.Views
             element.style.height = 128;
             element.styleSheets.Add(s_wearableThumbnailStyleSheet);
             s_addWearablePlaceholderVisualTree.CloneTree(element);
+            t.LocalizeElement(element);
 
             element.RegisterCallback((MouseDownEvent evt) => _mainView.SelectedTab = 1);
             element.RegisterCallback((MouseEnterEvent evt) => element.EnableInClassList("hover", true));
@@ -274,11 +277,12 @@ namespace Chocopoi.DressingTools.UI.Views
             element.style.height = 128;
             element.styleSheets.Add(s_wearableThumbnailStyleSheet);
             s_installedThumbnailVisualTree.CloneTree(element);
+            t.LocalizeElement(element);
 
             element.Q<Label>("label-name").text = wearableName;
             element.Q<Button>("btn-remove").clicked += () =>
             {
-                if (EditorUtility.DisplayDialog(t._("tool.name"), "Are you sure to remove this wearable?", t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
                 {
                     removeBtnClick.Invoke();
                 }
@@ -304,12 +308,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
             var listItemRemoveBtn = new Button()
             {
-                text = "Remove"
+                text = t._("cabinet.editor.btn.remove")
             };
 
             listItemRemoveBtn.clicked += () =>
             {
-                if (EditorUtility.DisplayDialog(t._("tool.name"), "Are you sure to remove this wearable?", t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
                 {
                     preview.RemoveButtonClick.Invoke();
                 }
@@ -339,11 +343,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 var removeBtn = new Button
                 {
-                    text = "Remove"
+                    text = t._("cabinet.editor.btn.remove")
                 };
                 removeBtn.clicked += () =>
                 {
-                    if (EditorUtility.DisplayDialog(t._("tool.name"), "Are you sure?", t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                    if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
                     {
                         preview.RemoveButtonClick.Invoke();
                     }
@@ -354,17 +358,17 @@ namespace Chocopoi.DressingTools.UI.Views
             }
 
             // update installed wearable container
-            _installedWearableImagesContainer.Clear();
+            _installedWearableIconsContainer.Clear();
             _installedWearableListContainer.Clear();
             foreach (var preview in InstalledWearablePreviews)
             {
                 // TODO: edit button
                 var thumbnail = CreateInstalledWearableThumbnailElement(preview.name, preview.thumbnail, preview.RemoveButtonClick, () => EditorUtility.DisplayDialog(t._("tool.name"), "Not implemented.", "OK"));
-                _installedWearableImagesContainer.Add(thumbnail);
+                _installedWearableIconsContainer.Add(thumbnail);
 
                 _installedWearableListContainer.Add(CreateWearablePreviewListItem(preview));
             }
-            _installedWearableImagesContainer.Add(CreateAddPlaceholderElement());
+            _installedWearableIconsContainer.Add(CreateAddPlaceholderElement());
         }
     }
 }
