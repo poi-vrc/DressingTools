@@ -4,9 +4,9 @@
     </ui:VisualElement>
     <uie:Toolbar name="tab" style="flex-direction: row; width: 100%;">
         <Style src="MainViewStyles.uss" />
-        <uie:ToolbarButton text="Cabinet" name="tab-cabinet" />
-        <uie:ToolbarButton text="Dressing" name="tab-dressing" />
-        <uie:ToolbarButton text="Settings" name="tab-settings" />
+        <uie:ToolbarButton text="@main.editor.tabs.cabinet" name="tab-cabinet" />
+        <uie:ToolbarButton text="@main.editor.tabs.dressing" name="tab-dressing" />
+        <uie:ToolbarButton text="@main.editor.tabs.settings" name="tab-settings" />
     </uie:Toolbar>
     <ui:VisualElement name="tab-content" style="flex-grow: 1;">
         <Style src="MainViewStyles.uss" />

@@ -73,7 +73,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             Popup(t._("integrations.vrc.modules.mergeAnimLayer.editor.popup.layerToMerge"), ref _selectedAnimLayerIndex, AnimLayerKeys, ConfigChange);
             Popup(t._("integrations.vrc.modules.mergeAnimLayer.editor.popup.pathMode"), ref _selectedPathMode, new string[] { "Relative", "Absolute" }, ConfigChange);
             ToggleLeft(t._("integrations.vrc.modules.mergeAnimLayer.editor.toggle.removeAnimatorAfterApply"), ref _removeAnimatorAfterApply, ConfigChange);
-            ToggleLeft(t._("integrations.vrc.modules.mergeAnimLayer.editor.toggle.matchExistingWriteDEfaults"), ref _matchLayerWriteDefaults, ConfigChange);
+            ToggleLeft(t._("integrations.vrc.modules.mergeAnimLayer.editor.toggle.matchExistingWriteDefaults"), ref _matchLayerWriteDefaults, ConfigChange);
 
             if (ShowNoTargetAvatarOrWearableHelpbox)
             {

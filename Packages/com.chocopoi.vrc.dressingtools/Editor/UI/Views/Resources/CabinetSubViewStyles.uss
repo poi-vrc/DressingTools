@@ -1,4 +1,4 @@
-.wearable-images-container {
+.wearable-icons-container {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;

@@ -2,7 +2,7 @@
     <ui:VisualElement name="thumbnail" style="width: 100%; height: 100%;">
         <Style src="CabinetWearableThumbnail.uss" />
     </ui:VisualElement>
-    <ui:Button text="Edit" name="btn-edit" style="position: absolute; top: 2px; left: 0;">
+    <ui:Button text="@cabinet.editor.thumbnail.btn.edit" name="btn-edit" style="position: absolute; top: 2px; left: 0;">
         <Style src="CabinetWearableThumbnail.uss" />
     </ui:Button>
     <ui:Label text="My Wearable" name="label-name" style="position: absolute; bottom: 0; width: 100%; -unity-text-align: upper-center; white-space: normal; background-color: rgba(77, 77, 77, 0.7); padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;">

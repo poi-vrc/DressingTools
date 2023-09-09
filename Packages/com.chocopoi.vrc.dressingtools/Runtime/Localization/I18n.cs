@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Localization
 {
@@ -89,6 +90,28 @@ namespace Chocopoi.DressingTools.Localization
         public string _(string key, params object[] args)
         {
             return Translate(key, args);
+        }
+
+        public void LocalizeElement(VisualElement elem, bool recursively = true)
+        {
+            if (elem is TextElement textElem)
+            {
+                // we process texts that starts with @
+                var text = textElem.text;
+                if (!string.IsNullOrEmpty(text) && text.StartsWith("@"))
+                {
+                    var i18nKey = text.Substring(1);
+                    textElem.text = Translate(i18nKey);
+                }
+            }
+
+            if (recursively)
+            {
+                for (var i = 0; i < elem.hierarchy.childCount; i++)
+                {
+                    LocalizeElement(elem.hierarchy[i], recursively);
+                }
+            }
         }
 
         public string Translate(string key, params object[] args)

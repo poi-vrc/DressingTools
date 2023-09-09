@@ -76,6 +76,8 @@ namespace Chocopoi.DressingTools.UI.View
             InitVisualTree();
             BindTabs();
 
+            t.LocalizeElement(this);
+
             _cabinetSubView.OnEnable();
             _dressingSubView.OnEnable();
         }
