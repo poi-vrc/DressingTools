@@ -238,7 +238,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             if (s_wearableThumbnailStyleSheet == null)
             {
-                s_wearableThumbnailStyleSheet = Resources.Load<StyleSheet>("WearableThumbnailStyles");
+                s_wearableThumbnailStyleSheet = Resources.Load<StyleSheet>("CabinetWearableThumbnailStyles");
             }
 
             var element = new VisualElement();
@@ -264,7 +264,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             if (s_wearableThumbnailStyleSheet == null)
             {
-                s_wearableThumbnailStyleSheet = Resources.Load<StyleSheet>("WearableThumbnailStyles");
+                s_wearableThumbnailStyleSheet = Resources.Load<StyleSheet>("CabinetWearableThumbnailStyles");
             }
 
             if (s_thumbnailPlaceholder == null)
