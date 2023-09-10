@@ -40,10 +40,12 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
     internal class VRChatIntegrationWearableModuleConfig : IModuleConfig
     {
         public string customCabinetToggleName;
+        public bool cabinetThumbnails;
 
         public VRChatIntegrationWearableModuleConfig()
         {
             customCabinetToggleName = null;
+            cabinetThumbnails = true;
         }
     }
 
@@ -192,6 +194,17 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     continue;
                 }
 
+                // add wearable thumbnail
+                Texture2D icon = null;
+                if (vrcm.cabinetThumbnails && config.info.thumbnail != null)
+                {
+                    icon = DTEditorUtils.GetTextureFromBase64(config.info.thumbnail);
+                    icon.Compress(true);
+
+                    // write into file
+                    AssetDatabase.CreateAsset(icon, string.Format("{0}/cpDT_Cabinet_{1}_Icon.asset", CabinetApplier.GeneratedAssetsPath, i));
+                }
+
                 var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
@@ -205,7 +218,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     var newSubMenu = new ExpressionMenuBuilder();
                     newSubMenu.CreateAsset(string.Format("{0}/cpDT_Cabinet_{1}.asset", CabinetApplier.GeneratedAssetsPath, ++cabinetMenuIndex));
 
-                    cabinetMenu.AddSubMenu("Next Page", newSubMenu.GetMenu());
+                    cabinetMenu.AddSubMenu("Next Page", newSubMenu.GetMenu(), icon);
                     cabinetMenu = newSubMenu;
                 }
 
@@ -283,7 +296,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 else
                 {
                     // Add toggle only
-                    cabinetMenu.AddToggle(vrcm.customCabinetToggleName ?? config.info.name, "cpDT_Cabinet", i + 1);
+                    cabinetMenu.AddToggle(vrcm.customCabinetToggleName ?? config.info.name, "cpDT_Cabinet", i + 1, icon);
                 }
             }
 

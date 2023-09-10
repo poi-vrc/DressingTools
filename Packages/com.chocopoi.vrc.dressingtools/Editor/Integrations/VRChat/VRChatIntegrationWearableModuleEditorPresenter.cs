@@ -62,6 +62,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         private void OnConfigChange()
         {
             _module.customCabinetToggleName = _view.UseCustomCabinetToggleName ? _view.CustomCabinetToggleName : null;
+            _module.cabinetThumbnails = _view.UseCabinetThumbnails;
         }
 
         public bool IsValid()
@@ -81,6 +82,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 _view.UseCustomCabinetToggleName = false;
                 _view.CustomCabinetToggleName = "";
             }
+            _view.UseCabinetThumbnails = _module.cabinetThumbnails;
         }
 
         private void OnLoad()

@@ -61,6 +61,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (_view.SelectedDressingMode == 0 && !_view.ShowConfirmSwitchWizardModeDialog())
             {
                 _view.SelectedDressingMode = 1;
+                _view.Repaint();
                 return;
             }
 
@@ -79,6 +80,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinetIsNull = cabinet == null;
             _view.ShowAvatarNoExistingCabinetHelpbox = cabinetIsNull;
             _view.DisableAddToCabinetButton = cabinetIsNull;
+            _view.Repaint();
         }
 
         private void OnLoad()

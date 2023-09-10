@@ -91,9 +91,9 @@ namespace Chocopoi.DressingTools.UI.Views
             _mainView.SelectedTab = selectedTab;
         }
 
-        public void StartSetupWizard()
+        public void StartSetupWizard(GameObject avatarGameObject = null, GameObject wearableGameObject = null)
         {
-            _mainView.StartSetupWizard(_cabinetAvatarGameObject);
+            _mainView.StartSetupWizard(avatarGameObject != null ? avatarGameObject : _cabinetAvatarGameObject, wearableGameObject);
         }
 
         public void SelectCabinet(DTCabinet cabinet) => _cabinetPresenter.SelectCabinet(cabinet);
@@ -191,6 +191,8 @@ namespace Chocopoi.DressingTools.UI.Views
                 CabinetAvatarArmatureName = evt.newValue;
                 CabinetSettingsChange?.Invoke();
             });
+            // TODO: due to a weird bug, we have to localize text field here
+            _avatarArmatureNameField.label = t._(_avatarArmatureNameField.label.Substring(1));
 
             _groupDynamicsToggle = Q<Toggle>("settings-group-dynamics").First();
             _groupDynamicsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
@@ -248,7 +250,7 @@ namespace Chocopoi.DressingTools.UI.Views
             s_addWearablePlaceholderVisualTree.CloneTree(element);
             t.LocalizeElement(element);
 
-            element.RegisterCallback((MouseDownEvent evt) => _mainView.SelectedTab = 1);
+            element.RegisterCallback((MouseDownEvent evt) => AddWearableButtonClick?.Invoke());
             element.RegisterCallback((MouseEnterEvent evt) => element.EnableInClassList("hover", true));
             element.RegisterCallback((MouseLeaveEvent evt) => element.EnableInClassList("hover", false));
 
@@ -324,7 +326,7 @@ namespace Chocopoi.DressingTools.UI.Views
             return listItem;
         }
 
-        public void UpdateView()
+        public void Repaint()
         {
             // update cabinet settings
             _avatarArmatureNameField.value = CabinetAvatarArmatureName;

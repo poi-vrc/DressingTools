@@ -1,0 +1,66 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Foldout text="@dressing.editor.wizard.foldout.wearableInfo" name="foldout-wearable-info" class="foldout-header">
+        <Style src="WearableSetupWizardStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="wearable-info-container" style="flex-direction: row;">
+        <Style src="WearableSetupWizardStyles.uss" />
+        <ui:VisualElement name="thumbnail" />
+        <ui:VisualElement name="info-panel" class="wearable-info-right-panel">
+            <ui:Label text="---" name="label-wearable-name" />
+            <ui:Toggle label="@dressing.editor.wizard.wearableInfo.infoPanel.toggle.useCustomName" name="toggle-use-custom-name" />
+            <ui:TextField picking-mode="Ignore" label="@dressing.editor.wizard.wearableInfo.infoPanel.textField.wearableName" name="textfield-custom-wearable-name" />
+            <ui:Button text="@dressing.editor.wizard.wearableInfo.infoPanel.btn.captureNewThumbnail" name="btn-capture-new-thumbnail" />
+        </ui:VisualElement>
+        <ui:VisualElement name="capture-panel" class="wearable-info-right-panel">
+            <ui:Label text="@dressing.editor.wizard.wearableInfo.capturePanel.label.tooltip" />
+            <ui:Toggle label="@dressing.editor.wizard.wearableInfo.capturePanel.toggle.wearableOnly" name="toggle-capture-wearable-only" />
+            <ui:Toggle label="@dressing.editor.wizard.wearableInfo.capturePanel.toggle.removeBackground" name="toggle-capture-remove-background" />
+            <ui:VisualElement>
+                <ui:Button text="@dressing.editor.wizard.wearableInfo.capturePanel.btn.capture" name="btn-thumbnail-capture" />
+                <ui:Button text="@dressing.editor.wizard.wearableInfo.capturePanel.btn.cancel" name="btn-thumbnail-cancel" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="fake-foldout-header">
+        <Style src="WearableSetupWizardStyles.uss" />
+        <ui:VisualElement />
+        <ui:Label text="@dressing.editor.wizard.foldout.wizard" />
+    </ui:VisualElement>
+    <ui:VisualElement style="flex-grow: 1;">
+        <Style src="WearableSetupWizardStyles.uss" />
+        <uie:Toolbar name="steps" style="height: auto; margin-top: 4px;">
+            <uie:ToolbarButton text="@dressing.editor.wizard.steps.mapping" name="btn-step-mapping" />
+            <uie:ToolbarButton text="@dressing.editor.wizard.steps.animate" name="btn-step-animate" />
+        </uie:Toolbar>
+        <ui:VisualElement class="wizard-navigation">
+            <ui:Button text="@dressing.editor.wizard.btn.previous" name="btn-wizard-previous" />
+            <ui:VisualElement />
+            <ui:Button text="@dressing.editor.wizard.btn.preview" name="btn-wizard-preview" />
+            <ui:Button text="@dressing.editor.wizard.btn.next" name="btn-wizard-next" />
+        </ui:VisualElement>
+        <ui:VisualElement name="step-mapping-container" class="step-container">
+            <ui:VisualElement class="wizard-foldout-header">
+                <ui:Foldout text="@dressing.editor.wizard.toggle.armatureMapping" name="foldout-armature-mapping" />
+                <ui:Toggle name="toggle-armature-mapping" />
+            </ui:VisualElement>
+            <ui:VisualElement name="armature-mapping-container" class="foldout-container" />
+            <ui:VisualElement class="wizard-foldout-header">
+                <ui:Foldout text="@dressing.editor.wizard.toggle.moveRoot" name="foldout-move-root"/>
+                <ui:Toggle name="toggle-move-root" />
+            </ui:VisualElement>
+            <ui:VisualElement name="move-root-container" class="foldout-container" />
+        </ui:VisualElement>
+        <ui:VisualElement name="step-animate-container" class="step-container">
+            <ui:VisualElement class="wizard-foldout-header">
+                <ui:Foldout text="@dressing.editor.wizard.toggle.animGen" name="foldout-anim-gen"/>
+                <ui:Toggle name="toggle-anim-gen" />
+            </ui:VisualElement>
+            <ui:VisualElement name="anim-gen-container" class="foldout-container" />
+            <ui:VisualElement class="wizard-foldout-header">
+                <ui:Foldout text="@dressing.editor.wizard.toggle.blendshapeSync" name="foldout-blendshape-sync"/>
+                <ui:Toggle name="toggle-blendshape-sync" />
+            </ui:VisualElement>
+            <ui:VisualElement name="blendshape-sync-container" class="foldout-container" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -17,25 +17,28 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using BestHTTP.SecureProtocol.Org.BouncyCastle.Asn1.X509;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class DressingSubView : IMGUIViewBase, IDressingSubView, IWearableConfigViewParent
+    internal class DressingSubView : ElementViewBase, IDressingSubView, IWearableConfigViewParent
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
         public event Action TargetAvatarOrWearableChange;
         public event Action DoAddToCabinetEvent;
         public event Action DressingModeChange;
-        public GameObject TargetAvatar { get => _targetAvatar; set => _targetAvatar = value; }
-        public GameObject TargetWearable { get => _targetWearable; set => _targetWearable = value; }
+        public GameObject TargetAvatar { get; set; }
+        public GameObject TargetWearable { get; set; }
         public WearableConfig Config { get; set; }
         public bool ShowAvatarNoExistingCabinetHelpbox { get; set; }
         public bool DisableAllButtons { get; set; }
@@ -44,19 +47,21 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private DressingPresenter _presenter;
         private IMainView _mainView;
-        private GameObject _targetAvatar;
-        private GameObject _targetWearable;
         private WearableSetupWizardView _wizardView;
         private WearableConfigView _configView;
         private int _currentMode;
+        private Button[] _viewModeBtns;
+        private ObjectField _avatarObjectField;
+        private VisualElement _advancedContainer;
+        private ObjectField _wearableObjectField;
 
         public DressingSubView(IMainView mainView)
         {
             _mainView = mainView;
             _presenter = new DressingPresenter(this);
 
-            _targetAvatar = null;
-            _targetWearable = null;
+            TargetAvatar = null;
+            TargetWearable = null;
 
             ShowAvatarNoExistingCabinetHelpbox = true;
             DisableAllButtons = true;
@@ -104,6 +109,7 @@ namespace Chocopoi.DressingTools.UI.Views
             TargetAvatar = targetAvatar;
             TargetWearable = targetWearable;
             TargetAvatarOrWearableChange?.Invoke();
+            Repaint();
         }
 
         public void ResetWizardAndConfigView()
@@ -119,11 +125,19 @@ namespace Chocopoi.DressingTools.UI.Views
 
             // force update the config view
             _configView.RaiseForceUpdateViewEvent();
+
+            Repaint();
         }
 
         public override void OnEnable()
         {
+            InitVisualTree();
+            BindViewModes();
+
             base.OnEnable();
+
+            t.LocalizeElement(this);
+
             _configView.OnEnable();
             _wizardView.OnEnable();
         }
@@ -135,54 +149,93 @@ namespace Chocopoi.DressingTools.UI.Views
             _wizardView.OnDisable();
         }
 
-        public override void OnGUI()
+        private void InitVisualTree()
         {
-            GameObjectField(t._("dressing.editor.gameObjectField.avatar"), ref _targetAvatar, true, TargetAvatarOrWearableChange);
-
-            if (ShowAvatarNoExistingCabinetHelpbox)
+            var tree = Resources.Load<VisualTreeAsset>("DressingSubView");
+            tree.CloneTree(this);
+            var styleSheet = Resources.Load<StyleSheet>("DressingSubViewStyles");
+            if (!styleSheets.Contains(styleSheet))
             {
-                HelpBox(t._("dressing.editor.helpbox.avatarNoExistingCabinet"), MessageType.Error);
+                styleSheets.Add(styleSheet);
             }
 
-            GameObjectField(t._("dressing.editor.gameObjectField.wearable"), ref _targetWearable, true, TargetAvatarOrWearableChange);
-
-            HorizontalLine();
-
-            BeginHorizontal();
+            _avatarObjectField = Q<ObjectField>("objectfield-avatar").First();
+            _avatarObjectField.objectType = typeof(GameObject);
+            _avatarObjectField.value = TargetAvatar;
+            _avatarObjectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> evt) =>
             {
-                GUILayout.FlexibleSpace();
-                Toolbar(ref _currentMode, new string[] { t._("dressing.editor.modes.wizard"), t._("dressing.editor.modes.advanced") }, DressingModeChange);
-            }
-            EndHorizontal();
+                TargetAvatar = (GameObject)evt.newValue;
+                TargetAvatarOrWearableChange?.Invoke();
+            });
 
-            Separator();
+            _wearableObjectField = Q<ObjectField>("objectfield-wearable").First();
+            _wearableObjectField.objectType = typeof(GameObject);
+            _wearableObjectField.value = TargetWearable;
+            _wearableObjectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> evt) =>
+            {
+                TargetWearable = (GameObject)evt.newValue;
+                TargetAvatarOrWearableChange?.Invoke();
+            });
+
+            _advancedContainer = Q<VisualElement>("advanced-container").First();
+
+            var wizardContainer = Q<VisualElement>("wizard-container").First();
+            wizardContainer.Add(_wizardView);
+
+            var configViewContainer = Q<VisualElement>("config-view-container").First();
+            configViewContainer.Add(_configView);
+
+            _wizardView.style.display = DisplayStyle.Flex;
+            _advancedContainer.style.display = DisplayStyle.None;
+
+            BindFoldoutHeaderWithContainer("foldout-setup", "setup-container");
+        }
+
+        private void BindViewModes()
+        {
+            var wizardBtn = Q<Button>("toolbar-btn-wizard");
+            var advancedBtn = Q<Button>("toolbar-btn-advanced");
+
+            _viewModeBtns = new Button[] { wizardBtn, advancedBtn };
+
+            for (var i = 0; i < _viewModeBtns.Length; i++)
+            {
+                var viewModeIndex = i;
+                _viewModeBtns[i].clicked += () =>
+                {
+                    if (_currentMode == viewModeIndex) return;
+                    _currentMode = viewModeIndex;
+                    DressingModeChange?.Invoke();
+                    UpdateViewModes();
+                };
+                _viewModeBtns[i].EnableInClassList("active", viewModeIndex == _currentMode);
+            }
+        }
+
+        private void UpdateViewModes()
+        {
+            for (var i = 0; i < _viewModeBtns.Length; i++)
+            {
+                _viewModeBtns[i].EnableInClassList("active", i == _currentMode);
+            }
 
             if (_currentMode == 0)
             {
-                // Wizard mode
-                _wizardView.OnGUI();
+                _wizardView.style.display = DisplayStyle.Flex;
+                _advancedContainer.style.display = DisplayStyle.None;
             }
             else if (_currentMode == 1)
             {
-                // Fully-custom advanced mode
-                _configView.OnGUI();
-
-                BeginHorizontal();
-                {
-                    BeginDisabled(!_configView.IsValid());
-                    {
-                        BeginDisabled(DisableAddToCabinetButton);
-                        {
-                            Button(t._("dressing.editor.btn.addToCabinet"), DoAddToCabinetEvent);
-                        }
-                        EndDisabled();
-
-                        Button(t._("dressing.editor.btn.saveToFile"));
-                    }
-                    EndDisabled();
-                }
-                EndHorizontal();
+                _wizardView.style.display = DisplayStyle.None;
+                _advancedContainer.style.display = DisplayStyle.Flex;
             }
+        }
+
+        public void Repaint()
+        {
+            _avatarObjectField.value = TargetAvatar;
+            _wearableObjectField.value = TargetWearable;
+            UpdateViewModes();
         }
     }
 }

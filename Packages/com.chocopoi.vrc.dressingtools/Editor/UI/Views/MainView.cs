@@ -59,6 +59,7 @@ namespace Chocopoi.DressingTools.UI.View
         public void StartSetupWizard(GameObject targetAvatar, GameObject targetWearable = null)
         {
             _selectedTab = 1;
+            UpdateTabs();
             _dressingSubView.StartSetupWizard(targetAvatar, targetWearable);
         }
 
