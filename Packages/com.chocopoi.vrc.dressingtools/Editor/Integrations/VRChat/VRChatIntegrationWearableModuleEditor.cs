@@ -35,12 +35,14 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
         public event Action ConfigChange;
 
         public bool UseCustomCabinetToggleName { get => _useCustomCabinetToggleName; set => _useCustomCabinetToggleName = value; }
+        public bool UseCabinetThumbnails { get => _useCabinetThumbnails; set => _useCabinetThumbnails = value; }
         public string CustomCabinetToggleName { get => _customCabinetToggleName; set => _customCabinetToggleName = value; }
 
         private IWearableModuleEditorViewParent _parentView;
         private VRChatIntegrationWearableModuleEditorPresenter _presenter;
 
         private bool _useCustomCabinetToggleName;
+        private bool _useCabinetThumbnails;
         private string _customCabinetToggleName;
 
         public VRChatIntegrationWearableModuleEditor(IWearableModuleEditorViewParent parentView, VRChatIntegrationWearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)
@@ -61,6 +63,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 EditorGUI.indentLevel -= 1;
             }
             EndDisabled();
+            ToggleLeft(t._("integrations.vrc.modules.integration.editor.toggle.useCabinetThumbnails"), ref _useCabinetThumbnails, ConfigChange);
         }
 
         public override bool IsValid() => _presenter.IsValid();

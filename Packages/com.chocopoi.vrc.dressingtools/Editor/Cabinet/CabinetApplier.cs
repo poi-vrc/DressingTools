@@ -59,6 +59,11 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public CabinetApplier(DTReport report, DTCabinet cabinet)
         {
+            if (PrefabUtility.GetPrefabAssetType(cabinet.avatarGameObject) != PrefabAssetType.NotAPrefab)
+            {
+                throw new System.Exception("A prefab is passed through cabinet applier! Aborting as this will modify the prefab directly!");
+            }
+
             _cabinet = cabinet;
             _cabCtx = new ApplyCabinetContext()
             {
@@ -148,6 +153,11 @@ namespace Chocopoi.DressingTools.Cabinet
             if (DTEditorUtils.IsGrandParent(_cabCtx.avatarGameObject.transform, wearCtx.wearableGameObject.transform))
             {
                 wearableObj = wearCtx.wearableGameObject;
+
+                if (PrefabUtility.GetPrefabAssetType(wearableObj) != PrefabAssetType.NotAPrefab)
+                {
+                    throw new System.Exception("A wearable prefab is passed through cabinet applier!");
+                }
             }
             else
             {

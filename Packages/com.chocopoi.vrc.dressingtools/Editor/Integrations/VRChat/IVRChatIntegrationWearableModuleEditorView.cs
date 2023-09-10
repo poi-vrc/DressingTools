@@ -27,6 +27,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
         bool UseCustomCabinetToggleName { get; set; }
         string CustomCabinetToggleName { get; set; }
+        bool UseCabinetThumbnails { get; set; }
     }
 }
 #endif

@@ -25,28 +25,29 @@ using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class WearableSetupWizardView : IMGUIViewBase, IWearableSetupWizardView
+    internal class WearableSetupWizardView : ElementViewBase, IWearableSetupWizardView
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
         private static readonly Color PreviewButtonActiveColour = new Color(0.5f, 1, 0.5f, 1);
-        private static readonly Color ToolbarRedColour = new Color(1.0f, 0.5f, 0.5f, 1);
-        private static readonly Color ToolbarDarkerRedColour = new Color(1.0f, 0.25f, 0.25f, 1);
-        private static readonly Color ToolbarDarkerGreyColour = new Color(0.75f, 0.75f, 0.75f, 1);
         private static readonly string[] ToolbarKeys = new string[] {
             "1.\n" + t._("dressing.wearableSetupWizard.steps.mapping"),
             "2.\n" + t._("dressing.wearableSetupWizard.steps.animate"),
             "3.\n" + t._("dressing.wearableSetupWizard.steps.integrate"),
             "4.\n" + t._("dressing.wearableSetupWizard.steps.optimize")
             };
-
         public event Action TargetAvatarOrWearableChange { add { _dressingSubView.TargetAvatarOrWearableChange += value; } remove { _dressingSubView.TargetAvatarOrWearableChange -= value; } }
         public event Action PreviousButtonClick;
         public event Action NextButtonClick;
         public event Action PreviewButtonClick;
+        public event Action CaptureNewThumbnailButtonClick;
+        public event Action ThumbnailCaptureButtonClick;
+        public event Action ThumbnailCancelButtonClick;
+        public event Action ThumbnailCaptureSettingsChange;
 
         public ArmatureMappingWearableModuleConfig ArmatureMappingModuleConfig { get; set; }
         public MoveRootWearableModuleConfig MoveRootModuleConfig { get; set; }
@@ -59,32 +60,63 @@ namespace Chocopoi.DressingTools.UI.Views
         public GameObject TargetAvatar { get => _dressingSubView.TargetAvatar; set => _dressingSubView.TargetAvatar = value; }
         public GameObject TargetWearable { get => _dressingSubView.TargetWearable; set => _dressingSubView.TargetWearable = value; }
         public WearableConfig Config { get => _dressingSubView.Config; set => _dressingSubView.Config = value; }
-        public bool UseArmatureMapping { get => _useArmatureMapping; set => _useArmatureMapping = value; }
-        public bool UseMoveRoot { get => _useMoveRoot; set => _useMoveRoot = value; }
-        public bool UseAnimationGeneration { get => _useAnimationGeneration; set => _useAnimationGeneration = value; }
-        public bool UseBlendshapeSync { get => _useBlendshapeSync; set => _useBlendshapeSync = value; }
-        public int CurrentStep { get => _currentStep; set => _currentStep = value; }
+        public bool UseArmatureMapping { get; set; }
+        public bool UseMoveRoot { get; set; }
+        public bool UseAnimationGeneration { get; set; }
+        public bool UseBlendshapeSync { get; set; }
+        public int CurrentStep { get; set; }
         public bool ShowAvatarNoCabinetHelpBox { get; set; }
         public bool ShowArmatureNotFoundHelpBox { get; set; }
         public bool ShowArmatureGuessedHelpBox { get; set; }
         public bool ShowCabinetConfigErrorHelpBox { get; set; }
+        public bool UseCustomWearableName { get; set; }
+        public string CustomWearableName { get; set; }
+        public bool ThumbnailCaptureWearableOnly { get; set; }
+        public bool ThumbnailCaptureRemoveBackground { get; set; }
+        public bool CaptureActive { get; set; }
         public bool PreviewActive => DTEditorUtils.PreviewActive;
 
         private WearableSetupWizardPresenter _presenter;
         private IDressingSubView _dressingSubView;
-        private int _currentStep;
-        private bool _useArmatureMapping;
-        private bool _useMoveRoot;
-        private bool _useAnimationGeneration;
-        private bool _useBlendshapeSync;
-        private bool _foldoutArmatureMapping;
-        private bool _foldoutMoveRoot;
-        private bool[] _toolbarColourReds;
+        private Button[] _stepBtns;
+        private VisualElement _stepMappingContainer;
+        private VisualElement _stepAnimateContainer;
+        private TextField _textFieldCustomName;
+        private Label _labelWearableName;
+        private Toggle _toggleUseCustomName;
+        private Toggle _toggleCaptureWearableOnly;
+        private Toggle _toggleCaptureRemoveBackground;
+        private Button _btnPrevious;
+        private Button _btnNext;
+        private Button _btnPreview;
+        private Button _btnCaptureNewThumbnail;
+        private Button _btnThumbnailCapture;
+        private Button _btnThumbnailCancel;
+        private VisualElement _infoPanel;
+        private VisualElement _capturePanel;
+        private VisualElement _thumbnail;
+        private Toggle _toggleArmatureMapping;
+        private Toggle _toggleMoveRoot;
+        private Toggle _toggleAnimGen;
+        private Toggle _toggleBlendshapeSync;
+        private VisualElement _armatureMappingContainer;
+        private VisualElement _moveRootContainer;
+        private VisualElement _animGenContainer;
+        private VisualElement _blendshapeSyncContainer;
 
         public WearableSetupWizardView(IDressingSubView dressingSubView)
         {
             _dressingSubView = dressingSubView;
             _presenter = new WearableSetupWizardPresenter(this);
+
+            UseArmatureMapping = false;
+            UseMoveRoot = false;
+            UseAnimationGeneration = false;
+            UseBlendshapeSync = false;
+
+            ThumbnailCaptureWearableOnly = true;
+            ThumbnailCaptureRemoveBackground = true;
+            CaptureActive = false;
 
             ArmatureMappingModuleConfig = new ArmatureMappingWearableModuleConfig();
             MoveRootModuleConfig = new MoveRootWearableModuleConfig();
@@ -97,8 +129,6 @@ namespace Chocopoi.DressingTools.UI.Views
             MoveRootModuleEditor = new MoveRootWearableModuleEditor(this, null, MoveRootModuleConfig);
             AnimationGenerationModuleEditor = new AnimationGenerationWearableModuleEditor(this, null, AnimationGenerationModuleConfig);
             BlendshapeSyncModuleEditor = new BlendshapeSyncWearableModuleEditor(this, null, BlendshapeSyncModuleConfig);
-
-            _toolbarColourReds = new bool[ToolbarKeys.Length];
         }
 
         public void GenerateConfig() => _presenter.GenerateConfig();
@@ -121,14 +151,14 @@ namespace Chocopoi.DressingTools.UI.Views
             }
 
             var mappingValid = true;
-            mappingValid &= !_useArmatureMapping || ArmatureMappingModuleEditor.IsValid();
-            mappingValid &= !_useMoveRoot || MoveRootModuleEditor.IsValid();
-            _toolbarColourReds[0] = !mappingValid;
+            mappingValid &= !UseArmatureMapping || ArmatureMappingModuleEditor.IsValid();
+            mappingValid &= !UseMoveRoot || MoveRootModuleEditor.IsValid();
+            _stepBtns[0].EnableInClassList("invalid", !mappingValid);
 
             var animateValid = true;
-            animateValid &= !_useAnimationGeneration || AnimationGenerationModuleEditor.IsValid();
-            animateValid &= !_useBlendshapeSync || BlendshapeSyncModuleEditor.IsValid();
-            _toolbarColourReds[1] = !animateValid;
+            animateValid &= !UseAnimationGeneration || AnimationGenerationModuleEditor.IsValid();
+            animateValid &= !UseBlendshapeSync || BlendshapeSyncModuleEditor.IsValid();
+            _stepBtns[1].EnableInClassList("invalid", !animateValid);
 
             return mappingValid && animateValid;
         }
@@ -138,14 +168,196 @@ namespace Chocopoi.DressingTools.UI.Views
             _dressingSubView.RaiseDoAddToCabinetEvent();
         }
 
+        public void ShowInfoPanel()
+        {
+            _infoPanel.style.display = DisplayStyle.Flex;
+            _capturePanel.style.display = DisplayStyle.None;
+            CaptureActive = false;
+        }
+
+        public void ShowCapturePanel()
+        {
+            _infoPanel.style.display = DisplayStyle.None;
+            _capturePanel.style.display = DisplayStyle.Flex;
+            CaptureActive = true;
+        }
+
+        public void SetThumbnailTexture(Texture2D texture)
+        {
+            _thumbnail.style.backgroundImage = new StyleBackground(texture);
+        }
+
+        public void RepaintCapturePreview()
+        {
+            SetThumbnailTexture(DTEditorUtils.GetThumbnailCameraPreview());
+        }
+
+        private void InitVisualTree()
+        {
+            var tree = Resources.Load<VisualTreeAsset>("WearableSetupWizardView");
+            tree.CloneTree(this);
+            var styleSheet = Resources.Load<StyleSheet>("WearableSetupWizardViewStyles");
+            if (!styleSheets.Contains(styleSheet))
+            {
+                styleSheets.Add(styleSheet);
+            }
+
+            // TODO: perform check if config changed only
+            RegisterCallback((MouseMoveEvent evt) =>
+            {
+                if (CaptureActive)
+                {
+                    RepaintCapturePreview();
+                }
+                _btnPreview.EnableInClassList("active", PreviewActive);
+                IsValid();
+            });
+
+            _stepMappingContainer = Q<VisualElement>("step-mapping-container").First();
+            _stepAnimateContainer = Q<VisualElement>("step-animate-container").First();
+
+            _textFieldCustomName = Q<TextField>("textfield-custom-wearable-name").First();
+            // TODO: due to a weird bug, we have to localize text field here
+            _textFieldCustomName.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                if (UseCustomWearableName)
+                {
+                    _labelWearableName.text = evt.newValue;
+                }
+                CustomWearableName = _textFieldCustomName.text;
+            });
+            _textFieldCustomName.label = t._(_textFieldCustomName.label.Substring(1));
+
+            _labelWearableName = Q<Label>("label-wearable-name").First();
+
+            _toggleUseCustomName = Q<Toggle>("toggle-use-custom-name").First();
+            _toggleUseCustomName.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                if (TargetWearable != null)
+                {
+                    _textFieldCustomName.value = _labelWearableName.text = CustomWearableName = TargetWearable.name;
+                }
+                _textFieldCustomName.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None;
+                UseCustomWearableName = evt.newValue;
+            });
+
+            _toggleCaptureWearableOnly = Q<Toggle>("toggle-capture-wearable-only").First();
+            _toggleCaptureRemoveBackground = Q<Toggle>("toggle-capture-remove-background").First();
+
+            _btnPrevious = Q<Button>("btn-wizard-previous").First();
+            _btnPrevious.clicked += PreviousButtonClick;
+            _btnNext = Q<Button>("btn-wizard-next").First();
+            _btnNext.clicked += NextButtonClick;
+            _btnPreview = Q<Button>("btn-wizard-preview").First();
+            _btnPreview.clicked += PreviewButtonClick;
+
+            _thumbnail = Q<VisualElement>("thumbnail").First();
+
+            _btnCaptureNewThumbnail = Q<Button>("btn-capture-new-thumbnail").First();
+            _btnCaptureNewThumbnail.clicked += CaptureNewThumbnailButtonClick;
+            _btnThumbnailCapture = Q<Button>("btn-thumbnail-capture").First();
+            _btnThumbnailCapture.clicked += ThumbnailCaptureButtonClick;
+            _btnThumbnailCancel = Q<Button>("btn-thumbnail-cancel").First();
+            _btnThumbnailCancel.clicked += ThumbnailCancelButtonClick;
+
+            _toggleCaptureWearableOnly.value = ThumbnailCaptureWearableOnly;
+            _toggleCaptureWearableOnly.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                ThumbnailCaptureWearableOnly = evt.newValue;
+                ThumbnailCaptureSettingsChange?.Invoke();
+            });
+            _toggleCaptureRemoveBackground.value = ThumbnailCaptureRemoveBackground;
+            _toggleCaptureRemoveBackground.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                ThumbnailCaptureRemoveBackground = evt.newValue;
+                ThumbnailCaptureSettingsChange?.Invoke();
+            });
+
+            _infoPanel = Q<VisualElement>("info-panel").First();
+            _capturePanel = Q<VisualElement>("capture-panel").First();
+
+            _toggleArmatureMapping = Q<Toggle>("toggle-armature-mapping").First();
+            _toggleArmatureMapping.RegisterValueChangedCallback((ChangeEvent<bool> evt) => UseArmatureMapping = evt.newValue);
+            _toggleMoveRoot = Q<Toggle>("toggle-move-root").First();
+            _toggleMoveRoot.RegisterValueChangedCallback((ChangeEvent<bool> evt) => UseMoveRoot = evt.newValue);
+            _toggleAnimGen = Q<Toggle>("toggle-anim-gen").First();
+            _toggleAnimGen.RegisterValueChangedCallback((ChangeEvent<bool> evt) => UseAnimationGeneration = evt.newValue);
+            _toggleBlendshapeSync = Q<Toggle>("toggle-blendshape-sync").First();
+            _toggleBlendshapeSync.RegisterValueChangedCallback((ChangeEvent<bool> evt) => UseBlendshapeSync = evt.newValue);
+
+            _armatureMappingContainer = Q<VisualElement>("armature-mapping-container").First();
+            _moveRootContainer = Q<VisualElement>("move-root-container").First();
+            _animGenContainer = Q<VisualElement>("anim-gen-container").First();
+            _blendshapeSyncContainer = Q<VisualElement>("blendshape-sync-container").First();
+
+            _armatureMappingContainer.Add(ArmatureMappingModuleEditor);
+            _moveRootContainer.Add(MoveRootModuleEditor);
+            _animGenContainer.Add(AnimationGenerationModuleEditor);
+            _blendshapeSyncContainer.Add(BlendshapeSyncModuleEditor);
+        }
+
+        private void BindFoldouts()
+        {
+            BindFoldoutHeaderWithContainer("foldout-wearable-info", "wearable-info-container");
+            BindFoldoutHeaderWithContainer("foldout-armature-mapping", "armature-mapping-container");
+            BindFoldoutHeaderWithContainer("foldout-move-root", "move-root-container");
+            BindFoldoutHeaderWithContainer("foldout-anim-gen", "anim-gen-container");
+            BindFoldoutHeaderWithContainer("foldout-blendshape-sync", "blendshape-sync-container");
+        }
+
+        private void BindSteps()
+        {
+            var mappingBtn = Q<Button>("btn-step-mapping");
+            var animateBtn = Q<Button>("btn-step-animate");
+
+            _stepBtns = new Button[] { mappingBtn, animateBtn };
+
+            for (var i = 0; i < _stepBtns.Length; i++)
+            {
+                var stepIndex = i;
+                _stepBtns[i].clicked += () =>
+                {
+                    if (CurrentStep == stepIndex) return;
+                    CurrentStep = stepIndex;
+                    UpdateSteps();
+                };
+                _stepBtns[i].EnableInClassList("active", stepIndex == CurrentStep);
+            }
+        }
+
+        private void UpdateSteps()
+        {
+            for (var i = 0; i < _stepBtns.Length; i++)
+            {
+                _stepBtns[i].EnableInClassList("active", i == CurrentStep);
+            }
+
+            if (CurrentStep == 0)
+            {
+                _stepMappingContainer.style.display = DisplayStyle.Flex;
+                _stepAnimateContainer.style.display = DisplayStyle.None;
+            }
+            else if (CurrentStep == 1)
+            {
+                _stepMappingContainer.style.display = DisplayStyle.None;
+                _stepAnimateContainer.style.display = DisplayStyle.Flex;
+            }
+        }
+
         public override void OnEnable()
         {
-            base.OnEnable();
+            InitVisualTree();
+            BindSteps();
+            BindFoldouts();
+
+            t.LocalizeElement(this);
 
             ArmatureMappingModuleEditor.OnEnable();
             MoveRootModuleEditor.OnEnable();
             AnimationGenerationModuleEditor.OnEnable();
             BlendshapeSyncModuleEditor.OnEnable();
+
+            RaiseLoadEvent();
         }
 
         public override void OnDisable()
@@ -158,145 +370,26 @@ namespace Chocopoi.DressingTools.UI.Views
             BlendshapeSyncModuleEditor.OnDisable();
         }
 
-        private void DrawMappingStep()
-        {
-            ToggleLeft(t._("dressing.wearableSetupWizard.steps.mapping.toggle.performArmatureMapping"), ref _useArmatureMapping);
-
-            BeginDisabled(!_useArmatureMapping);
-            {
-                BeginFoldoutBox(ref _foldoutArmatureMapping, t._("dressing.wearableSetupWizard.foldout.settings"));
-                if (_foldoutArmatureMapping)
-                {
-                    ArmatureMappingModuleEditor.OnGUI();
-                }
-                EndFoldoutBox();
-            }
-            EndDisabled();
-
-            Separator();
-
-            ToggleLeft(t._("dressing.wearableSetupWizard.steps.mapping.toggle.moveWearableRoot"), ref _useMoveRoot);
-
-            BeginDisabled(!_useMoveRoot);
-            {
-                BeginFoldoutBox(ref _foldoutMoveRoot, t._("dressing.wearableSetupWizard.foldout.settings"));
-                if (_foldoutMoveRoot)
-                {
-                    MoveRootModuleEditor.OnGUI();
-                }
-                EndFoldoutBox();
-            }
-            EndDisabled();
-        }
-
-        private void DrawAnimateStep()
-        {
-            ToggleLeft(t._("dressing.wearableSetupWizard.steps.animate.toggle.enableAnimGen"), ref _useAnimationGeneration);
-
-            BeginDisabled(!_useAnimationGeneration);
-            {
-                AnimationGenerationModuleEditor.OnGUI();
-            }
-            EndDisabled();
-
-            Separator();
-
-            ToggleLeft(t._("dressing.wearableSetupWizard.steps.animate.toggle.enableBlendshapeSync"), ref _useBlendshapeSync);
-
-            BeginDisabled(!_useBlendshapeSync);
-            {
-                BlendshapeSyncModuleEditor.OnGUI();
-            }
-            EndDisabled();
-        }
-
-        private void PreviewButton()
-        {
-            if (PreviewActive) GUI.backgroundColor = PreviewButtonActiveColour;
-            Button(t._("dressing.wearableSetupWizard.btn.preview"), PreviewButtonClick, GUILayout.ExpandWidth(false));
-            GUI.backgroundColor = Color.white;
-        }
-
-        private void ColouredToolbar()
-        {
-            BeginHorizontal();
-            {
-                for (var i = 0; i < ToolbarKeys.Length; i++)
-                {
-                    if (_currentStep == i)
-                    {
-                        GUI.backgroundColor = _toolbarColourReds[i] ? ToolbarDarkerRedColour : ToolbarDarkerGreyColour;
-                    }
-                    else
-                    {
-                        if (_toolbarColourReds[i]) GUI.backgroundColor = ToolbarRedColour;
-                    }
-                    Button(ToolbarKeys[i], () => _currentStep = i);
-                    GUI.backgroundColor = Color.white;
-                }
-            }
-            EndHorizontal();
-        }
-
-        public override void OnGUI()
-        {
-            ColouredToolbar();
-
-            Separator();
-
-            BeginHorizontal();
-            {
-                BeginDisabled(CurrentStep == 0);
-                {
-                    Button(t._("dressing.wearableSetupWizard.btn.previous"), PreviousButtonClick);
-                }
-                EndDisabled();
-                GUILayout.FlexibleSpace();
-                PreviewButton();
-                BeginDisabled(!IsValid() && CurrentStep == 3);
-                {
-                    Button(CurrentStep == 3 ? t._("dressing.wearableSetupWizard.btn.finish") : t._("dressing.wearableSetupWizard.btn.next"), NextButtonClick);
-                }
-                EndDisabled();
-            }
-            EndHorizontal();
-
-            HorizontalLine();
-
-            if (_currentStep == 0)
-            {
-                if (ShowCabinetConfigErrorHelpBox)
-                {
-                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.unableToLoadCabinetConfig"), MessageType.Error);
-                }
-                if (ShowAvatarNoCabinetHelpBox)
-                {
-                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.avatarHasNoCabinetUsingDefault"), MessageType.Warning);
-                }
-                if (ShowArmatureNotFoundHelpBox)
-                {
-                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.wearableArmatureNotFound"), MessageType.Warning);
-                }
-                if (ShowArmatureGuessedHelpBox)
-                {
-                    HelpBox(t._("dressing.wearableSetupWizard.autoSetup.helpbox.armatureGuessed"), MessageType.Warning);
-                }
-                DrawMappingStep();
-            }
-            else if (_currentStep == 1)
-            {
-                DrawAnimateStep();
-            }
-            else if (_currentStep == 2)
-            {
-                HelpBox("Integrations wizard not implemented", MessageType.Info);
-            }
-            else if (_currentStep == 3)
-            {
-                HelpBox("Optimization wizard not implemented", MessageType.Info);
-            }
-        }
-
         public void UpdateAvatarPreview() => _presenter.UpdateAvatarPreview();
+
+        public void Repaint()
+        {
+            UpdateSteps();
+
+            _toggleUseCustomName.value = UseCustomWearableName;
+            _labelWearableName.text = UseCustomWearableName ? CustomWearableName : (TargetWearable != null ? TargetWearable.name : "---");
+
+            _toggleArmatureMapping.value = UseArmatureMapping;
+            Q<Foldout>("foldout-armature-mapping").First().value = UseArmatureMapping;
+            _toggleMoveRoot.value = UseMoveRoot;
+            Q<Foldout>("foldout-move-root").First().value = UseMoveRoot;
+            _toggleAnimGen.value = UseAnimationGeneration;
+            Q<Foldout>("foldout-anim-gen").First().value = UseAnimationGeneration;
+            _toggleBlendshapeSync.value = UseBlendshapeSync;
+            Q<Foldout>("foldout-blendshape-sync").First().value = UseBlendshapeSync;
+
+            // last step set to finish
+            _btnNext.text = CurrentStep == 1 ? "Finish!" : "Next >";
+        }
     }
 }

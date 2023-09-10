@@ -38,10 +38,20 @@ namespace Chocopoi.DressingTools.Lib.UI
 
         public virtual void OnEnable()
         {
-            Load?.Invoke();
+            RaiseLoadEvent();
         }
 
         public virtual void OnDisable()
+        {
+            RaiseUnloadEvent();
+        }
+
+        protected void RaiseLoadEvent()
+        {
+            Load?.Invoke();
+        }
+
+        protected void RaiseUnloadEvent()
         {
             Unload?.Invoke();
         }
@@ -59,6 +69,13 @@ namespace Chocopoi.DressingTools.Lib.UI
         public UQueryBuilder<T> Q<T>(string name, params string[] classes) where T : VisualElement
         {
             return UQueryExtensions.Query<T>(this, name, classes);
+        }
+
+        public void BindFoldoutHeaderWithContainer(string foldoutName, string containerName)
+        {
+            var foldout = Q<Foldout>(foldoutName).First();
+            var container = Q<VisualElement>(containerName).First();
+            foldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => container.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
         }
     }
 }

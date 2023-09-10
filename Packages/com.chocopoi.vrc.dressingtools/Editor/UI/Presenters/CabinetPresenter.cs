@@ -194,14 +194,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 var preview = new CabinetModulePreview()
                 {
-                    name = cabinetModule.moduleName
+                    name = cabinetModule.moduleName,
                 };
                 preview.RemoveButtonClick = () =>
                 {
                     _cabinetConfig.modules.Remove(cabinetModule);
                     _view.CabinetModulePreviews.Remove(preview);
                     cabinet.configJson = _cabinetConfig.Serialize();
-                    _view.UpdateView();
+                    _view.Repaint();
                 };
                 _view.CabinetModulePreviews.Add(preview);
             }
@@ -211,10 +211,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
             foreach (var wearable in wearables)
             {
                 var config = WearableConfig.Deserialize(wearable.configJson);
-
                 _view.InstalledWearablePreviews.Add(new WearablePreview()
                 {
-                    name = config != null ? config.info.name : t._("cabinet.editor.wearablePreview.name.unableToLoadConfiguration"),
+                    name = config != null ?
+                        config.info.name :
+                        t._("cabinet.editor.wearablePreview.name.unableToLoadConfiguration"),
+                    thumbnail = config != null && config.info.thumbnail != null ?
+                        DTEditorUtils.GetTextureFromBase64(config.info.thumbnail) :
+                        null,
                     RemoveButtonClick = () =>
                     {
                         DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);
@@ -222,7 +226,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 });
             }
-            _view.UpdateView();
+            _view.Repaint();
         }
 
         private void OnLoad()
@@ -237,8 +241,15 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddWearableButtonClick()
         {
-            // TODO: start dressing wizard
-            _view.SelectTab(1);
+            var cabinets = DTEditorUtils.GetAllCabinets();
+
+            if (cabinets.Length == 0 || _view.SelectedCabinetIndex < 0 || _view.SelectedCabinetIndex >= cabinets.Length)
+            {
+                return;
+            }
+
+            var cabinet = cabinets[_view.SelectedCabinetIndex];
+            _view.StartSetupWizard(cabinet.avatarGameObject);
         }
 
         private void OnCreateCabinetButtonClick()

@@ -1,7 +1,7 @@
 ﻿/*
- * File: DTWearableInfo.cs
+ * File: SceneViewFollower.cs
  * Project: DressingTools
- * Created Date: Saturday, July 29th 2023, 10:31:11 am
+ * Created Date: Sunday, September 10th 2023, 8:48:13 pm
  * Author: chocopoi (poi@chocopoi.com)
  * -----
  * Copyright (c) 2023 chocopoi
@@ -16,32 +16,30 @@
  */
 
 using System;
+using UnityEditor;
+using UnityEngine;
 
-namespace Chocopoi.DressingTools.Lib.Wearable
+namespace Chocopoi.DressingTools.Wearable
 {
-    [Serializable]
-    public class WearableInfo
+    [ExecuteAlways]
+    public class SceneViewFollower : MonoBehaviour
     {
-        public string uuid;
-        public string name;
-        public string author;
-        public string description;
-        public string createdTime;
-        public string updatedTime;
-        public string thumbnail;
+        public event Action PositionUpdate;
 
-        public WearableInfo() { }
-
-        // copy constructor
-        public WearableInfo(WearableInfo toCopy)
+        public SceneViewFollower()
         {
-            uuid = toCopy.uuid;
-            name = toCopy.name;
-            author = toCopy.author;
-            description = toCopy.description;
-            createdTime = toCopy.createdTime;
-            updatedTime = toCopy.updatedTime;
-            thumbnail = null;
+        }
+
+        void OnDrawGizmos()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                transform.position = SceneView.lastActiveSceneView.camera.transform.position;
+                transform.rotation = SceneView.lastActiveSceneView.camera.transform.rotation;
+                PositionUpdate?.Invoke();
+            }
+#endif
         }
     }
 }

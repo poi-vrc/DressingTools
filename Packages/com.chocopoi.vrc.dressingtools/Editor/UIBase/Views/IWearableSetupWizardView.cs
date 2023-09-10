@@ -20,6 +20,7 @@ using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.Views.Modules;
 using Chocopoi.DressingTools.Wearable.Modules;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {
@@ -28,6 +29,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action PreviousButtonClick;
         event Action NextButtonClick;
         event Action PreviewButtonClick;
+        event Action CaptureNewThumbnailButtonClick;
+        event Action ThumbnailCaptureButtonClick;
+        event Action ThumbnailCancelButtonClick;
+        event Action ThumbnailCaptureSettingsChange;
 
         WearableConfig Config { get; set; }
         ArmatureMappingWearableModuleConfig ArmatureMappingModuleConfig { get; set; }
@@ -47,6 +52,11 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool ShowArmatureNotFoundHelpBox { get; set; }
         bool ShowArmatureGuessedHelpBox { get; set; }
         bool ShowCabinetConfigErrorHelpBox { get; set; }
+        bool UseCustomWearableName { get; set; }
+        string CustomWearableName { get; set; }
+        bool ThumbnailCaptureWearableOnly { get; set; }
+        bool ThumbnailCaptureRemoveBackground { get; set; }
+        bool CaptureActive { get; set; }
         bool PreviewActive { get; }
 
         void GenerateConfig();
@@ -54,5 +64,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool IsValid();
         void ShowNoAvatarOrWearableDialog();
         void ShowInvalidConfigDialog();
+        void Repaint();
+        void ShowInfoPanel();
+        void ShowCapturePanel();
+        void SetThumbnailTexture(Texture2D texture);
+        void RepaintCapturePreview();
     }
 }

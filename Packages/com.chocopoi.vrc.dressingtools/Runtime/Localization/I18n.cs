@@ -94,7 +94,22 @@ namespace Chocopoi.DressingTools.Localization
 
         public void LocalizeElement(VisualElement elem, bool recursively = true)
         {
-            if (elem is TextElement textElem)
+            if (elem is TextField textField)
+            {
+                // TODO: bug
+                return;
+            }
+            else if (elem is Foldout foldout)
+            {
+                // we process texts that starts with @
+                var text = foldout.text;
+                if (!string.IsNullOrEmpty(text) && text.StartsWith("@"))
+                {
+                    var i18nKey = text.Substring(1);
+                    foldout.text = Translate(i18nKey);
+                }
+            }
+            else if (elem is TextElement textElem)
             {
                 // we process texts that starts with @
                 var text = textElem.text;
@@ -107,9 +122,9 @@ namespace Chocopoi.DressingTools.Localization
 
             if (recursively)
             {
-                for (var i = 0; i < elem.hierarchy.childCount; i++)
+                foreach (var child in elem.Children())
                 {
-                    LocalizeElement(elem.hierarchy[i], recursively);
+                    LocalizeElement(child, recursively);
                 }
             }
         }

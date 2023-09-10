@@ -36,5 +36,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
         void RaiseDoAddToCabinetEvent();
         void WizardGenerateConfig();
         bool ShowConfirmSwitchWizardModeDialog();
+        void Repaint();
     }
 }

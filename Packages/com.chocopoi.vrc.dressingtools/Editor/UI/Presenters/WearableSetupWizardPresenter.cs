@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Wearable;
@@ -28,10 +29,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class WearableSetupWizardPresenter
     {
         private IWearableSetupWizardView _view;
+        private string _capturedThumbnailB64;
 
         public WearableSetupWizardPresenter(IWearableSetupWizardView view)
         {
             _view = view;
+            _capturedThumbnailB64 = null;
 
             SubscribeEvents();
         }
@@ -46,6 +49,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.PreviousButtonClick += OnPreviousButtonClick;
             _view.NextButtonClick += OnNextButtonClick;
             _view.PreviewButtonClick += OnPreviewButtonClick;
+            _view.CaptureNewThumbnailButtonClick += OnCaptureNewThumbnailButtonClick;
+            _view.ThumbnailCaptureButtonClick += OnThumbnailCaptureButtonClick;
+            _view.ThumbnailCancelButtonClick += OnThumbnailCancelButtonClick;
+            _view.ThumbnailCaptureSettingsChange += OnThumbnailCaptureSettingsChange;
         }
 
         private void UnsubscribeEvents()
@@ -58,6 +65,53 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.PreviousButtonClick -= OnPreviousButtonClick;
             _view.NextButtonClick -= OnNextButtonClick;
             _view.PreviewButtonClick -= OnPreviewButtonClick;
+            _view.CaptureNewThumbnailButtonClick -= OnCaptureNewThumbnailButtonClick;
+            _view.ThumbnailCaptureButtonClick -= OnThumbnailCaptureButtonClick;
+            _view.ThumbnailCancelButtonClick -= OnThumbnailCancelButtonClick;
+            _view.ThumbnailCaptureSettingsChange -= OnThumbnailCaptureSettingsChange;
+        }
+
+        private void OnThumbnailCaptureSettingsChange()
+        {
+            UpdateThumbnailCapturePanel();
+        }
+
+        private void UpdateThumbnailCapturePanel()
+        {
+            if (_view.TargetWearable != null)
+            {
+                _capturedThumbnailB64 = null;
+                DTEditorUtils.PrepareWearableThumbnailCamera(_view.TargetWearable, _view.ThumbnailCaptureWearableOnly, _view.ThumbnailCaptureRemoveBackground, true, () => _view.RepaintCapturePreview());
+            }
+        }
+
+        private void OnThumbnailCaptureButtonClick()
+        {
+            _capturedThumbnailB64 = DTEditorUtils.CaptureThumbnailRenderTextureToBase64();
+            ReturnToInfoPanel();
+        }
+
+        private void OnThumbnailCancelButtonClick()
+        {
+            _capturedThumbnailB64 = null;
+            _view.SetThumbnailTexture(null);
+            ReturnToInfoPanel();
+        }
+
+        private void ReturnToInfoPanel()
+        {
+            DTEditorUtils.CleanUpThumbnailObjects();
+            if (_view.TargetAvatar != null)
+            {
+                DTEditorUtils.FocusGameObjectInSceneView(_view.TargetAvatar);
+            }
+            _view.ShowInfoPanel();
+        }
+
+        private void OnCaptureNewThumbnailButtonClick()
+        {
+            UpdateThumbnailCapturePanel();
+            _view.ShowCapturePanel();
         }
 
         private void OnForceUpdateView()
@@ -295,6 +349,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (_view.CurrentStep > 0)
             {
                 _view.CurrentStep -= 1;
+                _view.Repaint();
             }
         }
 
@@ -303,6 +358,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var wearableConfig = new WearableConfig();
 
             DTEditorUtils.PrepareWearableConfig(wearableConfig, _view.TargetAvatar, _view.TargetWearable);
+
+            if (_capturedThumbnailB64 != null)
+            {
+                wearableConfig.info.thumbnail = _capturedThumbnailB64;
+            }
+
+            if (_view.UseCustomWearableName)
+            {
+                wearableConfig.info.name = _view.CustomWearableName;
+            }
 
             if (_view.UseArmatureMapping)
             {
@@ -346,9 +411,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnNextButtonClick()
         {
             // progress step if not last step
-            if (_view.CurrentStep < 3)
+            if (_view.CurrentStep < 1)
             {
                 _view.CurrentStep += 1;
+                _view.Repaint();
             }
             else
             {
@@ -364,6 +430,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     return;
                 }
 
+                ReturnToInfoPanel();
                 GenerateConfig();
                 _view.RaiseDoAddToCabinetEvent();
             }
@@ -375,6 +442,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.MoveRootModuleEditor.RaiseForceUpdateViewEvent();
             _view.AnimationGenerationModuleEditor.RaiseForceUpdateViewEvent();
             _view.BlendshapeSyncModuleEditor.RaiseForceUpdateViewEvent();
+
+            _view.Repaint();
         }
 
         private void OnLoad()
