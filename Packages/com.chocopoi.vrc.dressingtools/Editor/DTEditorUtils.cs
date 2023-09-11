@@ -42,6 +42,7 @@ namespace Chocopoi.DressingTools
 {
     internal class DTEditorUtils
     {
+        private static readonly Localization.I18n t = Localization.I18n.Instance;
         private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
         private const string PreviewAvatarNamePrefix = "DTPreview_";
         private const string ThumbnailRenderTextureGuid = "52c645a5f631e32439c8674dc6e491e2";
@@ -74,6 +75,11 @@ namespace Chocopoi.DressingTools
             return Object.FindObjectsOfType<DTCabinet>();
         }
 
+        public static DTWearable[] GetAllSceneWearables()
+        {
+            return Object.FindObjectsOfType<DTWearable>();
+        }
+
         public static string GetGameObjectOriginalPrefabGuid(GameObject obj)
         {
             var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj));
@@ -81,36 +87,70 @@ namespace Chocopoi.DressingTools
             return guid;
         }
 
-        public static DTCabinet GetAvatarCabinet(GameObject avatar, bool createIfNotExists = false)
+        public static DTCabinet GetAvatarCabinet(GameObject avatarGameObject, bool createIfNotExists = false)
         {
-            if (avatar == null)
+            if (avatarGameObject == null)
             {
                 return null;
             }
 
-            var comp = avatar.GetComponent<DTCabinet>();
+            // loop through all cabinets and search
+            var cabinets = GetAllCabinets();
 
-            if (comp == null && createIfNotExists)
+            // no matter there are two occurance or not, we return the first found
+            foreach (var cabinet in cabinets)
             {
-                // create new cabinet if not exist
-                comp = avatar.AddComponent<DTCabinet>();
-
-                // TODO: read default config, scan for armature names?
-                comp.avatarGameObject = avatar;
-                var config = new CabinetConfig();
-                comp.configJson = config.Serialize();
+                if (cabinet.AvatarGameObject == avatarGameObject)
+                {
+                    return cabinet;
+                }
             }
 
-            return comp;
+            if (createIfNotExists)
+            {
+                // create new cabinet if not exist
+                var comp = avatarGameObject.AddComponent<DTCabinet>();
+
+                // TODO: read default config, scan for armature names?
+                comp.AvatarGameObject = avatarGameObject;
+                var config = new CabinetConfig();
+                comp.configJson = config.Serialize();
+
+                return comp;
+            }
+
+            return null;
         }
 
-        public static DTCabinetWearable[] GetCabinetWearables(GameObject avatarGameObject)
+        public static DTWearable GetCabinetWearable(GameObject wearableGaneObject)
+        {
+            if (wearableGaneObject == null)
+            {
+                return null;
+            }
+
+            // loop through all scene wearables and search
+            var wearables = GetAllSceneWearables();
+
+            // no matter there are two occurance or not, we return the first found
+            foreach (var sceneWearable in wearables)
+            {
+                if (sceneWearable.WearableGameObject == wearableGaneObject)
+                {
+                    return sceneWearable;
+                }
+            }
+
+            return null;
+        }
+
+        public static DTWearable[] GetCabinetWearables(GameObject avatarGameObject)
         {
             if (avatarGameObject == null)
             {
-                return new DTCabinetWearable[0];
+                return new DTWearable[0];
             }
-            return avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
+            return avatarGameObject.GetComponentsInChildren<DTWearable>();
         }
 
         public static void ApplyWearableTransforms(AvatarConfig avatarConfig, GameObject targetAvatar, GameObject targetWearable)
@@ -182,33 +222,48 @@ namespace Chocopoi.DressingTools
             targetWearable.transform.localScale = lastWearableScale;
         }
 
+        public static DTCabinet FindCabinetComponent(DTWearable wearable)
+        {
+            var p = wearable.transform.parent;
+            DTCabinet cabinet = null;
+            while (p != null)
+            {
+                if (p.TryGetComponent(out cabinet))
+                {
+                    break;
+                }
+                p = p.parent;
+            }
+            return cabinet;
+        }
+
         public static bool AddCabinetWearable(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
         {
-            // do not add if there's an existing component
-            if (wearableGameObject.GetComponent<DTCabinetWearable>() != null)
+            var cabinetWearable = GetCabinetWearable(wearableGameObject);
+
+            // if not exist, create a new component
+            if (cabinetWearable == null)
             {
-                return false;
+                if (PrefabUtility.IsPartOfAnyPrefab(wearableGameObject) && PrefabUtility.GetPrefabInstanceStatus(wearableGameObject) == PrefabInstanceStatus.NotAPrefab)
+                {
+                    // if not in scene, we instantiate it with a prefab connection
+                    wearableGameObject = (GameObject)PrefabUtility.InstantiatePrefab(wearableGameObject);
+                }
+
+                // parent to avatar if haven't yet
+                if (!IsGrandParent(avatarGameObject.transform, wearableGameObject.transform))
+                {
+                    wearableGameObject.transform.SetParent(avatarGameObject.transform);
+                }
+
+                // applying scalings
+                ApplyWearableTransforms(wearableConfig.avatarConfig, avatarGameObject, wearableGameObject);
+
+                // add cabinet wearable component
+                cabinetWearable = wearableGameObject.AddComponent<DTWearable>();
+                cabinetWearable.WearableGameObject = wearableGameObject;
             }
 
-            if (PrefabUtility.IsPartOfAnyPrefab(wearableGameObject) && PrefabUtility.GetPrefabInstanceStatus(wearableGameObject) == PrefabInstanceStatus.NotAPrefab)
-            {
-                // if not in scene, we instantiate it with a prefab connection
-                wearableGameObject = (GameObject)PrefabUtility.InstantiatePrefab(wearableGameObject);
-            }
-
-            // parent to avatar if haven't yet
-            if (!IsGrandParent(avatarGameObject.transform, wearableGameObject.transform))
-            {
-                wearableGameObject.transform.SetParent(avatarGameObject.transform);
-            }
-
-            // applying scalings
-            ApplyWearableTransforms(wearableConfig.avatarConfig, avatarGameObject, wearableGameObject);
-
-            // add cabinet wearable component
-            var cabinetWearable = wearableGameObject.AddComponent<DTCabinetWearable>();
-
-            cabinetWearable.wearableGameObject = wearableGameObject;
             cabinetWearable.configJson = wearableConfig.Serialize();
 
             DoWearableModuleProviderCallbacks(wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
@@ -285,9 +340,9 @@ namespace Chocopoi.DressingTools
             return true;
         }
 
-        public static void RemoveCabinetWearable(DTCabinet cabinet, DTCabinetWearable wearable)
+        public static void RemoveCabinetWearable(DTCabinet cabinet, DTWearable wearable)
         {
-            var cabinetWearables = cabinet.avatarGameObject.GetComponentsInChildren<DTCabinetWearable>();
+            var cabinetWearables = cabinet.AvatarGameObject.GetComponentsInChildren<DTWearable>();
             foreach (var cabinetWearable in cabinetWearables)
             {
                 if (cabinetWearable == wearable)
@@ -703,7 +758,7 @@ namespace Chocopoi.DressingTools
                     break;
                 }
 
-                if (transform.TryGetComponent<DTCabinetWearable>(out var _))
+                if (transform.TryGetComponent<DTWearable>(out var _))
                 {
                     found = true;
                     break;
@@ -766,7 +821,7 @@ namespace Chocopoi.DressingTools
                 cabinetConfig = cabinetConfig,
                 avatarGameObject = previewAvatar,
                 avatarDynamics = ScanDynamics(previewAvatar, true),
-                wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>()
+                wearableContexts = new Dictionary<DTWearable, ApplyWearableContext>()
             };
 
             var wearCtx = new ApplyWearableContext()

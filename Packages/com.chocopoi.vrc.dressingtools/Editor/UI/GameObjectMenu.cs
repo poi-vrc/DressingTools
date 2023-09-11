@@ -67,7 +67,7 @@ namespace Chocopoi.DressingTools.UI
             }
 
             var wearableConfig = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(wearableConfig, cabinet.avatarGameObject, wearable);
+            DTEditorUtils.PrepareWearableConfig(wearableConfig, cabinet.AvatarGameObject, wearable);
 
             var armatureName = cabinetConfig.avatarArmatureName;
 
@@ -89,7 +89,7 @@ namespace Chocopoi.DressingTools.UI
 
                 var dresserSettings = new DefaultDresserSettings()
                 {
-                    targetAvatar = cabinet.avatarGameObject,
+                    targetAvatar = cabinet.AvatarGameObject,
                     targetWearable = wearable,
                     dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
                 };
@@ -122,7 +122,7 @@ namespace Chocopoi.DressingTools.UI
                 });
             }
 
-            DTEditorUtils.AddCabinetWearable(cabinetConfig, cabinet.avatarGameObject, wearableConfig, wearable);
+            DTEditorUtils.AddCabinetWearable(cabinetConfig, cabinet.AvatarGameObject, wearableConfig, wearable);
         }
 
         [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true, MenuItemPriority)]
@@ -179,7 +179,7 @@ namespace Chocopoi.DressingTools.UI
             var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
             window.titleContent = new GUIContent(t._("tool.name"));
             window.Show();
-            window.StartSetupWizard(avatarTransform.gameObject, wearable);
+            window.StartDressing(avatarTransform.gameObject, wearable);
         }
     }
 }

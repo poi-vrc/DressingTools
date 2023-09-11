@@ -90,7 +90,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
-            cabinet.avatarGameObject = _view.CabinetAvatarGameObject;
+            cabinet.AvatarGameObject = _view.CabinetAvatarGameObject;
 
             if (_cabinetConfig == null)
             {
@@ -142,7 +142,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AvailableCabinetSelections.Clear();
             for (var i = 0; i < cabinets.Length; i++)
             {
-                _view.AvailableCabinetSelections.Add(cabinets[i].avatarGameObject != null ? cabinets[i].avatarGameObject.name : t._("cabinet.editor.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
+                _view.AvailableCabinetSelections.Add(cabinets[i].AvatarGameObject != null ? cabinets[i].AvatarGameObject.name : t._("cabinet.editor.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
             }
         }
 
@@ -182,7 +182,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            _view.CabinetAvatarGameObject = cabinet.avatarGameObject;
+            _view.CabinetAvatarGameObject = cabinet.AvatarGameObject;
             _view.CabinetAvatarArmatureName = _cabinetConfig.avatarArmatureName;
             _view.CabinetGroupDynamics = _cabinetConfig.groupDynamics;
             _view.CabinetGroupDynamicsSeparateGameObjects = _cabinetConfig.groupDynamicsSeparateGameObjects;
@@ -206,7 +206,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.CabinetModulePreviews.Add(preview);
             }
 
-            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.avatarGameObject);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.AvatarGameObject);
 
             foreach (var wearable in wearables)
             {
@@ -223,6 +223,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     {
                         DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);
                         UpdateView();
+                    },
+                    EditButtonClick = () =>
+                    {
+                        _view.StartDressing(cabinet.AvatarGameObject, wearable.WearableGameObject);
                     }
                 });
             }
@@ -249,7 +253,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
-            _view.StartSetupWizard(cabinet.avatarGameObject);
+            _view.StartDressing(cabinet.AvatarGameObject);
         }
 
         private void OnCreateCabinetButtonClick()

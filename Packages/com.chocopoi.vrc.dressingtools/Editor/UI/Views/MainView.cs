@@ -56,11 +56,11 @@ namespace Chocopoi.DressingTools.UI.View
             _settingsSubView = new SettingsSubView(this);
         }
 
-        public void StartSetupWizard(GameObject targetAvatar, GameObject targetWearable = null)
+        public void StartDressing(GameObject targetAvatar, GameObject targetWearable = null)
         {
             _selectedTab = 1;
             UpdateTabs();
-            _dressingSubView.StartSetupWizard(targetAvatar, targetWearable);
+            _dressingSubView.StartDressing(targetAvatar, targetWearable);
         }
 
         public void SelectCabinet(DTCabinet cabinet) => _cabinetSubView.SelectCabinet(cabinet);

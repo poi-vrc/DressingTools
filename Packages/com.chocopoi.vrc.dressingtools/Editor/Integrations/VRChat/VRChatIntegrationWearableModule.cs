@@ -205,7 +205,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     AssetDatabase.CreateAsset(icon, string.Format("{0}/cpDT_Cabinet_{1}_Icon.asset", CabinetApplier.GeneratedAssetsPath, i));
                 }
 
-                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].wearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
+                var animationGenerator = new AnimationGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].WearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
                 var wearAnimations = animationGenerator.GenerateWearAnimations();

@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.Lib
         public CabinetConfig cabinetConfig;
         public GameObject avatarGameObject;
         public List<IDynamicsProxy> avatarDynamics;
-        public Dictionary<DTCabinetWearable, ApplyWearableContext> wearableContexts;
+        public Dictionary<DTWearable, ApplyWearableContext> wearableContexts;
         public IPathRemapper pathRemapper;
     }
 

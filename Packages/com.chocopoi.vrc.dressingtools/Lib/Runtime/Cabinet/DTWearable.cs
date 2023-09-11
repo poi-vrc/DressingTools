@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTCabinetWearable.cs
+ * File: DTWearable.cs
  * Project: DressingTools
  * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -19,9 +19,16 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib.Cabinet
 {
-    public class DTCabinetWearable : DTBaseComponent
+    public class DTWearable : DTBaseComponent
     {
-        public GameObject wearableGameObject;
+        public GameObject WearableGameObject { get => rootGameObject != null ? rootGameObject : gameObject; set => rootGameObject = value; }
+        public GameObject rootGameObject;
         public string configJson;
+
+        public DTWearable()
+        {
+            rootGameObject = null;
+            configJson = "{}";
+        }
     }
 }

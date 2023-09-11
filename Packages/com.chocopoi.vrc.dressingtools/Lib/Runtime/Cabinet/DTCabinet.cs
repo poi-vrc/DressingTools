@@ -24,13 +24,14 @@ namespace Chocopoi.DressingTools.Lib.Cabinet
     [ExecuteInEditMode]
     public class DTCabinet : DTBaseComponent
     {
-        public GameObject avatarGameObject;
+        public GameObject AvatarGameObject { get => rootGameObject != null ? rootGameObject : gameObject; set => rootGameObject = value; }
+        public GameObject rootGameObject;
         public string configJson;
 
         public DTCabinet()
         {
-            avatarGameObject = null;
-            configJson = null;
+            rootGameObject = null;
+            configJson = "{}";
         }
 
         public void Awake()

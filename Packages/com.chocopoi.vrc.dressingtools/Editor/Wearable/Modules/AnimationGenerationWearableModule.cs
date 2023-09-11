@@ -136,7 +136,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     continue;
                 }
 
-                InvertToggleStates(cabCtx.avatarGameObject, config, wearable.wearableGameObject, module);
+                InvertToggleStates(cabCtx.avatarGameObject, config, wearable.WearableGameObject, module);
 
                 // set wearable dynamics inactive
                 var visitedDynamicsTransforms = new List<Transform>();

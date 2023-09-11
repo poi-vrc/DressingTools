@@ -156,7 +156,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     continue;
                 }
 
-                FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearable.wearableGameObject, module);
+                FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearable.WearableGameObject, module);
             }
             return true;
         }
