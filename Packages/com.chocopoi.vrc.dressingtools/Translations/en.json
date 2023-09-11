@@ -30,11 +30,11 @@
     "cabinet.editor.settings.toggle.groupDynamicsSeparate": "Separate dynamics",
     "cabinet.editor.thumbnail.btn.edit": "Edit",
     "cabinet.editor.wearablePreview.name.unableToLoadConfiguration": "(Unable to load configuration)",
-    "cabinet.inspector.btn.openInEditor": "Open in Editor",
     "cabinet.inspector.settings.avatar": "Avatar",
     "common.dialog.btn.no": "No",
     "common.dialog.btn.ok": "OK",
     "common.dialog.btn.yes": "Yes",
+    "common.inspector.btn.openInEditor": "Open in Editor",
     "dressers.default.msgCode.error.hookHasErrors": "Error: Hook has errors: {0}",
     "dressers.default.msgCode.error.missingScriptsDetectedInAvatar": "Error: Missing scripts detected in avatar: {0}",
     "dressers.default.msgCode.error.missingScriptsDetectedInWearable": "Error: Missing scripts detected in wearable: {0}",
@@ -288,5 +288,7 @@
     "report.editor.label.warnings": "Warnings: {0}",
     "report.editor.title": "DT Report Window",
     "report.helpbox.noReport": "No report available.",
-    "tool.name": "DressingTools"
+    "tool.name": "DressingTools",
+    "wearable.inspector.dialog.msg.unableToLocateCabinetToStartDressing": "Unable to locate cabinet to start dressing.",
+    "wearable.inspector.settings.wearable": "Wearable"
 }

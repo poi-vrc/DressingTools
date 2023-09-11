@@ -25,6 +25,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
         int SelectedTab { get; set; }
 
         void ForceUpdateCabinetSubView();
-        void StartSetupWizard(GameObject targetAvatar, GameObject targetWearable = null);
+        void StartDressing(GameObject targetAvatar, GameObject targetWearable = null);
     }
 }

@@ -203,7 +203,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             targetWearable.name = _view.TargetClothes.name;
             targetWearable.transform.SetParent(targetAvatar.transform);
 
-            if (targetWearable.TryGetComponent<DTCabinetWearable>(out var existingComp))
+            if (targetWearable.TryGetComponent<DTWearable>(out var existingComp))
             {
                 if (!_view.ShowExistingWearableConfigIgnoreConfirmDialog())
                 {

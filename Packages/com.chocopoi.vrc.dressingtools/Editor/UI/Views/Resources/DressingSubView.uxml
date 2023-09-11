@@ -19,7 +19,7 @@
         <ui:VisualElement name="advanced-container" class="dressing-container">
             <Style src="DressingSubViewStyles.uss" />
             <ui:VisualElement name="config-view-container" />
-            <ui:Button text="@dressing.editor.btn.addToCabinet" style="height: 36px;" />
+            <ui:Button name="btn-add-to-cabinet" text="@dressing.editor.btn.addToCabinet" style="height: 36px;" />
         </ui:VisualElement>
     </ui:ScrollView>
 </ui:UXML>

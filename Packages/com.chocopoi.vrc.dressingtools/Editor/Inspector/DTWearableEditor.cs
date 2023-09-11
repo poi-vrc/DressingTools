@@ -1,5 +1,5 @@
 ﻿/*
- * File: DTCabinetEditor.cs
+ * File: DTWearableEditor.cs
  * Project: DressingTools
  * Created Date: Wednesday, August 9th 2023, 11:38:52 pm
  * Author: chocopoi (poi@chocopoi.com)
@@ -22,8 +22,8 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    [CustomEditor(typeof(DTCabinet))]
-    internal class DTCabinetEditor : Editor
+    [CustomEditor(typeof(DTWearable))]
+    internal class DTWearableEditor : Editor
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
@@ -32,17 +32,26 @@ namespace Chocopoi.DressingTools
             // show the tool logo
             DTLogo.Show();
 
-            var cabinet = (DTCabinet)target;
+            var wearable = (DTWearable)target;
 
-            cabinet.AvatarGameObject = (GameObject)EditorGUILayout.ObjectField(t._("cabinet.inspector.settings.avatar"), cabinet.AvatarGameObject, typeof(GameObject), true);
+            wearable.WearableGameObject = (GameObject)EditorGUILayout.ObjectField(t._("wearable.inspector.settings.wearable"), wearable.WearableGameObject, typeof(GameObject), true);
             EditorGUILayout.Separator();
 
             if (GUILayout.Button(t._("common.inspector.btn.openInEditor"), GUILayout.Height(40)))
             {
-                var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
-                window.titleContent = new GUIContent(t._("tool.name"));
-                window.Show();
-                window.SelectCabinet(cabinet);
+                var cabinet = DTEditorUtils.FindCabinetComponent(wearable);
+
+                if (cabinet != null)
+                {
+                    var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
+                    window.titleContent = new GUIContent(t._("tool.name"));
+                    window.Show();
+                    window.StartDressing(cabinet.AvatarGameObject, wearable.WearableGameObject);
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("wearable.inspector.dialog.msg.unableToLocateCabinetToStartDressing"), t._("common.dialog.btn.ok"));
+                }
             }
         }
     }

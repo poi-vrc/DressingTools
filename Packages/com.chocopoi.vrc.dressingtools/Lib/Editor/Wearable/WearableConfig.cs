@@ -52,6 +52,21 @@ namespace Chocopoi.DressingTools.Lib.Wearable
 
         public string Serialize() => JsonConvert.SerializeObject(this);
 
+        public static bool TryDeserialize(string json, out WearableConfig config)
+        {
+            try
+            {
+                config = Deserialize(json);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+                config = null;
+                return false;
+            }
+        }
+
         public static WearableConfig Deserialize(string json)
         {
             // TODO: perform schema check

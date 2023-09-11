@@ -59,7 +59,7 @@ namespace Chocopoi.DressingTools.Cabinet
 
         public CabinetApplier(DTReport report, DTCabinet cabinet)
         {
-            if (PrefabUtility.GetPrefabAssetType(cabinet.avatarGameObject) != PrefabAssetType.NotAPrefab)
+            if (PrefabUtility.GetPrefabAssetType(cabinet.AvatarGameObject) != PrefabAssetType.NotAPrefab)
             {
                 throw new System.Exception("A prefab is passed through cabinet applier! Aborting as this will modify the prefab directly!");
             }
@@ -68,11 +68,11 @@ namespace Chocopoi.DressingTools.Cabinet
             _cabCtx = new ApplyCabinetContext()
             {
                 report = report,
-                avatarGameObject = cabinet.avatarGameObject,
+                avatarGameObject = cabinet.AvatarGameObject,
                 cabinetConfig = null,
                 avatarDynamics = new List<IDynamicsProxy>(),
-                wearableContexts = new Dictionary<DTCabinetWearable, ApplyWearableContext>(),
-                pathRemapper = new PathRemapper(cabinet.avatarGameObject)
+                wearableContexts = new Dictionary<DTWearable, ApplyWearableContext>(),
+                pathRemapper = new PathRemapper(cabinet.AvatarGameObject)
             };
         }
 
@@ -282,8 +282,8 @@ namespace Chocopoi.DressingTools.Cabinet
                 var wearCtx = new ApplyWearableContext()
                 {
                     wearableConfig = wearableConfig,
-                    wearableGameObject = wearable.wearableGameObject,
-                    wearableDynamics = DTEditorUtils.ScanDynamics(wearable.wearableGameObject, false)
+                    wearableGameObject = wearable.WearableGameObject,
+                    wearableDynamics = DTEditorUtils.ScanDynamics(wearable.WearableGameObject, false)
                 };
                 _cabCtx.wearableContexts[wearable] = wearCtx;
 

@@ -47,10 +47,10 @@ namespace Chocopoi.DressingTools.UI
 
         public void SelectCabinet(DTCabinet cabinet) => _view.SelectCabinet(cabinet);
 
-        public void StartSetupWizard(GameObject avatarGameObject, GameObject wearableGameObject)
+        public void StartDressing(GameObject avatarGameObject, GameObject wearableGameObject)
         {
             _view.SelectedTab = 1;
-            _view.StartSetupWizard(avatarGameObject, wearableGameObject);
+            _view.StartDressing(avatarGameObject, wearableGameObject);
         }
 
         public void OnEnable()

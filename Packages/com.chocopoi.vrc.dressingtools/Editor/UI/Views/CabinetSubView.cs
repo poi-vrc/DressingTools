@@ -91,9 +91,9 @@ namespace Chocopoi.DressingTools.UI.Views
             _mainView.SelectedTab = selectedTab;
         }
 
-        public void StartSetupWizard(GameObject avatarGameObject = null, GameObject wearableGameObject = null)
+        public void StartDressing(GameObject avatarGameObject = null, GameObject wearableGameObject = null)
         {
-            _mainView.StartSetupWizard(avatarGameObject != null ? avatarGameObject : _cabinetAvatarGameObject, wearableGameObject);
+            _mainView.StartDressing(avatarGameObject != null ? avatarGameObject : _cabinetAvatarGameObject, wearableGameObject);
         }
 
         public void SelectCabinet(DTCabinet cabinet) => _cabinetPresenter.SelectCabinet(cabinet);
@@ -365,7 +365,7 @@ namespace Chocopoi.DressingTools.UI.Views
             foreach (var preview in InstalledWearablePreviews)
             {
                 // TODO: edit button
-                var thumbnail = CreateInstalledWearableThumbnailElement(preview.name, preview.thumbnail, preview.RemoveButtonClick, () => EditorUtility.DisplayDialog(t._("tool.name"), "Not implemented.", "OK"));
+                var thumbnail = CreateInstalledWearableThumbnailElement(preview.name, preview.thumbnail, preview.RemoveButtonClick, preview.EditButtonClick);
                 _installedWearableIconsContainer.Add(thumbnail);
 
                 _installedWearableListContainer.Add(CreateWearablePreviewListItem(preview));

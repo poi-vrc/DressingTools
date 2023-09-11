@@ -16,6 +16,7 @@
  */
 
 using Chocopoi.DressingTools.Lib.Cabinet;
+using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEngine;
@@ -95,6 +96,25 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnTargetAvatarOrWearableChange()
         {
+            // try find if the wearable has a config, if yes, use advanced mode for editing
+            if (_view.TargetWearable != null)
+            {
+                var cabinetWearable = DTEditorUtils.GetCabinetWearable(_view.TargetWearable);
+                if (cabinetWearable != null)
+                {
+                    if (WearableConfig.TryDeserialize(cabinetWearable.configJson, out var config))
+                    {
+                        _view.Config = config;
+                        _view.SelectedDressingMode = 1;
+                        _view.ForceUpdateConfigView();
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+
             UpdateView();
         }
 
@@ -120,17 +140,18 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            DTEditorUtils.AddCabinetWearable(cabinetConfig, _view.TargetAvatar, _view.Config, _view.TargetWearable);
-
             // remove previews
             DTEditorUtils.CleanUpPreviewAvatars();
             DTEditorUtils.FocusGameObjectInSceneView(_view.TargetAvatar);
 
-            // reset and return
-            _view.ResetWizardAndConfigView();
-            _view.SelectTab(0);
+            if (DTEditorUtils.AddCabinetWearable(cabinetConfig, _view.TargetAvatar, _view.Config, _view.TargetWearable))
+            {
+                // reset and return
+                _view.ResetWizardAndConfigView();
+                _view.SelectTab(0);
 
-            _view.ForceUpdateCabinetSubView();
+                _view.ForceUpdateCabinetSubView();
+            }
         }
     }
 }

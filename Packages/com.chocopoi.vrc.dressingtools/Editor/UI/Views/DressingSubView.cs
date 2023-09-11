@@ -17,7 +17,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using BestHTTP.SecureProtocol.Org.BouncyCastle.Asn1.X509;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.UI.Presenters;
@@ -54,6 +53,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private ObjectField _avatarObjectField;
         private VisualElement _advancedContainer;
         private ObjectField _wearableObjectField;
+        private Button _btnAddToCabinet;
 
         public DressingSubView(IMainView mainView)
         {
@@ -83,6 +83,11 @@ namespace Chocopoi.DressingTools.UI.Views
             _configView.RaiseForceUpdateViewEvent();
         }
 
+        public void ForceUpdateConfigView()
+        {
+            _configView.RaiseForceUpdateViewEvent();
+        }
+
         public bool IsConfigValid()
         {
             return _currentMode == 0 ? _wizardView.IsValid() : _configView.IsValid();
@@ -103,7 +108,7 @@ namespace Chocopoi.DressingTools.UI.Views
             DoAddToCabinetEvent?.Invoke();
         }
 
-        public void StartSetupWizard(GameObject targetAvatar, GameObject targetWearable = null)
+        public void StartDressing(GameObject targetAvatar, GameObject targetWearable = null)
         {
             ResetWizardAndConfigView();
             TargetAvatar = targetAvatar;
@@ -187,6 +192,9 @@ namespace Chocopoi.DressingTools.UI.Views
 
             _wizardView.style.display = DisplayStyle.Flex;
             _advancedContainer.style.display = DisplayStyle.None;
+
+            _btnAddToCabinet = Q<Button>("btn-add-to-cabinet").First();
+            _btnAddToCabinet.clicked += DoAddToCabinetEvent;
 
             BindFoldoutHeaderWithContainer("foldout-setup", "setup-container");
         }
