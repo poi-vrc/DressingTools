@@ -77,5 +77,11 @@ namespace Chocopoi.DressingTools.Lib.UI
             var container = Q<VisualElement>(containerName).First();
             foldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => container.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
         }
+
+        public VisualElement CreateHelpBox(string msg, MessageType msgType)
+        {
+            // unity 2019.4 not yet have helpbox in uxml
+            return new IMGUIContainer(() => EditorGUILayout.HelpBox(msg, msgType));
+        }
     }
 }

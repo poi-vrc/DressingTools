@@ -21,8 +21,8 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var cabinet = cabinetGo.AddComponent<DTCabinet>();
 
             var obj = CreateGameObject("SomeGameObject");
-            cabinet.avatarGameObject = obj;
-            Assert.AreEqual(obj, cabinet.avatarGameObject);
+            cabinet.AvatarGameObject = obj;
+            Assert.AreEqual(obj, cabinet.AvatarGameObject);
         }
 
         [Test]
@@ -41,9 +41,9 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
 
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
-            Assert.NotNull(cabinet.avatarGameObject);
+            Assert.NotNull(cabinet.AvatarGameObject);
 
-            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.avatarGameObject);
+            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.AvatarGameObject);
             Assert.NotNull(wearables);
             Assert.AreEqual(1, wearables.Length);
 

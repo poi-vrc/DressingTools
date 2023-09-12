@@ -103,6 +103,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private VisualElement _moveRootContainer;
         private VisualElement _animGenContainer;
         private VisualElement _blendshapeSyncContainer;
+        private VisualElement _helpBoxContainer;
 
         public WearableSetupWizardView(IDressingSubView dressingSubView)
         {
@@ -290,6 +291,8 @@ namespace Chocopoi.DressingTools.UI.Views
             _animGenContainer = Q<VisualElement>("anim-gen-container").First();
             _blendshapeSyncContainer = Q<VisualElement>("blendshape-sync-container").First();
 
+            _helpBoxContainer = Q<VisualElement>("helpbox-container").First();
+
             _armatureMappingContainer.Add(ArmatureMappingModuleEditor);
             _moveRootContainer.Add(MoveRootModuleEditor);
             _animGenContainer.Add(AnimationGenerationModuleEditor);
@@ -342,6 +345,8 @@ namespace Chocopoi.DressingTools.UI.Views
                 _stepMappingContainer.style.display = DisplayStyle.None;
                 _stepAnimateContainer.style.display = DisplayStyle.Flex;
             }
+
+            UpdateButtonNextText();
         }
 
         public override void OnEnable()
@@ -376,6 +381,25 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             UpdateSteps();
 
+            // add helpboxes
+            _helpBoxContainer.Clear();
+            if (ShowAvatarNoCabinetHelpBox)
+            {
+                _helpBoxContainer.Add(CreateHelpBox(t._("dressing.editor.wizard.autoSetup.helpbox.avatarHasNoCabinetUsingDefault"), MessageType.Warning));
+            }
+            if (ShowArmatureNotFoundHelpBox)
+            {
+                _helpBoxContainer.Add(CreateHelpBox(t._("dressing.editor.wizard.autoSetup.helpbox.wearableArmatureNotFound"), MessageType.Warning));
+            }
+            if (ShowArmatureGuessedHelpBox)
+            {
+                _helpBoxContainer.Add(CreateHelpBox(t._("dressing.editor.wizard.autoSetup.helpbox.armatureGuessed"), MessageType.Warning));
+            }
+            if (ShowCabinetConfigErrorHelpBox)
+            {
+                _helpBoxContainer.Add(CreateHelpBox(t._("dressing.editor.wizard.autoSetup.helpbox.unableToLoadCabinetConfig"), MessageType.Warning));
+            }
+
             _toggleUseCustomName.value = UseCustomWearableName;
             _labelWearableName.text = UseCustomWearableName ? CustomWearableName : (TargetWearable != null ? TargetWearable.name : "---");
 
@@ -387,7 +411,10 @@ namespace Chocopoi.DressingTools.UI.Views
             Q<Foldout>("foldout-anim-gen").First().value = UseAnimationGeneration;
             _toggleBlendshapeSync.value = UseBlendshapeSync;
             Q<Foldout>("foldout-blendshape-sync").First().value = UseBlendshapeSync;
+        }
 
+        private void UpdateButtonNextText()
+        {
             // last step set to finish
             _btnNext.text = CurrentStep == 1 ? "Finish!" : "Next >";
         }

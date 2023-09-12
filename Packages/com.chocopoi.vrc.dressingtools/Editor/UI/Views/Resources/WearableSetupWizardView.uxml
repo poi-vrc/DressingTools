@@ -38,6 +38,7 @@
             <ui:Button text="@dressing.editor.wizard.btn.preview" name="btn-wizard-preview" />
             <ui:Button text="@dressing.editor.wizard.btn.next" name="btn-wizard-next" />
         </ui:VisualElement>
+        <ui:VisualElement name="helpbox-container" />
         <ui:VisualElement name="step-mapping-container" class="step-container">
             <ui:VisualElement class="wizard-foldout-header">
                 <ui:Foldout text="@dressing.editor.wizard.toggle.armatureMapping" name="foldout-armature-mapping" />

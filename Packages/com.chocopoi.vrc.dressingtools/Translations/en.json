@@ -69,7 +69,7 @@
     "dressing.editor.wizard.autoSetup.helpbox.armatureGuessed": "Auto-setup: Wearable armature was guessed.",
     "dressing.editor.wizard.autoSetup.helpbox.avatarHasNoCabinetUsingDefault": "Auto-setup: Selected avatar has no cabinet, using default settings",
     "dressing.editor.wizard.autoSetup.helpbox.unableToLoadCabinetConfig": "Auto-setup: Unable to load cabinet config!",
-    "dressing.editor.wizard.autoSetup.helpbox.wearableArmatureNotFound": "Auto-setup:Wearable armature not found. Armature mapping is not enabled.",
+    "dressing.editor.wizard.autoSetup.helpbox.wearableArmatureNotFound": "Auto-setup: Wearable armature not found. Armature mapping is not enabled.",
     "dressing.editor.wizard.btn.finish": "Finish!",
     "dressing.editor.wizard.btn.next": "Next >",
     "dressing.editor.wizard.btn.preview": "Preview",

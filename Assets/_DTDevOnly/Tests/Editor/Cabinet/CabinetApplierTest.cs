@@ -36,7 +36,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         //     var cabinet = avatarRoot.GetComponent<DTCabinet>();
 
         //     // we simulate this by adding the config version by one
-        //     var wearableComp = avatarRoot.GetComponentInChildren<DTCabinetWearable>();
+        //     var wearableComp = avatarRoot.GetComponentInChildren<DTWearable>();
         //     Assert.NotNull(wearableComp);
         //     JObject json = JObject.Parse(wearableComp.configJson);
         //     json["configVersion"] = WearableConfig.CurrentConfigVersion + 1;
@@ -58,7 +58,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             Assert.NotNull(cabinet);
 
             // we simulate this by destroying the config json
-            var wearableComp = avatarRoot.GetComponentInChildren<DTCabinetWearable>();
+            var wearableComp = avatarRoot.GetComponentInChildren<DTWearable>();
             Assert.NotNull(wearableComp);
             wearableComp.configJson = "ababababababababa";
 
