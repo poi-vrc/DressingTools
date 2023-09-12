@@ -116,3 +116,7 @@
 #btn-wizard-preview.active {
     background-color: green;
 }
+
+#helpbox-container {
+    margin: 4px;
+}
