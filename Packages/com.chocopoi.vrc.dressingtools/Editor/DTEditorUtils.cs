@@ -264,6 +264,7 @@ namespace Chocopoi.DressingTools
                 cabinetWearable.WearableGameObject = wearableGameObject;
             }
 
+            wearableConfig.info.RefreshUpdatedTime();
             cabinetWearable.configJson = wearableConfig.Serialize();
 
             DoWearableModuleProviderCallbacks(wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
@@ -935,9 +936,8 @@ namespace Chocopoi.DressingTools
             return tex;
         }
 
-        public static string CaptureThumbnailRenderTextureToBase64()
+        public static string GetBase64FromTexture(Texture2D texture)
         {
-            var texture = GetThumbnailCameraPreview();
             var buffer = texture.EncodeToPNG();
 
             var decompressedMs = new MemoryStream();

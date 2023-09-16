@@ -16,6 +16,7 @@
  */
 
 using System;
+using System.Globalization;
 
 namespace Chocopoi.DressingTools.Lib.Wearable
 {
@@ -42,6 +43,11 @@ namespace Chocopoi.DressingTools.Lib.Wearable
             createdTime = toCopy.createdTime;
             updatedTime = toCopy.updatedTime;
             thumbnail = null;
+        }
+
+        public void RefreshUpdatedTime()
+        {
+            updatedTime = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
         }
     }
 }

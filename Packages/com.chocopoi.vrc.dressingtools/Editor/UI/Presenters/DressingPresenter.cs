@@ -41,8 +41,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.ForceUpdateView += OnForceUpdateView;
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            _view.DoAddToCabinetEvent += OnAddToCabinetButtonClick;
-            _view.DressingModeChange += OnDressingModeChange;
+            _view.AddToCabinetButtonClick += OnAddToCabinetButtonClick;
         }
 
         private void UnsubscribeEvents()
@@ -52,22 +51,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            _view.DoAddToCabinetEvent -= OnAddToCabinetButtonClick;
-            _view.DressingModeChange -= OnDressingModeChange;
-        }
-
-        private void OnDressingModeChange()
-        {
-            // ask if really switch back to wizard mode
-            if (_view.SelectedDressingMode == 0 && !_view.ShowConfirmSwitchWizardModeDialog())
-            {
-                _view.SelectedDressingMode = 1;
-                _view.Repaint();
-                return;
-            }
-
-            // generate config
-            _view.WizardGenerateConfig();
+            _view.AddToCabinetButtonClick -= OnAddToCabinetButtonClick;
         }
 
         private void OnForceUpdateView()
@@ -94,6 +78,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UnsubscribeEvents();
         }
 
+        private void CreateNewConfig()
+        {
+            if (_view.TargetAvatar == null)
+            {
+                return;
+            }
+
+            _view.Config = new WearableConfig();
+            DTEditorUtils.PrepareWearableConfig(_view.Config, _view.TargetAvatar, _view.TargetWearable);
+            _view.ForceUpdateConfigView();
+            _view.AutoSetup();
+        }
+
         private void OnTargetAvatarOrWearableChange()
         {
             // try find if the wearable has a config, if yes, use advanced mode for editing
@@ -110,8 +107,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                     else
                     {
-
+                        CreateNewConfig();
                     }
+                }
+                else
+                {
+                    CreateNewConfig();
                 }
             }
 
@@ -151,6 +152,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.SelectTab(0);
 
                 _view.ForceUpdateCabinetSubView();
+            }
+            else
+            {
+                _view.ShowFixAllInvalidConfig();
             }
         }
     }

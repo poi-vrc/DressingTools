@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
         public event Action TargetAvatarOrWearableChange;
-        public event Action DoAddToCabinetEvent;
+        public event Action AddToCabinetButtonClick;
         public event Action DressingModeChange;
         public GameObject TargetAvatar { get; set; }
         public GameObject TargetWearable { get; set; }
@@ -46,7 +46,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private DressingPresenter _presenter;
         private IMainView _mainView;
-        private WearableSetupWizardView _wizardView;
         private WearableConfigView _configView;
         private int _currentMode;
         private Button[] _viewModeBtns;
@@ -68,19 +67,7 @@ namespace Chocopoi.DressingTools.UI.Views
             DisableAddToCabinetButton = true;
             Config = new WearableConfig();
 
-            _wizardView = new WearableSetupWizardView(this);
             _configView = new WearableConfigView(this);
-        }
-
-        public bool ShowConfirmSwitchWizardModeDialog()
-        {
-            return EditorUtility.DisplayDialog(t._("tool.name"), t._("dressing.editor.dialog.msg.switchWizardModeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no"));
-        }
-
-        public void WizardGenerateConfig()
-        {
-            _wizardView.GenerateConfig();
-            _configView.RaiseForceUpdateViewEvent();
         }
 
         public void ForceUpdateConfigView()
@@ -88,9 +75,14 @@ namespace Chocopoi.DressingTools.UI.Views
             _configView.RaiseForceUpdateViewEvent();
         }
 
+        public void AutoSetup()
+        {
+            _configView.AutoSetup();
+        }
+
         public bool IsConfigValid()
         {
-            return _currentMode == 0 ? _wizardView.IsValid() : _configView.IsValid();
+            return _configView.IsValid();
         }
 
         public void SelectTab(int selectedTab)
@@ -101,11 +93,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public void ForceUpdateCabinetSubView()
         {
             _mainView.ForceUpdateCabinetSubView();
-        }
-
-        public void RaiseDoAddToCabinetEvent()
-        {
-            DoAddToCabinetEvent?.Invoke();
         }
 
         public void StartDressing(GameObject targetAvatar, GameObject targetWearable = null)
@@ -125,9 +112,6 @@ namespace Chocopoi.DressingTools.UI.Views
             TargetWearable = null;
             Config = new WearableConfig();
 
-            _wizardView.CurrentStep = 0;
-            _wizardView.RaiseForceUpdateViewEvent();
-
             // force update the config view
             _configView.RaiseForceUpdateViewEvent();
 
@@ -137,21 +121,15 @@ namespace Chocopoi.DressingTools.UI.Views
         public override void OnEnable()
         {
             InitVisualTree();
-            BindViewModes();
-
-            base.OnEnable();
-
             t.LocalizeElement(this);
-
             _configView.OnEnable();
-            _wizardView.OnEnable();
+            RaiseLoadEvent();
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             _configView.OnDisable();
-            _wizardView.OnDisable();
         }
 
         private void InitVisualTree()
@@ -182,68 +160,24 @@ namespace Chocopoi.DressingTools.UI.Views
                 TargetAvatarOrWearableChange?.Invoke();
             });
 
-            _advancedContainer = Q<VisualElement>("advanced-container").First();
-
-            var wizardContainer = Q<VisualElement>("wizard-container").First();
-            wizardContainer.Add(_wizardView);
-
             var configViewContainer = Q<VisualElement>("config-view-container").First();
             configViewContainer.Add(_configView);
 
-            _wizardView.style.display = DisplayStyle.Flex;
-            _advancedContainer.style.display = DisplayStyle.None;
-
             _btnAddToCabinet = Q<Button>("btn-add-to-cabinet").First();
-            _btnAddToCabinet.clicked += DoAddToCabinetEvent;
+            _btnAddToCabinet.clicked += AddToCabinetButtonClick;
 
             BindFoldoutHeaderWithContainer("foldout-setup", "setup-container");
-        }
-
-        private void BindViewModes()
-        {
-            var wizardBtn = Q<Button>("toolbar-btn-wizard");
-            var advancedBtn = Q<Button>("toolbar-btn-advanced");
-
-            _viewModeBtns = new Button[] { wizardBtn, advancedBtn };
-
-            for (var i = 0; i < _viewModeBtns.Length; i++)
-            {
-                var viewModeIndex = i;
-                _viewModeBtns[i].clicked += () =>
-                {
-                    if (_currentMode == viewModeIndex) return;
-                    _currentMode = viewModeIndex;
-                    DressingModeChange?.Invoke();
-                    UpdateViewModes();
-                };
-                _viewModeBtns[i].EnableInClassList("active", viewModeIndex == _currentMode);
-            }
-        }
-
-        private void UpdateViewModes()
-        {
-            for (var i = 0; i < _viewModeBtns.Length; i++)
-            {
-                _viewModeBtns[i].EnableInClassList("active", i == _currentMode);
-            }
-
-            if (_currentMode == 0)
-            {
-                _wizardView.style.display = DisplayStyle.Flex;
-                _advancedContainer.style.display = DisplayStyle.None;
-            }
-            else if (_currentMode == 1)
-            {
-                _wizardView.style.display = DisplayStyle.None;
-                _advancedContainer.style.display = DisplayStyle.Flex;
-            }
         }
 
         public void Repaint()
         {
             _avatarObjectField.value = TargetAvatar;
             _wearableObjectField.value = TargetWearable;
-            UpdateViewModes();
+        }
+
+        public void ShowFixAllInvalidConfig()
+        {
+            EditorUtility.DisplayDialog(t._("tool.name"), t._("dressing.editor.dialog.msg.fixInvalidConfig"), t._("common.dialog.btn.ok"));
         }
     }
 }

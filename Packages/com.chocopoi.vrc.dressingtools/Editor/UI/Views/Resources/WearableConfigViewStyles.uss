@@ -1,0 +1,166 @@
+#toolbar {
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: space-between;
+}
+
+#toolbar ToolbarButton {
+    white-space: nowrap;
+}
+
+#toolbar ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+#toolbar #toolbar-preview-btn.active {
+    background-color: green;
+}
+
+#simple-categories {
+    height: auto;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+#simple-categories ToolbarButton {
+    width: 100%;
+    -unity-text-align: upper-center;
+}
+
+#simple-categories ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+#simple-categories ToolbarButton.invalid {
+    background-color: rgb(97, 0, 0);
+}
+
+#simple-categories ToolbarButton.invalid.active {
+    background-color: rgb(120, 75, 75);
+}
+
+.foldout-header {
+    background-color: rgb(65, 65, 65);
+}
+
+.fake-foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+    height: 20px;
+}
+
+.fake-foldout-header VisualElement {
+    width: 13px;
+    height: 13px;
+    margin-left: 1px;
+    margin-right: 3px;
+}
+
+.fake-foldout-header Label {
+    margin-left: 0;
+    padding-left: 2px;
+    padding-right: 0;
+    padding-top: 1px;
+}
+
+#wearable-info-thumbnail {
+    min-width: 128px;
+    min-height: 128px;
+    background-image: resource('thumbnailPlaceholder');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.wearable-info-right-panel {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    flex-shrink: 1;
+    margin-left: 8px;
+    margin-right: 8px;
+    flex-grow: 1;
+    display: flex;
+}
+
+#wearable-info-name-label {
+    font-size: 18px;
+    white-space: normal;
+    flex-direction: row;
+    margin-bottom: 8px;
+}
+
+#wearable-info-custom-name-field {
+    display: none;
+}
+
+#wearable-info-capture-panel {
+    display: none;
+}
+
+#wearable-info-capture-panel Label {
+    white-space: normal;
+    margin-bottom: 8px;
+}
+
+#wearable-info-capture-panel VisualElement {
+    flex-direction: row;
+}
+
+#wearable-info-capture-panel VisualElement Button {
+    flex-grow: 1;
+}
+
+.nested-foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+}
+
+.foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+}
+
+.simple-category-container {
+    flex-grow: 1;
+}
+
+#simple-category-animate-container {
+    display: none;
+}
+
+.foldout-container {
+    margin: 8px;
+}
+
+#helpbox-container {
+    margin: 4px;
+}
+
+.mode-container {
+    flex-grow: 1;
+    margin: 4px;
+}
+
+#simple-container {
+    display: none;
+}
+
+.readonly-label-container {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    flex-direction: row;
+}
+
+.readonly-label-left{
+    padding-top: 2px;
+    min-width: 150px;
+    height: 15px;
+}
+
+.readonly-label-right{
+    flex-grow: 1;
+    height: 15px;
+}
+

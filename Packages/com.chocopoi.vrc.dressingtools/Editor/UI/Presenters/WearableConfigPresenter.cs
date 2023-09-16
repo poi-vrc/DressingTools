@@ -17,12 +17,16 @@
 
 using System;
 using System.Collections.Generic;
+using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.UI;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.Wearable.Modules;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,16 +34,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class WearableConfigPresenter
     {
+        private WearableModuleProviderBase[] s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
         private IWearableConfigView _view;
-        private WearableModuleProviderBase[] _moduleProviders;
 
         public WearableConfigPresenter(IWearableConfigView view)
         {
             _view = view;
-            _moduleProviders = null;
-
             SubscribeEvents();
         }
 
@@ -49,10 +51,15 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload += OnUnload;
 
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-            _view.AddModuleButtonClick += OnAddModuleButtonClick;
-            _view.TargetAvatarConfigChange += OnTargetAvatarConfigChange;
-            _view.MetaInfoChange += OnMetaInfoChange;
-            _view.ForceUpdateView += OnForceUpdateView;
+
+            _view.InfoNewThumbnailButtonClick += OnInfoNewThumbnailButtonClick;
+            _view.CaptureThumbnailButtonClick += OnCaptureThumbnailButtonClick;
+            _view.CaptureCancelButtonClick += OnCaptureCancelButtonClick;
+            _view.CaptureSettingsChange += OnCaptureSettingsChange;
+            _view.ModeChange += OnModeChange;
+            _view.AdvancedModuleAddButtonClick += OnAdvancedModuleAddButtonClick;
+            _view.ToolbarPreviewButtonClick += OnPreviewButtonClick;
+            _view.ToolbarAutoSetupButtonClick += OnToolbarAutoSetupButtonClick;
         }
 
         private void UnsubscribeEvents()
@@ -61,140 +68,259 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload -= OnUnload;
 
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-            _view.AddModuleButtonClick -= OnAddModuleButtonClick;
-            _view.TargetAvatarConfigChange -= OnTargetAvatarConfigChange;
-            _view.MetaInfoChange -= OnMetaInfoChange;
-            _view.ForceUpdateView -= OnForceUpdateView;
+
+            _view.InfoNewThumbnailButtonClick -= OnInfoNewThumbnailButtonClick;
+            _view.CaptureThumbnailButtonClick -= OnCaptureThumbnailButtonClick;
+            _view.CaptureCancelButtonClick -= OnCaptureCancelButtonClick;
+            _view.CaptureSettingsChange -= OnCaptureSettingsChange;
+            _view.ModeChange -= OnModeChange;
+            _view.AdvancedModuleAddButtonClick -= OnAdvancedModuleAddButtonClick;
+            _view.ToolbarPreviewButtonClick -= OnPreviewButtonClick;
+            _view.ToolbarAutoSetupButtonClick -= OnToolbarAutoSetupButtonClick;
         }
 
-        private void OnForceUpdateView()
+        private void OnToolbarAutoSetupButtonClick()
         {
-            UpdateModulesView();
-            UpdateView();
-        }
-
-        private void OnTargetAvatarConfigChange()
-        {
-            ApplyTargetAvatarConfigChanges();
-            UpdateView();
-        }
-
-        private void ApplyTargetAvatarConfigChanges()
-        {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
-
-            // try obtain armature name from cabinet
-            if (cabinet == null)
+            if (_view.ShowConfirmAutoSetupDialog())
             {
-                // leave it empty
-                _view.Config.avatarConfig.armatureName = "";
+                AutoSetup();
+            }
+        }
+
+
+        private void OnPreviewButtonClick()
+        {
+            if (_view.PreviewActive)
+            {
+                DTEditorUtils.CleanUpPreviewAvatars();
+                DTEditorUtils.FocusGameObjectInSceneView(_view.TargetAvatar);
             }
             else
             {
-                if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
-                {
-                    _view.Config.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
-                }
-                else
-                {
-                    _view.Config.avatarConfig.armatureName = "";
-                }
+                UpdateAvatarPreview();
             }
+        }
 
-            // can't do anything
-            if (_view.TargetAvatar == null || _view.TargetWearable == null)
+        private void OnAdvancedModuleAddButtonClick()
+        {
+            var index = _view.AdvancedModuleNames.IndexOf(_view.AdvancedSelectedModuleName);
+            if (index == -1)
             {
+                // invalid
                 return;
             }
 
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
-            var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
-
-            _view.Config.avatarConfig.guids.Clear();
-            if (!invalidAvatarPrefabGuid)
+            if (index == 0)
             {
-                // TODO: multiple guids
-                _view.Config.avatarConfig.guids.Add(avatarPrefabGuid);
-            }
-
-            var deltaPos = _view.TargetWearable.transform.position - _view.TargetAvatar.transform.position;
-            var deltaRotation = _view.TargetWearable.transform.rotation * Quaternion.Inverse(_view.TargetAvatar.transform.rotation);
-            _view.Config.avatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
-            _view.Config.avatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
-            _view.Config.avatarConfig.avatarLossyScale = new AvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
-            _view.Config.avatarConfig.wearableLossyScale = new AvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
-        }
-
-        private void OnMetaInfoChange()
-        {
-            ApplyMetaInfoChanges();
-        }
-
-        private void ApplyMetaInfoChanges()
-        {
-            _view.Config.info.name = _view.MetaInfoWearableName;
-            _view.Config.info.author = _view.MetaInfoAuthor;
-            _view.Config.info.description = _view.MetaInfoDescription;
-        }
-
-        private void OnTargetAvatarOrWearableChange()
-        {
-            // reset the settings and read the avatar and wearable name
-            _view.TargetAvatarConfigUseAvatarObjectName = true;
-            if (_view.TargetAvatar != null)
-            {
-                _view.TargetAvatarConfigAvatarName = _view.Config.avatarConfig.name = _view.TargetAvatar.name;
-            }
-            _view.MetaInfoUseWearableObjectName = true;
-            if (_view.TargetWearable != null)
-            {
-                _view.MetaInfoWearableName = _view.Config.info.name = _view.TargetWearable.name;
-            }
-
-            // apply guid, world pos changes
-            ApplyTargetAvatarConfigChanges();
-
-            // update view
-            UpdateView();
-
-            // force update module editors
-            foreach (var moduleData in _view.ModuleDataList)
-            {
-                moduleData.editor.RaiseForceUpdateViewEvent();
-            }
-        }
-
-        private void OnAddModuleButtonClick()
-        {
-            var provider = _moduleProviders[_view.SelectedAvailableModule];
-
-            if (provider == null)
-            {
-                Debug.LogError("[DressingTools] The requested module provider type was not yet registered to locator!");
+                // placeholder
                 return;
             }
 
-            var newModuleConfig = provider.NewModuleConfig();
-            if (!provider.AllowMultiple)
+            var moduleProvider = s_moduleProviders[index - 1];
+
+            if (!moduleProvider.AllowMultiple)
             {
                 // check if any existing type
                 foreach (var existingModule in _view.Config.modules)
                 {
-                    if (existingModule.moduleName == provider.ModuleIdentifier)
+                    if (existingModule.moduleName == moduleProvider.ModuleIdentifier)
                     {
                         _view.ShowModuleAddedBeforeDialog();
                         return;
                     }
                 }
             }
+
             _view.Config.modules.Add(new WearableModule()
             {
-                moduleName = provider.ModuleIdentifier,
-                config = newModuleConfig
+                moduleName = moduleProvider.ModuleIdentifier,
+                config = moduleProvider.NewModuleConfig()
             });
 
-            // update module editors
-            UpdateModulesView();
+            // update and repaint module views only
+            UpdateAdvancedModulesView();
+            _view.RepaintAdvancedModeModules();
+        }
+
+        private void OnModeChange()
+        {
+            if (_view.SelectedMode == 0)
+            {
+                UpdateSimpleView();
+                _view.RepaintSimpleMode();
+            }
+            else if (_view.SelectedMode == 1)
+            {
+                ApplySimpleConfig();
+                UpdateAdvancedModulesView();
+                _view.RepaintAdvancedModeModules();
+            }
+        }
+
+        private void OnInfoNewThumbnailButtonClick()
+        {
+            UpdateCaptureThumbnailPanel();
+            _view.SwitchToCapturePanel();
+        }
+
+        private void UpdateCaptureThumbnailPanel()
+        {
+            if (_view.TargetWearable != null)
+            {
+                DTEditorUtils.PrepareWearableThumbnailCamera(_view.TargetWearable, _view.CaptureWearableOnly, _view.CaptureRemoveBackground, true, () => _view.RepaintCapturePreview());
+            }
+        }
+
+        private void OnCaptureThumbnailButtonClick()
+        {
+            var texture = DTEditorUtils.GetThumbnailCameraPreview();
+            _view.Config.info.thumbnail = DTEditorUtils.GetBase64FromTexture(texture);
+            _view.InfoThumbnail = texture;
+            ReturnToInfoPanel();
+        }
+
+        private void OnCaptureCancelButtonClick()
+        {
+            ReturnToInfoPanel();
+        }
+
+        private void ReturnToInfoPanel()
+        {
+            DTEditorUtils.CleanUpThumbnailObjects();
+            if (_view.TargetAvatar != null)
+            {
+                DTEditorUtils.FocusGameObjectInSceneView(_view.TargetAvatar);
+            }
+            _view.Repaint();
+            _view.SwitchToInfoPanel();
+        }
+
+        private void OnCaptureSettingsChange()
+        {
+            UpdateCaptureThumbnailPanel();
+        }
+
+        private void OnTargetAvatarOrWearableChange()
+        {
+            UpdateView();
+        }
+
+        private static void RemoveModuleIfExist(WearableConfig wearableConfig, string moduleName)
+        {
+            var module = DTEditorUtils.FindWearableModule(wearableConfig, moduleName);
+            if (module != null)
+            {
+                wearableConfig.modules.Remove(module);
+            }
+        }
+
+        private static void SetModuleConfig(WearableConfig wearableConfig, string moduleName, IModuleConfig moduleConfig)
+        {
+            var module = DTEditorUtils.FindWearableModule(wearableConfig, moduleName);
+            if (module != null)
+            {
+                module.config = moduleConfig;
+            }
+            else
+            {
+                wearableConfig.modules.Add(new WearableModule()
+                {
+                    moduleName = moduleName,
+                    config = moduleConfig,
+                });
+            }
+        }
+
+        private static void ApplySimpleModuleConfig(WearableConfig wearableConfig, string moduleName, IModuleConfig moduleConfig, bool enabled)
+        {
+            if (enabled)
+            {
+                SetModuleConfig(wearableConfig, moduleName, moduleConfig);
+            }
+            else
+            {
+                RemoveModuleIfExist(wearableConfig, moduleName);
+            }
+        }
+
+        private void ApplySimpleConfig()
+        {
+            ApplySimpleModuleConfig(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleArmatureMappingConfig, _view.SimpleUseArmatureMapping);
+            ApplySimpleModuleConfig(_view.Config, MoveRootWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleMoveRootConfig, _view.SimpleUseMoveRoot);
+            ApplySimpleModuleConfig(_view.Config, AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleAnimationGenerationConfig, _view.SimpleUseAnimationGeneration);
+            ApplySimpleModuleConfig(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleBlendshapeSyncConfig, _view.SimpleUseBlendshapeSync);
+        }
+
+        public void ApplyConfig()
+        {
+            // apply simple config first if current in view
+            if (_view.SelectedMode == 0)
+            {
+                ApplySimpleConfig();
+            }
+        }
+
+        private void UpdateWearableInfoView()
+        {
+            if (_view.Config.info.thumbnail != null)
+            {
+                try
+                {
+                    _view.InfoThumbnail = DTEditorUtils.GetTextureFromBase64(_view.Config.info.thumbnail);
+                }
+                catch (Exception ex)
+                {
+                    _view.InfoThumbnail = null;
+                    Debug.LogWarning("[DressingTools] Unable to load thumbnail from base64, ignoring: " + ex.Message);
+                }
+            }
+
+            _view.InfoUseCustomWearableName = _view.TargetWearable != null ? (_view.TargetWearable.name != _view.Config.info.name) : true;
+            _view.InfoCustomWearableName = _view.Config.info.name;
+
+            _view.InfoUuid = _view.Config.info.uuid;
+            _view.InfoAuthor = _view.Config.info.author;
+
+            // attempts to parse and display the created time
+            if (DateTime.TryParse(_view.Config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
+            {
+                _view.InfoCreatedTime = createdTimeDt.ToLocalTime().ToString();
+            }
+            else
+            {
+                _view.InfoCreatedTime = "(Unable to parse date)";
+            }
+
+            // attempts to parse and display the updated time
+            if (DateTime.TryParse(_view.Config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
+            {
+                _view.InfoUpdatedTime = updatedTimeDt.ToLocalTime().ToString();
+            }
+            else
+            {
+                _view.InfoUpdatedTime = "(Unable to parse date)";
+            }
+
+            _view.InfoDescription = _view.Config.info.description;
+        }
+
+        private void UpdateSimpleView()
+        {
+            var armatureMappingModule = DTEditorUtils.FindWearableModule(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER);
+            _view.SimpleUseArmatureMapping = armatureMappingModule != null;
+            _view.SimpleArmatureMappingConfig = armatureMappingModule != null ? (ArmatureMappingWearableModuleConfig)armatureMappingModule.config : new ArmatureMappingWearableModuleConfig();
+
+            var moveRootModule = DTEditorUtils.FindWearableModule(_view.Config, MoveRootWearableModuleProvider.MODULE_IDENTIFIER);
+            _view.SimpleUseMoveRoot = moveRootModule != null;
+            _view.SimpleMoveRootConfig = moveRootModule != null ? (MoveRootWearableModuleConfig)moveRootModule.config : new MoveRootWearableModuleConfig();
+
+            var animGenModule = DTEditorUtils.FindWearableModule(_view.Config, AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER);
+            _view.SimpleUseAnimationGeneration = animGenModule != null;
+            _view.SimpleAnimationGenerationConfig = animGenModule != null ? (AnimationGenerationWearableModuleConfig)animGenModule.config : new AnimationGenerationWearableModuleConfig();
+
+            var blendshapeSyncModule = DTEditorUtils.FindWearableModule(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER);
+            _view.SimpleUseBlendshapeSync = blendshapeSyncModule != null;
+            _view.SimpleBlendshapeSyncConfig = blendshapeSyncModule != null ? (BlendshapeSyncWearableModuleConfig)blendshapeSyncModule.config : new BlendshapeSyncWearableModuleConfig();
         }
 
         private WearableModuleEditor CreateModuleEditor(WearableModuleProviderBase provider, IModuleConfig module)
@@ -234,25 +360,26 @@ namespace Chocopoi.DressingTools.UI.Presenters
             return new WearableModuleEditor(_view, provider, module);
         }
 
-        private void UpdateModulesView()
+        private void UpdateAdvancedModulesView()
         {
-            // this will clear the list and causing foldout to be closed (default state is false)
-            // TODO: do not clear but update necessary only?
-
-            _moduleProviders = WearableModuleProviderLocator.Instance.GetAllProviders();
-            var keys = new string[_moduleProviders.Length];
-            for (var i = 0; i < _moduleProviders.Length; i++)
+            if (s_moduleProviders == null)
             {
-                keys[i] = _moduleProviders[i].FriendlyName;
+                s_moduleProviders = WearableModuleProviderLocator.Instance.GetAllProviders();
             }
-            _view.AvailableModuleKeys = keys;
+
+            _view.AdvancedModuleNames.Clear();
+            _view.AdvancedModuleNames.Add("---");
+            foreach (var moduleProvider in s_moduleProviders)
+            {
+                _view.AdvancedModuleNames.Add($"{moduleProvider.FriendlyName}");
+            }
 
             // call unload before we clear the list
-            foreach (var moduleData in _view.ModuleDataList)
+            foreach (var moduleData in _view.AdvancedModuleViewDataList)
             {
                 moduleData.editor.OnDisable();
             }
-            _view.ModuleDataList.Clear();
+            _view.AdvancedModuleViewDataList.Clear();
 
             foreach (var module in _view.Config.modules)
             {
@@ -265,100 +392,62 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     continue;
                 }
 
-                var moduleData = new ModuleData()
+                var moduleData = new WearableConfigModuleViewData()
                 {
                     editor = CreateModuleEditor(provider, module.config),
                 };
-                moduleData.removeButtonOnClickEvent = () =>
+                moduleData.removeButtonOnClick = () =>
                 {
                     moduleData.editor.OnDisable();
                     _view.Config.modules.Remove(module);
-                    _view.ModuleDataList.Remove(moduleData);
+                    _view.AdvancedModuleViewDataList.Remove(moduleData);
+                    UpdateAdvancedModulesView();
+                    _view.RepaintAdvancedModeModules();
                 };
-                _view.ModuleDataList.Add(moduleData);
+                _view.AdvancedModuleViewDataList.Add(moduleData);
 
                 // call enable
                 moduleData.editor.OnEnable();
             }
-
-            // TODO: sort modules according to apply order?
         }
 
-        private void UpdateAvatarConfigsView()
+        private void UpdateAdvancedAvatarConfigView()
         {
             if (_view.TargetAvatar == null || _view.TargetWearable == null)
             {
-                // we cannot do anything with target avatar and wearable null
-                _view.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = true;
                 return;
             }
-            _view.ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox = false;
 
-            // GUI Data
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
+            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
-            _view.IsInvalidAvatarPrefabGuid = invalidAvatarPrefabGuid;
-            _view.AvatarPrefabGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;
+            _view.AdvancedAvatarConfigGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;
 
-            _view.TargetAvatarConfigUseAvatarObjectName = _view.TargetAvatar.name == _view.Config.avatarConfig.name;
-            _view.TargetAvatarConfigAvatarName = _view.Config.avatarConfig.name;
-            _view.TargetAvatarConfigWorldPosition = _view.Config.avatarConfig.worldPosition.ToString();
-            _view.TargetAvatarConfigWorldRotation = _view.Config.avatarConfig.worldRotation.ToString();
-            _view.TargetAvatarConfigWorldAvatarLossyScale = _view.Config.avatarConfig.avatarLossyScale.ToString();
-            _view.TargetAvatarConfigWorldWearableLossyScale = _view.Config.avatarConfig.wearableLossyScale.ToString();
+            _view.AdvancedAvatarConfigUseAvatarObjName = _view.TargetAvatar.name == _view.Config.avatarConfig.name;
+            _view.AdvancedAvatarConfigCustomName = _view.Config.avatarConfig.name;
+            _view.AdvancedAvatarConfigDeltaWorldPos = _view.Config.avatarConfig.worldPosition.ToString();
+            _view.AdvancedAvatarConfigDeltaWorldRot = _view.Config.avatarConfig.worldRotation.ToString();
+            _view.AdvancedAvatarConfigAvatarLossyScale = _view.Config.avatarConfig.avatarLossyScale.ToString();
+            _view.AdvancedAvatarConfigWearableLossyScale = _view.Config.avatarConfig.wearableLossyScale.ToString();
         }
 
-        private void UpdateMetaInfoView()
+        private void UpdateAdvancedView()
         {
-            _view.ConfigUuid = _view.Config.info.uuid;
-
-            if (_view.TargetWearable == null)
-            {
-                // can't do anything with empty wearable
-                return;
-            }
-
-            // automatically unset this setting if name is not the same
-            _view.MetaInfoUseWearableObjectName = _view.TargetWearable.name == _view.Config.info.name;
-            _view.MetaInfoWearableName = _view.Config.info.name;
-            _view.MetaInfoAuthor = _view.Config.info.author;
-
-            // attempts to parse and display the created time
-            if (DateTime.TryParse(_view.Config.info.createdTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var createdTimeDt))
-            {
-                _view.MetaInfoCreatedTime = createdTimeDt.ToLocalTime().ToString();
-            }
-            else
-            {
-                _view.MetaInfoCreatedTime = "(Unable to parse date)";
-            }
-
-            // attempts to parse and display the updated time
-            if (DateTime.TryParse(_view.Config.info.updatedTime, null, System.Globalization.DateTimeStyles.RoundtripKind, out var updatedTimeDt))
-            {
-                _view.MetaInfoUpdatedTime = updatedTimeDt.ToLocalTime().ToString();
-            }
-            else
-            {
-                _view.MetaInfoUpdatedTime = "(Unable to parse date)";
-            }
-
-            _view.MetaInfoDescription = _view.Config.info.description;
+            UpdateAdvancedModulesView();
+            UpdateAdvancedAvatarConfigView();
         }
 
         private void UpdateView()
         {
-            // updates the view according to the config
-
-            // it will not update the module editors to avoid foldout reset
-            UpdateAvatarConfigsView();
-            UpdateMetaInfoView();
+            UpdateWearableInfoView();
+            UpdateSimpleView();
+            UpdateAdvancedView();
+            _view.Repaint();
         }
 
         private void OnLoad()
         {
-            OnForceUpdateView();
+            UpdateView();
         }
 
         private void OnUnload()
@@ -366,42 +455,226 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UnsubscribeEvents();
         }
 
-        public bool IsValid()
+        public void UpdateAvatarPreview()
         {
-            // prepare config
-            _view.Config.version = WearableConfig.CurrentConfigVersion;
+            ApplyConfig();
+            DTEditorUtils.UpdatePreviewAvatar(_view.TargetAvatar, _view.Config, _view.TargetWearable);
+        }
 
-            // TODO: multiple GUIDs
-            if (_view.GuidReferencePrefab != null || _view.TargetAvatar != null)
+        private void AutoSetupMapping()
+        {
+            // cabinet
+            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
             {
-                var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.GuidReferencePrefab ?? _view.TargetAvatar);
-                var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
-                if (invalidAvatarPrefabGuid)
+                _view.ShowCabinetConfigErrorHelpBox = true;
+                return;
+            }
+            _view.ShowCabinetConfigErrorHelpBox = false;
+
+            var armatureName = "Armature";
+            if (cabinet != null)
+            {
+                armatureName = cabinetConfig.avatarArmatureName;
+                _view.ShowAvatarNoCabinetHelpBox = false;
+            }
+            else
+            {
+                _view.ShowAvatarNoCabinetHelpBox = true;
+            }
+
+            // attempt to find wearable armature using avatar armature name
+            var armature = DTEditorUtils.GuessArmature(_view.TargetWearable, armatureName);
+
+            if (armature == null)
+            {
+                _view.ShowArmatureNotFoundHelpBox = true;
+                _view.ShowArmatureGuessedHelpBox = false;
+                RemoveModuleIfExist(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER);
+            }
+            else
+            {
+                _view.ShowArmatureNotFoundHelpBox = false;
+                _view.ShowArmatureGuessedHelpBox = armature.name != armatureName;
+
+                var config = new ArmatureMappingWearableModuleConfig()
                 {
-                    if (_view.Config.avatarConfig.guids.Count > 0)
+                    dresserName = typeof(DefaultDresser).FullName,
+                    wearableArmatureName = armatureName,
+                    boneMappingMode = BoneMappingMode.Auto,
+                    boneMappings = null,
+                    serializedDresserConfig = JsonConvert.SerializeObject(new DefaultDresserSettings()),
+                    removeExistingPrefixSuffix = true,
+                    groupBones = true
+                };
+                SetModuleConfig(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER, config);
+            }
+        }
+
+        private string[] GetBlendshapeNames(SkinnedMeshRenderer smr)
+        {
+            if (smr.sharedMesh == null)
+            {
+                return new string[0];
+            }
+
+            var names = new List<string>();
+            for (var i = 0; i < smr.sharedMesh.blendShapeCount; i++)
+            {
+                names.Add(smr.sharedMesh.GetBlendShapeName(i));
+            }
+
+            return names.ToArray();
+        }
+
+        private void AutoSetupAnimationGeneration()
+        {
+            // generate wearable toggles
+            {
+                var transforms = new List<Transform>();
+
+                var armatureMappingModule = DTEditorUtils.FindWearableModuleConfig<ArmatureMappingWearableModuleConfig>(_view.Config);
+                if (armatureMappingModule != null)
+                {
+                    // skip the armature if used armature mapping
+                    var wearableArmature = DTEditorUtils.GuessArmature(_view.TargetWearable, armatureMappingModule.wearableArmatureName);
+                    for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
-                        _view.Config.avatarConfig.guids.Clear();
+                        // do not auto add wearable toggle if state is disabled initially
+                        var child = _view.TargetWearable.transform.GetChild(i);
+                        if (child != wearableArmature && child.gameObject.activeSelf)
+                        {
+                            transforms.Add(child);
+                        }
                     }
                 }
                 else
                 {
-                    if (_view.Config.avatarConfig.guids.Count != 1)
+                    // add all
+                    for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
-                        _view.Config.avatarConfig.guids.Clear();
-                        _view.Config.avatarConfig.guids.Add(avatarPrefabGuid);
+                        // do not auto add wearable toggle if state is disabled initially
+                        var child = _view.TargetWearable.transform.GetChild(i);
+                        if (child.gameObject.activeSelf)
+                        {
+                            transforms.Add(child);
+                        }
                     }
                 }
+
+                var config = new AnimationGenerationWearableModuleConfig();
+
+                var toggles = config.wearableAnimationOnWear.toggles;
+                var blendshapes = config.wearableAnimationOnWear.blendshapes;
+                toggles.Clear();
+                blendshapes.Clear();
+
+                foreach (var trans in transforms)
+                {
+                    toggles.Add(new AnimationToggle()
+                    {
+                        path = DTEditorUtils.GetRelativePath(trans, _view.TargetWearable.transform),
+                        state = true
+                    });
+                }
+
+                SetModuleConfig(_view.Config, AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER, config);
             }
 
-            var ready = true;
-
-            foreach (var module in _view.ModuleDataList)
+            // generate blendshape syncs
             {
-                // ask the module editor that whether the module config is valid
-                ready &= module.editor.IsValid();
+                var config = new BlendshapeSyncWearableModuleConfig();
+
+                // find all avatar blendshapes
+                var avatarSmrs = _view.TargetAvatar.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                var avatarSmrCache = new Dictionary<SkinnedMeshRenderer, string[]>();
+                foreach (var avatarSmr in avatarSmrs)
+                {
+                    // transverse up to see if it is originated from ours or an existing wearable
+                    if (DTEditorUtils.IsOriginatedFromAnyWearable(_view.TargetAvatar.transform, avatarSmr.transform) ||
+                        DTEditorUtils.IsGrandParent(_view.TargetWearable.transform, avatarSmr.transform))
+                    {
+                        // skip this SMR
+                        continue;
+                    }
+
+                    // add to cache
+                    avatarSmrCache.Add(avatarSmr, GetBlendshapeNames(avatarSmr));
+                }
+
+                // pair wearable blendshape names with avatar
+                var wearableSmrs = _view.TargetWearable.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                foreach (var wearableSmr in wearableSmrs)
+                {
+                    var wearableBlendshapes = GetBlendshapeNames(wearableSmr);
+
+                    if (wearableBlendshapes.Length == 0)
+                    {
+                        // skip no wearable blendshapes
+                        continue;
+                    }
+
+                    // search if have pairs
+                    var found = false;
+                    foreach (var avatarSmr in avatarSmrs)
+                    {
+                        if (!avatarSmrCache.ContainsKey(avatarSmr))
+                        {
+                            continue;
+                        }
+
+                        var avatarBlendshapes = avatarSmrCache[avatarSmr];
+                        foreach (var wearableBlendshape in wearableBlendshapes)
+                        {
+                            if (System.Array.IndexOf(avatarBlendshapes, wearableBlendshape) != -1)
+                            {
+                                config.blendshapeSyncs.Add(new AnimationBlendshapeSync()
+                                {
+                                    avatarBlendshapeName = wearableBlendshape,
+                                    avatarFromValue = 0,
+                                    avatarToValue = 100,
+                                    wearableFromValue = 0,
+                                    wearableToValue = 100,
+                                    wearableBlendshapeName = wearableBlendshape,
+                                    avatarPath = DTEditorUtils.GetRelativePath(avatarSmr.transform, _view.TargetAvatar.transform),
+                                    wearablePath = DTEditorUtils.GetRelativePath(wearableSmr.transform, _view.TargetWearable.transform)
+                                });
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            // don't process the same blendshape anymore if found
+                            break;
+                        }
+                    }
+                }
+
+                // enable module if count > 0
+                if (config.blendshapeSyncs.Count > 0)
+                {
+                    SetModuleConfig(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER, config);
+                }
+                else
+                {
+                    RemoveModuleIfExist(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER);
+                }
+            }
+        }
+
+        public void AutoSetup()
+        {
+            if (_view.TargetAvatar == null || _view.TargetWearable == null)
+            {
+                return;
             }
 
-            return ready;
+            AutoSetupMapping();
+            AutoSetupAnimationGeneration();
+
+            UpdateView();
         }
     }
 }

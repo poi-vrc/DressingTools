@@ -36,3 +36,8 @@
 #setup-container {
     padding-left: 15px;
 }
+
+#btn-add-to-cabinet {
+    height: 48px;
+    margin: 8px;
+}

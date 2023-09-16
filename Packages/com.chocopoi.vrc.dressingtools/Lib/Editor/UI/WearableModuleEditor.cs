@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools.Lib.UI
 {
     public class WearableModuleEditor : IMGUIViewBase
     {
-        public virtual string FriendlyName => GetType().Name;
+        public virtual string FriendlyName => provider.FriendlyName;
 
         public bool foldout;
 
