@@ -191,8 +191,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 CabinetAvatarArmatureName = evt.newValue;
                 CabinetSettingsChange?.Invoke();
             });
-            // TODO: due to a weird bug, we have to localize text field here
-            _avatarArmatureNameField.label = t._(_avatarArmatureNameField.label.Substring(1));
 
             _groupDynamicsToggle = Q<Toggle>("settings-group-dynamics").First();
             _groupDynamicsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>

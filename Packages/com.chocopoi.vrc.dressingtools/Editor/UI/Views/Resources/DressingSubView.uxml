@@ -1,9 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:Toolbar name="toolbar">
-        <Style src="DressingSubViewStyles.uss" />
-        <uie:ToolbarButton text="@dressing.editor.modes.wizard" name="toolbar-btn-wizard" />
-        <uie:ToolbarButton text="@dressing.editor.modes.advanced" name="toolbar-btn-advanced" />
-    </uie:Toolbar>
     <ui:ScrollView style="flex-grow: 1;">
         <ui:Foldout text="@dressing.editor.foldout.setup" name="foldout-setup" class="foldout-header">
             <Style src="DressingSubViewStyles.uss" />
@@ -13,13 +8,10 @@
             <uie:ObjectField label="@dressing.editor.gameObjectField.avatar" name="objectfield-avatar" />
             <uie:ObjectField label="@dressing.editor.gameObjectField.wearable" name="objectfield-wearable" />
         </ui:VisualElement>
-        <ui:VisualElement name="wizard-container" class="dressing-container">
-            <Style src="DressingSubViewStyles.uss" />
-        </ui:VisualElement>
-        <ui:VisualElement name="advanced-container" class="dressing-container">
+        <ui:VisualElement class="dressing-container">
             <Style src="DressingSubViewStyles.uss" />
             <ui:VisualElement name="config-view-container" />
-            <ui:Button name="btn-add-to-cabinet" text="@dressing.editor.btn.addToCabinet" style="height: 36px;" />
         </ui:VisualElement>
     </ui:ScrollView>
+    <ui:Button name="btn-add-to-cabinet" text="@dressing.editor.btn.addToCabinet" />
 </ui:UXML>
