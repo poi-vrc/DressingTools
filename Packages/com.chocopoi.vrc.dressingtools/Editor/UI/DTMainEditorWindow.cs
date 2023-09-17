@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.UI
         private MainView _view;
 
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
-        static void ShowWindow()
+        public static void ShowWindow()
         {
             var window = (DTMainEditorWindow)GetWindow(typeof(DTMainEditorWindow));
             window.titleContent = new GUIContent(t._("tool.name"));

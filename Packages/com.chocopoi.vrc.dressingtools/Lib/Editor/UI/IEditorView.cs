@@ -28,5 +28,6 @@ namespace Chocopoi.DressingTools.Lib.UI
         void RaiseForceUpdateViewEvent();
         void OnEnable();
         void OnDisable();
+        void Repaint();
     }
 }

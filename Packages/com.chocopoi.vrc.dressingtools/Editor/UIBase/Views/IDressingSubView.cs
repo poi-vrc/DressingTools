@@ -33,8 +33,8 @@ namespace Chocopoi.DressingTools.UIBase.Views
         void ForceUpdateCabinetSubView();
         void ForceUpdateConfigView();
         bool IsConfigValid();
-        void Repaint();
         void AutoSetup();
         void ShowFixAllInvalidConfig();
+        void ApplyToConfig();
     }
 }

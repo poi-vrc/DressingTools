@@ -118,6 +118,9 @@ namespace Chocopoi.DressingTools.UI.Views
             Repaint();
         }
 
+        // asks config view to apply the UI changes to the config instance
+        public void ApplyToConfig() => _configView.ApplyToConfig();
+
         public override void OnEnable()
         {
             InitVisualTree();
@@ -169,7 +172,7 @@ namespace Chocopoi.DressingTools.UI.Views
             BindFoldoutHeaderWithContainer("foldout-setup", "setup-container");
         }
 
-        public void Repaint()
+        public override void Repaint()
         {
             _avatarObjectField.value = TargetAvatar;
             _wearableObjectField.value = TargetWearable;

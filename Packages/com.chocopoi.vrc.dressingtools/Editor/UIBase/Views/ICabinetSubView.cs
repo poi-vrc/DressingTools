@@ -58,6 +58,5 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
         void SelectTab(int selectedTab);
         void StartDressing(GameObject avatarGameObject = null, GameObject wearableGameObject = null);
-        void Repaint();
     }
 }

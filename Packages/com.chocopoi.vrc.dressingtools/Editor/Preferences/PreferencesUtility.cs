@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingTools.Lib.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,60 +27,61 @@ namespace Chocopoi.DressingTools
     {
         private static Localization.I18n t = Localization.I18n.Instance;
 
-        private static readonly int TargetPreferencesVersion = 3;
-
         private static readonly string EditorPrefsKey = "Chocopoi.DressingTools.Preferences";
 
         private static readonly string DefaultUpdateBranch = "stable";
 
-        private static Preferences _preferences = null;
+        private static Preferences s_prefs = null;
 
         public static Preferences GetPreferences()
         {
-            if (_preferences == null)
+            if (s_prefs == null)
             {
-                _preferences = LoadPreferences();
+                s_prefs = LoadPreferences();
             }
-            return _preferences;
+            return s_prefs;
         }
 
         public static Preferences LoadPreferences()
         {
             if (!EditorPrefs.HasKey(EditorPrefsKey))
             {
-                Debug.Log("[DressingTools] Preferences file not found, using default preferences instead.");
-                return GenerateDefaultPreferences();
+                Debug.Log("[DressingTools] Preferences not found, using default preferences instead.");
+                return new Preferences();
             }
 
             try
             {
                 var json = EditorPrefs.GetString(EditorPrefsKey);
-                var p = JsonConvert.DeserializeObject<Preferences>(json);
 
-                if (p == null)
+                // TODO: do schema check
+
+                var jObject = JObject.Parse(json);
+
+                if (jObject == null)
                 {
                     Debug.LogWarning("[DressingTools] Invalid preferences detected, using default preferences instead");
-                    EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.invalidPrefsUsingDefault"), t._("common.dialog.btn.ok"));
-                    return GenerateDefaultPreferences();
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.invalidPrefsUsingDefault"), t._("common.dialog.btn.ok"));
+                    return new Preferences();
                 }
 
-                var version = p.version;
-
-                if (version > TargetPreferencesVersion)
+                var version = jObject["version"].ToObject<SerializationVersion>();
+                if (version.Major > Preferences.CurrentConfigVersion.Major)
                 {
-                    Debug.LogWarning("[DressingTools] Incompatible preferences version detected, expected version " + TargetPreferencesVersion + " but preferences file is at a newer version " + version + ", using default preferences file instead");
-                    EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.incompatiblePrefsVersionUsingDefault", version, TargetPreferencesVersion), t._("common.dialog.btn.ok"));
-                    return GenerateDefaultPreferences();
+                    Debug.LogWarning("[DressingTools] Incompatible preferences version detected, expected version " + Preferences.CurrentConfigVersion + " but preferences file is at a newer version " + version + ", using default preferences file instead");
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.incompatiblePrefsVersionUsingDefault", version, Preferences.CurrentConfigVersion), t._("common.dialog.btn.ok"));
+                    return new Preferences();
                 }
-                //TODO: do migration if our version is newer
 
-                return p;
+                // TODO: do migration if needed
+
+                return jObject.ToObject<Preferences>();
             }
             catch (System.Exception e)
             {
                 Debug.LogError(e);
-                EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.unableToLoadPrefsUsingDefault", e.Message), t._("common.dialog.btn.ok"));
-                return GenerateDefaultPreferences();
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.unableToLoadPrefsUsingDefault", e.Message), t._("common.dialog.btn.ok"));
+                return new Preferences();
             }
         }
 
@@ -86,34 +89,19 @@ namespace Chocopoi.DressingTools
         {
             try
             {
-                EditorPrefs.SetString(EditorPrefsKey, JsonConvert.SerializeObject(_preferences));
+                EditorPrefs.SetString(EditorPrefsKey, JsonConvert.SerializeObject(s_prefs));
             }
             catch (System.Exception e)
             {
                 Debug.LogError(e);
-                EditorUtility.DisplayDialog(t._("tool.name"), t._("preferences.dialog.msg.unableToSavePreferences", e.Message), t._("common.dialog.btn.ok"));
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.unableToSavePreferences", e.Message), t._("common.dialog.btn.ok"));
             }
         }
 
-        public static Preferences GenerateDefaultPreferences()
+        public static void ResetToDefaults()
         {
-            var p = new Preferences();
-            ResetToDefaults(p);
-            return p;
-        }
-
-        public static void ResetToDefaults(Preferences p)
-        {
-            // Manifest version
-            p.version = TargetPreferencesVersion;
-
-            // App preferences
-            if (p.app == null)
-            {
-                p.app = new Preferences.App();
-            }
-            p.app.selectedLanguage = "en";
-            p.app.updateBranch = DefaultUpdateBranch;
+            s_prefs.ResetToDefaults();
+            SavePreferences();
         }
     }
 }

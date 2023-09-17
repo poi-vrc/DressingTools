@@ -646,7 +646,7 @@ namespace Chocopoi.DressingTools.UI.Views
             RepaintAdvancedModeAvatarConfig();
         }
 
-        public void Repaint()
+        public override void Repaint()
         {
             RepaintWearableInfo();
             RepaintSimpleMode();
@@ -681,6 +681,8 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             return EditorUtility.DisplayDialog(t._("tool.name"), t._("wearableConfig.editor.dialog.msg.confirmAutoSetup"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no"));
         }
+
+        public void ApplyToConfig() => _presenter.ApplyToConfig();
 
         public void UpdateAvatarPreview() => _presenter.UpdateAvatarPreview();
 

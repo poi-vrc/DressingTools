@@ -167,7 +167,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private void InitCabinetPopup()
         {
             var popupContainer = Q<VisualElement>("popup-cabinet-selection").First();
-            var cabinetPopup = new PopupField<string>("Cabinet", AvailableCabinetSelections, 0);
+            var cabinetPopup = new PopupField<string>(t._("cabinet.editor.popup.cabinet"), AvailableCabinetSelections, 0);
             cabinetPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 int index = AvailableCabinetSelections.IndexOf(evt.newValue);
@@ -324,7 +324,7 @@ namespace Chocopoi.DressingTools.UI.Views
             return listItem;
         }
 
-        public void Repaint()
+        public override void Repaint()
         {
             // update cabinet settings
             _avatarArmatureNameField.value = CabinetAvatarArmatureName;
