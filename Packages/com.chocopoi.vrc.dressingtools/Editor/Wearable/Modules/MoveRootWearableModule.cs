@@ -15,11 +15,16 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
+using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Serialization;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingTools.Logging;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
@@ -41,6 +46,13 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     [InitializeOnLoad]
     internal class MoveRootWearableModuleProvider : WearableModuleProviderBase
     {
+        public class MessageCode
+        {
+            public const string AvatarPathEmpty = "modules.wearable.moveRoot.msgCode.error.avatarPathEmpty";
+            public const string AvatarPathNotFound = "modules.wearable.moveRoot.msgCode.error.avatarPathNotFound";
+        }
+        private const string LogLabel = "MoveRootWearableModule";
+
         private static readonly Localization.I18n t = Localization.I18n.Instance;
         public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.move-root";
 
@@ -68,5 +80,42 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         }
 
         public override IModuleConfig NewModuleConfig() => new MoveRootWearableModuleConfig();
+
+        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
+        {
+            return ProcessModule(cabCtx, wearCtx, modules);
+        }
+
+        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
+        {
+            return ProcessModule(cabCtx, wearCtx, modules);
+        }
+
+        private static bool ProcessModule(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
+        {
+            if (modules.Count == 0) return true;
+
+            var mrm = (MoveRootWearableModuleConfig)modules[0].config;
+
+            if (mrm.avatarPath == null || mrm.avatarPath == "")
+            {
+                DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AvatarPathEmpty);
+                return false;
+            }
+
+            // find avatar object
+            var avatarObj = cabCtx.avatarGameObject.transform.Find(mrm.avatarPath);
+
+            if (avatarObj == null)
+            {
+                DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AvatarPathNotFound);
+                return false;
+            }
+
+            // set to parent
+            wearCtx.wearableGameObject.transform.SetParent(avatarObj);
+
+            return true;
+        }
     }
 }

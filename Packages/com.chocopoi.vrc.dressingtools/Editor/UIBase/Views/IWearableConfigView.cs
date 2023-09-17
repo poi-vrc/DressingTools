@@ -40,6 +40,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action ToolbarPreviewButtonClick;
         event Action AdvancedModuleAddButtonClick;
         event Action ModeChange;
+        event Action AvatarConfigChange;
 
         WearableConfig Config { get; set; }
 
@@ -88,6 +89,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         void Repaint();
         void RepaintSimpleMode();
         void RepaintAdvancedModeModules();
+        void RepaintAdvancedModeAvatarConfig();
         void RepaintCapturePreview();
         void SwitchToInfoPanel();
         void SwitchToCapturePanel();

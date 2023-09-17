@@ -60,6 +60,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AdvancedModuleAddButtonClick += OnAdvancedModuleAddButtonClick;
             _view.ToolbarPreviewButtonClick += OnPreviewButtonClick;
             _view.ToolbarAutoSetupButtonClick += OnToolbarAutoSetupButtonClick;
+            _view.AvatarConfigChange += OnAvatarConfigChange;
         }
 
         private void UnsubscribeEvents()
@@ -77,6 +78,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AdvancedModuleAddButtonClick -= OnAdvancedModuleAddButtonClick;
             _view.ToolbarPreviewButtonClick -= OnPreviewButtonClick;
             _view.ToolbarAutoSetupButtonClick -= OnToolbarAutoSetupButtonClick;
+            _view.AvatarConfigChange -= OnAvatarConfigChange;
+        }
+
+        private void OnAvatarConfigChange()
+        {
+            ApplyAvatarConfig();
+            UpdateAdvancedAvatarConfigView();
+            _view.RepaintAdvancedModeAvatarConfig();
         }
 
         private void OnToolbarAutoSetupButtonClick()
@@ -202,6 +211,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnTargetAvatarOrWearableChange()
         {
+            ApplyAvatarConfig();
             UpdateView();
         }
 
@@ -251,12 +261,75 @@ namespace Chocopoi.DressingTools.UI.Presenters
             ApplySimpleModuleConfig(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleBlendshapeSyncConfig, _view.SimpleUseBlendshapeSync);
         }
 
+        private void ApplyWearableInfoConfig()
+        {
+            if (_view.TargetWearable == null)
+            {
+                return;
+            }
+
+            _view.Config.info.name = _view.InfoUseCustomWearableName ? _view.InfoCustomWearableName : _view.TargetWearable.name;
+            _view.Config.info.author = _view.InfoAuthor;
+            _view.Config.info.description = _view.InfoDescription;
+        }
+
+        private void ApplyAvatarConfig()
+        {
+            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+
+            // try obtain armature name from cabinet
+            if (cabinet == null)
+            {
+                // leave it empty
+                _view.Config.avatarConfig.armatureName = "";
+            }
+            else
+            {
+                if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                {
+                    _view.Config.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
+                }
+                else
+                {
+                    _view.Config.avatarConfig.armatureName = "";
+                }
+            }
+
+            // can't do anything
+            if (_view.TargetAvatar == null || _view.TargetWearable == null)
+            {
+                return;
+            }
+
+            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
+            var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
+
+            _view.Config.avatarConfig.guids.Clear();
+            if (!invalidAvatarPrefabGuid)
+            {
+                // TODO: multiple guids
+                _view.Config.avatarConfig.guids.Add(avatarPrefabGuid);
+            }
+
+            var deltaPos = _view.TargetWearable.transform.position - _view.TargetAvatar.transform.position;
+            var deltaRotation = _view.TargetWearable.transform.rotation * Quaternion.Inverse(_view.TargetAvatar.transform.rotation);
+            _view.Config.avatarConfig.worldPosition = new AvatarConfigVector3(deltaPos);
+            _view.Config.avatarConfig.worldRotation = new AvatarConfigQuaternion(deltaRotation);
+            _view.Config.avatarConfig.avatarLossyScale = new AvatarConfigVector3(_view.TargetAvatar.transform.lossyScale);
+            _view.Config.avatarConfig.wearableLossyScale = new AvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
+        }
+
         public void ApplyConfig()
         {
-            // apply simple config first if current in view
+            ApplyWearableInfoConfig();
+
             if (_view.SelectedMode == 0)
             {
                 ApplySimpleConfig();
+            }
+            else if (_view.SelectedMode == 1)
+            {
+                ApplyAvatarConfig();
             }
         }
 
