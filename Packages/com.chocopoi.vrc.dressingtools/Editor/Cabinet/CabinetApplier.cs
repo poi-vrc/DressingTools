@@ -72,7 +72,8 @@ namespace Chocopoi.DressingTools.Cabinet
                 cabinetConfig = null,
                 avatarDynamics = new List<IDynamicsProxy>(),
                 wearableContexts = new Dictionary<DTWearable, ApplyWearableContext>(),
-                pathRemapper = new PathRemapper(cabinet.AvatarGameObject)
+                pathRemapper = new PathRemapper(cabinet.AvatarGameObject),
+                animationStore = new AnimationStore()
             };
         }
 
@@ -143,6 +144,53 @@ namespace Chocopoi.DressingTools.Cabinet
                 foreach (var dynamics in wearableDynamics)
                 {
                     CopyDynamicsToContainer(dynamics, dynamicsContainer.gameObject);
+                }
+            }
+        }
+
+        private void RemapAnimations()
+        {
+            foreach (var clipContainer in _cabCtx.animationStore.Clips)
+            {
+                var oldClip = clipContainer.originalClip;
+                var remapped = false;
+
+                var newClip = new AnimationClip()
+                {
+                    name = oldClip.name,
+                    legacy = oldClip.legacy,
+                    frameRate = oldClip.frameRate,
+                    localBounds = oldClip.localBounds,
+                    wrapMode = oldClip.wrapMode
+                };
+                AnimationUtility.SetAnimationClipSettings(newClip, AnimationUtility.GetAnimationClipSettings(oldClip));
+
+                var curveBindings = AnimationUtility.GetCurveBindings(oldClip);
+                foreach (var curveBinding in curveBindings)
+                {
+                    var avoidContainerBones = curveBinding.type == typeof(Transform);
+                    var newPath = _cabCtx.pathRemapper.Remap(curveBinding.path, avoidContainerBones);
+
+                    remapped |= newPath != curveBinding.path;
+
+                    newClip.SetCurve(newPath, curveBinding.type, curveBinding.propertyName, AnimationUtility.GetEditorCurve(oldClip, curveBinding));
+                }
+
+                var objRefBindings = AnimationUtility.GetObjectReferenceCurveBindings(oldClip);
+                foreach (var objRefBinding in objRefBindings)
+                {
+                    var newPath = _cabCtx.pathRemapper.Remap(objRefBinding.path, false);
+
+                    remapped |= newPath != objRefBinding.path;
+
+                    var newObjRefBinding = objRefBinding;
+                    newObjRefBinding.path = newPath;
+                    AnimationUtility.SetObjectReferenceCurve(newClip, newObjRefBinding, AnimationUtility.GetObjectReferenceCurve(oldClip, objRefBinding));
+                }
+
+                if (remapped)
+                {
+                    clipContainer.newClip = newClip;
                 }
             }
         }
@@ -298,6 +346,12 @@ namespace Chocopoi.DressingTools.Cabinet
             {
                 return;
             }
+
+            // remap animations
+            RemapAnimations();
+
+            // dispatch animation store changes
+            _cabCtx.animationStore.Dispatch();
 
             // remove all DT components
             var dtComps = _cabCtx.avatarGameObject.GetComponentsInChildren<DTBaseComponent>();

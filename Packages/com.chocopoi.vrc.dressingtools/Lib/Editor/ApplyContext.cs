@@ -33,6 +33,7 @@ namespace Chocopoi.DressingTools.Lib
         public List<IDynamicsProxy> avatarDynamics;
         public Dictionary<DTWearable, ApplyWearableContext> wearableContexts;
         public IPathRemapper pathRemapper;
+        public IAnimationStore animationStore;
     }
 
     public class ApplyWearableContext

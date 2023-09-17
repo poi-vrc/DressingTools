@@ -24,6 +24,7 @@ using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Cabinet;
 using Chocopoi.DressingTools.Integrations.VRChat;
 using Chocopoi.DressingTools.Lib;
+using Chocopoi.DressingTools.Lib.Animations;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Logging;
@@ -62,6 +63,8 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
         [ExcludeFromCodeCoverage] public override int CallOrder => int.MaxValue;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
+        private Dictionary<VRCAvatarDescriptor.AnimLayerType, AnimatorController> _animatorCopies = new Dictionary<VRCAvatarDescriptor.AnimLayerType, AnimatorController>();
+
         static VRChatIntegrationWearableModuleProvider()
         {
             WearableModuleProviderLocator.Instance.Register(new VRChatIntegrationWearableModuleProvider());
@@ -70,6 +73,80 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
         public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<VRChatIntegrationWearableModuleConfig>();
 
         public override IModuleConfig NewModuleConfig() => new VRChatIntegrationWearableModuleConfig();
+
+        private void ScanAnimLayers(IAnimationStore animationStore, VRCAvatarDescriptor.CustomAnimLayer[] animLayers)
+        {
+            foreach (var animLayer in animLayers)
+            {
+                if (animLayer.isDefault || animLayer.animatorController == null || !(animLayer.animatorController is AnimatorController))
+                {
+                    continue;
+                }
+
+                var controller = (AnimatorController)animLayer.animatorController;
+
+                // create a copy for operations
+                var copiedPath = string.Format("{0}/cpDT_VRC_AnimLayer_{1}.controller", CabinetApplier.GeneratedAssetsPath, animLayer.type.ToString());
+                var copiedController = DTEditorUtils.CopyAssetToPathAndImport<AnimatorController>(controller, copiedPath);
+                _animatorCopies[animLayer.type] = copiedController;
+
+                var visitedMotions = new HashSet<Motion>();
+
+                foreach (var layer in copiedController.layers)
+                {
+                    var stack = new Stack<AnimatorStateMachine>();
+                    stack.Push(layer.stateMachine);
+
+                    while (stack.Count > 0)
+                    {
+                        var stateMachine = stack.Pop();
+
+                        foreach (var state in stateMachine.states)
+                        {
+                            animationStore.RegisterMotion(state.state.motion, (AnimationClip clip) => state.state.motion = clip, (Motion m) => !VRCEditorUtils.IsProxyAnimation(m), visitedMotions);
+                        }
+
+                        foreach (var childStateMachine in stateMachine.stateMachines)
+                        {
+                            stack.Push(childStateMachine.stateMachine);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ApplyAnimLayers(VRCAvatarDescriptor.CustomAnimLayer[] animLayers)
+        {
+            for (var i = 0; i < animLayers.Length; i++)
+            {
+                if (_animatorCopies.TryGetValue(animLayers[i].type, out var copy))
+                {
+                    animLayers[i].isDefault = false;
+                    animLayers[i].animatorController = copy;
+                }
+            }
+        }
+
+        public override bool OnBeforeApplyCabinet(ApplyCabinetContext cabCtx)
+        {
+            // get the avatar descriptor
+            if (!cabCtx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
+            {
+                // not a vrc avatar
+                return true;
+            }
+
+            _animatorCopies.Clear();
+            ScanAnimLayers(cabCtx.animationStore, avatarDescriptor.baseAnimationLayers);
+            ScanAnimLayers(cabCtx.animationStore, avatarDescriptor.specialAnimationLayers);
+            ApplyAnimLayers(avatarDescriptor.baseAnimationLayers);
+            ApplyAnimLayers(avatarDescriptor.specialAnimationLayers);
+            // cabCtx.animationStore.Write += () =>
+            // {
+            // };
+
+            return true;
+        }
 
         public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
         {
@@ -84,7 +161,6 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             try
             {
                 result = ApplyAnimationsAndMenu(cabCtx, avatarDescriptor);
-                ApplyAnimationRemapping(cabCtx, avatarDescriptor);
             }
             catch (System.Exception ex)
             {
@@ -95,13 +171,6 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 EditorUtility.ClearProgressBar();
             }
             return result;
-        }
-
-        private static void ApplyAnimationRemapping(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
-        {
-            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.remappingAnimations"), 1.0f);
-            var remapper = new VRCAnimationRemapper(avatarDescriptor, cabCtx.pathRemapper);
-            remapper.PerformRemapping();
         }
 
         private static bool ApplyAnimationsAndMenu(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
