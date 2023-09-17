@@ -31,6 +31,8 @@ namespace Chocopoi.DressingTools.Lib.UI
         public event Action Load;
         public event Action Unload;
 
+        public abstract void Repaint();
+
         public virtual void RaiseForceUpdateViewEvent()
         {
             ForceUpdateView?.Invoke();

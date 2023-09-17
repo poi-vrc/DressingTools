@@ -365,6 +365,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateView()
         {
+            _view.CurrentVersion = UpdateChecker.CurrentVersion;
+
             UpdateReportViewData();
 
             if (!_view.UseCustomArmatureName)

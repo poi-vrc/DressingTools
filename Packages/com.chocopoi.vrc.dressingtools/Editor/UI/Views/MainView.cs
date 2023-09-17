@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.UI;
@@ -31,6 +32,9 @@ namespace Chocopoi.DressingTools.UI.View
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
+        public event Action UpdateAvailableUpdateButtonClick;
+        public event Action MouseMove;
+
         public int SelectedTab
         {
             get => _selectedTab;
@@ -41,12 +45,16 @@ namespace Chocopoi.DressingTools.UI.View
             }
         }
 
+        public string UpdateAvailableFromVersion { get; set; }
+        public string UpdateAvailableToVersion { get; set; }
+
         private MainPresenter _presenter;
         private CabinetSubView _cabinetSubView;
         private DressingSubView _dressingSubView;
         private SettingsSubView _settingsSubView;
         private int _selectedTab;
         private Button[] _tabBtns;
+        private Foldout _updateAvailableFoldout;
 
         public MainView()
         {
@@ -54,6 +62,9 @@ namespace Chocopoi.DressingTools.UI.View
             _cabinetSubView = new CabinetSubView(this);
             _dressingSubView = new DressingSubView(this);
             _settingsSubView = new SettingsSubView(this);
+
+            UpdateAvailableFromVersion = null;
+            UpdateAvailableToVersion = null;
         }
 
         public void StartDressing(GameObject targetAvatar, GameObject targetWearable = null)
@@ -81,6 +92,7 @@ namespace Chocopoi.DressingTools.UI.View
 
             _cabinetSubView.OnEnable();
             _dressingSubView.OnEnable();
+            _settingsSubView.OnEnable();
         }
 
         private void InitVisualTree()
@@ -102,6 +114,12 @@ namespace Chocopoi.DressingTools.UI.View
             container.Add(_cabinetSubView);
             container.Add(_dressingSubView);
             container.Add(_settingsSubView);
+
+            _updateAvailableFoldout = Q<Foldout>("update-available-foldout").First();
+            var updateBtn = Q<Button>("update-available-update-btn").First();
+            updateBtn.clicked += UpdateAvailableUpdateButtonClick;
+
+            RegisterCallback((MouseMoveEvent evt) => MouseMove?.Invoke());
         }
 
         private void BindTabs()
@@ -156,6 +174,21 @@ namespace Chocopoi.DressingTools.UI.View
             base.OnDisable();
             _cabinetSubView.OnDisable();
             _dressingSubView.OnDisable();
+            _settingsSubView.OnDisable();
+        }
+        public void OpenUrl(string url) => Application.OpenURL(url);
+
+        public override void Repaint()
+        {
+            if (UpdateAvailableFromVersion != null && UpdateAvailableToVersion != null)
+            {
+                _updateAvailableFoldout.style.display = DisplayStyle.Flex;
+                _updateAvailableFoldout.text = t._("main.editor.updateAvailable.foldout", UpdateAvailableFromVersion, UpdateAvailableToVersion);
+            }
+            else
+            {
+                _updateAvailableFoldout.style.display = DisplayStyle.None;
+            }
         }
     }
 }

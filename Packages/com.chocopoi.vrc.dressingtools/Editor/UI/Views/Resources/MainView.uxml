@@ -2,6 +2,10 @@
     <ui:VisualElement style="background-image: resource(&apos;dt-banner&apos;); width: auto; -unity-background-scale-mode: scale-to-fit; height: 56px; margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px;">
         <Style src="MainViewStyles.uss" />
     </ui:VisualElement>
+    <ui:Foldout text="Update available" name="update-available-foldout">
+        <Style src="MainViewStyles.uss" />
+        <ui:Button text="@main.editor.updateAvailable.btn.update" name="update-available-update-btn" />
+    </ui:Foldout>
     <uie:Toolbar name="tab" style="flex-direction: row; width: 100%;">
         <Style src="MainViewStyles.uss" />
         <uie:ToolbarButton text="@main.editor.tabs.cabinet" name="tab-cabinet" />

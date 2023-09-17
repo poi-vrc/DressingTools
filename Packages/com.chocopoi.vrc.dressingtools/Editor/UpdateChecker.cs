@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
-    internal class DressingToolsUpdater
+    internal class UpdateChecker
     {
         [Serializable]
         public class ManifestInfo
@@ -67,41 +67,42 @@ namespace Chocopoi.DressingTools
 
         private static ParsedVersion s_currentVersion = null;
 
-        private static bool s_checkingUpdate = false;
-
         private static DateTime s_lastUpdateCheckTime = DateTime.MinValue;
 
         private static bool s_lastUpdateCheckErrored = false;
 
         private static bool s_branchNotFoundWarningSent = false;
 
-        public static ParsedVersion GetCurrentVersion()
+        public static ParsedVersion CurrentVersion
         {
-            if (s_currentVersion != null)
+            get
             {
-                return s_currentVersion;
-            }
-
-            try
-            {
-                var reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/package.json");
-                var str = reader.ReadToEnd();
-                reader.Close();
-
-                var packageJson = JObject.Parse(str);
-
-                if (!packageJson.ContainsKey("version"))
+                if (s_currentVersion != null)
                 {
-                    Debug.LogError("[DressingTools] Error: package.json does not contain version key!");
-                    return null;
+                    return s_currentVersion;
                 }
 
-                return s_currentVersion = ParseVersionString(packageJson.Value<string>("version"));
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-                return null;
+                try
+                {
+                    var reader = new StreamReader("Packages/com.chocopoi.vrc.dressingtools/package.json");
+                    var str = reader.ReadToEnd();
+                    reader.Close();
+
+                    var packageJson = JObject.Parse(str);
+
+                    if (!packageJson.ContainsKey("version"))
+                    {
+                        Debug.LogError("[DressingTools] Error: package.json does not contain version key!");
+                        return null;
+                    }
+
+                    return s_currentVersion = ParseVersionString(packageJson.Value<string>("version"));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                    return null;
+                }
             }
         }
 
@@ -115,45 +116,34 @@ namespace Chocopoi.DressingTools
             return s_lastUpdateCheckErrored;
         }
 
-        public static void FetchOnlineVersion(Action<Manifest> callback)
+        public static void FetchOnlineVersion()
         {
-            if (s_checkingUpdate)
+            try
             {
-                return;
-            }
-            s_checkingUpdate = true;
+                var request = WebRequest.Create(ManifestJsonUrl + "?" + DateTimeOffset.Now.ToUnixTimeSeconds());
+                var response = request.GetResponse();
 
-            new Thread(() =>
-            {
-                try
+                var reader = new StreamReader(response.GetResponseStream());
+                var json = reader.ReadToEnd();
+
+                s_manifest = JsonUtility.FromJson<Manifest>(json);
+
+                if (s_manifest.info.compat_version > SupportedManifestVersion)
                 {
-                    var request = WebRequest.Create(ManifestJsonUrl + "?" + DateTimeOffset.Now.ToUnixTimeSeconds());
-                    var response = request.GetResponse();
-
-                    var reader = new StreamReader(response.GetResponseStream());
-                    var json = reader.ReadToEnd();
-
-                    s_manifest = JsonUtility.FromJson<Manifest>(json);
-
-                    if (s_manifest.info.compat_version > SupportedManifestVersion)
-                    {
-                        s_manifest = null;
-                        Debug.LogError("[DressingTools] This DressingTools update checker is too old and does not support the online updater manifest. Please download the latest version to check updates.");
-                        EditorUtility.DisplayDialog("DressingTools", "This DressingTools update checker is too old and does not support the online updater manifest. Please download the latest version to check updates.", "OK");
-                        s_lastUpdateCheckErrored = true;
-                    }
-
-                    callback?.Invoke(s_manifest);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError("[DressingTools] Check update failed: " + e.Message);
+                    s_manifest = null;
+                    Debug.LogError("[DressingTools] This DressingTools update checker is too old and does not support the online updater manifest. Please download the latest version to check updates.");
+                    EditorUtility.DisplayDialog("DressingTools", "This DressingTools update checker is too old and does not support the online updater manifest. Please download the latest version to check updates.", "OK");
                     s_lastUpdateCheckErrored = true;
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                Debug.LogError("[DressingTools] Check update failed: " + e.Message);
+                s_lastUpdateCheckErrored = true;
+            }
 
-                s_lastUpdateCheckTime = DateTime.Now;
-                s_checkingUpdate = false;
-            }).Start();
+            s_lastUpdateCheckTime = DateTime.Now;
         }
 
         public static ManifestBranch GetManifestBranch(string branchName)
@@ -176,6 +166,9 @@ namespace Chocopoi.DressingTools
 
         public static ManifestBranch GetBranchLatestVersion(string branchName)
         {
+            // TODO: hardcoding till release
+            branchName = "v2";
+
             var branch = GetManifestBranch(branchName);
 
             if (branch == null)
@@ -183,7 +176,7 @@ namespace Chocopoi.DressingTools
                 if (!s_branchNotFoundWarningSent)
                 {
                     s_branchNotFoundWarningSent = true;
-                    Debug.LogWarning("Branch \"" + branchName + "\" not found in manifest. Using default branch \"" + s_manifest.default_branch + "\" instead");
+                    Debug.LogWarning("[DressingTools] Branch \"" + branchName + "\" not found in manifest. Using default branch \"" + s_manifest.default_branch + "\" instead");
                 }
 
                 branch = GetManifestBranch(s_manifest.default_branch);
@@ -225,7 +218,7 @@ namespace Chocopoi.DressingTools
 
         public static bool IsUpdateAvailable()
         {
-            if (s_currentVersion == null || s_manifest == null)
+            if (CurrentVersion == null || s_manifest == null)
             {
                 throw new Exception("Current version or online updater manifest has not been loaded.");
             }

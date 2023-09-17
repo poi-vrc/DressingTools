@@ -319,7 +319,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Config.avatarConfig.wearableLossyScale = new AvatarConfigVector3(_view.TargetWearable.transform.lossyScale);
         }
 
-        public void ApplyConfig()
+        public void ApplyToConfig()
         {
             ApplyWearableInfoConfig();
 
@@ -530,7 +530,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public void UpdateAvatarPreview()
         {
-            ApplyConfig();
+            ApplyToConfig();
             DTEditorUtils.UpdatePreviewAvatar(_view.TargetAvatar, _view.Config, _view.TargetWearable);
         }
 

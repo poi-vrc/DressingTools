@@ -31,8 +31,6 @@ namespace Chocopoi.DressingTools.UI.View
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
 
-        public DressingToolsUpdater.ParsedVersion CurrentVersion { get; set; }
-
         public event Action TargetAvatarOrWearableChange;
         public event Action RenameClothesNameButtonClick;
         public event Action ConfigChange;
@@ -40,6 +38,7 @@ namespace Chocopoi.DressingTools.UI.View
         public event Action TestNowButtonClick;
         public event Action DressNowButtonClick;
 
+        public UpdateChecker.ParsedVersion CurrentVersion { get; set; }
         public GameObject TargetAvatar { get => _targetAvatar; set => _targetAvatar = value; }
         public GameObject TargetClothes { get => _targetClothes; set => _targetClothes = value; }
         public string NewClothesName { get => _newClothesName; set => _newClothesName = value; }

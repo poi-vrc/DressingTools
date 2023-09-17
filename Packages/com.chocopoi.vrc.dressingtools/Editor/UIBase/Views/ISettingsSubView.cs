@@ -8,17 +8,41 @@
  * 
  * This file is part of DressingTools.
  * 
- * DressingTools is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * DressingTools is free software: you can redistribute it and/or modify it under the terms of the GNU General License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * DressingTools is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * DressingTools is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
+
+using System;
+using System.Collections.Generic;
+using Chocopoi.DressingTools.Lib.UI;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {
-    internal interface ISettingsSubView
+    internal interface ISettingsSubView : IEditorView
     {
-        void OnGUI();
+        event Action LanguageChanged;
+        event Action SettingsChanged;
+        event Action UpdaterCheckUpdateButtonClicked;
+        event Action ResetToDefaultsButtonClicked;
+
+        List<string> AvailableLanguageKeys { get; set; }
+        List<string> AvailableBranchKeys { get; set; }
+
+        string LanguageSelected { get; set; }
+
+        string CabinetDefaultsArmatureName { get; set; }
+        bool CabinetDefaultsGroupDynamics { get; set; }
+        bool CabinetDefaultsSeparateDynamics { get; set; }
+        bool CabinetDefaultsAnimWriteDefaults { get; set; }
+
+        string UpdaterCurrentVersion { get; set; }
+        bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
+        string UpdaterDefaultBranch { get; set; }
+        string UpdaterSelectedBranch { get; set; }
+
+        void AskReloadWindow();
     }
 }

@@ -16,19 +16,77 @@
  */
 
 using System;
+using Chocopoi.DressingTools.Lib.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
     [Serializable]
     internal class Preferences
     {
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+
         public class App
         {
             public string selectedLanguage;
             public string updateBranch;
+
+            public App()
+            {
+                ResetToDefaults();
+            }
+
+            public void ResetToDefaults()
+            {
+                selectedLanguage = Localization.I18n.DefaultLocale;
+                updateBranch = "v2";
+            }
         }
 
-        public int version;
+        public class Cabinet
+        {
+            public string defaultArmatureName;
+            public bool defaultGroupDynamics;
+            public bool defaultGroupDynamicsSeparateDynamics;
+            public bool defaultAnimationWriteDefaults;
+
+            public Cabinet()
+            {
+                ResetToDefaults();
+            }
+
+            public void ResetToDefaults()
+            {
+                defaultArmatureName = "Armature";
+                defaultGroupDynamics = true;
+                defaultGroupDynamicsSeparateDynamics = true;
+                defaultAnimationWriteDefaults = true;
+            }
+        }
+
+        public SerializationVersion version;
         public App app;
+        public Cabinet cabinet;
+
+        public Preferences()
+        {
+            version = CurrentConfigVersion;
+            app = new App();
+            cabinet = new Cabinet();
+        }
+
+        public void ResetToDefaults()
+        {
+            app.ResetToDefaults();
+            cabinet.ResetToDefaults();
+        }
+
+        public string Serialize()
+        {
+            version = CurrentConfigVersion;
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

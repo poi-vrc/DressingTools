@@ -86,7 +86,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
         bool PreviewActive { get; }
 
-        void Repaint();
         void RepaintSimpleMode();
         void RepaintAdvancedModeModules();
         void RepaintAdvancedModeAvatarConfig();

@@ -4,6 +4,19 @@
 }
 
 #tab ToolbarButton.active {
-    background-color: #737373;
-    color: #e8e8e8;
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+#update-available-foldout {
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 0;
+    margin-bottom: 4px;
+    display: none;
+}
+
+#update-available-foldout Toggle VisualElement Label {
+    color: rgba(255, 0, 0, 255);
+    -unity-font-style: bold;
 }

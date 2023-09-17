@@ -36,6 +36,9 @@ namespace Chocopoi.DressingTools.Lib.UI
             ForceUpdateView?.Invoke();
         }
 
+        // do nothing because we are using IMGUI
+        public void Repaint() { }
+
         public abstract void OnGUI();
 
         public virtual void OnEnable()

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Chocopoi.DressingTools.Lib.UI;
 using UnityEngine;
 
@@ -22,9 +23,15 @@ namespace Chocopoi.DressingTools.UIBase.Views
 {
     internal interface IMainView : IEditorView
     {
+        event Action UpdateAvailableUpdateButtonClick;
+        event Action MouseMove;
+
+        string UpdateAvailableFromVersion { get; set; }
+        string UpdateAvailableToVersion { get; set; }
         int SelectedTab { get; set; }
 
         void ForceUpdateCabinetSubView();
         void StartDressing(GameObject targetAvatar, GameObject targetWearable = null);
+        void OpenUrl(string url);
     }
 }

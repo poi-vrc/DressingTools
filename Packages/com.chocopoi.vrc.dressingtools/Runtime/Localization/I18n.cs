@@ -25,7 +25,8 @@ namespace Chocopoi.DressingTools.Localization
 {
     internal class I18n
     {
-        private const string DefaultLocale = "en";
+        public const string DefaultLocale = "en";
+
         private static I18n s_instance = null;
         public static I18n Instance
         {
@@ -41,7 +42,7 @@ namespace Chocopoi.DressingTools.Localization
 
         private Dictionary<string, JObject> _translations = null;
 
-        private string _selectedLocale = null;
+        public string CurrentLocale { get; private set; }
 
         private I18n()
         {
@@ -50,11 +51,6 @@ namespace Chocopoi.DressingTools.Localization
 
         public string[] GetAvailableLocales()
         {
-            if (_translations == null)
-            {
-                return new string[] { };
-            }
-
             var keys = new string[_translations.Keys.Count];
             _translations.Keys.CopyTo(keys, 0);
 
@@ -84,7 +80,7 @@ namespace Chocopoi.DressingTools.Localization
 
         public void SetLocale(string locale)
         {
-            _selectedLocale = locale;
+            CurrentLocale = locale;
         }
 
         public string _(string key, params object[] args)
@@ -152,7 +148,7 @@ namespace Chocopoi.DressingTools.Localization
         {
             string value;
 
-            if ((value = TranslateByLocale(_selectedLocale, key, args)) != null)
+            if ((value = TranslateByLocale(CurrentLocale, key, args)) != null)
             {
                 return value;
             }

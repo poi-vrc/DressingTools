@@ -31,6 +31,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action TestNowButtonClick;
         event Action DressNowButtonClick;
 
+        UpdateChecker.ParsedVersion CurrentVersion { get; set; }
         GameObject TargetAvatar { get; set; }
         GameObject TargetClothes { get; set; }
         string NewClothesName { get; set; }
