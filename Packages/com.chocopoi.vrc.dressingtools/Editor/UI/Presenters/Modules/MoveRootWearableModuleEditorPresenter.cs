@@ -65,7 +65,19 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             if (_parentView.TargetAvatar != null)
             {
                 _view.ShowSelectAvatarFirstHelpBox = false;
-                _view.MoveToGameObject = _module.avatarPath != null ? _parentView.TargetAvatar.transform.Find(_module.avatarPath)?.gameObject : null;
+
+                var avatarTransform = _module.avatarPath != null ? _parentView.TargetAvatar.transform.Find(_module.avatarPath) : null;
+
+                if (avatarTransform != null)
+                {
+                    _view.MoveToGameObject = avatarTransform.gameObject;
+                    _view.IsGameObjectInvalid = false;
+                }
+                else
+                {
+                    _view.MoveToGameObject = null;
+                    _view.IsGameObjectInvalid = true;
+                }
             }
             else
             {

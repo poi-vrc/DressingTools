@@ -172,5 +172,14 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
             return true;
         }
+
+        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
+        {
+            if (modules.Count == 0) return true;
+
+            var bsm = (BlendshapeSyncWearableModuleConfig)modules[0].config;
+
+            return true;
+        }
     }
 }

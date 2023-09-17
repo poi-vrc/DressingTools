@@ -47,6 +47,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action ToolbarPreviewButtonClick;
         public event Action AdvancedModuleAddButtonClick;
         public event Action ModeChange;
+        public event Action AvatarConfigChange;
 
         public GameObject TargetAvatar { get => _dressingSubView.TargetAvatar; set => _dressingSubView.TargetAvatar = value; }
         public GameObject TargetWearable { get => _dressingSubView.TargetWearable; set => _dressingSubView.TargetWearable = value; }
@@ -431,13 +432,22 @@ namespace Chocopoi.DressingTools.UI.Views
             _advancedAvatarConfigGuidRefObjField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> evt) =>
             {
                 AdvancedAvatarConfigGuidReference = (GameObject)evt.newValue;
+                AvatarConfigChange?.Invoke();
             });
 
             _advancedAvatarConfigGuidLabel = Q<Label>("advanced-avatar-config-guid-label").First();
             _advancedAvatarConfigUseAvatarObjNameToggle = Q<Toggle>("advanced-avatar-config-use-obj-name-toggle").First();
-            _advancedAvatarConfigUseAvatarObjNameToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => AdvancedAvatarConfigUseAvatarObjName = evt.newValue);
+            _advancedAvatarConfigUseAvatarObjNameToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            {
+                AdvancedAvatarConfigUseAvatarObjName = evt.newValue;
+                AvatarConfigChange?.Invoke();
+            });
             _advancedAvatarConfigCustomNameField = Q<TextField>("advanced-avatar-config-custom-name-field").First();
-            _advancedAvatarConfigCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) => AdvancedAvatarConfigCustomName = evt.newValue);
+            _advancedAvatarConfigCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                AdvancedAvatarConfigCustomName = evt.newValue;
+                AvatarConfigChange?.Invoke();
+            });
             _advancedAvatarConfigArmatureNameLabel = Q<Label>("advanced-avatar-config-armature-name-label").First();
             _advancedAvatarConfigDeltaWorldPosLabel = Q<Label>("advanced-avatar-config-delta-world-pos-label").First();
             _advancedAvatarConfigDeltaWorldRotLabel = Q<Label>("advanced-avatar-config-delta-world-rot-label").First();
@@ -619,7 +629,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        private void RepaintAdvancedModeAvatarConfig()
+        public void RepaintAdvancedModeAvatarConfig()
         {
             _advancedAvatarConfigGuidRefObjField.value = AdvancedAvatarConfigGuidReference;
             _advancedAvatarConfigGuidLabel.text = AdvancedAvatarConfigGuid;
