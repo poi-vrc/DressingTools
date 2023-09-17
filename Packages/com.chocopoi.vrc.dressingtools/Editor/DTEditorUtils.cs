@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using BestHTTP.Extensions;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
@@ -30,13 +29,11 @@ using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
 using Chocopoi.DressingTools.Lib.Wearable.Modules;
-using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Chocopoi.DressingTools
 {
@@ -1128,6 +1125,33 @@ namespace Chocopoi.DressingTools
                 }
             }
             return false;
+        }
+
+        public static AnimationClip CopyClip(AnimationClip oldClip)
+        {
+            var newClip = new AnimationClip()
+            {
+                name = oldClip.name,
+                legacy = oldClip.legacy,
+                frameRate = oldClip.frameRate,
+                localBounds = oldClip.localBounds,
+                wrapMode = oldClip.wrapMode
+            };
+            AnimationUtility.SetAnimationClipSettings(newClip, AnimationUtility.GetAnimationClipSettings(oldClip));
+
+            var curveBindings = AnimationUtility.GetCurveBindings(oldClip);
+            foreach (var curveBinding in curveBindings)
+            {
+                newClip.SetCurve(curveBinding.path, curveBinding.type, curveBinding.propertyName, AnimationUtility.GetEditorCurve(oldClip, curveBinding));
+            }
+
+            var objRefBindings = AnimationUtility.GetObjectReferenceCurveBindings(oldClip);
+            foreach (var objRefBinding in objRefBindings)
+            {
+                AnimationUtility.SetObjectReferenceCurve(newClip, objRefBinding, AnimationUtility.GetObjectReferenceCurve(oldClip, objRefBinding));
+            }
+
+            return newClip;
         }
     }
 }

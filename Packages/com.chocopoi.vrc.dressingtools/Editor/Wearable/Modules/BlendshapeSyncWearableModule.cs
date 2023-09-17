@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Extensibility.Providers;
@@ -173,11 +174,49 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return true;
         }
 
+        private static AnimationBlendshapeSync FindBlendshapeSync(EditorCurveBinding curveBinding, List<AnimationBlendshapeSync> blendshapeSyncs)
+        {
+            foreach (var blendshapeSync in blendshapeSyncs)
+            {
+                if (curveBinding.path == blendshapeSync.avatarPath && curveBinding.propertyName == "blendShape." + blendshapeSync.avatarBlendshapeName)
+                {
+                    return blendshapeSync;
+                }
+            }
+            return null;
+        }
+
         public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
         {
             if (modules.Count == 0) return true;
 
             var bsm = (BlendshapeSyncWearableModuleConfig)modules[0].config;
+
+            // TODO: implement partial boundaries and inverts
+
+            foreach (var clipContainer in cabCtx.animationStore.Clips)
+            {
+                var oldClip = clipContainer.newClip != null ? clipContainer.newClip : clipContainer.originalClip;
+                var newClip = DTEditorUtils.CopyClip(oldClip);
+                var modified = false;
+
+                var curveBindings = AnimationUtility.GetCurveBindings(oldClip);
+                foreach (var curveBinding in curveBindings)
+                {
+                    var blendshapeSync = FindBlendshapeSync(curveBinding, bsm.blendshapeSyncs);
+                    if (blendshapeSync != null)
+                    {
+                        var basePath = AnimationUtils.GetRelativePath(wearCtx.wearableGameObject.transform, cabCtx.avatarGameObject.transform);
+                        newClip.SetCurve(basePath + "/" + blendshapeSync.wearablePath, curveBinding.type, "blendShape." + blendshapeSync.wearableBlendshapeName, AnimationUtility.GetEditorCurve(oldClip, curveBinding));
+                        modified = true;
+                    }
+                }
+
+                if (modified)
+                {
+                    clipContainer.newClip = newClip;
+                }
+            }
 
             return true;
         }
