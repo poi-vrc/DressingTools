@@ -1,5 +1,5 @@
 ﻿/*
- * File: AnimationGenerator.cs
+ * File: cabinetAnimGen.cs
  * Project: DressingTools
  * Created Date: Tuesday, August 1st 2023, 12:37:10 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -27,22 +27,22 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations
 {
-    internal class AnimationGenerator
+    internal class cabinetAnimGen
     {
-        public const string LogLabel = "AnimationGenerator";
+        public const string LogLabel = "CabinetAnimGenerator";
 
         public static class MessageCode
         {
             // Warnings
-            public const string IgnoredObjectHasNoSkinnedMeshRendererAttached = "animationGenerator.msgCode.warn.ignoredObjectHasNoSkinnedMeshRendererAttached";
-            public const string IgnoredObjectHasNoMeshAttached = "animationGenerator.msgCode.warn.ignoredObjectHasNoMeshAttached";
-            public const string IgnoredObjectHasNoSuchBlendshape = "animationGenerator.msgCode.warn.ignoredObjectHasNoSuchBlendshape";
-            public const string IgnoredAvatarToggleObjectNotFound = "animationGenerator.msgCode.warn.ignoredAvatarToggleObjectNotFound";
-            public const string IgnoredAvatarBlendshapeObjectNotFound = "animationGenerator.msgCode.warn.ignoredAvatarBlendshapeObjectNotFound";
-            public const string IgnoredCouldNotObtainAvatarBlendshapeOriginalValue = "animationGenerator.msgCode.warn.ignoredCouldNotObtainAvatarBlendshapeOriginalValue";
-            public const string IgnoredWearableToggleObjectNotFound = "animationGenerator.msgCode.warn.ignoredWearableToggleObjectNotFound";
-            public const string IgnoredWearableBlendshapeObjectNotFound = "animationGenerator.msgCode.warn.ignoredWearableBlendshapeObjectNotFound";
-            public const string IgnoredCouldNotObtainWearableBlendshapeOriginalValue = "animationGenerator.msgCode.warn.ignoredCouldNotObtainWearableBlendshapeOriginalValue";
+            public const string IgnoredObjectHasNoSkinnedMeshRendererAttached = "cabinetAnimGen.msgCode.warn.ignoredObjectHasNoSkinnedMeshRendererAttached";
+            public const string IgnoredObjectHasNoMeshAttached = "cabinetAnimGen.msgCode.warn.ignoredObjectHasNoMeshAttached";
+            public const string IgnoredObjectHasNoSuchBlendshape = "cabinetAnimGen.msgCode.warn.ignoredObjectHasNoSuchBlendshape";
+            public const string IgnoredAvatarToggleObjectNotFound = "cabinetAnimGen.msgCode.warn.ignoredAvatarToggleObjectNotFound";
+            public const string IgnoredAvatarBlendshapeObjectNotFound = "cabinetAnimGen.msgCode.warn.ignoredAvatarBlendshapeObjectNotFound";
+            public const string IgnoredCouldNotObtainAvatarBlendshapeOriginalValue = "cabinetAnimGen.msgCode.warn.ignoredCouldNotObtainAvatarBlendshapeOriginalValue";
+            public const string IgnoredWearableToggleObjectNotFound = "cabinetAnimGen.msgCode.warn.ignoredWearableToggleObjectNotFound";
+            public const string IgnoredWearableBlendshapeObjectNotFound = "cabinetAnimGen.msgCode.warn.ignoredWearableBlendshapeObjectNotFound";
+            public const string IgnoredCouldNotObtainWearableBlendshapeOriginalValue = "cabinetAnimGen.msgCode.warn.ignoredCouldNotObtainWearableBlendshapeOriginalValue";
         }
 
         private DTReport _report;
@@ -54,7 +54,7 @@ namespace Chocopoi.DressingTools.Animations
         private IPathRemapper _pathRemapper;
         private bool _writeDefaults;
 
-        public AnimationGenerator(DTReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
+        public cabinetAnimGen(DTReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
         {
             _report = report;
             _avatarObject = avatarObject;
