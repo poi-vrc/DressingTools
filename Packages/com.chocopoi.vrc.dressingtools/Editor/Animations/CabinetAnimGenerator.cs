@@ -279,13 +279,6 @@ namespace Chocopoi.DressingTools.Animations
                     // wearable toggle
                     GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray());
                 }
-                else if (customizable.type == WearableCustomizableType.Blendshape)
-                {
-                    // wearable required toggle
-                    GenerateWearableToggleAnimations(enableClip, disableClip, customizable.wearableToggles.ToArray());
-
-                    // we only the toggles here, for radial blendshapes, we need to separate a layer to do that
-                }
 
                 dict.Add(customizable, new System.Tuple<AnimationClip, AnimationClip>(enableClip, disableClip));
             }

@@ -359,12 +359,8 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                                 saved = true
                             });
 
-                            var toggleAnims = customizableToggleAnimations[wearableCustomizable];
-                            cabCtx.CreateUniqueAsset(toggleAnims.Item1, $"{uniqueName}_On.anim");
-                            cabCtx.CreateUniqueAsset(toggleAnims.Item2, $"{uniqueName}_Off.anim");
                             var blendshapeAnim = customizableBlendshapeAnimations[wearableCustomizable];
                             cabCtx.CreateUniqueAsset(blendshapeAnim, $"{uniqueName}_MotionTime.anim");
-                            AnimationUtils.GenerateSingleToggleLayer(fxController, parameterName + "_Toggles", parameterName, toggleAnims.Item2, toggleAnims.Item1, cabCtx.cabinetConfig.animationWriteDefaults, false, null, refTransition);
                             AnimationUtils.GenerateSingleMotionTimeLayer(fxController, parameterName + "_Blendshapes", parameterName, blendshapeAnim, cabCtx.cabinetConfig.animationWriteDefaults);
                             customizableMenu.AddRadialPuppet(wearableCustomizable.name, parameterName);
                         }

@@ -363,10 +363,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                         blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
                         _parentView.UpdateAvatarPreview();
                     }
-                    else
-                    {
-                        blendshapeData.isInvalid = true;
-                    }
                 };
                 blendshapeData.sliderChangeEvent = () =>
                 {
@@ -654,9 +650,15 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                     UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
                 };
 
+                // TODO: refactor, this is a dirty way to clear non-blendshape type customizable stuff
+                if (wearable.type == WearableCustomizableType.Blendshape)
+                {
+                    wearable.avatarToggles.Clear();
+                    wearable.avatarBlendshapes.Clear();
+                    wearable.wearableToggles.Clear();
+                }
+
                 UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
-                UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
-                UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
                 UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
 
                 _view.Customizables.Add(customizableData);
