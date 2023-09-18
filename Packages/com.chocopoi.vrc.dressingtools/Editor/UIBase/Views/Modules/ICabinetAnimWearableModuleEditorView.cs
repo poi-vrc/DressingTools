@@ -1,5 +1,5 @@
 ﻿/*
- * File: IAnimationGenerationModuleEditorView.cs
+ * File: ICabinetAnimWearableModuleEditorView.cs
  * Project: DressingTools
  * Created Date: Wednesday, August 9th 2023, 8:34:36 pm
  * Author: chocopoi (poi@chocopoi.com)
@@ -186,7 +186,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         }
     }
 
-    internal interface IAnimationGenerationWearableModuleEditorView : IEditorView
+    internal interface ICabinetAnimWearableModuleEditorView : IEditorView
     {
         event Action AvatarOnWearPresetChangeEvent;
         event Action AvatarOnWearPresetSaveEvent;

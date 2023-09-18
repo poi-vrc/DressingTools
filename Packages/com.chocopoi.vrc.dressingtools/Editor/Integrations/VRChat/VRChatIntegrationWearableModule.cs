@@ -257,7 +257,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.generatingWearableAnimations", config.info.name), i / (float)wearables.Length);
 
                 // find the animation generation module
-                var agm = DTEditorUtils.FindWearableModuleConfig<AnimationGenerationWearableModuleConfig>(config);
+                var agm = DTEditorUtils.FindWearableModuleConfig<CabinetAnimWearableModuleConfig>(config);
                 if (agm == null)
                 {
                     continue;

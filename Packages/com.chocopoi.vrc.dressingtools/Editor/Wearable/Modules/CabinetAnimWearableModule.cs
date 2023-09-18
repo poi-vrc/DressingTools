@@ -1,5 +1,5 @@
 ﻿/*
- * File: AnimationGenerationModule.cs
+ * File: CabinetAnimWearableModule.cs
  * Project: DressingTools
  * Created Date: Tuesday, August 1st 2023, 12:37:10 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -30,7 +30,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class AnimationGenerationWearableModuleConfig : IModuleConfig
+    internal class CabinetAnimWearableModuleConfig : IModuleConfig
     {
         public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
         public SerializationVersion version;
@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         public AnimationPreset wearableAnimationOnWear;
         public List<WearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
 
-        public AnimationGenerationWearableModuleConfig()
+        public CabinetAnimWearableModuleConfig()
         {
             version = CurrentConfigVersion;
             avatarAnimationOnWear = new AnimationPreset();
@@ -48,19 +48,19 @@ namespace Chocopoi.DressingTools.Wearable.Modules
     }
 
     [InitializeOnLoad]
-    internal class AnimationGenerationWearableModuleProvider : WearableModuleProviderBase
+    internal class CabinetAnimWearableModuleProvider : WearableModuleProviderBase
     {
         private static readonly Localization.I18n t = Localization.I18n.Instance;
-        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.animation-generation";
+        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.cabinet-anim";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.animGen.friendlyName");
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.cabnietAnim.friendlyName");
         [ExcludeFromCodeCoverage] public override int CallOrder => 4;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
-        static AnimationGenerationWearableModuleProvider()
+        static CabinetAnimWearableModuleProvider()
         {
-            WearableModuleProviderLocator.Instance.Register(new AnimationGenerationWearableModuleProvider());
+            WearableModuleProviderLocator.Instance.Register(new CabinetAnimWearableModuleProvider());
         }
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
@@ -68,19 +68,19 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             // TODO: do schema check
 
             var version = jObject["version"].ToObject<SerializationVersion>();
-            if (version.Major > AnimationGenerationWearableModuleConfig.CurrentConfigVersion.Major)
+            if (version.Major > CabinetAnimWearableModuleConfig.CurrentConfigVersion.Major)
             {
-                throw new System.Exception("Incompatible AnimationGenerationWearableModuleConfig version: " + version.Major + " > " + AnimationGenerationWearableModuleConfig.CurrentConfigVersion.Major);
+                throw new System.Exception("Incompatible CabinetAnimWearableModuleConfig version: " + version.Major + " > " + CabinetAnimWearableModuleConfig.CurrentConfigVersion.Major);
             }
 
-            return jObject.ToObject<AnimationGenerationWearableModuleConfig>();
+            return jObject.ToObject<CabinetAnimWearableModuleConfig>();
         }
 
-        public override IModuleConfig NewModuleConfig() => new AnimationGenerationWearableModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new CabinetAnimWearableModuleConfig();
 
         private static void InvertToggleStates(GameObject avatarGameObject, WearableConfig config, GameObject wearableGameObject, WearableModule module)
         {
-            var agm = (AnimationGenerationWearableModuleConfig)module.config;
+            var agm = (CabinetAnimWearableModuleConfig)module.config;
 
             // invert avatar toggles
             foreach (var toggle in agm.avatarAnimationOnWear.toggles)
@@ -88,7 +88,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 var avatarToggleObj = avatarGameObject.transform.Find(toggle.path);
                 if (avatarToggleObj == null)
                 {
-                    Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Avatar toggle GameObject not found at path: " + toggle.path);
+                    Debug.LogWarning("[DressingTools] [CabinetAnimModule] Avatar toggle GameObject not found at path: " + toggle.path);
                     continue;
                 }
                 avatarToggleObj.gameObject.SetActive(!toggle.state);
@@ -101,7 +101,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 var wearableToggleObj = wearableGameObject.transform.Find(toggle.path);
                 if (wearableToggleObj == null)
                 {
-                    Debug.LogWarning("[DressingTools] [AnimationGenerationModule] Wearable toggle GameObject not found at path: " + toggle.path);
+                    Debug.LogWarning("[DressingTools] [CabinetAnimModule] Wearable toggle GameObject not found at path: " + toggle.path);
                     continue;
                 }
                 wearableToggleObj.gameObject.SetActive(!toggle.state);
@@ -166,7 +166,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return true;
             }
 
-            var agm = (AnimationGenerationWearableModuleConfig)modules[0].config;
+            var agm = (CabinetAnimWearableModuleConfig)modules[0].config;
 
             ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
             ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);

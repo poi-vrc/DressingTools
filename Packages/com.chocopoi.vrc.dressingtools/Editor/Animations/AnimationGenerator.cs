@@ -48,13 +48,13 @@ namespace Chocopoi.DressingTools.Animations
         private DTReport _report;
         private GameObject _avatarObject;
         private GameObject _wearableObject;
-        private AnimationGenerationWearableModuleConfig _module;
+        private CabinetAnimWearableModuleConfig _module;
         private List<IDynamicsProxy> _avatarDynamics;
         private List<IDynamicsProxy> _wearableDynamics;
         private IPathRemapper _pathRemapper;
         private bool _writeDefaults;
 
-        public AnimationGenerator(DTReport report, GameObject avatarObject, AnimationGenerationWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
+        public AnimationGenerator(DTReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
         {
             _report = report;
             _avatarObject = avatarObject;

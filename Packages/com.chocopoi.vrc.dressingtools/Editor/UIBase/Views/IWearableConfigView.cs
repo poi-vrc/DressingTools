@@ -59,11 +59,11 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
         bool SimpleUseArmatureMapping { get; set; }
         bool SimpleUseMoveRoot { get; set; }
-        bool SimpleUseAnimationGeneration { get; set; }
+        bool SimpleUseCabinetAnim { get; set; }
         bool SimpleUseBlendshapeSync { get; set; }
         ArmatureMappingWearableModuleConfig SimpleArmatureMappingConfig { get; set; }
         MoveRootWearableModuleConfig SimpleMoveRootConfig { get; set; }
-        AnimationGenerationWearableModuleConfig SimpleAnimationGenerationConfig { get; set; }
+        CabinetAnimWearableModuleConfig SimpleCabinetAnimConfig { get; set; }
         BlendshapeSyncWearableModuleConfig SimpleBlendshapeSyncConfig { get; set; }
 
         List<string> AdvancedModuleNames { get; set; }

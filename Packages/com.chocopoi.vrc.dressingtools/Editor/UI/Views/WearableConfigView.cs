@@ -69,11 +69,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public bool SimpleUseArmatureMapping { get; set; }
         public bool SimpleUseMoveRoot { get; set; }
-        public bool SimpleUseAnimationGeneration { get; set; }
+        public bool SimpleUseCabinetAnim { get; set; }
         public bool SimpleUseBlendshapeSync { get; set; }
         public ArmatureMappingWearableModuleConfig SimpleArmatureMappingConfig { get; set; }
         public MoveRootWearableModuleConfig SimpleMoveRootConfig { get; set; }
-        public AnimationGenerationWearableModuleConfig SimpleAnimationGenerationConfig { get; set; }
+        public CabinetAnimWearableModuleConfig SimpleCabinetAnimConfig { get; set; }
         public BlendshapeSyncWearableModuleConfig SimpleBlendshapeSyncConfig { get; set; }
 
         public List<string> AdvancedModuleNames { get; set; }
@@ -121,7 +121,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private VisualElement _simpleCategoryAnimateContainer;
         private ArmatureMappingWearableModuleEditor _simpleArmatureMappingEditor;
         private MoveRootWearableModuleEditor _simpleMoveRootEditor;
-        private AnimationGenerationWearableModuleEditor _simpleAnimGenEditor;
+        private CabinetAnimWearableModuleEditor _simpleAnimGenEditor;
         private BlendshapeSyncWearableModuleEditor _simpleBlendshapeSyncEditor;
         private PopupField<string> _modulesPopup;
         private VisualElement _advancedModuleEditorsContainer;
@@ -172,12 +172,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
             SimpleUseArmatureMapping = false;
             SimpleUseMoveRoot = false;
-            SimpleUseAnimationGeneration = false;
+            SimpleUseCabinetAnim = false;
             SimpleUseBlendshapeSync = false;
 
             SimpleArmatureMappingConfig = new ArmatureMappingWearableModuleConfig();
             SimpleMoveRootConfig = new MoveRootWearableModuleConfig();
-            SimpleAnimationGenerationConfig = new AnimationGenerationWearableModuleConfig();
+            SimpleCabinetAnimConfig = new CabinetAnimWearableModuleConfig();
             SimpleBlendshapeSyncConfig = new BlendshapeSyncWearableModuleConfig();
 
             AdvancedModuleNames = new List<string>() { "---" };
@@ -383,10 +383,10 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             _simpleCategoryAnimateContainer = Q<VisualElement>("simple-category-animate-container").First();
 
-            BindFoldoutHeaderWithContainer("simple-anim-gen-foldout", "simple-anim-gen-container");
-            _simpleAnimGenToggle = Q<Toggle>("simple-anim-gen-toggle").First();
-            _simpleAnimGenToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => SimpleUseAnimationGeneration = evt.newValue);
-            _simpleAnimGenContainer = Q<VisualElement>("simple-anim-gen-container").First();
+            BindFoldoutHeaderWithContainer("simple-cabinet-anim-foldout", "simple-cabinet-anim-container");
+            _simpleAnimGenToggle = Q<Toggle>("simple-cabinet-anim-toggle").First();
+            _simpleAnimGenToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => SimpleUseCabinetAnim = evt.newValue);
+            _simpleAnimGenContainer = Q<VisualElement>("simple-cabinet-anim-container").First();
 
             BindFoldoutHeaderWithContainer("simple-blendshape-sync-foldout", "simple-blendshape-sync-container");
             _simpleBlendshapeSyncToggle = Q<Toggle>("simple-blendshape-sync-toggle").First();
@@ -555,7 +555,7 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             _simpleArmatureMappingEditor = new ArmatureMappingWearableModuleEditor(this, null, SimpleArmatureMappingConfig);
             _simpleMoveRootEditor = new MoveRootWearableModuleEditor(this, null, SimpleMoveRootConfig);
-            _simpleAnimGenEditor = new AnimationGenerationWearableModuleEditor(this, null, SimpleAnimationGenerationConfig);
+            _simpleAnimGenEditor = new CabinetAnimWearableModuleEditor(this, null, SimpleCabinetAnimConfig);
             _simpleBlendshapeSyncEditor = new BlendshapeSyncWearableModuleEditor(this, null, SimpleBlendshapeSyncConfig);
 
             _simpleArmatureMappingEditor.OnEnable();
@@ -578,7 +578,7 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             _simpleArmatureMappingToggle.value = SimpleUseArmatureMapping;
             _simpleMoveRootToggle.value = SimpleUseMoveRoot;
-            _simpleAnimGenToggle.value = SimpleUseAnimationGeneration;
+            _simpleAnimGenToggle.value = SimpleUseCabinetAnim;
             _simpleBlendshapeSyncToggle.value = SimpleUseBlendshapeSync;
 
             RepaintSimpleHelpboxes();
@@ -703,7 +703,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 _simpleCategoryBtns[0].EnableInClassList("invalid", !mappingValid);
 
                 var animateValid = true;
-                animateValid &= !SimpleUseAnimationGeneration || _simpleAnimGenEditor.IsValid();
+                animateValid &= !SimpleUseCabinetAnim || _simpleAnimGenEditor.IsValid();
                 animateValid &= !SimpleUseBlendshapeSync || _simpleBlendshapeSyncEditor.IsValid();
                 _simpleCategoryBtns[1].EnableInClassList("invalid", !animateValid);
 

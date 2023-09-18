@@ -76,10 +76,10 @@
         </ui:VisualElement>
         <ui:VisualElement name="simple-category-animate-container" class="simple-category-container">
             <ui:VisualElement class="nested-foldout-header">
-                <ui:Foldout text="@wearableConfig.editor.simple.toggle.animGen" name="simple-anim-gen-foldout" />
-                <ui:Toggle name="simple-anim-gen-toggle" />
+                <ui:Foldout text="@wearableConfig.editor.simple.toggle.cabinetAnim" name="simple-cabinet-anim-foldout" />
+                <ui:Toggle name="simple-cabinet-anim-toggle" />
             </ui:VisualElement>
-            <ui:VisualElement name="simple-anim-gen-container" class="foldout-container" />
+            <ui:VisualElement name="simple-cabinet-anim-container" class="foldout-container" />
             <ui:VisualElement class="nested-foldout-header">
                 <ui:Foldout text="@wearableConfig.editor.simple.toggle.blendshapeSync" name="simple-blendshape-sync-foldout" />
                 <ui:Toggle name="simple-blendshape-sync-toggle" />
