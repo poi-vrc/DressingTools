@@ -75,9 +75,9 @@ namespace Chocopoi.DressingTools.UI
 
                 EditorGUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label(t._("report.editor.label.errors", _logEntries[DTReportLogType.Error].Count));
-                    GUILayout.Label(t._("report.editor.label.warnings", _logEntries[DTReportLogType.Warning].Count));
-                    GUILayout.Label(t._("report.editor.label.infos", _logEntries[DTReportLogType.Info].Count));
+                    GUILayout.Label(t._("report.editor.label.errors", _logEntries.ContainsKey(DTReportLogType.Error) ? _logEntries[DTReportLogType.Error].Count : 0));
+                    GUILayout.Label(t._("report.editor.label.warnings", _logEntries.ContainsKey(DTReportLogType.Warning) ? _logEntries[DTReportLogType.Warning].Count : 0));
+                    GUILayout.Label(t._("report.editor.label.infos", _logEntries.ContainsKey(DTReportLogType.Info) ? _logEntries[DTReportLogType.Info].Count : 0));
                 }
                 EditorGUILayout.EndHorizontal();
 
