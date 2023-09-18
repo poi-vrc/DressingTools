@@ -257,7 +257,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             ApplySimpleModuleConfig(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleArmatureMappingConfig, _view.SimpleUseArmatureMapping);
             ApplySimpleModuleConfig(_view.Config, MoveRootWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleMoveRootConfig, _view.SimpleUseMoveRoot);
-            ApplySimpleModuleConfig(_view.Config, AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleAnimationGenerationConfig, _view.SimpleUseAnimationGeneration);
+            ApplySimpleModuleConfig(_view.Config, CabinetAnimWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleCabinetAnimConfig, _view.SimpleUseCabinetAnim);
             ApplySimpleModuleConfig(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleBlendshapeSyncConfig, _view.SimpleUseBlendshapeSync);
         }
 
@@ -387,9 +387,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.SimpleUseMoveRoot = moveRootModule != null;
             _view.SimpleMoveRootConfig = moveRootModule != null ? (MoveRootWearableModuleConfig)moveRootModule.config : new MoveRootWearableModuleConfig();
 
-            var animGenModule = DTEditorUtils.FindWearableModule(_view.Config, AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER);
-            _view.SimpleUseAnimationGeneration = animGenModule != null;
-            _view.SimpleAnimationGenerationConfig = animGenModule != null ? (AnimationGenerationWearableModuleConfig)animGenModule.config : new AnimationGenerationWearableModuleConfig();
+            var animGenModule = DTEditorUtils.FindWearableModule(_view.Config, CabinetAnimWearableModuleProvider.MODULE_IDENTIFIER);
+            _view.SimpleUseCabinetAnim = animGenModule != null;
+            _view.SimpleCabinetAnimConfig = animGenModule != null ? (CabinetAnimWearableModuleConfig)animGenModule.config : new CabinetAnimWearableModuleConfig();
 
             var blendshapeSyncModule = DTEditorUtils.FindWearableModule(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER);
             _view.SimpleUseBlendshapeSync = blendshapeSyncModule != null;
@@ -600,7 +600,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             return names.ToArray();
         }
 
-        private void AutoSetupAnimationGeneration()
+        private void AutoSetupCabinetAnim()
         {
             // generate wearable toggles
             {
@@ -635,7 +635,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 }
 
-                var config = new AnimationGenerationWearableModuleConfig();
+                var config = new CabinetAnimWearableModuleConfig();
 
                 var toggles = config.wearableAnimationOnWear.toggles;
                 var blendshapes = config.wearableAnimationOnWear.blendshapes;
@@ -651,7 +651,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     });
                 }
 
-                SetModuleConfig(_view.Config, AnimationGenerationWearableModuleProvider.MODULE_IDENTIFIER, config);
+                SetModuleConfig(_view.Config, CabinetAnimWearableModuleProvider.MODULE_IDENTIFIER, config);
             }
 
             // generate blendshape syncs
@@ -745,7 +745,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             AutoSetupMapping();
-            AutoSetupAnimationGeneration();
+            AutoSetupCabinetAnim();
 
             UpdateView();
         }

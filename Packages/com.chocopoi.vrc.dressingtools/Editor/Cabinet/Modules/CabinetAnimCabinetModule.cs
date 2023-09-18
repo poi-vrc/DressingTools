@@ -1,5 +1,5 @@
 ﻿/*
- * File: AnimationGenerationCabinetModule.cs
+ * File: CabinetAnimCabinetModule.cs
  * Project: DressingTools
  * Created Date: Saturday, July 29th 2023, 10:31:11 am
  * Author: chocopoi (poi@chocopoi.com)
@@ -25,7 +25,7 @@ using UnityEditor;
 
 namespace Chocopoi.DressingTools.Cabinet.Modules
 {
-    internal class AnimationGenerationCabinetModuleConfig : IModuleConfig
+    internal class CabinetAnimCabinetModuleConfig : IModuleConfig
     {
         public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
 
@@ -33,7 +33,7 @@ namespace Chocopoi.DressingTools.Cabinet.Modules
         public Dictionary<string, AnimationPreset> savedAvatarPresets;
         public Dictionary<string, AnimationPreset> savedWearablePresets;
 
-        public AnimationGenerationCabinetModuleConfig()
+        public CabinetAnimCabinetModuleConfig()
         {
             version = CurrentConfigVersion;
             savedAvatarPresets = new Dictionary<string, AnimationPreset>();
@@ -42,18 +42,18 @@ namespace Chocopoi.DressingTools.Cabinet.Modules
     }
 
     [InitializeOnLoad]
-    internal class AnimationGenerationCabinetModuleProvider : CabinetModuleProviderBase
+    internal class CabinetAnimCabinetModuleProvider : CabinetModuleProviderBase
     {
-        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.cabinet.animation-generation";
+        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.cabinet.cabinet-anim";
 
         [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => "Animation Generation";
+        [ExcludeFromCodeCoverage] public override string FriendlyName => "Cabinet Animation";
         [ExcludeFromCodeCoverage] public override int CallOrder => 4;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
-        static AnimationGenerationCabinetModuleProvider()
+        static CabinetAnimCabinetModuleProvider()
         {
-            CabinetModuleProviderLocator.Instance.Register(new AnimationGenerationCabinetModuleProvider());
+            CabinetModuleProviderLocator.Instance.Register(new CabinetAnimCabinetModuleProvider());
         }
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
@@ -61,14 +61,14 @@ namespace Chocopoi.DressingTools.Cabinet.Modules
             // TODO: do schema check
 
             var version = jObject["version"].ToObject<SerializationVersion>();
-            if (version.Major > AnimationGenerationCabinetModuleConfig.CurrentConfigVersion.Major)
+            if (version.Major > CabinetAnimCabinetModuleConfig.CurrentConfigVersion.Major)
             {
-                throw new System.Exception("Incompatible AnimationGenerationCabinetModule version: " + version.Major + " > " + AnimationGenerationCabinetModuleConfig.CurrentConfigVersion.Major);
+                throw new System.Exception("Incompatible CabinetAnimCabinetModule version: " + version.Major + " > " + CabinetAnimCabinetModuleConfig.CurrentConfigVersion.Major);
             }
 
-            return jObject.ToObject<AnimationGenerationCabinetModuleConfig>();
+            return jObject.ToObject<CabinetAnimCabinetModuleConfig>();
         }
 
-        public override IModuleConfig NewModuleConfig() => new AnimationGenerationCabinetModuleConfig();
+        public override IModuleConfig NewModuleConfig() => new CabinetAnimCabinetModuleConfig();
     }
 }
