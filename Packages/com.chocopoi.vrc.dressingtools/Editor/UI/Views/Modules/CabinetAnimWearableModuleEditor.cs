@@ -282,14 +282,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 }
                 else
                 {
-                    DrawBlendshapes(t._("modules.wearable.cabnietAnim.editor.foldout.customizableWearableBlendshapes"), customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
-
-                    HorizontalLine();
-
                     // radial blendshape mode
-                    DrawToggles(t._("modules.wearable.cabnietAnim.editor.foldout.customizableAvatarToggles"), customizable.avatarToggles, customizable.avatarToggleSuggestions, customizable.addAvatarToggleEvent, ref customizable.foldoutAvatarToggles);
-                    DrawToggles(t._("modules.wearable.cabnietAnim.editor.foldout.customizableWearableToggles"), customizable.wearableToggles, customizable.wearableToggleSuggestions, customizable.addWearableToggleEvent, ref customizable.foldoutWearableToggles);
-                    DrawBlendshapes(t._("modules.wearable.cabnietAnim.editor.foldout.customizableAvatarBlendshapes"), customizable.avatarBlendshapes, customizable.avatarSmrSuggestions, customizable.addAvatarBlendshapeEvent, ref customizable.foldoutAvatarBlendshapes);
+                    DrawBlendshapes(t._("modules.wearable.cabnietAnim.editor.foldout.customizableWearableBlendshapes"), customizable.wearableBlendshapes, customizable.wearableSmrSuggestions, customizable.addWearableBlendshapeEvent, ref customizable.foldoutWearableBlendshapes, true);
                 }
             }
             EndFoldoutBox();
