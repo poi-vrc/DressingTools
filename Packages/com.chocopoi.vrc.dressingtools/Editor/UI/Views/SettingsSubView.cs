@@ -117,7 +117,9 @@ namespace Chocopoi.DressingTools.UI.Views
             _cabinetDefArmatureNameField = Q<TextField>("cabinet-def-armature-name-field").First();
             _cabinetDefArmatureNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
-                CabinetDefaultsArmatureName = evt.newValue;
+                var val = _cabinetDefArmatureNameField.value;
+                if (string.IsNullOrEmpty(val)) return;
+                CabinetDefaultsArmatureName = val;
                 SettingsChanged?.Invoke();
             });
             _cabinetGroupDynamicsToggle = Q<Toggle>("cabinet-def-group-dynamics-toggle").First();

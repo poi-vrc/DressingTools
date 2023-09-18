@@ -205,9 +205,12 @@ namespace Chocopoi.DressingTools.UI.Views
             // TODO: due to a weird bug, we have to localize text field here
             _infoCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
+                var val = _infoCustomNameField.value;
+                if (string.IsNullOrEmpty(val)) return;
+
                 if (InfoUseCustomWearableName)
                 {
-                    _infoWearableNameLabel.text = evt.newValue;
+                    _infoWearableNameLabel.text = val;
                 }
                 InfoCustomWearableName = _infoCustomNameField.text;
             });
@@ -261,9 +264,19 @@ namespace Chocopoi.DressingTools.UI.Views
             _infoOthersCreatedTimeLabel = Q<Label>("wearable-info-created-time-label").First();
             _infoOthersUpdatedTimeLabel = Q<Label>("wearable-info-updated-time-label").First();
             _infoOthersAuthorField = Q<TextField>("wearable-info-author-field").First();
-            _infoOthersAuthorField.RegisterValueChangedCallback((ChangeEvent<string> evt) => InfoAuthor = evt.newValue);
+            _infoOthersAuthorField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                var val = _infoOthersAuthorField.value;
+                if (string.IsNullOrEmpty(val)) return;
+                InfoAuthor = val;
+            });
             _infoOthersDescField = Q<TextField>("wearable-info-desc-field").First();
-            _infoOthersDescField.RegisterValueChangedCallback((ChangeEvent<string> evt) => InfoDescription = evt.newValue);
+            _infoOthersDescField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                var val = _infoOthersDescField.value;
+                if (string.IsNullOrEmpty(val)) return;
+                InfoDescription = val;
+            });
         }
 
         private void InitWearableInfoFoldout()
@@ -445,7 +458,10 @@ namespace Chocopoi.DressingTools.UI.Views
             _advancedAvatarConfigCustomNameField = Q<TextField>("advanced-avatar-config-custom-name-field").First();
             _advancedAvatarConfigCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
-                AdvancedAvatarConfigCustomName = evt.newValue;
+                var val = _advancedAvatarConfigCustomNameField.value;
+                if (string.IsNullOrEmpty(val)) return;
+
+                AdvancedAvatarConfigCustomName = val;
                 AvatarConfigChange?.Invoke();
             });
             _advancedAvatarConfigArmatureNameLabel = Q<Label>("advanced-avatar-config-armature-name-label").First();

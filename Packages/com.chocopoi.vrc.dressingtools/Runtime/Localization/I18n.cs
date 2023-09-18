@@ -90,12 +90,7 @@ namespace Chocopoi.DressingTools.Localization
 
         public void LocalizeElement(VisualElement elem, bool recursively = true)
         {
-            if (elem is TextField textField)
-            {
-                // TODO: bug
-                return;
-            }
-            else if (elem is Foldout foldout)
+            if (elem is Foldout foldout)
             {
                 // we process texts that starts with @
                 var text = foldout.text;
