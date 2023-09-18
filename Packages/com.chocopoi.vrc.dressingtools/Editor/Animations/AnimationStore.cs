@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingTools.Lib;
 using Chocopoi.DressingTools.Lib.Animations;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -31,8 +32,11 @@ namespace Chocopoi.DressingTools.Animations
 
         public List<AnimationClipContainer> Clips { get; private set; }
 
-        public AnimationStore()
+        private ApplyCabinetContext _cabCtx;
+
+        public AnimationStore(ApplyCabinetContext cabCtx)
         {
+            _cabCtx = cabCtx;
             Clips = new List<AnimationClipContainer>();
         }
 
@@ -42,7 +46,7 @@ namespace Chocopoi.DressingTools.Animations
             {
                 if (clip.newClip != null && clip.originalClip != clip.newClip)
                 {
-                    AssetDatabase.CreateAsset(clip.newClip, $"{CabinetApplier.GeneratedAssetsPath}/cpDT_Clip_{clip.newClip.name}_{DTEditorUtils.RandomString(6)}.anim");
+                    _cabCtx.CreateUniqueAsset(clip.newClip, $"Clip_{clip.newClip.name}_{DTEditorUtils.RandomString(6)}.anim");
                     clip.dispatchFunc?.Invoke(clip.newClip);
                 }
             }

@@ -16,17 +16,24 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using Chocopoi.DressingTools.Lib.Animations;
 using Chocopoi.DressingTools.Lib.Cabinet;
 using Chocopoi.DressingTools.Lib.Logging;
 using Chocopoi.DressingTools.Lib.Proxy;
 using Chocopoi.DressingTools.Lib.Wearable;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Lib
 {
     public class ApplyCabinetContext
     {
+        public const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
+        public const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
+
+        private const string AssetNamePrefix = "cpDT_";
+
         public DTReport report;
         public CabinetConfig cabinetConfig;
         public GameObject avatarGameObject;
@@ -34,6 +41,28 @@ namespace Chocopoi.DressingTools.Lib
         public Dictionary<DTWearable, ApplyWearableContext> wearableContexts;
         public IPathRemapper pathRemapper;
         public IAnimationStore animationStore;
+
+        private readonly string _randomString;
+
+        public ApplyCabinetContext()
+        {
+            _randomString = DTLibRuntimeUtils.RandomString(8);
+        }
+
+        public string MakeUniqueName(string name)
+        {
+            return $"{avatarGameObject.name}_{_randomString}_{name}";
+        }
+
+        public string MakeUniqueAssetPath(string name)
+        {
+            return $"{GeneratedAssetsPath}/{AssetNamePrefix}{MakeUniqueName(name)}";
+        }
+
+        public void CreateUniqueAsset(Object obj, string name)
+        {
+            AssetDatabase.CreateAsset(obj, MakeUniqueAssetPath(name));
+        }
     }
 
     public class ApplyWearableContext
@@ -41,5 +70,27 @@ namespace Chocopoi.DressingTools.Lib
         public WearableConfig wearableConfig;
         public GameObject wearableGameObject;
         public List<IDynamicsProxy> wearableDynamics;
+
+        private readonly string _randomString;
+
+        public ApplyWearableContext()
+        {
+            _randomString = DTLibRuntimeUtils.RandomString(8);
+        }
+
+        public string MakeUniqueName(string name)
+        {
+            return $"{wearableGameObject.name}_{_randomString}_{name}";
+        }
+
+        public string MakeUniqueAssetPath(ApplyCabinetContext cabCtx, string name)
+        {
+            return cabCtx.MakeUniqueAssetPath(MakeUniqueName(name));
+        }
+
+        public void CreateUniqueAsset(ApplyCabinetContext cabCtx, Object obj, string name)
+        {
+            cabCtx.CreateUniqueAsset(obj, MakeUniqueName(name));
+        }
     }
 }

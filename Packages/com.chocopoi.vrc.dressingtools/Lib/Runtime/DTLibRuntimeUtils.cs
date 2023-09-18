@@ -16,12 +16,15 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using Chocopoi.DressingTools.Lib.Cabinet;
 
 namespace Chocopoi.DressingTools.Lib
 {
     internal static class DTLibRuntimeUtils
     {
+        private static readonly System.Random Random = new System.Random();
+
         public enum LifecycleStage
         {
             Awake,
@@ -30,5 +33,14 @@ namespace Chocopoi.DressingTools.Lib
 
         public delegate void OnCabinetLifecycleDelegate(LifecycleStage stage, DTCabinet cabinet);
         public static OnCabinetLifecycleDelegate OnCabinetLifecycle = (stage, cabinet) => { };
+
+        public static string RandomString(int length)
+        {
+            // i just copied from stackoverflow :D
+            // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings?page=1&tab=scoredesc#tab-top
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
+        }
     }
 }
