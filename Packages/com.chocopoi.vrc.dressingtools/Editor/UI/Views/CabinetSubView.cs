@@ -188,7 +188,9 @@ namespace Chocopoi.DressingTools.UI.Views
             _avatarArmatureNameField = Q<TextField>("settings-avatar-armature-name").First();
             _avatarArmatureNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
-                CabinetAvatarArmatureName = evt.newValue;
+                var val = _avatarArmatureNameField.value;
+                if (string.IsNullOrEmpty(val)) return;
+                CabinetAvatarArmatureName = val;
                 CabinetSettingsChange?.Invoke();
             });
 

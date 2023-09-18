@@ -9,7 +9,7 @@
         <ui:VisualElement name="popup-cabinet-selection" />
         <ui:Foldout name="foldout-settings" text="@cabinet.editor.foldout.settings" class="foldout-header" />
         <ui:VisualElement name="settings-container" style="margin-left: 15px; margin-bottom: 8px;">
-            <ui:TextField picking-mode="Ignore" label="@cabinet.editor.settings.textField.avatarArmatureName" value="Armature" text="Armature" name="settings-avatar-armature-name" />
+            <ui:TextField picking-mode="Ignore" label="@cabinet.editor.settings.textField.avatarArmatureName" name="settings-avatar-armature-name" />
             <ui:Toggle label="@cabinet.editor.settings.toggle.groupDynamics" name="settings-group-dynamics" value="true" />
             <ui:Toggle label="@cabinet.editor.settings.toggle.groupDynamicsSeparate" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
             <ui:Toggle label="@cabinet.editor.settings.toggle.animationWriteDefaults" name="settings-anim-write-defaults" value="true" />
