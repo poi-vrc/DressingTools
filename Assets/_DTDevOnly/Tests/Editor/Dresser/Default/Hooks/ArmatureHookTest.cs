@@ -208,6 +208,18 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
+        private static readonly BoneMapping[] ExpectedRemoveDynamicsAndUseParentConstraintsWithSuffixBoneMapping =
+        {
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature (Suffix)/Hips (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyBone (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)/MyDynBone1 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)/MyDynBone2 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)/MyAnotherDynBone1 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)/MyAnotherDynBone2 (Suffix)" },
+        };
+
         private static readonly BoneMapping[] ExpectedKeepDynamicsAndUseParentConstraintIfNecessaryBoneMapping =
         {
             new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
@@ -293,6 +305,58 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearable.prefab");
 
             AvatarDynamics_RemoveDynamicsAndUseParentConstraints_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
+        }
+
+        private void AvatarDynamics_RemoveDynamicsAndUseParentConstraintsWithSuffix_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
+        {
+            var result = EvaluateHook(avatarRoot, wearableRoot, out var report, out var boneMappings, DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint);
+            Assert.True(result, "Hook should return true");
+
+            PrintMappings(boneMappings);
+
+            Assert.AreEqual(ExpectedRemoveDynamicsAndUseParentConstraintsWithSuffixBoneMapping.Length, boneMappings.Count, "Bone mapping length is not equal to expected length");
+
+            foreach (var mapping in boneMappings)
+            {
+                Debug.Log("Checking: " + mapping.ToString());
+
+                bool found = false;
+                foreach (var expectedMapping in ExpectedRemoveDynamicsAndUseParentConstraintsWithSuffixBoneMapping)
+                {
+                    if (expectedMapping.Equals(mapping))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                Assert.True(found, "Could not find such mapping in expected bone mapping array: " + mapping.ToString());
+            }
+        }
+
+        [Test]
+        public void DynamicBone_RemoveDynamicsAndUseParentConstraintsWithSuffix_ReturnsCorrectBoneMappingAndLogCodes()
+        {
+            // DynamicBone has to be imported to run this test
+            Assert.NotNull(DTEditorUtils.FindType("DynamicBone"), "This test requires DynamicBones to be imported");
+
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_DynamicBoneWearableWithSuffix.prefab");
+
+            AvatarDynamics_RemoveDynamicsAndUseParentConstraintsWithSuffix_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
+        }
+
+        [Test]
+        public void PhysBone_RemoveDynamicsAndUseParentConstraintsWithSuffix_ReturnsCorrectBoneMappingAndLogCodes()
+        {
+#if !VRC_SDK_VRCSDK3
+            // VRCSDK3 has to be imported to run this test
+            Assert.Fail("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
+#endif
+            var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatar.prefab");
+            var wearableRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneWearableWithSuffix.prefab");
+
+            AvatarDynamics_RemoveDynamicsAndUseParentConstraintsWithSuffix_ReturnsCorrectBoneMappingAndLogCodes(avatarRoot, wearableRoot);
         }
 
         private void AvatarDynamics_KeepDynamicsAndUseParentConstraintIfNecessary_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
