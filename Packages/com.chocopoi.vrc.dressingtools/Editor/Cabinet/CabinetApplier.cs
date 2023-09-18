@@ -37,9 +37,6 @@ namespace Chocopoi.DressingTools.Cabinet
     {
         public const string LogLabel = "DTCabinetApplier";
 
-        public const string GeneratedAssetsFolderName = "_DTGeneratedAssets";
-        public const string GeneratedAssetsPath = "Assets/" + GeneratedAssetsFolderName;
-
         private const string DynamicsContainerName = "DT_Dynamics";
 
         public static class MessageCode
@@ -73,8 +70,8 @@ namespace Chocopoi.DressingTools.Cabinet
                 avatarDynamics = new List<IDynamicsProxy>(),
                 wearableContexts = new Dictionary<DTWearable, ApplyWearableContext>(),
                 pathRemapper = new PathRemapper(cabinet.AvatarGameObject),
-                animationStore = new AnimationStore()
             };
+            _cabCtx.animationStore = new AnimationStore(_cabCtx);
         }
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
@@ -293,8 +290,8 @@ namespace Chocopoi.DressingTools.Cabinet
             wearableModuleProviders.Sort((p1, p2) => p1.CallOrder.CompareTo(p2.CallOrder));
 
             // remove previous generated files
-            AssetDatabase.DeleteAsset(GeneratedAssetsPath);
-            AssetDatabase.CreateFolder("Assets", GeneratedAssetsFolderName);
+            AssetDatabase.DeleteAsset(ApplyCabinetContext.GeneratedAssetsPath);
+            AssetDatabase.CreateFolder("Assets", ApplyCabinetContext.GeneratedAssetsFolderName);
 
             // scan for avatar dynamics
             _cabCtx.avatarDynamics = DTEditorUtils.ScanDynamics(_cabCtx.avatarGameObject, true);

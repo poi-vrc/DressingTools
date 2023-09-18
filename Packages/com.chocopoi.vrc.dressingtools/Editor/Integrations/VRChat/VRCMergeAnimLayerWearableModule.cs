@@ -291,7 +291,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 // create merger if haven't
                 if (!mergerByLayer.TryGetValue(vrcAnimLayer.Value, out var merger))
                 {
-                    merger = new AnimatorMerger($"{CabinetApplier.GeneratedAssetsPath}/cpDT_VRC_Merged_{malm.animLayer.ToString()}.controller");
+                    merger = new AnimatorMerger(cabCtx.MakeUniqueName($"VRC_Merged_{malm.animLayer}.controller"));
                     mergerByLayer[vrcAnimLayer.Value] = merger;
 
                     // add root controller

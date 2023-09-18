@@ -16,6 +16,7 @@
  */
 
 #if VRC_SDK_VRCSDK3
+using System.IO;
 using Chocopoi.DressingTools.Cabinet;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -27,11 +28,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal static class VRCEditorUtils
     {
-        private const string ExpressionParametersAssetName = "cpDT_VRC_ExParams";
-        private const string ExpressionMenuAssetName = "cpDT_VRC_ExMenu";
-        private const string AnimLayerAssetNamePrefix = "cpDT_VRC_AnimLayer_";
-
-        public static VRCExpressionParameters CopyAndReplaceExpressionParameters(VRCAvatarDescriptor avatarDescriptor)
+        public static VRCExpressionParameters CopyAndReplaceExpressionParameters(VRCAvatarDescriptor avatarDescriptor, string path)
         {
             var expressionParameters = avatarDescriptor.expressionParameters;
 
@@ -50,23 +47,24 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 }
             }
 
+            var fileName = Path.GetFileNameWithoutExtension(path);
+
             // do not copy again if we have copied before
-            if (expressionParameters.name == ExpressionParametersAssetName)
+            if (expressionParameters.name == fileName)
             {
                 return expressionParameters;
             }
 
-            var copiedPath = string.Format("{0}/{1}.asset", CabinetApplier.GeneratedAssetsPath, ExpressionParametersAssetName);
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(expressionParameters), copiedPath);
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(expressionParameters), path);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset(copiedPath);
-            var copiedParams = AssetDatabase.LoadAssetAtPath<VRCExpressionParameters>(copiedPath);
+            AssetDatabase.ImportAsset(path);
+            var copiedParams = AssetDatabase.LoadAssetAtPath<VRCExpressionParameters>(path);
             avatarDescriptor.expressionParameters = copiedParams;
             return copiedParams;
         }
 
-        public static VRCExpressionsMenu CopyAndReplaceExpressionMenu(VRCAvatarDescriptor avatarDescriptor)
+        public static VRCExpressionsMenu CopyAndReplaceExpressionMenu(VRCAvatarDescriptor avatarDescriptor, string path)
         {
             var expressionsMenu = avatarDescriptor.expressionsMenu;
 
@@ -85,23 +83,24 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 }
             }
 
+            var fileName = Path.GetFileNameWithoutExtension(path);
+
             // do not copy again if we have copied before
-            if (expressionsMenu.name == ExpressionMenuAssetName)
+            if (expressionsMenu.name == fileName)
             {
                 return expressionsMenu;
             }
 
-            var copiedPath = string.Format("{0}/{1}.asset", CabinetApplier.GeneratedAssetsPath, ExpressionMenuAssetName);
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(expressionsMenu), copiedPath);
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(expressionsMenu), path);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset(copiedPath);
-            var copiedMenu = AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>(copiedPath);
+            AssetDatabase.ImportAsset(path);
+            var copiedMenu = AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>(path);
             avatarDescriptor.expressionsMenu = copiedMenu;
             return copiedMenu;
         }
 
-        public static AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType)
+        public static AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType, string path)
         {
             var customAnimLayerIndex = -1;
             for (var i = 0; i < avatarDescriptor.baseAnimationLayers.Length; i++)
@@ -121,21 +120,22 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             var animLayer = avatarDescriptor.baseAnimationLayers[customAnimLayerIndex];
             var animator = GetAnimLayerAnimator(animLayer);
 
+            var fileName = Path.GetFileNameWithoutExtension(path);
+
             // do not copy again if we have copied before
-            if (animator.name.StartsWith(AnimLayerAssetNamePrefix))
+            if (animator.name == fileName)
             {
                 return animator;
             }
 
             // copy to our asset path
-            var copiedPath = string.Format("{0}/{1}{2}.controller", CabinetApplier.GeneratedAssetsPath, AnimLayerAssetNamePrefix, animLayerType.ToString());
-            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(animator), copiedPath);
+            AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(animator), path);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset(copiedPath);
+            AssetDatabase.ImportAsset(path);
 
             // get back here
-            var copiedAnimator = AssetDatabase.LoadAssetAtPath<AnimatorController>(copiedPath);
+            var copiedAnimator = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
             animLayer.animatorController = copiedAnimator;
             avatarDescriptor.baseAnimationLayers[customAnimLayerIndex] = animLayer;
 

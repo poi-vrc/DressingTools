@@ -21,5 +21,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Editor.Tests")]
 [assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Runtime")]
 [assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Runtime.Tests")]
+[assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Lib.Editor")]
 [assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Lib.Editor.Tests")]
 [assembly: InternalsVisibleTo("com.chocopoi.vrc.dressingtools.Lib.Runtime.Tests")]
