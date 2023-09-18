@@ -49,7 +49,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             foreach (var child in childs)
             {
-                var avatarTrans = avatarDynamicsRoot.Find(child.name);
+                var avatarTrans = DTEditorUtils.GuessMatchingAvatarBone(avatarDynamicsRoot, child.name);
                 if (avatarTrans != null)
                 {
                     AddRecursiveDynamicsBindings(targetAvatarRoot, targetWearableRoot, avatarTrans, child, boneMappings, bindingType);

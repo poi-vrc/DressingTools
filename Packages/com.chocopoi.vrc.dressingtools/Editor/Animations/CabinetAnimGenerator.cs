@@ -27,7 +27,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations
 {
-    internal class cabinetAnimGen
+    internal class CabinetAnimGenerator
     {
         public const string LogLabel = "CabinetAnimGenerator";
 
@@ -54,7 +54,7 @@ namespace Chocopoi.DressingTools.Animations
         private IPathRemapper _pathRemapper;
         private bool _writeDefaults;
 
-        public cabinetAnimGen(DTReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
+        public CabinetAnimGenerator(DTReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
         {
             _report = report;
             _avatarObject = avatarObject;
