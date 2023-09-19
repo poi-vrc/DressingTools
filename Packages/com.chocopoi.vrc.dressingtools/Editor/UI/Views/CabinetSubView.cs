@@ -38,30 +38,29 @@ namespace Chocopoi.DressingTools.UI.Views
         private static StyleSheet s_wearableThumbnailStyleSheet = null;
         private static Texture2D s_thumbnailPlaceholder = null;
 
-        public event Action CreateCabinetButtonClick;
         public event Action AddWearableButtonClick;
         public event Action SelectedCabinetChange;
         public event Action CabinetSettingsChange;
+        public event Action ToolbarCreateCabinetButtonClick;
+        public event Action CreateCabinetStartButtonClick;
+        public event Action CreateCabinetBackButtonClick;
 
-        public bool ShowCreateCabinetWizard { get; set; }
-        public bool ShowCabinetWearables { get; set; }
-        public int SelectedCabinetIndex { get => _selectedCabinetIndex; set => _selectedCabinetIndex = value; }
+        public bool ShowCreateCabinetPanel { get; set; }
+        public bool ShowCreateCabinetBackButton { get; set; }
+        public int SelectedCabinetIndex { get; set; }
         public List<string> AvailableCabinetSelections { get; set; }
-        public GameObject CabinetAvatarGameObject { get => _cabinetAvatarGameObject; set => _cabinetAvatarGameObject = value; }
-        public string CabinetAvatarArmatureName { get => _cabinetAvatarArmatureName; set => _cabinetAvatarArmatureName = value; }
+        public GameObject CabinetAvatarGameObject { get; set; }
+        public string CabinetAvatarArmatureName { get; set; }
         public bool CabinetGroupDynamics { get; set; }
         public bool CabinetGroupDynamicsSeparateGameObjects { get; set; }
         public bool CabinetAnimationWriteDefaults { get; set; }
         public List<CabinetModulePreview> CabinetModulePreviews { get; set; }
         public List<WearablePreview> InstalledWearablePreviews { get; set; }
-        public GameObject SelectedCreateCabinetGameObject { get => _selectedCreateCabinetGameObject; }
+        public GameObject CreateCabinetAvatarGameObject { get; set; }
 
         private IMainView _mainView;
         private CabinetPresenter _cabinetPresenter;
-        private GameObject _selectedCreateCabinetGameObject;
-        private int _selectedCabinetIndex;
-        private GameObject _cabinetAvatarGameObject;
-        private string _cabinetAvatarArmatureName;
+        private VisualElement _cabinetContentContainer;
         private VisualElement _installedWearableIconsContainer;
         private VisualElement _installedWearableListContainer;
         private TextField _avatarArmatureNameField;
@@ -71,19 +70,24 @@ namespace Chocopoi.DressingTools.UI.Views
         private VisualElement _cabinetModulesContainer;
         private Button[] _displayModeBtns;
         private int _selectedDisplayMode;
+        private VisualElement _createCabinetContainer;
+        private ObjectField _createCabinetAvatarObjectField;
+        private Button _createCabinetBackBtn;
+        private PopupField<string> _cabinetPopup;
 
         public CabinetSubView(IMainView mainView)
         {
             _mainView = mainView;
             _cabinetPresenter = new CabinetPresenter(this);
-            _selectedCabinetIndex = 0;
+            SelectedCabinetIndex = 0;
             _selectedDisplayMode = 0;
 
-            ShowCreateCabinetWizard = false;
-            ShowCabinetWearables = false;
+            ShowCreateCabinetPanel = false;
             AvailableCabinetSelections = new List<string>() { "" };
             CabinetModulePreviews = new List<CabinetModulePreview>();
             InstalledWearablePreviews = new List<WearablePreview>();
+
+            CreateCabinetAvatarGameObject = null;
         }
 
         public void SelectTab(int selectedTab)
@@ -93,39 +97,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void StartDressing(GameObject avatarGameObject = null, GameObject wearableGameObject = null)
         {
-            _mainView.StartDressing(avatarGameObject != null ? avatarGameObject : _cabinetAvatarGameObject, wearableGameObject);
+            _mainView.StartDressing(avatarGameObject != null ? avatarGameObject : CabinetAvatarGameObject, wearableGameObject);
         }
 
         public void SelectCabinet(DTCabinet cabinet) => _cabinetPresenter.SelectCabinet(cabinet);
 
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitCabinetModules();
-            BindCabinetSettings();
-            base.OnEnable();
-            InitCabinetPopup();
-            BindFoldouts();
-            BindDisplayModes();
-
-            t.LocalizeElement(this);
-        }
-
-        private void InitVisualTree()
-        {
-            var tree = Resources.Load<VisualTreeAsset>("CabinetSubView");
-            tree.CloneTree(this);
-            var styleSheet = Resources.Load<StyleSheet>("CabinetSubViewStyles");
-            if (!styleSheets.Contains(styleSheet))
-            {
-                styleSheets.Add(styleSheet);
-            }
-
-            _installedWearableIconsContainer = Q<VisualElement>("installed-wearable-icons-container").First();
-            _installedWearableListContainer = Q<VisualElement>("installed-wearable-list-container").First();
-        }
-
-        private void BindDisplayModes()
+        private void BindCabinetContentDisplayModes()
         {
             var iconsBtn = Q<Button>("btn-display-mode-icons");
             var listBtn = Q<Button>("btn-display-mode-list");
@@ -139,13 +116,13 @@ namespace Chocopoi.DressingTools.UI.Views
                 {
                     if (_selectedDisplayMode == displayModeIndex) return;
                     _selectedDisplayMode = displayModeIndex;
-                    UpdateDisplayModes();
+                    UpdateCabinetContentDisplayModes();
                 };
                 _displayModeBtns[i].EnableInClassList("active", displayModeIndex == _selectedDisplayMode);
             }
         }
 
-        private void UpdateDisplayModes()
+        private void UpdateCabinetContentDisplayModes()
         {
             for (var i = 0; i < _displayModeBtns.Length; i++)
             {
@@ -164,26 +141,26 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        private void InitCabinetPopup()
+        private void InitCabinetContentPopup()
         {
             var popupContainer = Q<VisualElement>("popup-cabinet-selection").First();
-            var cabinetPopup = new PopupField<string>(t._("cabinet.editor.popup.cabinet"), AvailableCabinetSelections, 0);
-            cabinetPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            _cabinetPopup = new PopupField<string>(t._("cabinet.editor.cabinetContent.popup.cabinet"), AvailableCabinetSelections, 0);
+            _cabinetPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 int index = AvailableCabinetSelections.IndexOf(evt.newValue);
-                _selectedCabinetIndex = index;
+                SelectedCabinetIndex = index;
                 SelectedCabinetChange?.Invoke();
             });
-            popupContainer.Add(cabinetPopup);
+            popupContainer.Add(_cabinetPopup);
         }
 
-        private void InitCabinetModules()
+        private void InitCabinetContentModules()
         {
             // TODO: cabinet module editors
             _cabinetModulesContainer = Q<VisualElement>("settings-modules-container").First();
         }
 
-        private void BindCabinetSettings()
+        private void InitCabinetContentSettings()
         {
             _avatarArmatureNameField = Q<TextField>("settings-avatar-armature-name").First();
             _avatarArmatureNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
@@ -216,19 +193,68 @@ namespace Chocopoi.DressingTools.UI.Views
             });
         }
 
-        private void BindFoldouts()
+        private void BindCabinetContentFoldouts()
         {
-            var settingsFoldout = Q<Foldout>("foldout-settings").First();
-            var settingsContainer = Q<VisualElement>("settings-container").First();
-            settingsFoldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => settingsContainer.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
+            BindFoldoutHeaderWithContainer("foldout-settings", "settings-container");
+            BindFoldoutHeaderWithContainer("foldout-installed-wearables", "installed-wearables-container");
+            // BindFoldoutHeaderWithContainer("foldout-available-wearables", "available-wearables-container");
+        }
 
-            var installedWearablesFoldout = Q<Foldout>("foldout-installed-wearables").First();
-            var installedWearablesContainer = Q<VisualElement>("installed-wearables-container").First();
-            installedWearablesFoldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => installedWearablesContainer.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
+        private void InitCabinetContent()
+        {
+            _cabinetContentContainer = Q<VisualElement>("cabinet-content-container").First();
 
-            // var availableWearablesFoldout = Q<Foldout>("foldout-available-wearables").First();
-            // var availableWearablesContainer = Q<VisualElement>("available-wearables-container").First();
-            // availableWearablesFoldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => availableWearablesContainer.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
+            _installedWearableIconsContainer = Q<VisualElement>("installed-wearable-icons-container").First();
+            _installedWearableListContainer = Q<VisualElement>("installed-wearable-list-container").First();
+
+            var toolbarCreateCabinetBtn = Q<Button>("toolbar-create-cabinet-btn").First();
+            toolbarCreateCabinetBtn.clicked += ToolbarCreateCabinetButtonClick;
+
+            InitCabinetContentModules();
+            InitCabinetContentSettings();
+            InitCabinetContentPopup();
+            BindCabinetContentFoldouts();
+            BindCabinetContentDisplayModes();
+        }
+
+        private void InitCreateCabinet()
+        {
+            _createCabinetContainer = Q<VisualElement>("create-cabinet-container").First();
+
+            _createCabinetAvatarObjectField = Q<ObjectField>("create-cabinet-avatar-objectfield").First();
+            _createCabinetAvatarObjectField.objectType = typeof(GameObject);
+            _createCabinetAvatarObjectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> evt) =>
+            {
+                CreateCabinetAvatarGameObject = (GameObject)evt.newValue;
+            });
+
+            var startBtn = Q<Button>("create-cabinet-start-btn").First();
+            startBtn.clicked += CreateCabinetStartButtonClick;
+
+            _createCabinetBackBtn = Q<Button>("create-cabinet-back-btn").First();
+            _createCabinetBackBtn.clicked += CreateCabinetBackButtonClick;
+        }
+
+        private void InitVisualTree()
+        {
+            var tree = Resources.Load<VisualTreeAsset>("CabinetSubView");
+            tree.CloneTree(this);
+            var styleSheet = Resources.Load<StyleSheet>("CabinetSubViewStyles");
+            if (!styleSheets.Contains(styleSheet))
+            {
+                styleSheets.Add(styleSheet);
+            }
+        }
+
+        public override void OnEnable()
+        {
+            InitVisualTree();
+            InitCabinetContent();
+            InitCreateCabinet();
+
+            t.LocalizeElement(this);
+
+            RaiseLoadEvent();
         }
 
         private VisualElement CreateAddPlaceholderElement()
@@ -284,7 +310,7 @@ namespace Chocopoi.DressingTools.UI.Views
             element.Q<Label>("label-name").text = wearableName;
             element.Q<Button>("btn-remove").clicked += () =>
             {
-                if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.cabinetContent.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
                 {
                     removeBtnClick.Invoke();
                 }
@@ -310,12 +336,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
             var listItemRemoveBtn = new Button()
             {
-                text = t._("cabinet.editor.btn.remove")
+                text = t._("cabinet.editor.cabinetContent.btn.remove")
             };
 
             listItemRemoveBtn.clicked += () =>
             {
-                if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.cabinetContent.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
                 {
                     preview.RemoveButtonClick.Invoke();
                 }
@@ -326,14 +352,17 @@ namespace Chocopoi.DressingTools.UI.Views
             return listItem;
         }
 
-        public override void Repaint()
+        private void RepaintCabinetContentSettings()
         {
             // update cabinet settings
             _avatarArmatureNameField.value = CabinetAvatarArmatureName;
             _groupDynamicsToggle.value = CabinetGroupDynamics;
             _groupDynamicsSeparateGameObjectsToggle.value = CabinetGroupDynamicsSeparateGameObjects;
             _animationWriteDefaultsToggle.value = CabinetAnimationWriteDefaults;
+        }
 
+        private void RepaintCabinetContentModules()
+        {
             _cabinetModulesContainer.Clear();
             foreach (var preview in CabinetModulePreviews)
             {
@@ -345,11 +374,11 @@ namespace Chocopoi.DressingTools.UI.Views
 
                 var removeBtn = new Button
                 {
-                    text = t._("cabinet.editor.btn.remove")
+                    text = t._("cabinet.editor.cabinetContent.btn.remove")
                 };
                 removeBtn.clicked += () =>
                 {
-                    if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                    if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.cabinetContent.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
                     {
                         preview.RemoveButtonClick.Invoke();
                     }
@@ -358,7 +387,10 @@ namespace Chocopoi.DressingTools.UI.Views
                 previewContainer.Add(removeBtn);
                 _cabinetModulesContainer.Add(previewContainer);
             }
+        }
 
+        private void RepaintCabinetContentInstalledWearables()
+        {
             // update installed wearable container
             _installedWearableIconsContainer.Clear();
             _installedWearableListContainer.Clear();
@@ -371,6 +403,29 @@ namespace Chocopoi.DressingTools.UI.Views
                 _installedWearableListContainer.Add(CreateWearablePreviewListItem(preview));
             }
             _installedWearableIconsContainer.Add(CreateAddPlaceholderElement());
+        }
+
+        private void RepaintCabinetContent()
+        {
+            _cabinetContentContainer.style.display = ShowCreateCabinetPanel ? DisplayStyle.None : DisplayStyle.Flex;
+            _cabinetPopup.index = SelectedCabinetIndex;
+
+            RepaintCabinetContentSettings();
+            RepaintCabinetContentModules();
+            RepaintCabinetContentInstalledWearables();
+        }
+
+        private void RepaintCreateCabinet()
+        {
+            _createCabinetContainer.style.display = ShowCreateCabinetPanel ? DisplayStyle.Flex : DisplayStyle.None;
+            _createCabinetAvatarObjectField.value = CreateCabinetAvatarGameObject;
+            _createCabinetBackBtn.style.display = ShowCreateCabinetBackButton ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        public override void Repaint()
+        {
+            RepaintCabinetContent();
+            RepaintCreateCabinet();
         }
     }
 }

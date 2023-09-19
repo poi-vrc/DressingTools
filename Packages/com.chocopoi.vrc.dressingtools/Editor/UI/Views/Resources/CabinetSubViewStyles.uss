@@ -18,3 +18,33 @@
     background-color: #737373;
     color: #e8e8e8;
 }
+
+#create-cabinet-container {
+    margin: 24px;
+}
+
+#create-cabinet-container Label {
+    -unity-text-align: upper-center;
+    white-space: normal; 
+}
+
+.create-cabinet-welcome-header {
+    -unity-text-align: upper-center;
+    font-size: 30px;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.mb-8 {
+    margin-bottom: 8px;
+}
+
+#create-cabinet-start-btn {
+    height: 36px;
+}

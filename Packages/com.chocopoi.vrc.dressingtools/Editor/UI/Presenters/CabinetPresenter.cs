@@ -45,25 +45,56 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload += OnUnload;
 
             _view.AddWearableButtonClick += OnAddWearableButtonClick;
-            _view.CreateCabinetButtonClick += OnCreateCabinetButtonClick;
             _view.ForceUpdateView += OnForceUpdateView;
             _view.SelectedCabinetChange += OnSelectedCabinetChange;
             _view.CabinetSettingsChange += OnCabinetSettingsChange;
+            _view.ToolbarCreateCabinetButtonClick += OnToolbarCreateCabinetButtonClick;
+            _view.CreateCabinetStartButtonClick += OnCreateCabinetStartButtonClick;
+            _view.CreateCabinetBackButtonClick += OnCreateCabinetBackButtonClick;
 
             EditorApplication.hierarchyChanged += OnHierarchyChanged;
         }
+
         private void UnsubscribeEvents()
         {
             _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
             _view.AddWearableButtonClick -= OnAddWearableButtonClick;
-            _view.CreateCabinetButtonClick -= OnCreateCabinetButtonClick;
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.SelectedCabinetChange -= OnSelectedCabinetChange;
             _view.CabinetSettingsChange -= OnCabinetSettingsChange;
+            _view.ToolbarCreateCabinetButtonClick -= OnToolbarCreateCabinetButtonClick;
+            _view.CreateCabinetStartButtonClick -= OnCreateCabinetStartButtonClick;
+            _view.CreateCabinetBackButtonClick -= OnCreateCabinetBackButtonClick;
 
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+        }
+
+        private void OnCreateCabinetBackButtonClick()
+        {
+            _view.ShowCreateCabinetPanel = false;
+            UpdateView();
+        }
+
+        private void OnCreateCabinetStartButtonClick()
+        {
+            if (_view.CreateCabinetAvatarGameObject == null)
+            {
+                return;
+            }
+            DTEditorUtils.GetAvatarCabinet(_view.CreateCabinetAvatarGameObject, true);
+            _view.ShowCreateCabinetPanel = false;
+            UpdateView();
+        }
+
+        private void OnToolbarCreateCabinetButtonClick()
+        {
+            _view.ShowCreateCabinetPanel = true;
+            _view.ShowCreateCabinetBackButton = true;
+            _view.CreateCabinetAvatarGameObject = null;
+
+            UpdateView();
         }
 
         private void OnHierarchyChanged()
@@ -83,10 +114,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (cabinets.Length == 0)
             {
-                _view.ShowCabinetWearables = false;
-                _view.ShowCreateCabinetWizard = true;
+                _view.ShowCreateCabinetBackButton = false;
+                _view.ShowCreateCabinetPanel = true;
                 return;
             }
+            _view.ShowCreateCabinetBackButton = true;
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
@@ -114,10 +146,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (cabinets.Length == 0)
             {
-                _view.ShowCabinetWearables = false;
-                _view.ShowCreateCabinetWizard = true;
+                _view.ShowCreateCabinetBackButton = false;
+                _view.ShowCreateCabinetPanel = true;
                 return;
             }
+            _view.ShowCreateCabinetBackButton = true;
+            _view.ShowCreateCabinetPanel = false;
 
             // refresh the keys first
             UpdateCabinetSelectionDropdown(cabinets);
@@ -142,23 +176,21 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AvailableCabinetSelections.Clear();
             for (var i = 0; i < cabinets.Length; i++)
             {
-                _view.AvailableCabinetSelections.Add(cabinets[i].AvatarGameObject != null ? cabinets[i].AvatarGameObject.name : t._("cabinet.editor.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
+                _view.AvailableCabinetSelections.Add(cabinets[i].AvatarGameObject != null ? cabinets[i].AvatarGameObject.name : t._("cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
             }
         }
 
-        private void UpdateView()
+        private void UpdateCabinetContentView()
         {
             var cabinets = DTEditorUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
-                _view.ShowCabinetWearables = false;
-                _view.ShowCreateCabinetWizard = true;
+                _view.ShowCreateCabinetBackButton = false;
+                _view.ShowCreateCabinetPanel = true;
                 return;
             }
-
-            _view.ShowCabinetWearables = true;
-            _view.ShowCreateCabinetWizard = false;
+            _view.ShowCreateCabinetBackButton = true;
 
             UpdateCabinetSelectionDropdown(cabinets);
 
@@ -215,7 +247,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     name = config != null ?
                         config.info.name :
-                        t._("cabinet.editor.wearablePreview.name.unableToLoadConfiguration"),
+                        t._("cabinet.editor.cabinetContent.wearablePreview.name.unableToLoadConfiguration"),
                     thumbnail = config != null && config.info.thumbnail != null ?
                         DTEditorUtils.GetTextureFromBase64(config.info.thumbnail) :
                         null,
@@ -230,6 +262,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 });
             }
+        }
+
+        private void UpdateView()
+        {
+            UpdateCabinetContentView();
             _view.Repaint();
         }
 
@@ -254,12 +291,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
             _view.StartDressing(cabinet.AvatarGameObject);
-        }
-
-        private void OnCreateCabinetButtonClick()
-        {
-            DTEditorUtils.GetAvatarCabinet(_view.SelectedCreateCabinetGameObject, true);
-            UpdateView();
         }
     }
 }

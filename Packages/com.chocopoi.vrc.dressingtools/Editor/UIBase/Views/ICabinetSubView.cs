@@ -38,13 +38,15 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface ICabinetSubView : IEditorView
     {
-        event Action CreateCabinetButtonClick;
         event Action AddWearableButtonClick;
         event Action SelectedCabinetChange;
         event Action CabinetSettingsChange;
+        event Action ToolbarCreateCabinetButtonClick;
+        event Action CreateCabinetStartButtonClick;
+        event Action CreateCabinetBackButtonClick;
 
-        bool ShowCreateCabinetWizard { get; set; }
-        bool ShowCabinetWearables { get; set; }
+        bool ShowCreateCabinetPanel { get; set; }
+        bool ShowCreateCabinetBackButton { get; set; }
         int SelectedCabinetIndex { get; set; }
         List<string> AvailableCabinetSelections { get; set; }
         GameObject CabinetAvatarGameObject { get; set; }
@@ -54,7 +56,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool CabinetAnimationWriteDefaults { get; set; }
         List<CabinetModulePreview> CabinetModulePreviews { get; set; }
         List<WearablePreview> InstalledWearablePreviews { get; set; }
-        GameObject SelectedCreateCabinetGameObject { get; }
+        GameObject CreateCabinetAvatarGameObject { get; set; }
 
         void SelectTab(int selectedTab);
         void StartDressing(GameObject avatarGameObject = null, GameObject wearableGameObject = null);
