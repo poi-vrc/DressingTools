@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.UI.View;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;

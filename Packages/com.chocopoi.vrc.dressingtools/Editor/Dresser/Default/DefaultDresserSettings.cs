@@ -16,7 +16,7 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Dresser;
+using Chocopoi.DressingFramework.Dresser;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.Dresser.Default

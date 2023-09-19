@@ -16,7 +16,7 @@
  */
 
 using System;
-using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingFramework.Logging;
 
 namespace Chocopoi.DressingTools.Logging
 {

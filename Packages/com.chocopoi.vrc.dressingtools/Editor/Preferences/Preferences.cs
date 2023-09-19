@@ -16,7 +16,7 @@
  */
 
 using System;
-using Chocopoi.DressingTools.Lib.Serialization;
+using Chocopoi.DressingFramework.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;

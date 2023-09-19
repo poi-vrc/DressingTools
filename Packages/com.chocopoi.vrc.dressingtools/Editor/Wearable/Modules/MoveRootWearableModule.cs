@@ -17,11 +17,11 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib;
-using Chocopoi.DressingTools.Lib.Extensibility.Providers;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Serialization;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
 using Newtonsoft.Json.Linq;
 using Serilog;

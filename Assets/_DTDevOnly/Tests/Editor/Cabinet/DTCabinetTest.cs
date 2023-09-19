@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Logging;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 

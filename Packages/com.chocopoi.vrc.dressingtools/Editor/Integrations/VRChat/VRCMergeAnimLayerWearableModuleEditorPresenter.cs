@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
-using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingFramework.UI;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat

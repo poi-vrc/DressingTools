@@ -18,8 +18,8 @@
 using System;
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Lib;
-using Chocopoi.DressingTools.Lib.Animations;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Animations;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;

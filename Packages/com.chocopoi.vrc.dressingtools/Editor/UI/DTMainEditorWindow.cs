@@ -18,10 +18,10 @@
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Wearable;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingTools.UI.View;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;

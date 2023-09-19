@@ -17,8 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEngine;

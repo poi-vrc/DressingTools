@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingFramework.Logging;
 using UnityEditor;
 using UnityEngine;
 
