@@ -16,7 +16,7 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Lib.Proxy;
+using Chocopoi.DressingFramework.Proxy;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Proxy

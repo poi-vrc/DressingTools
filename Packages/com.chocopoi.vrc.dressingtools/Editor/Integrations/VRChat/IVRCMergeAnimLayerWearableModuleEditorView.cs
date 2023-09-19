@@ -17,7 +17,7 @@
 
 #if VRC_SDK_VRCSDK3
 using System;
-using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingFramework.UI;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat

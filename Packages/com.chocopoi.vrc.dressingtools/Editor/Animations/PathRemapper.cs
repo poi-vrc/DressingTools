@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Lib.Animations;
+using Chocopoi.DressingFramework.Animations;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations

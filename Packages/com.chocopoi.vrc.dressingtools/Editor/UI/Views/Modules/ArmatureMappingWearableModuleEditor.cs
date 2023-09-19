@@ -17,9 +17,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Dresser;
-using Chocopoi.DressingTools.Lib.Extensibility.Providers;
-using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;

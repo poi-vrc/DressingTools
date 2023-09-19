@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.Lib.Dresser;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Wearable;
 using NUnit.Framework;
 using UnityEngine;
 

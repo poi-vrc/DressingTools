@@ -16,10 +16,10 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Lib.Dresser;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Proxy;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Proxy;
+using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.Logging;
 using UnityEngine;
 

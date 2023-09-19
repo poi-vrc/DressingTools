@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Chocopoi.DressingTools.Lib.Dresser;
+using Chocopoi.DressingFramework.Dresser;
 
 namespace Chocopoi.DressingTools.Dresser
 {

@@ -16,9 +16,9 @@
  */
 
 using System;
-using Chocopoi.DressingTools.Lib;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.Logging;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
 
@@ -27,15 +27,15 @@ namespace Chocopoi.DressingTools.Cabinet
     [InitializeOnLoad]
     internal static class AutoPlayModeApply
     {
-        private static DTLibRuntimeUtils.LifecycleStage s_applyLifeCycle = DTLibRuntimeUtils.LifecycleStage.Awake;
+        private static DKRuntimeUtils.LifecycleStage s_applyLifeCycle = DKRuntimeUtils.LifecycleStage.Awake;
 
         static AutoPlayModeApply()
         {
-            DTLibRuntimeUtils.OnCabinetLifecycle = OnCabinetLifecycle;
+            DKRuntimeUtils.OnCabinetLifecycle = OnCabinetLifecycle;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        private static void OnCabinetLifecycle(DTLibRuntimeUtils.LifecycleStage stage, DTCabinet cabinet)
+        private static void OnCabinetLifecycle(DKRuntimeUtils.LifecycleStage stage, DTCabinet cabinet)
         {
             if (s_applyLifeCycle == stage)
             {
@@ -53,10 +53,10 @@ namespace Chocopoi.DressingTools.Cabinet
             switch (change)
             {
                 case PlayModeStateChange.EnteredPlayMode:
-                    s_applyLifeCycle = DTLibRuntimeUtils.LifecycleStage.Start;
+                    s_applyLifeCycle = DKRuntimeUtils.LifecycleStage.Start;
                     break;
                 case PlayModeStateChange.EnteredEditMode:
-                    s_applyLifeCycle = DTLibRuntimeUtils.LifecycleStage.Awake;
+                    s_applyLifeCycle = DKRuntimeUtils.LifecycleStage.Awake;
                     break;
             }
         }

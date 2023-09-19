@@ -17,9 +17,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Extensibility.Providers;
-using Chocopoi.DressingTools.Lib.Serialization;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.Wearable;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 

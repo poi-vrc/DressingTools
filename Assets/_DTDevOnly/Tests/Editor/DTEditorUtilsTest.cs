@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Lib.Proxy;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Proxy;
+using Chocopoi.DressingFramework.Wearable;
 using NUnit.Framework;
 using UnityEngine;
 

@@ -17,10 +17,10 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Lib.Animations;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Proxy;
-using Chocopoi.DressingTools.Lib.Wearable;
+using Chocopoi.DressingFramework.Animations;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Proxy;
+using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEngine;

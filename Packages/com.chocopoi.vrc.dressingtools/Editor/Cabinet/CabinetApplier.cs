@@ -18,13 +18,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Chocopoi.DressingTools.Animations;
-using Chocopoi.DressingTools.Lib;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.Extensibility.Providers;
-using Chocopoi.DressingTools.Lib.Logging;
-using Chocopoi.DressingTools.Lib.Proxy;
-using Chocopoi.DressingTools.Lib.Wearable;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Proxy;
+using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json.Linq;
@@ -351,7 +351,7 @@ namespace Chocopoi.DressingTools.Cabinet
             _cabCtx.animationStore.Dispatch();
 
             // remove all DT components
-            var dtComps = _cabCtx.avatarGameObject.GetComponentsInChildren<DTBaseComponent>();
+            var dtComps = _cabCtx.avatarGameObject.GetComponentsInChildren<DKBaseComponent>();
             foreach (var comp in dtComps)
             {
                 Object.DestroyImmediate(comp);

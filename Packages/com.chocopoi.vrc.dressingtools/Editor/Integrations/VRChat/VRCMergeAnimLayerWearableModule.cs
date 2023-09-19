@@ -18,10 +18,10 @@
 #if VRC_SDK_VRCSDK3
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib;
-using Chocopoi.DressingTools.Lib.Extensibility.Providers;
-using Chocopoi.DressingTools.Lib.Serialization;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.Wearable.Modules;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;

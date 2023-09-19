@@ -17,8 +17,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Lib.Cabinet;
-using Chocopoi.DressingTools.Lib.UI;
+using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UIBase.Views;

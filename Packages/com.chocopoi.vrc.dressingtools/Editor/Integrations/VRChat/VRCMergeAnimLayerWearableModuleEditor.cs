@@ -19,9 +19,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
-using Chocopoi.DressingTools.Lib.Extensibility.Providers;
-using Chocopoi.DressingTools.Lib.UI;
-using Chocopoi.DressingTools.Lib.Wearable.Modules;
+using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingFramework.Wearable.Modules;
 using UnityEditor;
 using UnityEngine;
 
