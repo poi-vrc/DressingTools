@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "Packages/**"
+    tags:
+      - '*'
   pull_request:
     paths:
       - "Packages/**"
-  create:
-    ref_type: tag
   workflow_dispatch:
 
 env:
