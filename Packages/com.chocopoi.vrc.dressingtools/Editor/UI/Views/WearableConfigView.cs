@@ -517,6 +517,7 @@ namespace Chocopoi.DressingTools.UI.Views
             _simpleMoveRootEditor.OnDisable();
             _simpleAnimGenEditor.OnDisable();
             _simpleBlendshapeSyncEditor.OnDisable();
+
         }
 
         private void RepaintWearableInfo()

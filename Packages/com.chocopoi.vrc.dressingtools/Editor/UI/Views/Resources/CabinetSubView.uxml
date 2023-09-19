@@ -1,32 +1,36 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:Toolbar name="toolbar" style="flex-direction: row; flex-shrink: 1; justify-content: flex-end;">
-        <Style src="CabinetSubView.uss" />
-        <uie:ToolbarButton text="@cabinet.editor.displayModes.icons" name="btn-display-mode-icons" />
-        <uie:ToolbarButton text="@cabinet.editor.displayModes.list" name="btn-display-mode-list" />
-    </uie:Toolbar>
     <ui:ScrollView style="flex-grow: 1;">
-        <Style src="CabinetSubView.uss" />
-        <ui:VisualElement name="popup-cabinet-selection" />
-        <ui:Foldout name="foldout-settings" text="@cabinet.editor.foldout.settings" class="foldout-header" />
-        <ui:VisualElement name="settings-container" style="margin-left: 15px; margin-bottom: 8px;">
-            <ui:TextField picking-mode="Ignore" label="@cabinet.editor.settings.textField.avatarArmatureName" name="settings-avatar-armature-name" />
-            <ui:Toggle label="@cabinet.editor.settings.toggle.groupDynamics" name="settings-group-dynamics" value="true" />
-            <ui:Toggle label="@cabinet.editor.settings.toggle.groupDynamicsSeparate" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
-            <ui:Toggle label="@cabinet.editor.settings.toggle.animationWriteDefaults" name="settings-anim-write-defaults" value="true" />
-            <ui:Label text="@cabinet.editor.settings.label.installedCabinetModules" style="-unity-font-style: bold; margin-top: 8px;" />
-            <ui:VisualElement name="settings-modules-container" style="border-left-width: 8px; border-right-width: 8px;" />
+        <ui:VisualElement name="create-cabinet-container" style="display: none;">
+            <ui:Label text="@cabinet.editor.createCabinet.label.welcome" class="create-cabinet-welcome-header mb-16" />
+            <ui:Label text="@cabinet.editor.createCabinet.label.createCabinetToBegin" class="mb-16" />
+            <ui:Label text="@cabinet.editor.createCabinet.label.selectDragAvatarHere" />
+            <uie:ObjectField name="create-cabinet-avatar-objectfield" class="mb-16" />
+            <ui:Button text="@cabinet.editor.createCabinet.btn.start" name="create-cabinet-start-btn" class="mb-8" />
+            <ui:Button text="@cabinet.editor.createCabinet.btn.back" name="create-cabinet-back-btn" />
+            <ui:Label text="@cabinet.editor.createCabinet.tutorialsDocsAtWebsite" name="create-cabinet-website-label" class="mt-16" />
         </ui:VisualElement>
-        <ui:Foldout name="foldout-installed-wearables" text="@cabinet.editor.foldout.installedWearables" class="foldout-header" />
-        <ui:VisualElement name="installed-wearables-container">
-            <ui:VisualElement name="installed-wearable-icons-container" class="wearable-icons-container" />
-            <ui:VisualElement name="installed-wearable-list-container" class="wearable-list-container" style="display: none;" />
+        <ui:VisualElement name="cabinet-content-container">
+            <uie:Toolbar name="toolbar" style="flex-direction: row; flex-shrink: 1; justify-content: flex-end;">
+                <uie:ToolbarButton text="@cabinet.editor.cabinetContent.toolbar.btn.createCabinet" name="toolbar-create-cabinet-btn"/>
+                <ui:VisualElement style="flex-grow: 1;" />
+                <uie:ToolbarButton text="@cabinet.editor.cabinetContent.displayModes.icons" name="btn-display-mode-icons" />
+                <uie:ToolbarButton text="@cabinet.editor.cabinetContent.displayModes.list" name="btn-display-mode-list" />
+            </uie:Toolbar>
+            <ui:VisualElement name="popup-cabinet-selection" />
+            <ui:Foldout name="foldout-settings" text="@cabinet.editor.cabinetContent.foldout.settings" class="foldout-header" />
+            <ui:VisualElement name="settings-container" style="margin-left: 15px; margin-bottom: 8px;">
+                <ui:TextField picking-mode="Ignore" label="@cabinet.editor.cabinetContent.settings.textField.avatarArmatureName" name="settings-avatar-armature-name" />
+                <ui:Toggle label="@cabinet.editor.cabinetContent.settings.toggle.groupDynamics" name="settings-group-dynamics" value="true" />
+                <ui:Toggle label="@cabinet.editor.cabinetContent.settings.toggle.groupDynamicsSeparate" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
+                <ui:Toggle label="@cabinet.editor.cabinetContent.settings.toggle.animationWriteDefaults" name="settings-anim-write-defaults" value="true" />
+                <ui:Label text="@cabinet.editor.cabinetContent.settings.label.installedCabinetModules" style="-unity-font-style: bold; margin-top: 8px;" />
+                <ui:VisualElement name="settings-modules-container" style="border-left-width: 8px; border-right-width: 8px;" />
+            </ui:VisualElement>
+            <ui:Foldout name="foldout-installed-wearables" text="@cabinet.editor.cabinetContent.foldout.installedWearables" class="foldout-header" />
+            <ui:VisualElement name="installed-wearables-container">
+                <ui:VisualElement name="installed-wearable-icons-container" class="wearable-icons-container" />
+                <ui:VisualElement name="installed-wearable-list-container" class="wearable-list-container" style="display: none;" />
+            </ui:VisualElement>
         </ui:VisualElement>
-        <!--
-        <ui:Foldout name="foldout-available-wearables" text="Available Wearables" class="foldout-header" />
-        <ui:VisualElement name="available-wearables-container">
-            <ui:VisualElement name="available-wearable-icons-container" class="wearable-icons-container" />
-            <ui:VisualElement name="available-wearable-list-container" class="wearable-list-container" style="visibility: hidden;" />
-        </ui:VisualElement>
-        -->
     </ui:ScrollView>
 </ui:UXML>
