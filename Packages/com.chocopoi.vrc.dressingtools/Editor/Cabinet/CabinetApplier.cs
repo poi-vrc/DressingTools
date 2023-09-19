@@ -17,7 +17,6 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Extensibility.Providers;
@@ -25,6 +24,7 @@ using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Proxy;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Logging;
 using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json.Linq;

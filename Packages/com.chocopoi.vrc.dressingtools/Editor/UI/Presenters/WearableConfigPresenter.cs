@@ -17,13 +17,13 @@
 
 using System;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Extensibility.Providers;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;

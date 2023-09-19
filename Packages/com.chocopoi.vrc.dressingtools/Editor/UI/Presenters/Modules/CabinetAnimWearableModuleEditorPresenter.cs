@@ -18,11 +18,11 @@
 using System;
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Cabinet.Modules;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Cabinet.Modules;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingTools.Cabinet.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
