@@ -66,5 +66,6 @@
     "dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddParentConstraint": "刪除穿戴物品動骨並新增父約束",
     "cabinetAnimGen.msgCode.warn.ignoredWearableBlendshapeObjectNotFound": "警告：在路徑 {0} 找不到穿戴物品的 blendshape 物件",
     "dressers.default.msgCode.error.missingScriptsDetectedInAvatar": "錯誤：在角色中偵測到缺少腳本：{0}",
-    "dressers.default.msgCode.error.noBonesInWearableArmatureFirstLevel": "錯誤：在穿戴物品骨架第一級中偵測不到任何骨頭。"
+    "dressers.default.msgCode.error.noBonesInWearableArmatureFirstLevel": "錯誤：在穿戴物品骨架第一級中偵測不到任何骨頭。",
+    "cabinetAnimGen.msgCode.warn.ignoredCouldNotObtainWearableBlendshapeOriginalValue": "警告：無法取得穿戴物品物件 {0} 的 Blendshape 原始值：{1}"
 }
