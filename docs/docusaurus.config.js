@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'DressingTools',
-  tagline: 'A simple but advanced, non-destructive and automated cabinet system.',
+  tagline: 'A simple but advanced, non-destructive cabinet system.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -53,14 +53,6 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      announcementBar: {
-        id: 'docs_for_v2_warning',
-        content:
-        '⚠️ This documentation is for v2, which is not production-ready yet. You are probably finding <a target="_blank" rel="noopener noreferrer" href="https://github.com/poi-vrc/DressingTools/tree/1.x">v1 here.</a> ⚠️',
-        backgroundColor: '#ffd65c',
-        textColor: '#000000',
-        isCloseable: false,
-      },
       navbar: {
         logo: {
           alt: 'DressingTools Logo',

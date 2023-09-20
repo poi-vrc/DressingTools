@@ -39,8 +39,8 @@ export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Home`}
-      description="A simple but advanced, non-destructive and automated cabinet system. Dress your VRChat avatar with one-click!">
+      title={`DressingTools`}
+      description="A simple but advanced, non-destructive cabinet system. Dress your VRChat avatar with one-click!">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
