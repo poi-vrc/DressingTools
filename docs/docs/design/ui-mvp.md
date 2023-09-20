@@ -25,7 +25,7 @@ And the another parent is an interface provided by the view to communicate with 
 
 ### Unity IMGUI
 
-Unity itself does not support using the MVP structure since IMGUI is so simple that you just have to add UI elements
+Unity IMGUI does not support using the MVP structure since  is so simple that you just have to add UI elements
 inside the ```OnGUI()``` loop and it will keep calling it during GUI updates.
 
 ```csharp
@@ -70,3 +70,7 @@ public override void OnGUI()
     }
 }
 ```
+
+### ElementViewBase wrapper
+
+A wrapper of the Unity UI Toolkit / UIElements system. Now most DressingTools GUI uses this `ElementViewBase` along with UXML, USS layout files to design the user interfaces.

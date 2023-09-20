@@ -4,17 +4,12 @@ sidebar_position: 1
 
 # Translations
 
-:::caution
-The current alpha version is not ready for translation. (https://github.com/poi-vrc/DressingTools/issues/93)
-:::
-
-DressingTools supports internationalization (i18n), and mainly supports English, Chinese, Japanese.
-
+DressingTools supports internationalization (i18n), and mainly supports English, Traditional Chinese, Japanese.
 
 ### Weblate
 
-:::danger
-You cannot use our self-hosted Weblate right now. Sign up is disabled. Still experimental and subject to change.
+:::info
+Sign up is disabled right now. It will be available soon.
 :::
 
 [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/)
