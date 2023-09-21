@@ -68,7 +68,6 @@
     "dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddParentConstraint": "Remove wearable dynamics and add ParentConstraint",
     "dressing.editor.btn.addToCabinet": "Add to Cabinet",
     "dressing.editor.dialog.msg.fixInvalidConfig": "Please fix all invalid configurations.",
-    "dressing.editor.dialog.msg.switchWizardModeConfirm": "Switching back to wizard mode will do auto-setup and wipe your existing configuration here. Are you sure?",
     "dressing.editor.foldout.setup": "Setup",
     "dressing.editor.gameObjectField.avatar": "Avatar",
     "dressing.editor.gameObjectField.wearable": "Wearable",
