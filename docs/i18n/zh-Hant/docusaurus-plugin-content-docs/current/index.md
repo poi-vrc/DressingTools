@@ -10,8 +10,9 @@ DressingTools 是一個**簡單但進階的**、**無損**衣櫃系統。只要�
 
 DressingTools 不是僅限和 VRChat 使用的軟體。您可以在較新的 Unity 版本和其他遊戲項目上使用它，而無需安裝 VRCSDK。
 
-[![Teaser 1](/img/teaser-1.PNG)](/img/teaser-1.PNG) [![Teaser
-2](/img/teaser-2.PNG)](/img/teaser-2.PNG)
+[![Teaser 1](/img/teaser-1.PNG)](/img/teaser-1.PNG)
+
+[![Teaser 2](/img/teaser-2.PNG)](/img/teaser-2.PNG)
 
 ## 入門
 

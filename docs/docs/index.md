@@ -11,6 +11,7 @@ It also includes **advanced features** that allows you to **customize the bone m
 By design, DressingTools is portable and not a VRChat-only software. You can use it on newer Unity versions and other game projects without VRCSDK installed.
 
 [![Teaser 1](/img/teaser-1.PNG)](/img/teaser-1.PNG)
+
 [![Teaser 2](/img/teaser-2.PNG)](/img/teaser-2.PNG)
 
 ## Getting Started
