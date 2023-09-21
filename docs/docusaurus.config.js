@@ -29,7 +29,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'ja', 'zh-Hant'],
   },
 
   presets: [
@@ -40,7 +40,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/poi-vrc/DressingTools/docs/',
+            'https://github.com/poi-vrc/DressingTools/tree/master/docs/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -64,6 +64,10 @@ const config = {
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: 'Docs',
+          },
+          {
+            type: 'localeDropdown',
+            position: 'left',
           },
           {
             href: 'https://github.com/poi-vrc/DressingTools',

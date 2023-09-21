@@ -1,11 +1,15 @@
 name: Test documentations
 
 on:
+  push:
+    paths:
+      - "docs/**"
   pull_request:
     branches:
       - master
     paths:
       - "docs/**"
+  workflow_dispatch:
 
 jobs:
   test-deploy:
@@ -21,5 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: cd docs && npm ci
+      - name: Prepare i18n
+        run: cd docs && node prepare_i18n.js
       - name: Test build website
         run: cd docs && npm run build
