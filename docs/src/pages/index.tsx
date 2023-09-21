@@ -5,6 +5,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Logo from '@site/static/img/logo-white.svg';
+import Translate, { translate } from '@docusaurus/Translate';
 
 import styles from './index.module.css';
 
@@ -22,12 +23,12 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             target="_self"
             to="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
-            Install with VCC ❤️
+            <Translate>Install with VCC</Translate> ❤️
           </Link>
           <Link
             className="button button--secondary button--lg"
             to="/docs">
-            Guides 📚
+            <Translate>Guides</Translate> 📚
           </Link>
         </div>
       </div>
@@ -40,11 +41,13 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`DressingTools`}
-      description="A simple but advanced, non-destructive cabinet system. Dress your VRChat avatar with one-click!">
-      <HomepageHeader />
+      description={translate({
+        message: "A simple but advanced, non-destructive cabinet system. Dress your VRChat avatar with one-click!"
+      })}>
+      < HomepageHeader />
       <main>
         <HomepageFeatures />
       </main>
-    </Layout>
+    </Layout >
   );
 }

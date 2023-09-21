@@ -33,6 +33,8 @@ jobs:
 
       - name: Install dependencies
         run: cd docs && npm ci
+      - name: Prepare i18n
+        run: cd docs && node prepare_i18n.js
       - name: Build website
         run: cd docs && npm run build
  
