@@ -71,7 +71,6 @@
     "dressing.editor.foldout.setup": "Setup",
     "dressing.editor.gameObjectField.avatar": "Avatar",
     "dressing.editor.gameObjectField.wearable": "Wearable",
-    "dressing.editor.helpbox.avatarNoExistingCabinet": "The selected avatar has no existing cabinet.",
     "integrations.vrc.dialog.msg.errorPreprocessingReferReportWindow": "Error preprocessing avatar, please refer to the report window.",
     "integrations.vrc.modules.integration.editor.textField.customCabinetToggleName": "Toggle Name",
     "integrations.vrc.modules.integration.editor.toggle.useCabinetThumbnails": "Use cabinet thumbnails",
