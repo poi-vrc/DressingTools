@@ -2,29 +2,28 @@
 sidebar_position: 2
 ---
 
-# Setup a cabinet
+# キャビネットのセットアップ
 
-A cabinet saves our avatar-specific settings and presets. Your wearables work together with a cabinet to dress up your clothes organized.
+キャビネットには、アバター固有の設定とプリセットが保存されます。ウェアラブルはキャビネットと連動し、あなたの服を整理整頓して着せる。
 
-### 1. Open the DressingTools<sup>2</sup> window
+### 1. DressingTools<sup>2</sup> ウィンドウを開いてください
 
-[![Open Window](/img/setup-simple-0-open-window.PNG)](/img/setup-simple-0-open-window.PNG)
+[![ウィンドウを開く](/img/setup-simple-0-open-window.PNG)](/img/setup-simple-0-open-window.PNG)
 
-### 2. Create a cabinet
+### 2. キャビネットを作成する
 
-If you haven't created an cabinet before, it will probably show this screen at start. Drag your avatar that you are going to dress and press `Start` to create a new cabinet.
+これまでにキャビネットを作成したことがない場合は、おそらく開始時にこの画面が表示されます。着せ替えるアバターをドラッグし、`始める`を押して新しいキャビネットを作成してください。
 
-[![New Cabinet](/img/setup-simple-1-new-cabinet.PNG)](/img/setup-simple-1-new-cabinet.PNG)
+[![新しいキャビネット](/img/setup-simple-1-new-cabinet.PNG)](/img/setup-simple-1-new-cabinet.PNG)
 
-Otherwise, if you are setting up for another avatar in the same scene, you can also create a new cabinet by clicking this button:
+それ以外の場合、同じシーンで別のアバターを設定している場合は、このボタンをクリックして新しいキャビネットを作成することもできます。
 
-[![New Cabinet Alt](/img/setup-simple-1-new-cabinet-alt.PNG)](/img/setup-simple-1-new-cabinet-alt.PNG)
+[![新しいキャビネット Alt](/img/setup-simple-1-new-cabinet-alt.PNG)](/img/setup-simple-1-new-cabinet-alt.PNG)
 
-## Behind the Scenes
+## 背後で起こったこと
 
-### Creating cabinet
+### キャビネットの作成
 
-When you create a cabinet, a `DT Cabinet` component is added to the avatar root. It internally stores your avatar-specific settings
-and presets that help you to save time dressing up different wearables later on.
+キャビネットを作成すると、`DT Cabinet` コンポーネントがアバター ルートに追加されます。アバター固有の設定とプリセットが内部に保存されるため、後でさまざまなウェアラブルを着替える時間を節約できます。
 
-[![Cabinet component created](/img/setup-simple-bts-cabinet-component-created.PNG)](/img/setup-simple-bts-cabinet-component-created.PNG)
+[![キャビネット コンポーネントが作成されました](/img/setup-simple-bts-cabinet-component-created.PNG)](/img/setup-simple-bts-cabinet-component-created.PNG)
