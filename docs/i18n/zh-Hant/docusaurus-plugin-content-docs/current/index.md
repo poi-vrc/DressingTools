@@ -18,7 +18,7 @@ DressingTools 不是僅限和 VRChat 使用的軟體。您可以在較新的 Uni
 
 [點此開始！](/docs/getting-started/installation)
 
-## 特徵
+## 功能
 
 DressingTools<sup>2</sup> 目前處於 :warning: **beta 開發階段 **。大多數關鍵功能都可以使用，但可能會遇到
 bug，歡近隨意嘗試！
