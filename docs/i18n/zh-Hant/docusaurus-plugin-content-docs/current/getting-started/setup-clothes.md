@@ -2,29 +2,28 @@
 sidebar_position: 2
 ---
 
-# Setup a cabinet
+# 設置一個櫃子
 
-A cabinet saves our avatar-specific settings and presets. Your wearables work together with a cabinet to dress up your clothes organized.
+衣櫃會保存角色設定和預設。您的穿戴物品與衣櫃搭配使用，讓您的衣服井然有序。
 
-### 1. Open the DressingTools<sup>2</sup> window
+### 1. 開啟 DressingTools<sup>2</sup> 視窗
 
-[![Open Window](/img/setup-simple-0-open-window.PNG)](/img/setup-simple-0-open-window.PNG)
+[![開啟視窗](/img/setup-simple-0-open-window.PNG)](/img/setup-simple-0-open-window.PNG)
 
-### 2. Create a cabinet
+### 2. 創建一個衣櫃
 
-If you haven't created an cabinet before, it will probably show this screen at start. Drag your avatar that you are going to dress and press `Start` to create a new cabinet.
+如果您之前沒有建立過衣櫃，它可能會在啟動時顯示此畫面。拖曳您要打扮的角色，然後按`開始`建立新衣櫃。
 
-[![New Cabinet](/img/setup-simple-1-new-cabinet.PNG)](/img/setup-simple-1-new-cabinet.PNG)
+[![新衣櫃](/img/setup-simple-1-new-cabinet.PNG)](/img/setup-simple-1-new-cabinet.PNG)
 
-Otherwise, if you are setting up for another avatar in the same scene, you can also create a new cabinet by clicking this button:
+如果您要在同一場景中設定另一個角色，您也可以透過點擊此按鈕來建立一個新衣櫃：
 
-[![New Cabinet Alt](/img/setup-simple-1-new-cabinet-alt.PNG)](/img/setup-simple-1-new-cabinet-alt.PNG)
+[![新衣櫃](/img/setup-simple-1-new-cabinet-alt.PNG)](/img/setup-simple-1-new-cabinet-alt.PNG)
 
-## Behind the Scenes
+## 背後發生的事情
 
-### Creating cabinet
+### 創建衣櫃
 
-When you create a cabinet, a `DT Cabinet` component is added to the avatar root. It internally stores your avatar-specific settings
-and presets that help you to save time dressing up different wearables later on.
+建立衣櫃時，會在角色根中加入一個`DT Cabinet`元件。它在內部儲存您的角色設定和預設，幫助您節省以後裝扮不同穿戴物品的時間。
 
-[![Cabinet component created](/img/setup-simple-bts-cabinet-component-created.PNG)](/img/setup-simple-bts-cabinet-component-created.PNG)
+[![已建立衣櫃組件](/img/setup-simple-bts-cabinet-component-created.PNG)](/img/setup-simple-bts-cabinet-component-created.PNG)
