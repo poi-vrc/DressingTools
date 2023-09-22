@@ -31,7 +31,9 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> VCC �
 
    [![インストールVCC追加パッケージ](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
 
-   :::caution DressingTools がまだ Beta 版なので、パッケージが表示されない可能性があります。 `Settings -&gt; Packages`で`Show Pre-release Packages`を有効にする必要があります。 [![VCC プレリリースのインストール](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png) :::
+   :::caution
+   DressingTools がまだ Beta 版なので、パッケージが表示されない可能性があります。 `Settings -&gt; Packages`で`Show Pre-release Packages`を有効にする必要があります。 [![VCC プレリリースのインストール](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png)
+   :::
 
 4. プロジェクトを開けば準備完了です!
 
@@ -41,9 +43,13 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> VCC �
 
 ### UPM Git URL
 
-:::danger VCC で DressingTools をすでにインストールしている場合は、これらの手順を実行しないでください。 :::
+:::danger
+VCC で DressingTools をすでにインストールしている場合は、これらの手順を実行しないでください。
+:::
 
-:::caution Unity は UPM Git URL の更新と依存関係を処理しません。正しく動作させるためには、正しいバージョンの依存関係をもう一度確認してください。 :::
+:::caution
+Unity は UPM Git URL の更新と依存関係を処理しません。正しく動作させるためには、正しいバージョンの依存関係をもう一度確認してください。
+:::
 
 1. Unityパッケージマネージャーを起動してください
 
@@ -64,9 +70,13 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> VCC �
 
 ### zip ファイル
 
-:::danger この方法でDressingToolsをインストールすることは推奨されません :::
+:::danger
+この方法でDressingToolsをインストールすることは推奨されません
+:::
 
-:::caution コピーする前に古いパッケージを削除してください。依存関係の正しいバージョンをインストールしてください :::
+:::caution
+コピーする前に古いパッケージを削除してください。依存関係の正しいバージョンをインストールしてください
+:::
 
 zip ファイルを直接ダウンロードして、`Packages`フォルダに解凍することができます。このようになります：
 ```
@@ -85,4 +95,6 @@ Packages
 
 ### .unitypackage
 
-:::danger 現在、`.unitypackage`ファイルを使ったインストールはサポートされていません。将来的にはサポートされるかもしれませんが、DressingToolsのインストール方法としては推奨されていません：
+:::danger
+現在、`.unitypackage`ファイルを使ったインストールはサポートされていません。将来的にはサポートされるかもしれませんが、DressingToolsのインストール方法としては推奨されていません。
+:::

@@ -12,13 +12,15 @@ DressingTools 為您起草所有必要的穿戴物品動畫和同名 Blendshape 
 
 ## 指南
 
-:::info 本指南假定您已根據[設定衣櫃指南](setup-cabinet)為您的角色建立了衣櫃。 :::
+:::info
+本指南假定您已根據[設定衣櫃指南](setup-cabinet)為您的角色建立了衣櫃。
+:::
 
 在入門系列中，我們將把[Eliya Workshop的Summer Streat](https://booth.pm/ja/items/4666271)裝扮進[Kyubi Closet的Moe](https://kyubihome.booth.pm/items/4667400)裡面。
 
 ### 1.將衣服拖到角色上
 
-將衣服拖曳到角色上，右鍵選擇`DressingTools -&gt;Setup wearable with wizard`
+將衣服拖曳到角色上，右鍵選擇`DressingTools -> Setup wearable with wizard`
 
 [![設定穿戴物品](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
 
@@ -34,9 +36,11 @@ DressingTools 工具窗口會彈出，並運行自動設定來為您起草配置
 
 [![拍攝縮圖](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
 
-:::caution 如果您的場景視圖不隨相機移動，請嘗試開啟 `Gizmos` 並重試。
+:::caution
+如果您的場景視圖不隨相機移動，請嘗試開啟 `Gizmos` 並重試。
 
-[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG) :::
+[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG)
+:::
 
 ### 4. 確認映射
 
@@ -50,7 +54,9 @@ DressingTools 會自動起草穿戴物品開關（新增目前啟用的物件）
 
 編輯這些開關和混合形狀將自動開啟**即時預覽**，讓您立即預覽動畫！
 
-:::tip 您可以使用預設。儲存並載入您自己的預設，以便下次穿得更快！ [![預設](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG) :::
+:::tip
+您可以使用預設。儲存並載入您自己的預設，以便下次穿得更快！ [![預設](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::
 
 #### 角色穿着時的開關
 
@@ -74,7 +80,9 @@ DressingTools 會自動起草穿戴物品開關（新增目前啟用的物件）
 
 ### 6. 確認混合形狀同步
 
-:::caution DressingTools 可能會增加不正確的混合形狀同步。因此，安裝新的穿戴物品時，您每次都應該檢查這一部份。 :::
+:::caution
+DressingTools 可能會增加不正確的混合形狀同步。因此，安裝新的穿戴物品時，您每次都應該檢查這一部份。
+:::
 
 DressingTools 將具有相同名稱的角色 Blendshape 和穿戴物品 Blendshape 配對在一起，並在此處自動添加同步。
 
@@ -82,7 +90,9 @@ DressingTools 將具有相同名稱的角色 Blendshape 和穿戴物品 Blendsha
 
 ### 7. 新增到衣櫃
 
-:::caution 在您按下此按鈕之前，配置不會被儲存。 :::
+:::caution
+在您按下此按鈕之前，配置不會被儲存。
+:::
 
 按`新增至衣櫃`，穿戴物品將顯示在衣櫃視圖中。
 
@@ -96,10 +106,14 @@ DressingTools 將具有相同名稱的角色 Blendshape 和穿戴物品 Blendsha
 
 [![](/img/setup-cabanim-8-done.PNG)](/img/setup-cabanim-8-done.PNG)
 
-:::tip 您可以隨時再次從衣櫃編輯器修改您的配置。
+:::tip
+您可以隨時再次從衣櫃編輯器修改您的配置。
 
-[![衣櫃](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG) :::
+[![衣櫃](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG)
+:::
 
-:::tip 如果你想增加額外的模組，你可以使用`進階`模式！
+:::tip
+如果你想增加額外的模組，你可以使用`進階`模式！
 
-[![進階](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG) :::
+[![進階](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG)
+:::
