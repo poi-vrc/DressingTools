@@ -18,10 +18,12 @@ DressingTools 目前依賴兩個外部項目 `DressingFramework` 和 `AvatarLib`
 
 ### 透過 VCC (VRChat Creator Companion)
 
-1. 用下面的按鈕安裝 VPM 庫，或使用 `https://vpm.chocopoi.com/index.json` 手動新增庫。 <a
-className="button button--success button--lg"
-target="_self"
-href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> 使用 VCC 安裝 </a>
+1. 用下面的按鈕安裝 VPM 庫，或使用 `https://vpm.chocopoi.com/index.json` 手動新增庫。
+
+  <a
+  className="button button--success button--lg"
+  target="_self"
+  href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> 使用 VCC 安裝 </a>
 
 2. 按`I Understand, Add Repository`新增庫。
 
@@ -31,7 +33,10 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> 使用
 
    [![安裝VCC套件](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
 
-   :::caution 你可能找不到這些套件，因為 DressingTools 仍處於測試版。您需要啟用預發行版 `Show Pre-release Packages`，該功能可在`Settings -&gt; Packages`下找到。 [![安裝 VCC 預發行版](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png) :::
+   :::caution
+   你可能找不到這些套件，因為 DressingTools 仍處於測試版。您需要啟用預發行版 `Show Pre-release Packages`，該功能可在`Settings -> Packages`下找到。
+   [![安裝 VCC 預發行版](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png)
+   :::
 
 4. 打開專案就可以用了！
 
@@ -41,9 +46,13 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> 使用
 
 ### 透過 UPM Git URL
 
-:::danger 如果您已經透過 VCC 安裝 DressingTools，請不要執行這些步驟。 :::
+:::danger
+如果您已經透過 VCC 安裝 DressingTools，請不要執行這些步驟。
+:::
 
-:::caution Unity 不會處理 UPM Git URL 的更新和依賴項。確保安裝正確版本的依賴項才能正常運作。 :::
+:::caution
+Unity 不會處理 UPM Git URL 的更新和依賴項。確保安裝正確版本的依賴項才能正常運作。
+:::
 
 1. 啟動Unity套件管理器
 
@@ -64,9 +73,13 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> 使用
 
 ### 透過 zip 檔案
 
-:::danger 不建議以這種方式安裝 DressingTools。 :::
+:::danger
+不建議以這種方式安裝 DressingTools。
+:::
 
-:::caution 在複製之前刪除舊套件。確保安裝正確版本的依賴項才能正常運作。 :::
+:::caution
+在複製之前刪除舊套件。確保安裝正確版本的依賴項才能正常運作。
+:::
 
 您可以直接下載 zip 檔案並解壓縮到您的 `Packages` 資料夾中。它看起來像這樣：
 ```
@@ -85,4 +98,6 @@ Packages
 
 ### 透過 .unitypackage
 
-:::danger 目前不支援使用`.unitypackage`檔案進行安裝。將來可能支援，但不建議使用它來安裝 DressingTools。 :::
+:::danger
+目前不支援使用`.unitypackage`檔案進行安裝。將來可能支援，但不建議使用它來安裝 DressingTools。
+:::

@@ -8,13 +8,19 @@ sidebar_position: 3
 
 使用 DressingTools ** 單擊即可穿著簡單的衣服，並手動為它們設定動畫 **，儘管 DressingTools 的大多數用例應該使用衣櫃系統自動生成選單和動畫。
 
-:::info 這不會自動產生衣櫃動畫和選單。您必須使用[另一種方法](setup-clothes-with-cabinet-anim)進行設定。您也可以在衣櫃視窗中`編輯`穿戴物品，然後按`自動設定`以達到相同的效果。 :::
+:::info
+這不會自動產生衣櫃動畫和選單。您必須使用[另一種方法](setup-clothes-with-cabinet-anim)進行設定。您也可以在衣櫃視窗中`編輯`穿戴物品，然後按`自動設定`以達到相同的效果。
+:::
 
-:::info 提示 您可以為穿戴物品內的物件像平常一樣製作動畫！它們在套用期間無縫自動重新映射。 :::
+:::tip
+您可以為穿戴物品內的物件像平常一樣製作動畫！它們在套用期間無縫自動重新映射。
+:::
 
 ## 指南
 
-:::info 本指南假定您已根據[設定衣櫃指南](setup-cabinet)為您的角色建立了衣櫃。 :::
+:::info
+本指南假定您已根據[設定衣櫃指南](setup-cabinet)為您的角色建立了衣櫃。
+:::
 
 在入門系列中，我們將把[Eliya Workshop的Summer Streat](https://booth.pm/ja/items/4666271)裝扮進[Kyubi Closet的Moe](https://kyubihome.booth.pm/items/4667400)裡面。
 

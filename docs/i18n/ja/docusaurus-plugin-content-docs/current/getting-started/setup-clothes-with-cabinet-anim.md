@@ -12,13 +12,15 @@ DressingToolsは、必要なすべてのウェアラブル 着用時のアニメ
 
 ## ガイド
 
-:::info このガイドでは、[キャビネットのセットアップガイド](setup-cabinet)に従ってアバター用のキャビネットを作成済みであることを前提としています :::
+:::info
+このガイドでは、[キャビネットのセットアップガイド](setup-cabinet)に従ってアバター用のキャビネットを作成済みであることを前提としています
+:::
 
 はじめにシリーズでは、[Eliya WorkshopのSummer Streat](https://booth.pm/ja/items/4666271) を [Kyubi ClosetのMoe](https://kyubihome.booth.pm/items/4667400) に着せ替えます。
 
 ### 1.服をアバターにドラッグししてください
 
-服をアバターにドラッグし、右クリックして `DressingTools -&gt; Setup wearable with wizard` を選択してください
+服をアバターにドラッグし、右クリックして `DressingTools -> Setup wearable with wizard` を選択してください
 
 [![ウェアラブルのセットアップ](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
 
@@ -34,9 +36,11 @@ DressingToolsは、必要なすべてのウェアラブル 着用時のアニメ
 
 [![サムネイルを撮る](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
 
-:::caution シーン ビューがカメラと一緒に動かない場合は、`Gizmos`をオンにして、もう一度試してみてください。
+:::caution
+シーン ビューがカメラと一緒に動かない場合は、`Gizmos`をオンにして、もう一度試してみてください。
 
-[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG) :::
+[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG)
+:::
 
 ### 4. マッピングを確認する
 
@@ -50,7 +54,9 @@ DressingToolsは自動的にウェアラブル切り替えを下書きするの�
 
 切り替えとブレンドシェイプを編集時、アニメーションを**リアルタイムプレビュー**することができます！
 
-:::tip 着用時のプリセットを活用してください。自分のプリセットを保存して読み込めば、次回から早く着こなすことができます！[プリセット](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG) :::
+:::tip
+着用時のプリセットを活用してください。自分のプリセットを保存して読み込めば、次回から早く着こなすことができます！[プリセット](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::
 
 #### 着用時のアバター切り替え
 
@@ -74,7 +80,9 @@ DressingToolsは自動的にウェアラブル切り替えを下書きするの�
 
 ### 6. ブレンドシェイプの同期を確認する
 
-:::caution DressingTools は間違ったブレンドシェイプ同期と一致する可能性がありますので、毎回これを確認する必要があります。 :::
+:::caution
+DressingTools は間違ったブレンドシェイプ同期と一致する可能性がありますので、毎回これを確認する必要があります。
+:::
 
 DressingTools は、同じ名前のアバター ブレンドシェイプとウェアラブル ブレンドシェイプを照合し、ここに同期を自動的に追加します。
 
@@ -82,7 +90,9 @@ DressingTools は、同じ名前のアバター ブレンドシェイプとウ�
 
 ### 7. キャビネットに追加する
 
-:::caution このボタンを押すまで、設定は保存されません。 :::
+:::caution
+このボタンを押すまで、設定は保存されません。
+:::
 
 `キャビネットに追加`を押すと、ウェアラブルがキャビネット ビューに表示されます。
 
@@ -96,10 +106,14 @@ DressingTools は、同じ名前のアバター ブレンドシェイプとウ�
 
 [![](/img/setup-cabanim-8-done.PNG)](/img/setup-cabanim-8-done.PNG)
 
-:::tip キャビネット エディタからいつでも設定を変更できます。
+:::tip
+キャビネット エディタからいつでも設定を変更できます。
 
-[![キャビネット](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG) :::
+[![キャビネット](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG)
+:::
 
-:::tip モジュールを追加したい場合は、`上級`モードを使用してください！
+:::tip
+モジュールを追加したい場合は、`上級`モードを使用してください！
 
-[![上級](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG) :::
+[![上級](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG)
+:::
