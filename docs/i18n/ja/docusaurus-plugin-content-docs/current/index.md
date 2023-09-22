@@ -2,40 +2,44 @@
 sidebar_position: 1
 ---
 
-# Introduction
+# 紹介
 
-DressingTools is a **simple but advanced**, **non-destructive** cabinet/wardrobe system. Dressing an avatar with multiple wearables is as simple as just one click!
+DressingTools は、**シンプルだが高度な、非破壊**
+キャビネットシステムです。複数のウェアラブルでアバターを着せ替えるのは、ワンクリックするだけで簡単です!
 
-It also includes **advanced features** that allows you to **customize the bone mappings for incompatible wearables**, **create your own wearable toggles and blendshapes controls**. This can be automatically drafted for you!
+また、**互換性がない**のウェアラブルが ボーン マッピングを**カスタマイズ**できる、**ウェアラブル 切り替えとブレンドシェイプ
+コントロールを作成できる**も**、高度な機能**が含まれています。これは自動的に下書きされます！
 
-By design, DressingTools is portable and not a VRChat-only software. You can use it on newer Unity versions and other game projects without VRCSDK installed.
+設計上、DressingTools は VRChat 専用のソフトではありません。 VRCSDK がインストールされていない場合でも、新しい Unity
+バージョンや他のゲーム プロジェクトで使用できます。
 
-[![Teaser 1](/img/teaser-1.PNG)](/img/teaser-1.PNG)
+[![ティーザー 1](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
-[![Teaser 2](/img/teaser-2.PNG)](/img/teaser-2.PNG)
+[![ティーザー 2](/img/teaser-2.PNG)](/img/teaser-2.PNG)
 
-## Getting Started
+## はじめに
 
-[Click here to get started!](/docs/getting-started/installation)
+[ここをクリックして始めましょう!](/docs/getting-started/installation)
 
-## Features
+## 機能
 
-DressingTools<sup>2</sup> is currently in :warning: **beta development stage**. Most critical features are working but might experience bugs. Feel free to try it!
+DressingTools<sup>2</sup> は現在まだ :warning: ** Beta **
+ステージです。ほとんどの重要な機能は動作しますが、バグが発生する可能性があります。ぜひお試しください！
 
-Currently supported (at the time of writing):
-- VRCSDK and DynamicBones not required
-- Cabinet system
-    - Automatic animation generation
-    - Wearable thumbnails
-- Armature mapping from prefabs
-    - Bone mapping preview and overriding
-- Multiple animator merging and animation remapping
-- Centralized wearable configuration
-- Extensible modules
+現在サポートされているもの (執筆時点):
+- VRCSDK と DynamicBones は必要ありません
+- キャビネットシステム
+  - アニメーションの自動生成
+  - ウェアラブルサムネイル
+- プレハブからのアーマチュア マッピング
+  - ボーンマッピングのプレビューと上書き
+- 複数のアニメーターの結合とアニメーションの再マッピング
+- 集中化ウェアラブル設定
+- 拡張可能なモジュール
 
-Will be supported in the future:
-- Reading DynamicsBones/VRCPhysBone values generically
-- Mixing different clothes for toggling
-- Sharable wearable configuration
-- Conversion from other tools' configuration
+サポートされる予定:
+- インポートされていなくても DynamicsBones/VRCPhysBone から値を読み取る
+- 異なるウェアをミックスして切り替え
+- 共有可能なウェアラブル設定
+- 他のツールの設定からの変換
 
