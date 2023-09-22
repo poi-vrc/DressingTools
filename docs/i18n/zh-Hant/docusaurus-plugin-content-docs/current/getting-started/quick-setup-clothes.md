@@ -2,50 +2,42 @@
 sidebar_position: 3
 ---
 
-# Quick setup clothes
+# 快速設定衣服
 
-It is easy and clean to dress up your avatar with DressingTools. 
+使用 DressingTools 來裝扮你的角色又快又簡潔。
 
-You can use DressingTools **for dressing simple clothes with a single click and animate them manually**, although most of use case of DressingTools should be using the cabinet system to automatically generate the menu and animations.
+使用 DressingTools ** 單擊即可穿著簡單的衣服，並手動為它們設定動畫 **，儘管 DressingTools 的大多數用例應該使用衣櫃系統自動生成選單和動畫。
 
-:::info
-This does not automatically generate cabinet animations and menus. You have to setup using [another method](setup-clothes-with-cabinet-anim) instead. You can also `Edit` the wearable in the cabinet window and press `Auto-setup` to have the same effect.
-:::
+:::info 這不會自動產生衣櫃動畫和選單。您必須使用[另一種方法](setup-clothes-with-cabinet-anim)進行設定。您也可以在衣櫃視窗中`編輯`穿戴物品，然後按`自動設定`以達到相同的效果。 :::
 
-:::info Pro Tip
-You can animate the objects inside your wearable just like how you make animations usually!
-They are automatically remapped during apply seamlessly.
-:::
+:::info 提示 您可以為穿戴物品內的物件像平常一樣製作動畫！它們在套用期間無縫自動重新映射。 :::
 
-## Guide
+## 指南
 
-:::info
-The guide assumes that you have already created a cabinet for your avatar according to the [setup cabinet guide](setup-cabinet).
-:::
+:::info 本指南假定您已根據[設定衣櫃指南](setup-cabinet)為您的角色建立了衣櫃。 :::
 
-In the series of getting started, we will dress [Eliya Workshop's Summer Streat](https://booth.pm/ja/items/4666271) into [Kyubi Closet's Moe](https://kyubihome.booth.pm/items/4667400).
+在入門系列中，我們將把[Eliya Workshop的Summer Streat](https://booth.pm/ja/items/4666271)裝扮進[Kyubi Closet的Moe](https://kyubihome.booth.pm/items/4667400)裡面。
 
-### 1. Drag the clothes to the avatar
+### 1.將衣服拖到角色上
 
-Drag the clothes to the avatar and right-click to choose `DressingTools -> Auto-setup wearable (Mappings Only)`
+將衣服拖曳到角色裡面，右鍵選擇`DressingTools -&gt; Auto-setup wearable (Mappings Only)`
 
-[![Setup wearable](/img/setup-simple-2-setup-wearable.PNG)](/img/setup-simple-2-setup-wearable.PNG)
+[![設定穿戴物品](/img/setup-simple-2-setup-wearable.PNG)](/img/setup-simple-2-setup-wearable.PNG)
 
-### 2. Done!
+### 2. 完成！
 
-Get into Play Mode and then you will be able to test the wearable whether it's mapped to the bones correctly.
+進入運行模式，然後您將能夠測試穿戴物品是否正確地對應到骨頭。
 
-[![Setup done](/img/setup-simple-3-done.PNG)](/img/setup-simple-3-done.PNG)
+[![設定完成](/img/setup-simple-3-done.PNG)](/img/setup-simple-3-done.PNG)
 
-## Behind the Scenes
+## 背後發生的事情
 
-### Using "Auto-setup wearable (Mappings Only)"
+### 使用“Auto-setup wearable (Mappings Only)”
 
-When you click on `Auto-setup wearable (Mappings Only)`, DressingTools runs an automatic setup to find the wearable armature and attempts
-to dry-run and generate bone mappings for it.
+當您按一下 `Auto-setup wearable (Mappings Only)` 時，DressingTools 會執行自動設定來尋找穿戴物品骨架，並嘗試空運行並為其產生骨頭映射。
 
-It will create a `DT Cabinet Wearable` component on the wearable root with the generated configuration.
+它將使用產生的配置在穿戴物品根上建立一個 `DT Cabinet Wearable` 元件。
 
-### Entering Play Mode
+### 進入運行模式
 
-When entering play mode, the attached `DT Cabinet` will apply the wearables contained just before Unity has completed entering play mode.
+進入運行模式時，隨附的 `DT Cabinet` 將在Unity 進入運行模式之前套用包含的穿戴物品。
