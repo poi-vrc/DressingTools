@@ -2,119 +2,104 @@
 sidebar_position: 4
 ---
 
-# Setup clothes with cabinet animations
+# 服とキャビネットアニメーションをセットアップ
 
-Wearing multiple clothes with your avatar is extremely convenient and easy with DressingTools.
+DressingTools を使用すると、アバターで複数の服を着ることはとても便利で簡単です。
 
-DressingTools drafts all necessary wearable on-wear animations and same name blendshape synchronizations (i.e. Big breast) for you. You just have to add additional avatar toggles/blendshapes and confirm the drafted contents!
+DressingToolsは、必要なすべてのウェアラブル 着用時のアニメーションと同名のブレンドシェイプ同期（例：Big breast）を下書きします。アバターの切り替え/ブレンドシェイプを追加し、下書きされた内容を確認するだけです！
 
-**A real-time preview** is also available while you are setting up animations!
+アニメーションの設定中に**リアルタイム プレビュー**も可能です！
 
-## Guide
+## ガイド
 
-:::info
-The guide assumes that you have already created a cabinet for your avatar according to the [setup cabinet guide](setup-cabinet).
-:::
+:::info このガイドでは、[キャビネットのセットアップガイド](setup-cabinet)に従ってアバター用のキャビネットを作成済みであることを前提としています :::
 
-In the series of getting started, we will dress [Eliya Workshop's Summer Streat](https://booth.pm/ja/items/4666271) into [Kyubi Closet's Moe](https://kyubihome.booth.pm/items/4667400).
+はじめにシリーズでは、[Eliya WorkshopのSummer Streat](https://booth.pm/ja/items/4666271) を [Kyubi ClosetのMoe](https://kyubihome.booth.pm/items/4667400) に着せ替えます。
 
-### 1. Drag the clothes to the avatar
+### 1.服をアバターにドラッグししてください
 
-Drag the clothes to the avatar and right-click to choose `DressingTools -> Setup wearable with wizard`
+服をアバターにドラッグし、右クリックして `DressingTools -&gt; Setup wearable with wizard` を選択してください
 
-[![Setup Wearable](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
+[![ウェアラブルのセットアップ](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
 
-### 2. Tool window pops up
+### 2. ツールウィンドウが表示されます
 
-The DressingTools tool window will pop up and an auto-setup is run to draft the configuration for you:
+自動セットアップが実行されて設定が作成されます。
 
-[![Tool window pops up](/img/setup-cabanim-2-tool-window.PNG)](/img/setup-cabanim-2-tool-window.PNG)
+[![ツール ウィンドウがポップアップ](/img/setup-cabanim-2-tool-window.PNG)](/img/setup-cabanim-2-tool-window.PNG)
 
-### 3. Capture thumbnail (Optional)
+### 3. サムネイルを撮る (任意)
 
-A thumbnail decorates your menu and makes you know better what the wearable is. Click on "Capture thumbnail". Move your scene view to select a good spot for your thumbnail and press `Capture`.
+サムネイルはメニューを飾り、そのウェアラブルが何かをより分かりやすくします。`新しいサムネイルを撮る`をクリックしてください。シーンビューを動かしてサムネイルに適した場所を選んだら、`撮る`を押してください。
 
-[![Capture thumbnail](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
+[![サムネイルを撮る](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
 
-:::caution
-If your scene view does not move with the camera, try turn on `Gizmos` and try again.
+:::caution シーン ビューがカメラと一緒に動かない場合は、`Gizmos`をオンにして、もう一度試してみてください。
 
-[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG)
-:::
+[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG) :::
 
-### 4. Confirm mapping
+### 4. マッピングを確認する
 
-In the `Mapping` tab, confirm if armature bone mapping reports no errors. Otherwise, proceed to fix the notified errors.
+`マッピング` タブで、アーマチュア ボーン マッピングにエラーが報告されていないか確認してください。
 
-[![Mapping](/img/setup-cabanim-4-mapping.PNG)](/img/setup-cabanim-4-mapping.PNG)
+[![マッピング](/img/setup-cabanim-4-mapping.PNG)](/img/setup-cabanim-4-mapping.PNG)
 
-### 5. Cabinet animations
+### 5. キャビネットアニメーション
 
-DressingTools automatically drafts wearable toggles (adds currently enabled objects), so you just have to prepare the avatar on-wear toggles and blendshapes.
+DressingToolsは自動的にウェアラブル切り替えを下書きするので（現在有効なオブジェクトを追加します）、アバターの着用時の切り替えとブレンドシェイプを設定するだけです。
 
-Editing these toggles and blendshapes will trigger the **real-time preview** for you to preview the animation immediately!
+切り替えとブレンドシェイプを編集時、アニメーションを**リアルタイムプレビュー**することができます！
 
-:::tip
-You can make use of on-wear presets. Save and load your own presets to dress faster next time!
-[![Presets](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
-:::
+:::tip 着用時のプリセットを活用してください。自分のプリセットを保存して読み込めば、次回から早く着こなすことができます！[プリセット](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG) :::
 
-#### Avatar on-wear toggles
+#### 着用時のアバター切り替え
 
-Make use of the `Suggestions` given and add the avatar toggle until your clothes no longer collides with the existing clothes. The checkbox next to the object field is the status if the object will be enabled or not on-wear.
+与えられた`提案`を利用し、あなたの服が既存の服と重ならなくなるまでアバターの切り替えを追加してください。オブジェクトフィールドの隣にあるチェックボックスは、そのオブジェクトがオンウェアで有効になるかどうかのステータスです。
 
-You can also use `+ Add` to add a toggle that is located elsewhere, or `x` to remove a toggle.
+また、他の場所にある切り替えを追加するには `+ 追加` を使用してください。`x`は切り替えを削除します。
 
-[![Toggles](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
+[![切り替え](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
 
-#### Avatar on-wear blendshapes
+#### アバターの着用時のブレンドシェイプ
 
-Make use of the `Suggestions` given to add a blendshape change until your avatar looks normal with your clothes. (i.e. changing the Chest/Foot/High heeled shapekeys)
+与えられた `提案` を利用して、服とアバターが正常に見えるまでブレンドシェイプの変更を追加してください。 (例：胸/足/ハイヒールのシェイプキーを変更する)
 
-[![Blendshapes](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
+[![ブレンドシェイプ](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
 
-#### Confirm wearable on-wear toggles
+#### ウェアラブルの着用時の切り替えを確認する
 
-Confirm if the auto-generated wearable on-wear toggles matches your preferences. They are automatically added only if it is originally enabled and located at the wearable root.
+自動生成されたウェアラブルな着用時の切り替えが好みと一致するかどうかを確認してください。最初から有効になっており、ウェアラブル ルートに配置されている場合にのみ自動的に追加されます。
 
-[![Wearable on-wear](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
+[![ウェアラブル着用時](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
 
-### 6. Confirm blendshape synchronizations
+### 6. ブレンドシェイプの同期を確認する
 
-:::caution
-DressingTools might match incorrect blendshape synchronizations. Thus, you should check this everytime if installing a new wearable.
-:::
+:::caution DressingTools は間違ったブレンドシェイプ同期と一致する可能性がありますので、毎回これを確認する必要があります。 :::
 
-DressingTools matches avatar blendshapes and wearable blendshapes with the same name together and adds synchronizations automatically here.
+DressingTools は、同じ名前のアバター ブレンドシェイプとウェアラブル ブレンドシェイプを照合し、ここに同期を自動的に追加します。
 
-[![Wearable on-wear](/img/setup-cabanim-6-blendshape-sync.PNG)](/img/setup-cabanim-6-blendshape-sync.PNG)
+[![ウェアラブル着用時](/img/setup-cabanim-6-blendshape-sync.PNG)](/img/setup-cabanim-6-blendshape-sync.PNG)
 
-### 7. Add to cabinet
+### 7. キャビネットに追加する
 
-:::caution
-Configuration is not saved until you press this button.
-:::
+:::caution このボタンを押すまで、設定は保存されません。 :::
 
-Press `Add to cabinet` and the wearable will show up in the cabinet view.
+`キャビネットに追加`を押すと、ウェアラブルがキャビネット ビューに表示されます。
 
-[![Button](/img/setup-cabanim-7-addtocabinet.PNG)](/img/setup-cabanim-7-addtocabinet.PNG)
+[![ボタン](/img/setup-cabanim-7-addtocabinet.PNG)](/img/setup-cabanim-7-addtocabinet.PNG)
 
-[![Cabinet view](/img/setup-cabanim-7-cabinetview.PNG)](/img/setup-cabanim-7-cabinetview.PNG)
+[![キャビネット ビュー](/img/setup-cabanim-7-cabinetview.PNG)](/img/setup-cabanim-7-cabinetview.PNG)
 
-### 8. Done!
+### 8. 完了！
 
-You are ready to go! Get into play mode and see the result! You can use Gesture Manager from BlackStartX to test within Unity Editor!
+準備は完了です! 再生モードに入って結果を見てみましょう! BlackStartX の Gesture Manager を使用して、Unity Editor 内でテストできます！
 
 [![](/img/setup-cabanim-8-done.PNG)](/img/setup-cabanim-8-done.PNG)
 
-:::tip
-You can modify your configuration from the cabinet editor anytime again.
+:::tip キャビネット エディタからいつでも設定を変更できます。
 
-[![Cabinet](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG)
-:::
+[![キャビネット](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG) :::
 
-:::tip
-If you want to add additional modules, you can use the `Advanced` mode!
+:::tip モジュールを追加したい場合は、`上級`モードを使用してください！
 
-[![Advanced](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG)
-:::
+[![上級](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG) :::
