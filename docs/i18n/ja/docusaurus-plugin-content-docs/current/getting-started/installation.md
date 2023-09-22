@@ -23,8 +23,11 @@ DressingTools を VRChat と統合するには、**インストールに VCC を
 
 1. このボタンで VPM リポジトリをインストールするか、`https://vpm.chocopoi.com/index.json`
    を使用して手動でリポジトリを追加してください。
-   
-   <a className="button button--success button--lg" target="_self" href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">VCC を使用してインストールする</a>
+   <a
+className="button button--success button--lg"
+target="_self"
+href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
+   VCC を使用してインストールする </a>
 
 2. `I Understand, Add Repository`を押してリポジトリを追加してください。
 
