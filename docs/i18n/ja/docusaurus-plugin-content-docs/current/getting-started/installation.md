@@ -57,13 +57,12 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
 1. Unityパッケージマネージャーを起動してください
 
-   [![インストール UPM Git URL パッケージ
+   [![インストールUPMGitURLパッケージ
    マネージャー](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
 
 2. `Add package from git URL...` をしてください
 
-   [![インストールUPM Git Add from git
-   URL](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
+   [![インストールUPMGitAddfromgitURL](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
 
 3. 以下のパッケージを追加し、必要なバージョンがインストールするDressingToolsのバージョンと一致していることを確認してください。`#`
    後を希望のバージョンに変更してください。
