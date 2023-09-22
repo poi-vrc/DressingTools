@@ -10,15 +10,13 @@ DressingTools drafts all necessary wearable on-wear animations and same name ble
 
 **A real-time preview** is also available while you are setting up animations!
 
-## Guide
+## 指南
 
-:::info
-The guide assumes that you have already created a cabinet for your avatar according to the [setup cabinet guide](setup-cabinet).
-:::
+:::info 本指南假定您已根據[設定衣櫃指南](setup-cabinet)為您的角色建立了衣櫃。 :::
 
-In the series of getting started, we will dress [Eliya Workshop's Summer Streat](https://booth.pm/ja/items/4666271) into [Kyubi Closet's Moe](https://kyubihome.booth.pm/items/4667400).
+在入門系列中，我們將把[Eliya Workshop的Summer Streat](https://booth.pm/ja/items/4666271)裝扮進[Kyubi Closet的Moe](https://kyubihome.booth.pm/items/4667400)裡面。
 
-### 1. Drag the clothes to the avatar
+### 1.將衣服拖到角色上
 
 Drag the clothes to the avatar and right-click to choose `DressingTools -> Setup wearable with wizard`
 
@@ -36,11 +34,9 @@ A thumbnail decorates your menu and makes you know better what the wearable is. 
 
 [![Capture thumbnail](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
 
-:::caution
-If your scene view does not move with the camera, try turn on `Gizmos` and try again.
+:::caution If your scene view does not move with the camera, try turn on `Gizmos` and try again.
 
-[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG)
-:::
+[![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG) :::
 
 ### 4. Confirm mapping
 
@@ -54,10 +50,7 @@ DressingTools automatically drafts wearable toggles (adds currently enabled obje
 
 Editing these toggles and blendshapes will trigger the **real-time preview** for you to preview the animation immediately!
 
-:::tip
-You can make use of on-wear presets. Save and load your own presets to dress faster next time!
-[![Presets](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
-:::
+:::tip You can make use of on-wear presets. Save and load your own presets to dress faster next time! [![Presets](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG) :::
 
 #### Avatar on-wear toggles
 
@@ -81,9 +74,7 @@ Confirm if the auto-generated wearable on-wear toggles matches your preferences.
 
 ### 6. Confirm blendshape synchronizations
 
-:::caution
-DressingTools might match incorrect blendshape synchronizations. Thus, you should check this everytime if installing a new wearable.
-:::
+:::caution DressingTools might match incorrect blendshape synchronizations. Thus, you should check this everytime if installing a new wearable. :::
 
 DressingTools matches avatar blendshapes and wearable blendshapes with the same name together and adds synchronizations automatically here.
 
@@ -91,9 +82,7 @@ DressingTools matches avatar blendshapes and wearable blendshapes with the same 
 
 ### 7. Add to cabinet
 
-:::caution
-Configuration is not saved until you press this button.
-:::
+:::caution Configuration is not saved until you press this button. :::
 
 Press `Add to cabinet` and the wearable will show up in the cabinet view.
 
@@ -107,14 +96,10 @@ You are ready to go! Get into play mode and see the result! You can use Gesture 
 
 [![](/img/setup-cabanim-8-done.PNG)](/img/setup-cabanim-8-done.PNG)
 
-:::tip
-You can modify your configuration from the cabinet editor anytime again.
+:::tip You can modify your configuration from the cabinet editor anytime again.
 
-[![Cabinet](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG)
-:::
+[![Cabinet](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG) :::
 
-:::tip
-If you want to add additional modules, you can use the `Advanced` mode!
+:::tip If you want to add additional modules, you can use the `Advanced` mode!
 
-[![Advanced](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG)
-:::
+[![Advanced](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG) :::
