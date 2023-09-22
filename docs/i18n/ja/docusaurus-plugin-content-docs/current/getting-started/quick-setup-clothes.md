@@ -2,50 +2,42 @@
 sidebar_position: 3
 ---
 
-# Quick setup clothes
+# クイックセットアップ
 
-It is easy and clean to dress up your avatar with DressingTools. 
+DressingTools を使用すると、アバターを簡単かつきれいに着替えることができます。
 
-You can use DressingTools **for dressing simple clothes with a single click and animate them manually**, although most of use case of DressingTools should be using the cabinet system to automatically generate the menu and animations.
+DressingToolsは、**シングル クリックで簡単な服を着せたり、手動でアニメート**したりするために使うことができますが、DressingToolsのほとんどの使用例は、メニューとアニメーションを自動的に生成するためにキャビネット システムを使うはずです。
 
-:::info
-This does not automatically generate cabinet animations and menus. You have to setup using [another method](setup-clothes-with-cabinet-anim) instead. You can also `Edit` the wearable in the cabinet window and press `Auto-setup` to have the same effect.
-:::
+:::info これはキャビネットのアニメーションとメニューを自動生成しません。代わりに[別の方法](setup-clothes-with-cabinet-anim)を使ってセットアップする必要があります。キャビネット・ウィンドウでウェアラブルを`編集`し、`自動セットアップ`を押しても同じ効果が得られます :::
 
-:::info Pro Tip
-You can animate the objects inside your wearable just like how you make animations usually!
-They are automatically remapped during apply seamlessly.
-:::
+:::info ヒント 通常のアニメーションの作成方法と同じように、ウェアラブル内のオブジェクトをアニメーション化できます。これらは適用中に自動的に再マップされます。 :::
 
-## Guide
+## ガイド
 
-:::info
-The guide assumes that you have already created a cabinet for your avatar according to the [setup cabinet guide](setup-cabinet).
-:::
+:::info このガイドでは、[キャビネットのセットアップガイド](setup-cabinet)に従ってアバター用のキャビネットを作成済みであることを前提としています :::
 
-In the series of getting started, we will dress [Eliya Workshop's Summer Streat](https://booth.pm/ja/items/4666271) into [Kyubi Closet's Moe](https://kyubihome.booth.pm/items/4667400).
+はじめにシリーズでは、[Eliya WorkshopのSummer Streat](https://booth.pm/ja/items/4666271) を [Kyubi ClosetのMoe](https://kyubihome.booth.pm/items/4667400) に着せ替えます。
 
-### 1. Drag the clothes to the avatar
+### 1.服をアバターにドラッグししてください
 
-Drag the clothes to the avatar and right-click to choose `DressingTools -> Auto-setup wearable (Mappings Only)`
+服をアバターにドラッグし、右クリックして `DressingTools -&gt; Auto-setup Wearable (Mappings Only)` を選択ししてください
 
-[![Setup wearable](/img/setup-simple-2-setup-wearable.PNG)](/img/setup-simple-2-setup-wearable.PNG)
+[![ウェアラブルのセットアップ](/img/setup-simple-2-setup-wearable.PNG)](/img/setup-simple-2-setup-wearable.PNG)
 
-### 2. Done!
+### 2. 完了！
 
-Get into Play Mode and then you will be able to test the wearable whether it's mapped to the bones correctly.
+再生モードに入ると、ウェアラブルがボーンに正しくマッピングされているかどうかをテストできます。
 
-[![Setup done](/img/setup-simple-3-done.PNG)](/img/setup-simple-3-done.PNG)
+[![セットアップ完了](/img/setup-simple-3-done.PNG)](/img/setup-simple-3-done.PNG)
 
-## Behind the Scenes
+## 背後で起こったこと
 
-### Using "Auto-setup wearable (Mappings Only)"
+### 「Auto-setup wearable (Mappings Only)」の使用
 
-When you click on `Auto-setup wearable (Mappings Only)`, DressingTools runs an automatic setup to find the wearable armature and attempts
-to dry-run and generate bone mappings for it.
+`Auto-setup wearable (Mappings Only)` をクリックすると、DressingTools は自動セットアップを実行してウェアラブル アーマチュアを見つけ、そのボーン マッピングのドライランと生成を試みます。
 
-It will create a `DT Cabinet Wearable` component on the wearable root with the generated configuration.
+生成された設定を使用して、ウェアラブル ルート上に `DT Cabinet Wearable` コンポーネントが作成されます。
 
-### Entering Play Mode
+### 再生モードに入る
 
-When entering play mode, the attached `DT Cabinet` will apply the wearables contained just before Unity has completed entering play mode.
+再生モードに入るとき、付属の `DT Cabinet` は、Unity が再生モードへの移行を完了する直前に含まれるウェアラブルを適用します。
