@@ -31,13 +31,11 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
 2. `I Understand, Add Repository`を押してリポジトリを追加してください。
 
-   [![インストール VCC
-   理解したボタン](/img/installation-vcc-repo-understand.PNG)](/img/installation-vcc-repo-understand.PNG)
+   [![インストールVCC理解したボタン](/img/installation-vcc-repo-understand.PNG)](/img/installation-vcc-repo-understand.PNG)
 
 3. DressingTools パッケージをアバター プロジェクトに追加ししてください。
 
-   [![インストール VCC
-   追加パッケージ](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
+   [![インストールVCC追加パッケージ](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
 
    :::caution DressingTools がまだ Beta 版なので、パッケージが表示されない可能性があります。 `Settings -&gt;
    Packages`で`Show Pre-release Packages`を有効にする必要があります。 [![VCC
@@ -46,7 +44,7 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
 4. プロジェクトを開けば準備完了です!
 
-   [![インストール VCC ティーザー](/img/teaser-1.PNG)](/img/teaser-1.PNG)
+   [![インストールVCCティーザー](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
 ## その他のプロジェクト
 
@@ -64,7 +62,7 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
 2. `Add package from git URL...` をしてください
 
-   [![インストール UPM Git Add from git
+   [![インストールUPM Git Add from git
    URL](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
 
 3. 以下のパッケージを追加し、必要なバージョンがインストールするDressingToolsのバージョンと一致していることを確認してください。`#`
