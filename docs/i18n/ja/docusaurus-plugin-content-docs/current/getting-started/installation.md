@@ -57,8 +57,7 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
 1. Unityパッケージマネージャーを起動してください
 
-   [![インストールUPMGitURLパッケージ
-   マネージャー](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
+   [![インストールUPMGitURLパッケージマネージャー](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
 
 2. `Add package from git URL...` をしてください
 
