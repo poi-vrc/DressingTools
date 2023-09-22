@@ -2,81 +2,68 @@
 sidebar_position: 1
 ---
 
-# Installation
+# 安裝
 
-DressingTools is a **standalone Unity UPM package** and **does not require any
-game or tool SDKs to be installed to work**. Unless you are trying to integrate
-DressingTools generated cabinets into these games or tools.
+DressingTools 是一個 ** 獨立的 Unity UPM 套件 ** 和 ** 不需要安裝任何遊戲或工具 SDK 即可運作 **。除非您想將
+DressingTools 生成的衣櫃整合到這些遊戲或工具中。
 
-This is useful for workflows that is **not related to VRChat at all**. For
-example, creating **VRM** projects, **ChilloutVR**, **MMD** or Unity projects
-that does not support VRCSDK at all.
+這對於 ** 與 VRChat 根本不相關的工作流程 ** 非常有用。例如建立 **VRM** 專案、**ChilloutVR**、**MMD** 或根本不支援
+VRCSDK 的 Unity 專案。
 
-### Dependencies
+### 依賴關係
 
-DressingTools depends on two external projects `DressingFramework` and
-`AvatarLib` currently.
+DressingTools 目前依賴兩個外部項目 `DressingFramework` 和 `AvatarLib`。
 
-## For VRChat
+## 用於 VRChat
 
-To integrate DressingTools with VRChat, **it is recommended to use VCC for
-installation** since it manages all libraries that DressingTools require and the
-version of VRCSDK that we support.
+如果你用 DressingTools 於 VRChat，**建議使用 VCC 進行安裝**，因為它管理 DressingTools 所需的所有庫以及我們支援的
+VRCSDK 版本。
 
-### Via VCC (VRChat Creator Companion)
+### 透過 VCC (VRChat Creator Companion)
 
-1. Install the VPM repository with the following button, or add the repository
-   using `https://vpm.chocopoi.com/index.json` manually.
+1. 用下面的按鈕安裝 VPM 庫，或使用 `https://vpm.chocopoi.com/index.json` 手動新增庫。
    <a
 className="button button--success button--lg"
 target="_self"
 href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
-   Install with VCC </a>
+   使用 VCC 安裝 </a>
 
-2. Press `I Understand, Add Repository` to add the repository.
+2. 按`I Understand, Add Repository`新增庫。
 
-   [![Installation VCC
-   Understand](/img/installation-vcc-repo-understand.PNG)](/img/installation-vcc-repo-understand.PNG)
+   [![安裝VCC了解](/img/installation-vcc-repo-understand.PNG)](/img/installation-vcc-repo-understand.PNG)
 
-3. Add the DressingTools package to your avatar project.
+3. 將 DressingTools 套件新增到您的角色專案中。
 
-   [![Installation VCC Add
-   Package](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
+   [![安裝VCC套件](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
 
-   :::caution The packages might not be visible because DressingTools is still
-   at pre-release (beta). You need to enable `Show Pre-release Packages` which
-   available under `Settings -> Packages`. [![Instllation VCC
-   Pre-release](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png)
+   :::caution 你可能找不到這些套件，因為 DressingTools 仍處於測試版。您需要啟用預發行版 `Show Pre-release
+   Packages`，該功能可在`Settings -&gt; Packages`下找到。 [![安裝 VCC
+   預發行版](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png)
    :::
 
-4. Open the project and you are good to go!
+4. 打開專案就可以用了！
 
-   [![Installation VCC Teaser](/img/teaser-1.PNG)](/img/teaser-1.PNG)
+   [![安裝 VCC 預告片](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
-## Other Projects
+## 其他的專案
 
-### Via UPM Git URL
+### 透過 UPM Git URL
 
-:::danger If you have already installed DressingTools via VCC, do not perform
-these steps. :::
+:::danger 如果您已經透過 VCC 安裝 DressingTools，請不要執行這些步驟。 :::
 
-:::caution Unity does not handle updates and dependencies properly for UPM Git
-URLs. Make sure you install the correct versions of the dependencies to work
-properly. :::
+:::caution Unity 不會處理 UPM Git URL 的更新和依賴項。確保安裝正確版本的依賴項才能正常運作。 :::
 
-1. Start the Unity Package Manager
+1. 啟動Unity套件管理器
 
-   [![Installation UPM Git Start Package
-   Manager](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
+   [![安裝 UPM Git
+   啟動套件管理器](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
 
-2. Press `Add package from git URL...`
+2. 按 `Add package from git URL...`
 
-   [![Installation UPM Git Add from git
-   URL](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
+   [![安裝 UPM
+   Git](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
 
-3. Add the following packages and make sure the required versions match the
-   version of DressingTools that you are installing. Change the version after
-   the `#` to your desired one.
+3. 新增以下套件並確保所需版本與您正在安裝的 DressingTools 版本相符。將`#`後面的版本變更為您想要的版本。
 
    - DressingTools
      - `https://github.com/poi-vrc/DressingTools.git?path=Packages/com.chocopoi.vrc.dressingtools#2.0.0-beta`
@@ -85,15 +72,13 @@ properly. :::
    - AvatarLib
      - `https://github.com/poi-vrc/AvatarLib.git#1.0.0-beta`
 
-### Via zip files
+### 透過 zip 檔案
 
-:::danger It is not recommended to install DressingTools in this way. :::
+:::danger 不建議以這種方式安裝 DressingTools。 :::
 
-:::caution Remove the old packages before copying. Make sure you install the
-correct versions of the dependencies to work properly. :::
+:::caution 在複製之前刪除舊套件。確保安裝正確版本的依賴項才能正常運作。 :::
 
-You can download the zip files directly and decompress them into your `Packages`
-folder. It will look like this:
+您可以直接下載 zip 檔案並解壓縮到您的 `Packages` 資料夾中。它看起來像這樣：
 ```
 Packages
   |- com.chocopoi.vrc.dressingtools
@@ -108,8 +93,6 @@ Packages
 - AvatarLib
   - https://github.com/poi-vrc/AvatarLib/releases
 
-### Via .unitypackage
+### 透過 .unitypackage
 
-:::danger Currently, it is not supported to use `.unitypackage` files for
-installation. It might be supported in the future but it is not the recommended
-way for installing DressingTools. :::
+:::danger 目前不支援使用`.unitypackage`檔案進行安裝。將來可能支援，但不建議使用它來安裝 DressingTools。 :::
