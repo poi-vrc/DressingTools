@@ -2,13 +2,13 @@
 sidebar_position: 4
 ---
 
-# Setup clothes with cabinet animations
+# 設定衣服用衣櫃動畫
 
-Wearing multiple clothes with your avatar is extremely convenient and easy with DressingTools.
+DressingTools 可以為您的角色穿多件衣服的時候更方便和輕鬆。
 
-DressingTools drafts all necessary wearable on-wear animations and same name blendshape synchronizations (i.e. Big breast) for you. You just have to add additional avatar toggles/blendshapes and confirm the drafted contents!
+DressingTools 為您起草所有必要的穿戴物品動畫和同名 Blendshape 同步（如 Big breast）。您只需添加額外的角色開關/混合形狀並確認起草的內容就可以了！
 
-**A real-time preview** is also available while you are setting up animations!
+**設定動畫時還可以即時預覽**！
 
 ## 指南
 
@@ -18,88 +18,88 @@ DressingTools drafts all necessary wearable on-wear animations and same name ble
 
 ### 1.將衣服拖到角色上
 
-Drag the clothes to the avatar and right-click to choose `DressingTools -> Setup wearable with wizard`
+將衣服拖曳到角色上，右鍵選擇`DressingTools -&gt;Setup wearable with wizard`
 
-[![Setup Wearable](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
+[![設定穿戴物品](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
 
-### 2. Tool window pops up
+### 2. 工具視窗彈出
 
-The DressingTools tool window will pop up and an auto-setup is run to draft the configuration for you:
+DressingTools 工具窗口會彈出，並運行自動設定來為您起草配置：
 
-[![Tool window pops up](/img/setup-cabanim-2-tool-window.PNG)](/img/setup-cabanim-2-tool-window.PNG)
+[![工具視窗彈出](/img/setup-cabanim-2-tool-window.PNG)](/img/setup-cabanim-2-tool-window.PNG)
 
-### 3. Capture thumbnail (Optional)
+### 3. 拍攝縮圖（可選）
 
-A thumbnail decorates your menu and makes you know better what the wearable is. Click on "Capture thumbnail". Move your scene view to select a good spot for your thumbnail and press `Capture`.
+縮圖可以裝飾您的菜單，讓您更容易分辨穿戴物品。按一下`拍攝新的縮圖`。移動場景視圖以選擇縮圖的適當位置，然後按 `拍照`。
 
-[![Capture thumbnail](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
+[![拍攝縮圖](/img/setup-cabanim-3-thumbnail.PNG)](/img/setup-cabanim-3-thumbnail.PNG)
 
-:::caution If your scene view does not move with the camera, try turn on `Gizmos` and try again.
+:::caution 如果您的場景視圖不隨相機移動，請嘗試開啟 `Gizmos` 並重試。
 
 [![Gizmos](/img/setup-cabanim-3-gizmos.PNG)](/img/setup-cabanim-3-gizmos.PNG) :::
 
-### 4. Confirm mapping
+### 4. 確認映射
 
-In the `Mapping` tab, confirm if armature bone mapping reports no errors. Otherwise, proceed to fix the notified errors.
+在 `映射` 中，確認骨架骨頭映射是否報告沒有錯誤。
 
-[![Mapping](/img/setup-cabanim-4-mapping.PNG)](/img/setup-cabanim-4-mapping.PNG)
+[![映射](/img/setup-cabanim-4-mapping.PNG)](/img/setup-cabanim-4-mapping.PNG)
 
-### 5. Cabinet animations
+### 5. 衣櫃動畫
 
-DressingTools automatically drafts wearable toggles (adds currently enabled objects), so you just have to prepare the avatar on-wear toggles and blendshapes.
+DressingTools 會自動起草穿戴物品開關（新增目前啟用的物件），因此您只需準備角色穿着時的開關和混合形狀。
 
-Editing these toggles and blendshapes will trigger the **real-time preview** for you to preview the animation immediately!
+編輯這些開關和混合形狀將自動開啟**即時預覽**，讓您立即預覽動畫！
 
-:::tip You can make use of on-wear presets. Save and load your own presets to dress faster next time! [![Presets](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG) :::
+:::tip 您可以使用預設。儲存並載入您自己的預設，以便下次穿得更快！ [![預設](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG) :::
 
-#### Avatar on-wear toggles
+#### 角色穿着時的開關
 
-Make use of the `Suggestions` given and add the avatar toggle until your clothes no longer collides with the existing clothes. The checkbox next to the object field is the status if the object will be enabled or not on-wear.
+利用給予的`建議`並添加角色開關，直到你的衣服不再與現有的衣服重曡。物件欄位旁的複選框是物件是否啟用或不啟用的狀態。
 
-You can also use `+ Add` to add a toggle that is located elsewhere, or `x` to remove a toggle.
+您也可以使用 `+ 新增` 新增位於其他位置的開關，或使用 `x` 刪除開關。
 
-[![Toggles](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
+[![開關](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
 
-#### Avatar on-wear blendshapes
+#### 角色穿着時的混合形狀
 
-Make use of the `Suggestions` given to add a blendshape change until your avatar looks normal with your clothes. (i.e. changing the Chest/Foot/High heeled shapekeys)
+利用`建議`添加更改混合形狀，直到您的角色和衣服看起來正常。 （即更改胸部/腳/高跟鞋形狀鍵）
 
-[![Blendshapes](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
+[![混合形狀](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
 
-#### Confirm wearable on-wear toggles
+#### 確認穿戴物品穿着時的開關
 
-Confirm if the auto-generated wearable on-wear toggles matches your preferences. They are automatically added only if it is originally enabled and located at the wearable root.
+確認自動產生的穿戴物品穿着時的開關是否符合您的偏好。只有當最初啟用並位於穿戴物品根時，它們才會自動添加。
 
-[![Wearable on-wear](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
+[![穿戴物品穿着時](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
 
-### 6. Confirm blendshape synchronizations
+### 6. 確認混合形狀同步
 
-:::caution DressingTools might match incorrect blendshape synchronizations. Thus, you should check this everytime if installing a new wearable. :::
+:::caution DressingTools 可能會增加不正確的混合形狀同步。因此，安裝新的穿戴物品時，您每次都應該檢查這一部份。 :::
 
-DressingTools matches avatar blendshapes and wearable blendshapes with the same name together and adds synchronizations automatically here.
+DressingTools 將具有相同名稱的角色 Blendshape 和穿戴物品 Blendshape 配對在一起，並在此處自動添加同步。
 
-[![Wearable on-wear](/img/setup-cabanim-6-blendshape-sync.PNG)](/img/setup-cabanim-6-blendshape-sync.PNG)
+[![穿戴物品穿着時](/img/setup-cabanim-6-blendshape-sync.PNG)](/img/setup-cabanim-6-blendshape-sync.PNG)
 
-### 7. Add to cabinet
+### 7. 新增到衣櫃
 
-:::caution Configuration is not saved until you press this button. :::
+:::caution 在您按下此按鈕之前，配置不會被儲存。 :::
 
-Press `Add to cabinet` and the wearable will show up in the cabinet view.
+按`新增至衣櫃`，穿戴物品將顯示在衣櫃視圖中。
 
-[![Button](/img/setup-cabanim-7-addtocabinet.PNG)](/img/setup-cabanim-7-addtocabinet.PNG)
+[![按鈕](/img/setup-cabanim-7-addtocabinet.PNG)](/img/setup-cabanim-7-addtocabinet.PNG)
 
-[![Cabinet view](/img/setup-cabanim-7-cabinetview.PNG)](/img/setup-cabanim-7-cabinetview.PNG)
+[![衣櫃視圖](/img/setup-cabanim-7-cabinetview.PNG)](/img/setup-cabanim-7-cabinetview.PNG)
 
-### 8. Done!
+### 8. 完成！
 
-You are ready to go! Get into play mode and see the result! You can use Gesture Manager from BlackStartX to test within Unity Editor!
+你準備好了！進入運行模式並查看結果！您可以使用 BlackStartX 的 Gesture Manager 在 Unity 編輯器中進行測試！
 
 [![](/img/setup-cabanim-8-done.PNG)](/img/setup-cabanim-8-done.PNG)
 
-:::tip You can modify your configuration from the cabinet editor anytime again.
+:::tip 您可以隨時再次從衣櫃編輯器修改您的配置。
 
-[![Cabinet](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG) :::
+[![衣櫃](/img/setup-cabanim-8-tip-edit.PNG)](/img/setup-cabanim-8-tip-edit.PNG) :::
 
-:::tip If you want to add additional modules, you can use the `Advanced` mode!
+:::tip 如果你想增加額外的模組，你可以使用`進階`模式！
 
-[![Advanced](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG) :::
+[![進階](/img/setup-cabanim-8-tip-advanced.PNG)](/img/setup-cabanim-8-tip-advanced.PNG) :::
