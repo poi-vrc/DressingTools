@@ -4,10 +4,10 @@ sidebar_position: 1
 
 # 安裝
 
-DressingTools 是一個 ** 獨立的 Unity UPM 套件 ** 和 ** 不需要安裝任何遊戲或工具 SDK 即可運作 **。除非您想將
+DressingTools 是一個 **獨立的 Unity UPM 套件** 和 **不需要安裝任何遊戲或工具 SDK 即可運作**。除非您想將
 DressingTools 生成的衣櫃整合到這些遊戲或工具中。
 
-這對於 ** 與 VRChat 根本不相關的工作流程 ** 非常有用。例如建立 **VRM** 專案、**ChilloutVR**、**MMD** 或根本不支援
+這對於 **與 VRChat 根本不相關的工作流程** 非常有用。例如建立 **VRM** 專案、**ChilloutVR**、**MMD** 或根本不支援
 VRCSDK 的 Unity 專案。
 
 ### 依賴關係
