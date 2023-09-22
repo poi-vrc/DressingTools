@@ -14,7 +14,7 @@ UPMパッケージ**であり、ゲームやツールのSDKをインストール
 
 DressingTools は現在、2 つの外部プロジェクト `DressingFramework` および `AvatarLib` に依存しています。
 
-## VRChat用a
+## VRChat用
 
 DressingTools を VRChat と統合するには、**インストールに VCC を使用することをおすすめです**。これは、DressingTools
 が必要とするすべてのライブラリとサポートされている VRCSDK のバージョンを管理することができます。
