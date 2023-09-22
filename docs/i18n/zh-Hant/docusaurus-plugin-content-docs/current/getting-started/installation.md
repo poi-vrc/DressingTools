@@ -4,11 +4,9 @@ sidebar_position: 1
 
 # 安裝
 
-DressingTools 是一個 **獨立的 Unity UPM 套件** 和 **不需要安裝任何遊戲或工具 SDK 即可運作**。除非您想將
-DressingTools 生成的衣櫃整合到這些遊戲或工具中。
+DressingTools 是一個 **獨立的 Unity UPM 套件** 和 **不需要安裝任何遊戲或工具 SDK 即可運作**。除非您想將 DressingTools 生成的衣櫃整合到這些遊戲或工具中。
 
-這對於 **與 VRChat 根本不相關的工作流程** 非常有用。例如建立 **VRM** 專案、**ChilloutVR**、**MMD** 或根本不支援
-VRCSDK 的 Unity 專案。
+這對於 **與 VRChat 根本不相關的工作流程** 非常有用。例如建立 **VRM** 專案、**ChilloutVR**、**MMD** 或根本不支援 VRCSDK 的 Unity 專案。
 
 ### 依賴關係
 
@@ -16,17 +14,14 @@ DressingTools 目前依賴兩個外部項目 `DressingFramework` 和 `AvatarLib`
 
 ## 用於 VRChat
 
-如果你用 DressingTools 於 VRChat，**建議使用 VCC 進行安裝**，因為它管理 DressingTools 所需的所有庫以及我們支援的
-VRCSDK 版本。
+如果你用 DressingTools 於 VRChat，**建議使用 VCC 進行安裝**，因為它管理 DressingTools 所需的所有庫以及我們支援的 VRCSDK 版本。
 
 ### 透過 VCC (VRChat Creator Companion)
 
-1. 用下面的按鈕安裝 VPM 庫，或使用 `https://vpm.chocopoi.com/index.json` 手動新增庫。
-   <a
+1. 用下面的按鈕安裝 VPM 庫，或使用 `https://vpm.chocopoi.com/index.json` 手動新增庫。 <a
 className="button button--success button--lg"
 target="_self"
-href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
-   使用 VCC 安裝 </a>
+href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json"> 使用 VCC 安裝 </a>
 
 2. 按`I Understand, Add Repository`新增庫。
 
@@ -36,10 +31,7 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
    [![安裝VCC套件](/img/installation-vcc-add-package.PNG)](/img/installation-vcc-add-package.PNG)
 
-   :::caution 你可能找不到這些套件，因為 DressingTools 仍處於測試版。您需要啟用預發行版 `Show Pre-release
-   Packages`，該功能可在`Settings -&gt; Packages`下找到。 [![安裝 VCC
-   預發行版](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png)
-   :::
+   :::caution 你可能找不到這些套件，因為 DressingTools 仍處於測試版。您需要啟用預發行版 `Show Pre-release Packages`，該功能可在`Settings -&gt; Packages`下找到。 [![安裝 VCC 預發行版](/img/installation-vcc-prerelease.png)](/img/installation-vcc-prerelease.png) :::
 
 4. 打開專案就可以用了！
 
@@ -55,13 +47,11 @@ href="vcc://vpm/addRepo?url=https%3A%2F%2Fvpm.chocopoi.com%2Findex.json">
 
 1. 啟動Unity套件管理器
 
-   [![安裝 UPM Git
-   啟動套件管理器](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
+   [![安裝 UPM Git 啟動套件管理器](/img/installation-upmgit-open-pkg-mgr.PNG)](/img/installation-upmgit-open-pkg-mgr.PNG)
 
 2. 按 `Add package from git URL...`
 
-   [![安裝 UPM
-   Git](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
+   [![安裝 UPM Git](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
 
 3. 新增以下套件並確保所需版本與您正在安裝的 DressingTools 版本相符。將`#`後面的版本變更為您想要的版本。
 
