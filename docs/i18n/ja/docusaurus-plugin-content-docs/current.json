@@ -1,0 +1,36 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Getting Started": {
+    "message": "はじめに"
+  },
+  "sidebar.tutorialSidebar.category.Getting Started.link.generated-index.description": {
+    "message": "数分でDressingToolsを使い始めることができる。"
+  },
+  "sidebar.tutorialSidebar.category.Guides": {
+    "message": "ガイド"
+  },
+  "sidebar.tutorialSidebar.category.Guides.link.generated-index.description": {
+    "message": "DressingToolsの機能ガイド"
+  },
+  "sidebar.tutorialSidebar.category.Technical Design": {
+    "message": "技術設計"
+  },
+  "sidebar.tutorialSidebar.category.Technical Design.link.generated-index.description": {
+    "message": "DressingToolsの技術設計"
+  },
+  "sidebar.tutorialSidebar.category.Extending DressingTools": {
+    "message": "拡張ドレッシングツール"
+  },
+  "sidebar.tutorialSidebar.category.Extending DressingTools.link.generated-index.description": {
+    "message": "拡張ドレッシングツールの詳細"
+  },
+  "sidebar.tutorialSidebar.category.Contributing": {
+    "message": "貢献"
+  },
+  "sidebar.tutorialSidebar.category.Contributing.link.generated-index.description": {
+    "message": "貢献の詳細"
+  }
+}
