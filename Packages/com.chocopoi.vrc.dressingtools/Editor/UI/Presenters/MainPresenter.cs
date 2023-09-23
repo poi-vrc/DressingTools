@@ -19,6 +19,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Chocopoi.DressingTools.UIBase.Views;
+using UnityEditor;
 using UnityEngine.PlayerLoop;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -47,6 +48,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.MouseMove += OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick += OnUpdateAvailableUpdateButtonClick;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         private void UnsubscribeEvents()
@@ -56,6 +58,21 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.MouseMove -= OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick -= OnUpdateAvailableUpdateButtonClick;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange change)
+        {
+            if (change == PlayModeStateChange.EnteredPlayMode)
+            {
+                _view.ShowExitPlayModeHelpbox = true;
+                _view.Repaint();
+            }
+            else if (change == PlayModeStateChange.EnteredEditMode)
+            {
+                _view.ShowExitPlayModeHelpbox = false;
+                _view.Repaint();
+            }
         }
 
         private void OnUpdateAvailableUpdateButtonClick()

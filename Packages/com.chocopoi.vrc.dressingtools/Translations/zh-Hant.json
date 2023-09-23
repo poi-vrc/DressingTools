@@ -134,6 +134,7 @@
     "legacy.editor.toggle.groupDynamicsSeparateGameObjects": "將動骨分離到不同的物件中",
     "legacy.editor.toggle.removeExistingPrefixesAndSuffixes": "刪除現有的前綴和後綴",
     "legacy.editor.toggle.useCustomArmatureNames": "使用自訂骨架名稱",
+    "main.editor.helpbox.exitPlayMode": "請退出運行模式以繼續。",
     "main.editor.tabs.cabinet": "衣櫃",
     "main.editor.tabs.dressing": "穿著",
     "main.editor.tabs.settings": "設定",

@@ -6,6 +6,7 @@
         <Style src="MainViewStyles.uss" />
         <ui:Button text="@main.editor.updateAvailable.btn.update" name="update-available-update-btn" />
     </ui:Foldout>
+    <ui:VisualElement name="helpbox-container" />
     <uie:Toolbar name="tab" style="flex-direction: row; width: 100%;">
         <Style src="MainViewStyles.uss" />
         <uie:ToolbarButton text="@main.editor.tabs.cabinet" name="tab-cabinet" />

@@ -28,6 +28,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
         string UpdateAvailableFromVersion { get; set; }
         string UpdateAvailableToVersion { get; set; }
+        bool ShowExitPlayModeHelpbox { get; set; }
         int SelectedTab { get; set; }
 
         void ForceUpdateCabinetSubView();
