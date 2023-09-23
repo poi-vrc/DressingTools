@@ -7,28 +7,22 @@
   <br>
   
   <p>
-    A simple but advanced, non-destructive and automated cabinet system.
+  A simple but advanced, non-destructive and automated cabinet system.
+  <br>
+  シンプルだが高度な非破壊キャビネットシステム
+  <br>
+  一個簡單但進階的、無損衣櫃系統
   </p>
-  
+
   [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/) 
   [![Unity Tests](https://github.com/poi-vrc/DressingTools/actions/workflows/unity-tests.yml/badge.svg)](https://github.com/poi-vrc/DressingTools/actions/workflows/unity-tests.yml)
   
-  <br>
-  <br>
-
-  [BOOTH Page](https://chocopoi.booth.pm/items/3639300) | [Getting Started](https://dressingtools.chocopoi.com/) | [Discord](https://discord.gg/Gyst8Pr2ay)
+  [Getting Started](https://dressingtools.chocopoi.com/) / [はじめに](https://dressingtools.chocopoi.com/ja/) / [入門](https://dressingtools.chocopoi.com/zh-Hant/)
+  
+  [BOOTH](https://chocopoi.booth.pm/items/3639300) | [Discord](https://discord.gg/Gyst8Pr2ay) | [Twitter](https://twitter.com/chocolapoi)
 </div>
 
-> :warning: v2 is not ready for production use yet! You might be actually finding for the v1 version right now: https://github.com/poi-vrc/DressingTools/tree/1.x :warning:
-
-## Development Screenshots
-
-[![Teaser 1](docs/static/img/teaser-1.PNG)](docs/static/img/teaser-1.PNG)
-[![Teaser 2](docs/static/img/teaser-2.PNG)](docs/static/img/teaser-2.PNG)
-
-## License
-This project is mainly licensed **under the GPLv3 License**. ([tl;dr](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))) Please make sure your derived project is licensed under the GPLv3 and published open-source to the users.
-
-Please be noted that logo assets resources in the `logo` folder is [separately licensed under specific terms](logo/README.md) by **chocopoi**.
+## Licensing
+https://dressingtools.chocopoi.com/docs/extending-dt/licensing
 
 Copyright (c) 2022-2023 poi-vrc.
