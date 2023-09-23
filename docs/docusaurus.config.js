@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'DressingTools',
-  tagline: 'A simple but advanced, non-destructive cabinet system.',
+  tagline: 'A simple but advanced, non-destructive cabinet system',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -42,6 +42,7 @@ const config = {
           editUrl:
             'https://github.com/poi-vrc/DressingTools/tree/master/docs/',
         },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },

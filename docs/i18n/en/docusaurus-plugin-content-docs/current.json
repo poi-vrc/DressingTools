@@ -1,0 +1,46 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Getting Started": {
+    "message": "Getting Started",
+    "description": "The label for category Getting Started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Getting Started.link.generated-index.description": {
+    "message": "Getting started with DressingTools within minutes.",
+    "description": "The generated-index page description for category Getting Started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Guides": {
+    "message": "Guides",
+    "description": "The label for category Guides in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Guides.link.generated-index.description": {
+    "message": "Guides of DressingTools specific features.",
+    "description": "The generated-index page description for category Guides in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Technical Design": {
+    "message": "Technical Design",
+    "description": "The label for category Technical Design in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Technical Design.link.generated-index.description": {
+    "message": "Technical design details of DressingTools",
+    "description": "The generated-index page description for category Technical Design in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Extending DressingTools": {
+    "message": "Extending DressingTools",
+    "description": "The label for category Extending DressingTools in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Extending DressingTools.link.generated-index.description": {
+    "message": "Details of extending DressingTools",
+    "description": "The generated-index page description for category Extending DressingTools in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Contributing": {
+    "message": "Contributing",
+    "description": "The label for category Contributing in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Contributing.link.generated-index.description": {
+    "message": "Details of contributing to DressingTools.",
+    "description": "The generated-index page description for category Contributing in sidebar tutorialSidebar"
+  }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import Translate, { translate } from '@docusaurus/Translate';
 
 type FeatureItem = {
   title: string;
@@ -10,32 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'One-click Dressing',
+    title: translate({ message: 'One-click Dressing' }),
     image: require('@site/static/img/flaticon/bridal-shower.png').default,
     description: (
       <>
-        Add your wearables by either dragging into the avatar or one-click from
-        the screen!
+        <Translate>Add your wearables by either dragging into the avatar or one-click from
+        the screen!</Translate>
       </>
     ),
   },
   {
-    title: 'Configure in One-screen',
+    title: translate({ message: 'Configure in One-screen' }),
     image: require('@site/static/img/flaticon/data-collection.png').default,
     description: (
       <>
-        Forget about what things to add and where to add. Everything can be
-        auto-setup and configured in one-screen!
+        <Translate>Forget about what things to add and where to add. Everything can be
+        auto-setup and configured in one-screen!</Translate>
       </>
     ),
   },
   {
-    title: 'Animation Generation',
+    title: translate({ message: 'Animation Generation' }),
     image: require('@site/static/img/flaticon/magic-wand.png').default,
     description: (
       <>
-        Generates your avatar and wearable toggles and blendshapes animations
-        and menus automatically. Making your workflow easier and faster!
+        <Translate>Generates your avatar and wearable toggles and blendshapes animations
+        and menus automatically. Making your workflow easier and faster!</Translate>
       </>
     ),
   },

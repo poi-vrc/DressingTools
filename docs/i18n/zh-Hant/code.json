@@ -2,10 +2,28 @@
     "Guides": {
         "message": "指南"
     },
-    "A simple but advanced, non-destructive cabinet system. Dress your VRChat avatar with one-click!": {
-        "message": "一個簡單但進階的、無損衣櫃系統、一鍵裝扮你的 VRChat 角色！"
+    "A simple but advanced, non-destructive cabinet system": {
+        "message": "一個簡單但進階的、無損衣櫃系統"
     },
     "Install with VCC": {
         "message": "使用VCC安裝"
+    },
+    "One-click Dressing": {
+      "message": "一鍵換裝"
+    },
+    "Add your wearables by either dragging into the avatar or one-click from the screen!": {
+      "message": "透過拖曳到角色或從螢幕上一鍵點擊來添加您的穿戴物品！"
+    },
+    "Configure in One-screen": {
+      "message": "同一地方配置一切"
+    },
+    "Forget about what things to add and where to add. Everything can be auto-setup and configured in one-screen!": {
+      "message": "忘記要添加什麼以及在哪裡添加。 一切都可以在同一地方上自動設定和配置！"
+    },
+    "Animation Generation": {
+      "message": "動畫生成"
+    },
+    "Generates your avatar and wearable toggles and blendshapes animations and menus automatically. Making your workflow easier and faster!": {
+      "message": "自動產生您的角色和穿戴物品開關及混合形狀動畫和選單。 讓您的換裝流程更輕鬆、更快速！"
     }
 }

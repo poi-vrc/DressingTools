@@ -1,0 +1,36 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Getting Started": {
+    "message": "入門"
+  },
+  "sidebar.tutorialSidebar.category.Getting Started.link.generated-index.description": {
+    "message": "只需幾分鐘就熟悉 DressingTools。"
+  },
+  "sidebar.tutorialSidebar.category.Guides": {
+    "message": "指南"
+  },
+  "sidebar.tutorialSidebar.category.Guides.link.generated-index.description": {
+    "message": "DressingTools的功能指南"
+  },
+  "sidebar.tutorialSidebar.category.Technical Design": {
+    "message": "技術設計"
+  },
+  "sidebar.tutorialSidebar.category.Technical Design.link.generated-index.description": {
+    "message": "DressingTools的技術設計"
+  },
+  "sidebar.tutorialSidebar.category.Extending DressingTools": {
+    "message": "延伸 DressingTools"
+  },
+  "sidebar.tutorialSidebar.category.Extending DressingTools.link.generated-index.description": {
+    "message": "延伸 DressingTools 的詳細"
+  },
+  "sidebar.tutorialSidebar.category.Contributing": {
+    "message": "貢獻"
+  },
+  "sidebar.tutorialSidebar.category.Contributing.link.generated-index.description": {
+    "message": "貢獻的詳細"
+  }
+}

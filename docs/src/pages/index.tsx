@@ -17,7 +17,9 @@ function HomepageHeader() {
         <h1 className="hero__title">
           <Logo className={styles.logo} xlinkTitle='DressingTools' />
         </h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className="hero__subtitle">{translate({
+                message: siteConfig.tagline
+            })}</p>
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
@@ -42,7 +44,7 @@ export default function Home(): JSX.Element {
     <Layout
       title={`DressingTools`}
       description={translate({
-        message: "A simple but advanced, non-destructive cabinet system. Dress your VRChat avatar with one-click!"
+        message: "A simple but advanced, non-destructive cabinet system"
       })}>
       < HomepageHeader />
       <main>

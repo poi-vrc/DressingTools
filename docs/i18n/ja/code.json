@@ -2,10 +2,28 @@
     "Guides": {
         "message": "ガイド"
     },
-    "A simple but advanced, non-destructive cabinet system. Dress your VRChat avatar with one-click!": {
-        "message": "シンプルだが高度な非破壊キャビネットシステム、ワンクリックで VRChat アバターを着せ替えることができます！"
+    "A simple but advanced, non-destructive cabinet system": {
+        "message": "シンプルだが高度な非破壊キャビネットシステム"
     },
     "Install with VCC": {
         "message": "VCCでインストール"
+    },
+    "One-click Dressing": {
+      "message": "ワンクリックで着替える"
+    },
+    "Add your wearables by either dragging into the avatar or one-click from the screen!": {
+      "message": "アバターにドラッグするか、画面からワンクリックでウェアラブルを追加できます！"
+    },
+    "Configure in One-screen": {
+      "message": "同じ場所で設定する"
+    },
+    "Forget about what things to add and where to add. Everything can be auto-setup and configured in one-screen!": {
+      "message": "何を追加するか、どこに追加するかは忘れてください。すべて同じ場所で自動セットアップ・設定することができます！"
+    },
+    "Animation Generation": {
+      "message": "アニメーション自動生成"
+    },
+    "Generates your avatar and wearable toggles and blendshapes animations and menus automatically. Making your workflow easier and faster!": {
+      "message": "アバターとウェアラブルの切り替えやブレンドシェイプのアニメーションやメニューを自動生成することができる。着替える作業をより簡単かつもっと速くに！"
     }
 }

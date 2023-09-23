@@ -1,0 +1,11 @@
+{
+  "logo.alt": {
+    "message": "DressingTools 標識"
+  },
+  "item.label.Docs": {
+    "message": "說明書"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub"
+  }
+}

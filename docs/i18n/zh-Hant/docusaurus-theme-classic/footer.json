@@ -1,0 +1,26 @@
+{
+  "link.title.Docs": {
+    "message": "說明書"
+  },
+  "link.title.Community": {
+    "message": "社群"
+  },
+  "link.title.More": {
+    "message": "更多的"
+  },
+  "link.item.label.Introduction": {
+    "message": "介紹"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord"
+  },
+  "link.item.label.Twitter": {
+    "message": "Twitter"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub"
+  },
+  "copyright": {
+    "message": "Copyright © 2023 chocopoi. Built with Docusaurus."
+  }
+}
