@@ -53,6 +53,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CreateCabinetBackButtonClick += OnCreateCabinetBackButtonClick;
 
             EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         private void UnsubscribeEvents()
@@ -69,6 +70,15 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CreateCabinetBackButtonClick -= OnCreateCabinetBackButtonClick;
 
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange change)
+        {
+            if (change == PlayModeStateChange.EnteredEditMode)
+            {
+                UpdateView();
+            }
         }
 
         private void OnCreateCabinetBackButtonClick()
@@ -99,6 +109,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnHierarchyChanged()
         {
+            if (Application.isPlaying) return;
             UpdateView();
         }
 

@@ -19,6 +19,7 @@
     "legacy.editor.toggle.groupBones": "ボーンをグループする",
     "legacy.editor.toggle.groupDynamics": "ダイナミクスをグループする",
     "legacy.editor.toggle.removeExistingPrefixesAndSuffixes": "既存のプレフィックスとサフィックスを削除する",
+    "main.editor.helpbox.exitPlayMode": "続行するには再生モードを終了してください。",
     "main.editor.tabs.cabinet": "キャビネット",
     "main.editor.tabs.dressing": "着替える",
     "main.editor.updateAvailable.foldout": "アップデートが発見: {0} -> {1}",

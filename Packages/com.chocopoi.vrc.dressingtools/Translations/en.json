@@ -142,6 +142,7 @@
     "legacy.editor.toggle.groupDynamicsSeparateGameObjects": "Separate dynamics into different objects",
     "legacy.editor.toggle.removeExistingPrefixesAndSuffixes": "Remove existing prefixes and suffixes",
     "legacy.editor.toggle.useCustomArmatureNames": "Use custom armature names",
+    "main.editor.helpbox.exitPlayMode": "Please exit play mode to continue.",
     "main.editor.tabs.cabinet": "Cabinet",
     "main.editor.tabs.dressing": "Dressing",
     "main.editor.tabs.settings": "Settings",

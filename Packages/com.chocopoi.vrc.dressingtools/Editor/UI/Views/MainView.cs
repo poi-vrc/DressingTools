@@ -47,6 +47,7 @@ namespace Chocopoi.DressingTools.UI.View
 
         public string UpdateAvailableFromVersion { get; set; }
         public string UpdateAvailableToVersion { get; set; }
+        public bool ShowExitPlayModeHelpbox { get; set; }
 
         private MainPresenter _presenter;
         private CabinetSubView _cabinetSubView;
@@ -55,6 +56,9 @@ namespace Chocopoi.DressingTools.UI.View
         private int _selectedTab;
         private Button[] _tabBtns;
         private Foldout _updateAvailableFoldout;
+        private VisualElement _helpboxContainer;
+        private VisualElement _tabContainer;
+        private VisualElement _tabContentContainer;
 
         public MainView()
         {
@@ -65,6 +69,7 @@ namespace Chocopoi.DressingTools.UI.View
 
             UpdateAvailableFromVersion = null;
             UpdateAvailableToVersion = null;
+            ShowExitPlayModeHelpbox = false;
         }
 
         public void StartDressing(GameObject targetAvatar, GameObject targetWearable = null)
@@ -110,10 +115,13 @@ namespace Chocopoi.DressingTools.UI.View
             _dressingSubView.style.display = DisplayStyle.None;
             _settingsSubView.style.display = DisplayStyle.None;
 
-            var container = Q<VisualElement>("tab-content").First();
-            container.Add(_cabinetSubView);
-            container.Add(_dressingSubView);
-            container.Add(_settingsSubView);
+            _helpboxContainer = Q<VisualElement>("helpbox-container").First();
+            _tabContainer = Q<VisualElement>("tab").First();
+
+            _tabContentContainer = Q<VisualElement>("tab-content").First();
+            _tabContentContainer.Add(_cabinetSubView);
+            _tabContentContainer.Add(_dressingSubView);
+            _tabContentContainer.Add(_settingsSubView);
 
             _updateAvailableFoldout = Q<Foldout>("update-available-foldout").First();
             var updateBtn = Q<Button>("update-available-update-btn").First();
@@ -180,6 +188,14 @@ namespace Chocopoi.DressingTools.UI.View
 
         public override void Repaint()
         {
+            _helpboxContainer.Clear();
+            if (ShowExitPlayModeHelpbox)
+            {
+                _helpboxContainer.Add(CreateHelpBox(t._("main.editor.helpbox.exitPlayMode"), UnityEditor.MessageType.Warning));
+            }
+            _tabContainer.style.display = ShowExitPlayModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
+            _tabContentContainer.style.display = ShowExitPlayModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
+
             if (UpdateAvailableFromVersion != null && UpdateAvailableToVersion != null)
             {
                 _updateAvailableFoldout.style.display = DisplayStyle.Flex;
