@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wearableGameObject: {fileID: 2274980565128194490}
-  configJson: '{"version":"1.0.0","info":{"uuid":"1f0ae78b-1455-42b2-9e40-950759322c48","name":"DTTest_PhysBoneWearable","author":"","description":"","createdTime":"2023-08-24T01:06:13.1422017Z","updatedTime":"2023-08-24T01:06:13.1422017Z"},"avatarConfig":{"guids":[],"name":"DTTest_PhysBoneAvatarWithWearable","armatureName":"Armature","worldPosition":{"x":-20.0,"y":0.0,"z":0.0},"worldRotation":{"x":0.0,"y":0.0,"z":0.0,"w":1.0},"avatarLossyScale":{"x":1.0,"y":1.0,"z":1.0},"wearableLossyScale":{"x":1.0,"y":1.0,"z":1.0}},"modules":[{"moduleName":"com.chocopoi.dressingtools.built-in.armature-mapping","config":{"dresserName":"Chocopoi.DressingTools.Dresser.DefaultDresser","wearableArmatureName":"Armature","boneMappingMode":0,"boneMappings":null,"serializedDresserConfig":"{\"dynamicsOption\":0}","removeExistingPrefixSuffix":true,"groupBones":true}}]}'
+  configJson: '{"version":"1.0.0","info":{"uuid":"1f0ae78b-1455-42b2-9e40-950759322c48","name":"DTTest_PhysBoneWearable","author":"","description":"","createdTime":"2023-08-24T01:06:13.1422017Z","updatedTime":"2023-08-24T01:06:13.1422017Z"},"avatarConfig":{"guids":[],"name":"DTTest_PhysBoneAvatarWithWearable","armatureName":"Armature","worldPosition":{"x":-20.0,"y":0.0,"z":0.0},"worldRotation":{"x":0.0,"y":0.0,"z":0.0,"w":1.0},"avatarLossyScale":{"x":1.0,"y":1.0,"z":1.0},"wearableLossyScale":{"x":1.0,"y":1.0,"z":1.0}},"modules":[{"moduleName":"com.chocopoi.dressingtools.built-in.wearable.armature-mapping","config":{"version":"1.0.0","dresserName":"Chocopoi.DressingTools.Dresser.DefaultDresser","wearableArmatureName":"Armature","boneMappingMode":0,"boneMappings":null,"serializedDresserConfig":"{\"dynamicsOption\":0}","removeExistingPrefixSuffix":true,"groupBones":true}}]}'
 --- !u!1 &2274980565601766808
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,10 +997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   avatarGameObject: {fileID: 2545941516238613524}
-  avatarArmatureName: Armature
-  groupDynamics: 1
-  groupDynamicsSeparateGameObjects: 1
-  animationGenerationWriteDefaults: 1
+  configJson: '{"version":"1.0.0","avatarArmatureName":"Armature","groupDynamics":true,"groupDynamicsSeparateGameObjects":true,"modules":[]}'
 --- !u!1 &2545941516397885137
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,12 +11,22 @@ on:
 
 jobs:
   build:
-    name: Build and Test
+    name: Build and Test in ${{ matrix.testMode }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        testMode: ["EditMode", "PlayMode"]
+        include:
+          - mode: EditMode
+            assemblyName: com.chocopoi.vrc.dressingtools.Editor.Tests
+          - mode: PlayMode
+            assemblyName: com.chocopoi.vrc.dressingtools.Runtime.Tests
     steps:
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          submodules: true
 
       # Cache
       - uses: actions/cache@v3
@@ -26,12 +36,16 @@ jobs:
           restore-keys: |
             Library-
       
-      # Resolve VPM
-      - name: Resolve VPM Packages
-        uses: anatawa12/sh-actions/resolve-vpm-packages@master
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v3
         with:
-          repos: |
-            https://vpm.chocopoi.com/index.json
+          dotnet-version: '6.0.x'
+
+      - name: Resolve VPM Packages
+        run: |
+          dotnet tool install --global vrchat.vpm.cli
+          vpm add repo https://vpm.chocopoi.com/index.json
+          vpm resolve project
       
       # DynamicsBones stub
       - name: Download and copy DynamicBones stub
@@ -49,8 +63,8 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          testMode: 'EditMode'
-          customParameters: '-assemblyNames com.chocopoi.vrc.dressingtools.Editor.Tests -nographics'
+          testMode: ${{ matrix.testMode }}
+          customParameters: '-assemblyNames ${{ matrix.assemblyName }} -nographics'
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.chocopoi.vrc.dressingtools.*'
       
       # Upload coverage report to GitHub
@@ -64,7 +78,7 @@ jobs:
       - name: Upload XML report to Codecov
         uses: codecov/codecov-action@v3
         with:
-          name: EditMode
+          name: ${{ matrix.testMode }}
           flags: automated
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ steps.tests.outputs.coveragePath }}/**/*.xml
