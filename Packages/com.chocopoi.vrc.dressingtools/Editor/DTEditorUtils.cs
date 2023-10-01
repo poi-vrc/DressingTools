@@ -37,6 +37,7 @@ using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -252,7 +253,8 @@ namespace Chocopoi.DressingTools
                 var reader = new StreamReader(BoneNameMappingsPath);
                 var json = reader.ReadToEnd();
                 reader.Close();
-                s_boneNameMappings = JsonConvert.DeserializeObject<List<List<string>>>(json);
+                var jObj = JObject.Parse(json);
+                s_boneNameMappings = jObj["mappings"].ToObject<List<List<string>>>();
             }
             catch (IOException e)
             {
