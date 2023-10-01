@@ -7,7 +7,8 @@
         "GUID:dcaf16fd99f37914888e6e13bdf533ea",
         "GUID:f841bb993be425e41a412568753e42fe",
         "GUID:8eb5b149dedbba24490f0743a2ab1e61",
-        "GUID:35d314e1737d5b447925f8adfad70792"
+        "GUID:35d314e1737d5b447925f8adfad70792",
+        "GUID:97650872dc498bb4597e0bbf23109900"
     ],
     "includePlatforms": [
         "Editor"
@@ -19,7 +20,8 @@
         "nunit.framework.dll",
         "VRC.SDK3.Dynamics.PhysBone.dll",
         "VRC.Dynamics.dll",
-        "Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll",
+        "VRCSDKBase.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

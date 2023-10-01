@@ -1,11 +1,4 @@
 {
-    "cabinet.applier.msgCode.error.afterApplyCabinetProviderHookHasErrors": "Error: Module provider's after apply cabinet hook has errors: {0}",
-    "cabinet.applier.msgCode.error.applyingWearableHasErrors": "Error: Applying wearable has errors: {0}",
-    "cabinet.applier.msgCode.error.beforeApplyCabinetProviderHookHasErrors": "Error: Module provider's before apply cabinet hook has errors: {0}",
-    "cabinet.applier.msgCode.error.moduleHasNoProviderAvailable": "Error: Module has no provider available: {0}",
-    "cabinet.applier.msgCode.error.moduleProviderHookHasErrors": "Error: Module provider hook has errors: {0}",
-    "cabinet.applier.msgCode.error.unableToDeserializeCabinetConfig": "Error: Unable to load cabinet configuration: {0}",
-    "cabinet.applier.msgCode.error.unableToDeserializeWearableConfig": "Error: Unable to load wearable configuration: {0}",
     "cabinet.editor.cabinetContent.addPlaceholder.label.add": "Add",
     "cabinet.editor.cabinetContent.btn.remove": "Remove",
     "cabinet.editor.cabinetContent.dialog.msg.removeConfirm": "Are you sure to remove?",

@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -25,7 +27,7 @@ namespace Chocopoi.DressingTools
 {
     internal class PreferencesUtility
     {
-        private static Localization.I18n t = Localization.I18n.Instance;
+        private static I18nTranslator t = I18n.ToolTranslator;
 
         private static readonly string EditorPrefsKey = "Chocopoi.DressingTools.Preferences";
 

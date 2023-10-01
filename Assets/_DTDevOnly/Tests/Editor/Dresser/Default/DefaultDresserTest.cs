@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Dresser;
+using Chocopoi.DressingTools.Dresser.Default;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
         {
             var dresser = new DefaultDresser();
             var report = dresser.Execute(new DresserSettings(), out var boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.NotDefaultSettingsSettings));
+            Assert.True(report.HasLogCodeByType(DressingFramework.Logging.LogType.Error, DefaultDresser.MessageCode.NotDefaultSettingsSettings));
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 targetWearable = wearableRoot
             };
             var report = dresser.Execute(settings, out var boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.NullAvatarOrWearable));
+            Assert.True(report.HasLogCodeByType(DressingFramework.Logging.LogType.Error, DefaultDresser.MessageCode.NullAvatarOrWearable));
         }
 
         [Test]
@@ -46,10 +46,10 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
                 targetWearable = null
             };
             var report = dresser.Execute(settings, out var boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.NullAvatarOrWearable));
+            Assert.True(report.HasLogCodeByType(DressingFramework.Logging.LogType.Error, DefaultDresser.MessageCode.NullAvatarOrWearable));
         }
 
-        private DTReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<BoneMapping> boneMappings)
+        private DKReport EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
         {
             var dresser = new DefaultDresser();
             var settings = new DefaultDresserSettings()
@@ -71,7 +71,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default
             var wearableRoot = CreateGameObject("Wearable");
             var report = EvaluateDresser(avatarRoot, wearableRoot, out var boneMappings);
             Assert.Null(boneMappings);
-            Assert.True(report.HasLogCodeByType(DTReportLogType.Error, DefaultDresser.MessageCode.HookHasErrors));
+            Assert.True(report.HasLogCodeByType(DressingFramework.Logging.LogType.Error, DefaultDresser.MessageCode.HookHasErrors));
         }
 
         [Test]

@@ -16,6 +16,8 @@
  */
 
 using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
 using UnityEngine;
@@ -25,7 +27,7 @@ namespace Chocopoi.DressingTools
     [CustomEditor(typeof(DTCabinet))]
     internal class DTCabinetEditor : Editor
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public override void OnInspectorGUI()
         {

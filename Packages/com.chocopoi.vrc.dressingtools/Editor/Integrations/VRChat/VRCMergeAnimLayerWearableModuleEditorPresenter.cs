@@ -17,10 +17,9 @@
 
 #if VRC_SDK_VRCSDK3
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Integration.VRChat.Modules;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Integration.VRChat.Modules;
 using Chocopoi.DressingFramework.UI;
 using UnityEngine;
 
@@ -90,7 +89,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             {
                 _module.animatorPath = "";
             }
-            else if (DTEditorUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
+            else if (DKRuntimeUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
             {
                 _module.animatorPath = AnimationUtils.GetRelativePath(_view.AnimatorObject.transform, _parentView.TargetWearable.transform);
             }
@@ -148,7 +147,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 _view.ShowAnimatorObjectPathNotFoundHelpbox = false;
 
                 // verify if in wearable
-                if (!DTEditorUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
+                if (!DKRuntimeUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
                 {
                     _view.ShowNotInWearableHelpbox = true;
                     return;

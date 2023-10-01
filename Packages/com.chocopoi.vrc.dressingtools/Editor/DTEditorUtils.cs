@@ -24,11 +24,16 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Cabinet.Modules;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Context;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Proxy;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json;
@@ -39,8 +44,7 @@ namespace Chocopoi.DressingTools
 {
     internal class DTEditorUtils
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
-        private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/boneNameMappings.json";
+        private const string BoneNameMappingsPath = "Packages/com.chocopoi.vrc.dressingtools/Resources/BoneNameMappings.json";
         private const string PreviewAvatarNamePrefix = "DTPreview_";
         private const string ThumbnailRenderTextureGuid = "52c645a5f631e32439c8674dc6e491e2";
         private const string ThumbnailCameraLayer = "DT_Thumbnail";
@@ -57,303 +61,11 @@ namespace Chocopoi.DressingTools
         private static readonly System.Random Random = new System.Random();
         private static List<List<string>> s_boneNameMappings = null;
 
-        //Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
-        public static void DrawHorizontalLine(int height = 1)
-        {
-            EditorGUILayout.Separator();
-            var rect = EditorGUILayout.GetControlRect(false, height);
-            rect.height = height;
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
-            EditorGUILayout.Separator();
-        }
-
-        public static DTCabinet[] GetAllCabinets()
-        {
-            return Object.FindObjectsOfType<DTCabinet>();
-        }
-
-        public static DTWearable[] GetAllSceneWearables()
-        {
-            return Object.FindObjectsOfType<DTWearable>();
-        }
-
         public static string GetGameObjectOriginalPrefabGuid(GameObject obj)
         {
             var assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj));
             var guid = AssetDatabase.AssetPathToGUID(assetPath);
             return guid;
-        }
-
-        public static DTCabinet GetAvatarCabinet(GameObject avatarGameObject, bool createIfNotExists = false)
-        {
-            if (avatarGameObject == null)
-            {
-                return null;
-            }
-
-            // loop through all cabinets and search
-            var cabinets = GetAllCabinets();
-
-            // no matter there are two occurance or not, we return the first found
-            foreach (var cabinet in cabinets)
-            {
-                if (cabinet.AvatarGameObject == avatarGameObject)
-                {
-                    return cabinet;
-                }
-            }
-
-            if (createIfNotExists)
-            {
-                // create new cabinet if not exist
-                var comp = avatarGameObject.AddComponent<DTCabinet>();
-
-                // TODO: read default config, scan for armature names?
-                comp.AvatarGameObject = avatarGameObject;
-                var config = new CabinetConfig();
-                comp.configJson = config.Serialize();
-
-                return comp;
-            }
-
-            return null;
-        }
-
-        public static DTWearable GetCabinetWearable(GameObject wearableGaneObject)
-        {
-            if (wearableGaneObject == null)
-            {
-                return null;
-            }
-
-            // loop through all scene wearables and search
-            var wearables = GetAllSceneWearables();
-
-            // no matter there are two occurance or not, we return the first found
-            foreach (var sceneWearable in wearables)
-            {
-                if (sceneWearable.WearableGameObject == wearableGaneObject)
-                {
-                    return sceneWearable;
-                }
-            }
-
-            return null;
-        }
-
-        public static DTWearable[] GetCabinetWearables(GameObject avatarGameObject)
-        {
-            if (avatarGameObject == null)
-            {
-                return new DTWearable[0];
-            }
-            return avatarGameObject.GetComponentsInChildren<DTWearable>();
-        }
-
-        public static void ApplyWearableTransforms(AvatarConfig avatarConfig, GameObject targetAvatar, GameObject targetWearable)
-        {
-            // check position delta and adjust
-            {
-                var wearableWorldPos = avatarConfig.worldPosition.ToVector3();
-                if (targetWearable.transform.position - targetAvatar.transform.position != wearableWorldPos)
-                {
-                    Debug.LogFormat("[DressingTools] [AddCabinetWearable] Moved wearable world pos: {0}", wearableWorldPos.ToString());
-                    targetWearable.transform.position += wearableWorldPos;
-                }
-            }
-
-            // check rotation delta and adjust
-            {
-                var wearableWorldRot = avatarConfig.worldRotation.ToQuaternion();
-                if (targetWearable.transform.rotation * Quaternion.Inverse(targetAvatar.transform.rotation) != wearableWorldRot)
-                {
-                    Debug.LogFormat("[DressingTools] [AddCabinetWearable] Moved wearable world rotation: {0}", wearableWorldRot.ToString());
-                    targetWearable.transform.rotation *= wearableWorldRot;
-                }
-            }
-
-            // apply avatar scale
-            var lastAvatarParent = targetAvatar.transform.parent;
-            var lastAvatarScale = Vector3.zero + targetAvatar.transform.localScale;
-            if (lastAvatarParent != null)
-            {
-                // tricky workaround to apply lossy world scale is to unparent
-                targetAvatar.transform.SetParent(null);
-            }
-
-            var avatarScaleVec = avatarConfig.avatarLossyScale.ToVector3();
-            if (targetAvatar.transform.localScale != avatarScaleVec)
-            {
-                Debug.LogFormat("[DressingTools] [AddCabinetWearable] Adjusted avatar scale: {0}", avatarScaleVec.ToString());
-                targetAvatar.transform.localScale = avatarScaleVec;
-            }
-
-            // apply wearable scale
-            var lastWearableParent = targetWearable.transform.parent;
-            var lastWearableScale = Vector3.zero + targetWearable.transform.localScale;
-            if (lastWearableParent != null)
-            {
-                // tricky workaround to apply lossy world scale is to unparent
-                targetWearable.transform.SetParent(null);
-            }
-
-            var wearableScaleVec = avatarConfig.wearableLossyScale.ToVector3();
-            if (targetWearable.transform.localScale != wearableScaleVec)
-            {
-                Debug.LogFormat("[DressingTools] [AddCabinetWearable] Adjusted wearable scale: {0}", wearableScaleVec.ToString());
-                targetWearable.transform.localScale = wearableScaleVec;
-            }
-
-            // restore avatar scale
-            if (lastAvatarParent != null)
-            {
-                targetAvatar.transform.SetParent(lastAvatarParent);
-            }
-            targetAvatar.transform.localScale = lastAvatarScale;
-
-            // restore wearable scale
-            if (lastWearableParent != null)
-            {
-                targetWearable.transform.SetParent(lastWearableParent);
-            }
-            targetWearable.transform.localScale = lastWearableScale;
-        }
-
-        public static DTCabinet FindCabinetComponent(DTWearable wearable)
-        {
-            var p = wearable.transform.parent;
-            DTCabinet cabinet = null;
-            while (p != null)
-            {
-                if (p.TryGetComponent(out cabinet))
-                {
-                    break;
-                }
-                p = p.parent;
-            }
-            return cabinet;
-        }
-
-        public static bool AddCabinetWearable(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
-        {
-            var cabinetWearable = GetCabinetWearable(wearableGameObject);
-
-            // if not exist, create a new component
-            if (cabinetWearable == null)
-            {
-                if (PrefabUtility.IsPartOfAnyPrefab(wearableGameObject) && PrefabUtility.GetPrefabInstanceStatus(wearableGameObject) == PrefabInstanceStatus.NotAPrefab)
-                {
-                    // if not in scene, we instantiate it with a prefab connection
-                    wearableGameObject = (GameObject)PrefabUtility.InstantiatePrefab(wearableGameObject);
-                }
-
-                // parent to avatar if haven't yet
-                if (!IsGrandParent(avatarGameObject.transform, wearableGameObject.transform))
-                {
-                    wearableGameObject.transform.SetParent(avatarGameObject.transform);
-                }
-
-                // applying scalings
-                ApplyWearableTransforms(wearableConfig.avatarConfig, avatarGameObject, wearableGameObject);
-
-                // add cabinet wearable component
-                cabinetWearable = wearableGameObject.AddComponent<DTWearable>();
-                cabinetWearable.WearableGameObject = wearableGameObject;
-            }
-
-            wearableConfig.info.RefreshUpdatedTime();
-            cabinetWearable.configJson = wearableConfig.Serialize();
-
-            DoWearableModuleProviderCallbacks(wearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
-            {
-                if (!provider.OnAddWearableToCabinet(cabinetConfig, avatarGameObject, wearableConfig, wearableGameObject, new ReadOnlyCollection<WearableModule>(modules)))
-                {
-                    Debug.LogWarning("[DressingTools] [AddCabinetWearable] Error processing provider OnAddWearableToCabinet hook: " + provider.ModuleIdentifier);
-                    return false;
-                }
-                return true;
-            });
-
-            return true;
-        }
-
-        public static List<string> FindUnknownWearableModuleNames(List<WearableModule> modules)
-        {
-            var list = new List<string>();
-            foreach (var module in modules)
-            {
-                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
-                if (provider == null)
-                {
-                    list.Add(module.moduleName);
-                }
-            }
-            return list;
-        }
-
-        public static bool DoWearableModuleProviderCallbacks(List<WearableModule> modules, System.Func<WearableModuleProviderBase, List<WearableModule>, bool> callback)
-        {
-            var moduleByProvider = new Dictionary<WearableModuleProviderBase, List<WearableModule>>();
-
-            // prepare module by provider
-            foreach (var module in modules)
-            {
-                // locate the module provider
-                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
-
-                if (provider == null)
-                {
-                    Debug.Log("[DressingTools] Missing wearable module provider detected: " + module.moduleName);
-                    return false;
-                }
-
-                if (!moduleByProvider.TryGetValue(provider, out var groupedList))
-                {
-                    groupedList = new List<WearableModule>();
-                    moduleByProvider[provider] = groupedList;
-                }
-                groupedList.Add(module);
-            }
-
-            // sort providers according to their call order
-            var allProviders = WearableModuleProviderLocator.Instance.GetAllProviders();
-            var sortedProviderList = new List<WearableModuleProviderBase>(allProviders);
-            sortedProviderList.Sort((m1, m2) => m1.CallOrder.CompareTo(m2.CallOrder));
-
-            // call provider callbacks
-            foreach (var provider in allProviders)
-            {
-                if (!moduleByProvider.TryGetValue(provider, out var providerModules))
-                {
-                    // create a empty list
-                    providerModules = new List<WearableModule>();
-                }
-
-                if (!callback.Invoke(provider, providerModules))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static void RemoveCabinetWearable(DTCabinet cabinet, DTWearable wearable)
-        {
-            var cabinetWearables = cabinet.AvatarGameObject.GetComponentsInChildren<DTWearable>();
-            foreach (var cabinetWearable in cabinetWearables)
-            {
-                if (cabinetWearable == wearable)
-                {
-                    if (!PrefabUtility.IsOutermostPrefabInstanceRoot(cabinetWearable.gameObject))
-                    {
-                        Debug.Log("Prefab is not outermost. Aborting");
-                        return;
-                    }
-                    Object.DestroyImmediate(cabinetWearable.gameObject);
-                    break;
-                }
-            }
         }
 
         public static void PrepareWearableConfig(WearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable)
@@ -366,7 +78,7 @@ namespace Chocopoi.DressingTools
 
         public static void AddWearableTargetAvatarConfig(WearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable)
         {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(targetAvatar);
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(targetAvatar);
 
             // try obtain armature name from cabinet
             if (cabinet == null)
@@ -376,7 +88,7 @@ namespace Chocopoi.DressingTools
             }
             else
             {
-                if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
                 {
                     wearableConfig.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }
@@ -394,7 +106,7 @@ namespace Chocopoi.DressingTools
 
             wearableConfig.avatarConfig.name = targetAvatar.name;
 
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(targetAvatar);
+            var avatarPrefabGuid = GetGameObjectOriginalPrefabGuid(targetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
             wearableConfig.avatarConfig.guids.Clear();
@@ -449,7 +161,7 @@ namespace Chocopoi.DressingTools
             return null;
         }
 
-        public static void HandleBoneMappingOverrides(List<BoneMapping> generatedBoneMappings, List<BoneMapping> overrideBoneMappings)
+        public static void HandleBoneMappingOverrides(List<ArmatureMappingWearableModuleConfig.BoneMapping> generatedBoneMappings, List<ArmatureMappingWearableModuleConfig.BoneMapping> overrideBoneMappings)
         {
             foreach (var mappingOverride in overrideBoneMappings)
             {
@@ -473,38 +185,6 @@ namespace Chocopoi.DressingTools
                     generatedBoneMappings.Add(mappingOverride);
                 }
             }
-        }
-
-        // TODO: copied from AvatarLib because of the Runtime/Editor assembly problem, create a Runtime one there soon?
-        public static string GetRelativePath(Transform transform, Transform untilTransform = null, string prefix = "", string suffix = "")
-        {
-            string path = transform.name;
-            while (true)
-            {
-                transform = transform.parent;
-
-                if (transform.parent == null || (untilTransform != null && transform == untilTransform))
-                {
-                    break;
-                }
-
-                path = transform.name + "/" + path;
-            }
-            return prefix + path + suffix;
-        }
-
-        public static bool IsGrandParent(Transform grandParent, Transform grandChild)
-        {
-            var p = grandChild.parent;
-            while (p != null)
-            {
-                if (p == grandParent)
-                {
-                    return true;
-                }
-                p = p.parent;
-            }
-            return false;
         }
 
         public static List<IDynamicsProxy> ScanDynamics(GameObject obj, bool doNotScanContainingWearables = false)
@@ -697,54 +377,6 @@ namespace Chocopoi.DressingTools
             return destComp;
         }
 
-        public static T FindWearableModuleConfig<T>(WearableConfig config) where T : IModuleConfig
-        {
-            foreach (var module in config.modules)
-            {
-                if (module.config is T moduleConfig)
-                {
-                    return moduleConfig;
-                }
-            }
-            return default;
-        }
-
-        public static WearableModule FindWearableModule(WearableConfig config, string moduleName)
-        {
-            foreach (var module in config.modules)
-            {
-                if (moduleName == module.moduleName)
-                {
-                    return module;
-                }
-            }
-            return null;
-        }
-
-        public static T FindCabinetModuleConfig<T>(CabinetConfig config) where T : IModuleConfig
-        {
-            foreach (var module in config.modules)
-            {
-                if (module.config is T moduleConfig)
-                {
-                    return moduleConfig;
-                }
-            }
-            return default;
-        }
-
-        public static CabinetModule FindCabinetModule(CabinetConfig config, string moduleName)
-        {
-            foreach (var module in config.modules)
-            {
-                if (moduleName == module.moduleName)
-                {
-                    return module;
-                }
-            }
-            return null;
-        }
-
         public static bool IsOriginatedFromAnyWearable(Transform root, Transform transform)
         {
             var found = false;
@@ -763,15 +395,6 @@ namespace Chocopoi.DressingTools
                 }
             }
             return found;
-        }
-
-        public static string RandomString(int length)
-        {
-            // i just copied from stackoverflow :D
-            // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings?page=1&tab=scoredesc#tab-top
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
         public static bool PreviewActive { get; private set; }
@@ -799,45 +422,48 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            var cabinet = GetAvatarCabinet(previewAvatar);
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(previewAvatar);
 
             if (cabinet == null)
             {
                 return;
             }
 
-            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 Debug.LogError("[DressingTools] Unable to deserialize cabinet config for preview");
                 return;
             }
 
-            var report = new DTReport();
+            var report = new DKReport();
             var cabCtx = new ApplyCabinetContext()
             {
                 report = report,
                 cabinetConfig = cabinetConfig,
-                avatarGameObject = previewAvatar,
-                avatarDynamics = ScanDynamics(previewAvatar, true),
-                wearableContexts = new Dictionary<DTWearable, ApplyWearableContext>()
+                avatarGameObject = previewAvatar
             };
+            var dkCabCtx = cabCtx.Extra<DKCabinetContext>();
+            dkCabCtx.avatarDynamics = ScanDynamics(previewAvatar, true);
+            dkCabCtx.pathRemapper = new PathRemapper(previewAvatar);
+            dkCabCtx.animationStore = new AnimationStore(cabCtx);
 
             var wearCtx = new ApplyWearableContext()
             {
                 wearableConfig = newWearableConfig,
-                wearableGameObject = previewWearable,
-                wearableDynamics = ScanDynamics(previewWearable)
+                wearableGameObject = previewWearable
             };
+            wearCtx.Extra<DKWearableContext>().wearableDynamics = ScanDynamics(previewWearable);
 
-            DoWearableModuleProviderCallbacks(newWearableConfig.modules, (WearableModuleProviderBase provider, List<WearableModule> modules) =>
+            var providers = PluginManager.Instance.GetAllWearableModuleProviders();
+            foreach (var provider in providers)
             {
-                if (!provider.OnPreviewWearable(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(modules)))
+                // TODO: dependency graph
+                if (!provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(DKRuntimeUtils.GetWearableModulesByName(newWearableConfig, provider.Identifier)), true))
                 {
                     Debug.LogError("[DressingTools] Error applying wearable in preview!");
-                    return false;
+                    break;
                 }
-                return true;
-            });
+            }
         }
 
         public static void PreviewAvatar(GameObject targetAvatar, GameObject targetWearable, out GameObject previewAvatar, out GameObject previewWearable)
@@ -855,7 +481,7 @@ namespace Chocopoi.DressingTools
             previewAvatar = GameObject.Find(objName);
 
             // find path of wearable
-            var path = IsGrandParent(targetAvatar.transform, targetWearable.transform) ?
+            var path = DKRuntimeUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform) ?
                 AnimationUtils.GetRelativePath(targetWearable.transform, targetAvatar.transform) :
                 targetWearable.name;
 
@@ -887,7 +513,7 @@ namespace Chocopoi.DressingTools
             previewAvatar.transform.position = newPos;
 
             // if wearable is not inside avatar, we instantiate a new copy
-            if (!IsGrandParent(targetAvatar.transform, targetWearable.transform))
+            if (!DKRuntimeUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform))
             {
                 previewWearable = Object.Instantiate(targetWearable);
                 previewWearable.transform.position = newPos;

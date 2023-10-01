@@ -18,14 +18,14 @@
 using System;
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Cabinet.Modules;
+using Chocopoi.DressingFramework.Cabinet.Modules.BuiltIn;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingTools.Cabinet.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
-using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules
@@ -37,7 +37,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private ICabinetAnimWearableModuleEditorView _view;
         private IWearableModuleEditorViewParent _parentView;
         private CabinetAnimWearableModuleConfig _module;
-        private DTCabinet _cabinet;
+        private ICabinet _cabinet;
         private CabinetConfig _cabinetConfig;
         private CabinetAnimCabinetModuleConfig _moduleConfig;
 
@@ -104,24 +104,24 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnAddCustomizableEvent()
         {
-            _module.wearableCustomizables.Add(new WearableCustomizable()
+            _module.wearableCustomizables.Add(new CabinetAnimWearableModuleConfig.Customizable()
             {
-                name = "Customizable-" + DTEditorUtils.RandomString(6)
+                name = "Customizable-" + DKRuntimeUtils.RandomString(6)
             });
             UpdateCustomizables();
         }
 
-        private void UpdateSelectedPresetData(Dictionary<string, AnimationPreset> savedPresets, PresetViewData presetData)
+        private void UpdateSelectedPresetData(Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedPresets, PresetViewData presetData)
         {
             if (presetData.selectedPresetIndex == 0)
             {
                 return;
             }
             var key = presetData.savedPresetKeys[presetData.selectedPresetIndex];
-            _module.avatarAnimationOnWear = new AnimationPreset(savedPresets[key]);
+            _module.avatarAnimationOnWear = new CabinetAnimWearableModuleConfig.Preset(savedPresets[key]);
         }
 
-        private void SavePreset(Dictionary<string, AnimationPreset> savedPresets, PresetViewData presetData, AnimationPreset presetToSave)
+        private void SavePreset(Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedPresets, PresetViewData presetData, CabinetAnimWearableModuleConfig.Preset presetToSave)
         {
             var presetName = _view.ShowPresetNamingDialog();
 
@@ -140,11 +140,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             savedPresets.Add(presetName, presetToSave);
 
             // serialize to cabinet
-            _cabinet.configJson = _cabinetConfig.Serialize();
+            _cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
             UpdateView();
         }
 
-        private void DeletePreset(Dictionary<string, AnimationPreset> savedPresets, PresetViewData presetData)
+        private void DeletePreset(Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedPresets, PresetViewData presetData)
         {
             if (presetData.selectedPresetIndex == 0)
             {
@@ -156,7 +156,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             presetData.selectedPresetIndex = 0;
 
             // serialize to cabinet
-            _cabinet.configJson = _cabinetConfig.Serialize();
+            _cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
             UpdateView();
         }
 
@@ -164,7 +164,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             if (_cabinetConfig != null)
             {
-                var agcm = DTEditorUtils.FindCabinetModuleConfig<CabinetAnimCabinetModuleConfig>(_cabinetConfig);
+                var agcm = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
                 if (agcm != null)
                 {
                     UpdateSelectedPresetData(agcm.savedAvatarPresets, _view.AvatarOnWearPresetData);
@@ -189,7 +189,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             if (_cabinetConfig != null)
             {
-                var agcm = DTEditorUtils.FindCabinetModuleConfig<CabinetAnimCabinetModuleConfig>(_cabinetConfig);
+                var agcm = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
                 if (agcm != null)
                 {
                     UpdateSelectedPresetData(agcm.savedWearablePresets, _view.WearableOnWearPresetData);
@@ -222,29 +222,29 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnAvatarOnWearToggleAddEvent()
         {
-            _module.avatarAnimationOnWear.toggles.Add(new AnimationToggle());
+            _module.avatarAnimationOnWear.toggles.Add(new CabinetAnimWearableModuleConfig.Toggle());
             UpdateCabinetAnimAvatarOnWear();
         }
 
         private void OnAvatarOnWearBlendshapeAddEvent()
         {
-            _module.avatarAnimationOnWear.blendshapes.Add(new AnimationBlendshapeValue());
+            _module.avatarAnimationOnWear.blendshapes.Add(new CabinetAnimWearableModuleConfig.BlendshapeValue());
             UpdateCabinetAnimAvatarOnWear();
         }
 
         private void OnWearableOnWearToggleAddEvent()
         {
-            _module.wearableAnimationOnWear.toggles.Add(new AnimationToggle());
+            _module.wearableAnimationOnWear.toggles.Add(new CabinetAnimWearableModuleConfig.Toggle());
             UpdateCabinetAnimWearableOnWear();
         }
 
         private void OnWearableOnWearBlendshapeAddEvent()
         {
-            _module.wearableAnimationOnWear.blendshapes.Add(new AnimationBlendshapeValue());
+            _module.wearableAnimationOnWear.blendshapes.Add(new CabinetAnimWearableModuleConfig.BlendshapeValue());
             UpdateCabinetAnimWearableOnWear();
         }
 
-        private void UpdateToggles(Transform root, List<AnimationToggle> toggles, List<ToggleData> toggleDataList, Action updateView = null)
+        private void UpdateToggles(Transform root, List<CabinetAnimWearableModuleConfig.Toggle> toggles, List<ToggleData> toggleDataList, Action updateView = null)
         {
             toggleDataList.Clear();
             foreach (var toggle in toggles)
@@ -259,11 +259,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 };
                 toggleData.changeEvent = () =>
                 {
-                    if (toggleData.gameObject != null && DTEditorUtils.IsGrandParent(root, toggleData.gameObject.transform))
+                    if (toggleData.gameObject != null && DKRuntimeUtils.IsGrandParent(root, toggleData.gameObject.transform))
                     {
                         // renew path if changed
                         toggleData.isInvalid = false;
-                        toggle.path = DTEditorUtils.GetRelativePath(toggleData.gameObject.transform, root);
+                        toggle.path = AnimationUtils.GetRelativePath(toggleData.gameObject.transform, root);
                         toggle.state = toggleData.state;
                         _parentView.UpdateAvatarPreview();
                     }
@@ -304,7 +304,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return names.ToArray();
         }
 
-        private void UpdateBlendshapes(Transform root, List<AnimationBlendshapeValue> blendshapes, List<BlendshapeData> blendshapeDataList, Action updateView = null)
+        private void UpdateBlendshapes(Transform root, List<CabinetAnimWearableModuleConfig.BlendshapeValue> blendshapes, List<BlendshapeData> blendshapeDataList, Action updateView = null)
         {
             blendshapeDataList.Clear();
             foreach (var blendshape in blendshapes)
@@ -318,7 +318,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     isInvalid = transform == null || mesh == null,
                     gameObject = transform?.gameObject,
-                    availableBlendshapeNames = blendshapeNames
+                    availableBlendshapeNames = blendshapeNames,
+                    value = blendshape.value
                 };
 
                 // select blendshape index
@@ -336,11 +337,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeData.gameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeData.gameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DTEditorUtils.IsGrandParent(root, blendshapeData.gameObject.transform))
+                    if (blendshapeData.gameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKRuntimeUtils.IsGrandParent(root, blendshapeData.gameObject.transform))
                     {
                         // renew path if changed
                         blendshapeData.isInvalid = false;
-                        blendshape.path = DTEditorUtils.GetRelativePath(blendshapeData.gameObject.transform, root);
+                        blendshape.path = AnimationUtils.GetRelativePath(blendshapeData.gameObject.transform, root);
 
                         // generate blendshape names
                         blendshapeData.availableBlendshapeNames = GetBlendshapeNames(newMesh);
@@ -381,7 +382,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateAnimationPreset(Transform root, Dictionary<string, AnimationPreset> savedPresets, AnimationPreset preset, PresetViewData presetData, Action updateView)
+        private void UpdateAnimationPreset(Transform root, Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedPresets, CabinetAnimWearableModuleConfig.Preset preset, PresetViewData presetData, Action updateView)
         {
             if (savedPresets != null)
             {
@@ -423,8 +424,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return false;
         }
 
-        private void UpdateToggleAndSmrSuggestions(Transform root, List<AnimationToggle> realToggles, List<ToggleData> toggles,
-             List<ToggleSuggestionData> toggleSuggestions, List<AnimationBlendshapeValue> realBlendshapes, List<BlendshapeData> blendshapes,
+        private void UpdateToggleAndSmrSuggestions(Transform root, List<CabinetAnimWearableModuleConfig.Toggle> realToggles, List<ToggleData> toggles,
+             List<ToggleSuggestionData> toggleSuggestions, List<CabinetAnimWearableModuleConfig.BlendshapeValue> realBlendshapes, List<BlendshapeData> blendshapes,
               List<SmrSuggestionData> smrSuggestions, Action updateView, bool inverted, string armatureName = null, Transform skipTransform = null)
         {
             toggleSuggestions.Clear();
@@ -446,7 +447,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                             state = childTrans.gameObject.activeSelf ^ inverted,
                             addButtonClickEvent = () =>
                             {
-                                realToggles.Add(new AnimationToggle()
+                                realToggles.Add(new CabinetAnimWearableModuleConfig.Toggle()
                                 {
                                     path = AnimationUtils.GetRelativePath(childTrans, root),
                                     state = childTrans.gameObject.activeSelf ^ inverted
@@ -465,7 +466,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                             gameObject = childTrans.gameObject,
                             addButtonClickEvent = () =>
                             {
-                                realBlendshapes.Add(new AnimationBlendshapeValue()
+                                realBlendshapes.Add(new CabinetAnimWearableModuleConfig.BlendshapeValue()
                                 {
                                     path = AnimationUtils.GetRelativePath(childTrans, root),
                                     blendshapeName = "",
@@ -517,10 +518,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             if (_parentView.TargetAvatar != null)
             {
-                Dictionary<string, AnimationPreset> savedPresets = null;
+                Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedPresets = null;
                 if (_cabinetConfig != null)
                 {
-                    var agcm = DTEditorUtils.FindCabinetModuleConfig<CabinetAnimCabinetModuleConfig>(_cabinetConfig);
+                    var agcm = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
                     if (agcm != null)
                     {
                         savedPresets = agcm.savedAvatarPresets;
@@ -541,10 +542,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             if (_parentView.TargetWearable != null)
             {
-                Dictionary<string, AnimationPreset> savedPresets = null;
+                Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedPresets = null;
                 if (_cabinetConfig != null)
                 {
-                    var agcm = DTEditorUtils.FindCabinetModuleConfig<CabinetAnimCabinetModuleConfig>(_cabinetConfig);
+                    var agcm = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
                     if (agcm != null)
                     {
                         savedPresets = agcm.savedWearablePresets;
@@ -561,7 +562,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateCustomizableAvatarTogglesAndBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData)
+        private void UpdateCustomizableAvatarTogglesAndBlendshapes(CabinetAnimWearableModuleConfig.Customizable wearable, CustomizableViewData customizableData)
         {
             var targetAvatar = _parentView.TargetAvatar;
             var targetWearable = _parentView.TargetWearable;
@@ -580,7 +581,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void UpdateCustomizableWearableTogglesAndBlendshapes(WearableCustomizable wearable, CustomizableViewData customizableData)
+        private void UpdateCustomizableWearableTogglesAndBlendshapes(CabinetAnimWearableModuleConfig.Customizable wearable, CustomizableViewData customizableData)
         {
             var targetAvatar = _parentView.TargetAvatar;
             var targetWearable = _parentView.TargetWearable;
@@ -625,33 +626,33 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 customizableData.customizableSettingsChangeEvent = () =>
                 {
                     wearable.name = customizableData.name;
-                    wearable.type = (WearableCustomizableType)customizableData.type;
+                    wearable.type = (CabinetAnimWearableModuleConfig.CustomizableType)customizableData.type;
                     wearable.defaultValue = customizableData.defaultValue;
                 };
 
                 customizableData.addAvatarToggleEvent = () =>
                 {
-                    wearable.avatarToggles.Add(new AnimationToggle());
+                    wearable.avatarToggles.Add(new CabinetAnimWearableModuleConfig.Toggle());
                     UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
                 };
                 customizableData.addAvatarBlendshapeEvent = () =>
                 {
-                    wearable.avatarBlendshapes.Add(new AnimationBlendshapeValue());
+                    wearable.avatarBlendshapes.Add(new CabinetAnimWearableModuleConfig.BlendshapeValue());
                     UpdateCustomizableAvatarTogglesAndBlendshapes(wearable, customizableData);
                 };
                 customizableData.addWearableToggleEvent = () =>
                 {
-                    wearable.wearableToggles.Add(new AnimationToggle());
+                    wearable.wearableToggles.Add(new CabinetAnimWearableModuleConfig.Toggle());
                     UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
                 };
                 customizableData.addWearableBlendshapeEvent = () =>
                 {
-                    wearable.wearableBlendshapes.Add(new AnimationBlendshapeValue());
+                    wearable.wearableBlendshapes.Add(new CabinetAnimWearableModuleConfig.BlendshapeValue());
                     UpdateCustomizableWearableTogglesAndBlendshapes(wearable, customizableData);
                 };
 
                 // TODO: refactor, this is a dirty way to clear non-blendshape type customizable stuff
-                if (wearable.type == WearableCustomizableType.Blendshape)
+                if (wearable.type == CabinetAnimWearableModuleConfig.CustomizableType.Blendshape)
                 {
                     wearable.avatarToggles.Clear();
                     wearable.avatarBlendshapes.Clear();
@@ -667,26 +668,26 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateView()
         {
-            _cabinet = DTEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = DKRuntimeUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
-                if (!CabinetConfig.TryDeserialize(_cabinet.configJson, out _cabinetConfig))
+                if (!CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out _cabinetConfig))
                 {
                     Debug.LogError("[DressingTools] [CabinetAnimWearableModuleEditorPresenter] Unable to deserialize cabinet config!");
                 }
                 else
                 {
-                    _moduleConfig = DTEditorUtils.FindCabinetModuleConfig<CabinetAnimCabinetModuleConfig>(_cabinetConfig);
+                    _moduleConfig = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
                     if (_moduleConfig == null)
                     {
                         // add the cabinet module if not exist
                         _moduleConfig = new CabinetAnimCabinetModuleConfig();
                         _cabinetConfig.modules.Add(new CabinetModule()
                         {
-                            moduleName = CabinetAnimCabinetModuleProvider.MODULE_IDENTIFIER,
+                            moduleName = CabinetAnimCabinetModuleConfig.ModuleIdentifier,
                             config = _moduleConfig
                         });
-                        _cabinet.configJson = _cabinetConfig.Serialize();
+                        _cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
                     }
                 }
             }

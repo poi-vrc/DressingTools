@@ -18,10 +18,11 @@
 #if VRC_SDK_VRCSDK3
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingTools.Integration.VRChat.Modules;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Integration.VRChat.Modules;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingTools.Integration.VRChat.Modules;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat
@@ -30,7 +31,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
     [CustomWearableModuleEditor(typeof(VRChatIntegrationWearableModuleProvider))]
     internal class VRChatIntegrationWearableModuleEditor : WearableModuleEditor, IVRChatIntegrationWearableModuleEditorView
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = Localization.I18n.ToolTranslator;
 
         public event Action ConfigChange;
 

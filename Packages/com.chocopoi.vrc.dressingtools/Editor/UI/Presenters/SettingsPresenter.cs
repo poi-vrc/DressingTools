@@ -18,14 +18,15 @@
 
 using System;
 using System.Globalization;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class SettingsPresenter
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         private ISettingsSubView _view;
         private Preferences _prefs;
@@ -85,7 +86,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var locale = _availableLocales[localeIndex];
 
             _prefs.app.selectedLanguage = locale;
-            t.SetLocale(locale);
+            I18nManager.Instance.SetLocale(locale);
             PreferencesUtility.SavePreferences();
 
             _view.AskReloadWindow();

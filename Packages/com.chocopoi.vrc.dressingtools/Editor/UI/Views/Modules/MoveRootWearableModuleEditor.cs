@@ -17,9 +17,11 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
@@ -32,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(MoveRootWearableModuleProvider))]
     internal class MoveRootWearableModuleEditor : WearableModuleEditor, IMoveRootWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.Instance;
+        private static I18nTranslator t = I18n.ToolTranslator;
 
         public event Action MoveToGameObjectFieldChange;
         public bool ShowSelectAvatarFirstHelpBox { get; set; }

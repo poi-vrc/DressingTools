@@ -1,17 +1,17 @@
-﻿using System.Runtime.InteropServices;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Dresser;
+﻿using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingTools.Dresser;
 using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.Cabinet
 {
     public class CabinetApplierTest : DTEditorTestBase
     {
-        private static void ApplyCabinet(DTReport report, DTCabinet cabinet)
+        private static void ApplyCabinet(DKReport report, DTCabinet cabinet)
         {
-            new CabinetApplier(report, cabinet).Execute();
+            new CabinetApplier(report, cabinet).RunStages();
         }
 
         [Test]
@@ -21,10 +21,10 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
 
-            var report = new DTReport();
+            var report = new DKReport();
             ApplyCabinet(report, cabinet);
 
-            Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
+            Assert.False(report.HasLogType(LogType.Error), "Should have no errors");
         }
 
         // TODO: new test for version
@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             Assert.NotNull(wearableComp);
             wearableComp.configJson = "ababababababababa";
 
-            var report = new DTReport();
+            var report = new DKReport();
             ApplyCabinet(report, cabinet);
 
             Assert.True(report.HasLogCode(CabinetApplier.MessageCode.UnableToDeserializeWearableConfig), "Should have deserialization error");
@@ -74,14 +74,14 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearableOtherDynamics.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
-            Assert.True(CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig));
+            Assert.True(CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig));
 
-            var report = new DTReport();
+            var report = new DKReport();
             cabinetConfig.groupDynamics = true;
             cabinetConfig.groupDynamicsSeparateGameObjects = true;
             ApplyCabinet(report, cabinet);
 
-            Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
+            Assert.False(report.HasLogType(LogType.Error), "Should have no errors");
 
             // get wearable root
             var wearableRoot = avatarRoot.transform.Find("DTTest_PhysBoneWearable");
@@ -105,15 +105,15 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearableOtherDynamics.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
-            Assert.True(CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig));
+            Assert.True(CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig));
 
-            var report = new DTReport();
+            var report = new DKReport();
             cabinetConfig.groupDynamics = true;
             cabinetConfig.groupDynamicsSeparateGameObjects = false;
-            cabinet.configJson = cabinetConfig.Serialize();
+            cabinet.configJson = CabinetConfigUtility.Serialize(cabinetConfig);
             ApplyCabinet(report, cabinet);
 
-            Assert.False(report.HasLogType(DTReportLogType.Error), "Should have no errors");
+            Assert.False(report.HasLogType(LogType.Error), "Should have no errors");
 
             // get wearable root
             var wearableRoot = avatarRoot.transform.Find("DTTest_PhysBoneWearable");
@@ -138,12 +138,11 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
 
-            var report = new DTReport();
+            var report = new DKReport();
             ApplyCabinet(report, cabinet);
 
             Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoArmatureInWearable), "Should have NoArmatureInWearable error");
-            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ModuleProviderHookHasErrors), "Should have ApplyingModuleHasErrors error");
-            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.ApplyingWearableHasErrors), "Should have ApplyingWearableHasErrors error");
+            Assert.True(report.HasLogCode(CabinetApplier.MessageCode.WearableHookHasErrors), "Should have WearableHookHasErrors error");
         }
     }
 }

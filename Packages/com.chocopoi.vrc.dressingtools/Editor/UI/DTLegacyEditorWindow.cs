@@ -16,6 +16,8 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.View;
 using UnityEditor;
 using UnityEngine;
@@ -25,7 +27,7 @@ namespace Chocopoi.DressingTools.UI
     [ExcludeFromCodeCoverage]
     public class DTLegacyEditorWindow : EditorWindow
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         private LegacyView _view;
 

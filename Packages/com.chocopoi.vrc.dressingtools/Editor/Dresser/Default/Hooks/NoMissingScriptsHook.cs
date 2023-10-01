@@ -17,9 +17,10 @@
 
 using System.Collections.Generic;
 using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
@@ -27,14 +28,16 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
     // TODO: replace by reading missing scripts Unity files
     internal class NoMissingScriptsHook : IDefaultDresserHook
     {
-        public bool ScanGameObject(DTReport report, string errorCode, GameObject gameObject)
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
+
+        public bool ScanGameObject(DKReport report, string errorCode, GameObject gameObject)
         {
             var components = gameObject.GetComponents<Component>();
             for (var i = 0; i < components.Length; i++)
             {
                 if (components[i] == null)
                 {
-                    DTReportUtils.LogErrorLocalized(report, DefaultDresser.LogLabel, errorCode, gameObject.name);
+                    report.LogErrorLocalized(t, DefaultDresser.LogLabel, errorCode, gameObject.name);
                     return false;
                 }
             }
@@ -50,7 +53,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return true;
         }
 
-        public bool Evaluate(DTReport report, DresserSettings settings, List<BoneMapping> boneMappings)
+        public bool Evaluate(DKReport report, DresserSettings settings, List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
         {
             //scan avatar missing scripts
             var avatarResult = ScanGameObject(report, DefaultDresser.MessageCode.MissingScriptsDetectedInAvatar, settings.targetAvatar);

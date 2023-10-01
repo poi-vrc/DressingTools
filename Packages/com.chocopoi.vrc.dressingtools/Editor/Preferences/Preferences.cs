@@ -16,10 +16,9 @@
  */
 
 using System;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
@@ -40,7 +39,7 @@ namespace Chocopoi.DressingTools
 
             public void ResetToDefaults()
             {
-                selectedLanguage = Localization.I18n.DefaultLocale;
+                selectedLanguage = I18nManager.DefaultLocale;
                 updateBranch = "v2";
             }
         }

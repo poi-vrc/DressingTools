@@ -16,16 +16,18 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingTools.Cabinet;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -40,7 +42,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private static AnimatorController s_testModeAnimationController;
 
         private ILegacyView _view;
-        private DTReport _report;
+        private DKReport _report;
 
         public LegacyPresenter(ILegacyView view)
         {
@@ -80,13 +82,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnTargetAvatarOrWearableChange()
         {
             // attempt to get settings from cabinet
-            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar, false);
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar, false);
             if (cabinet != null)
             {
-                if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
                 {
                     Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and creating a new config");
-                    cabinet.configJson = new CabinetConfig().Serialize();
+                    cabinet.ConfigJson = CabinetConfigUtility.Serialize(new CabinetConfig());
                 }
 
                 _view.ShowHasCabinetHelpbox = true;
@@ -133,7 +135,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             };
         }
 
-        private List<BoneMapping> GenerateMappings()
+        private List<ArmatureMappingWearableModuleConfig.BoneMapping> GenerateMappings()
         {
             var dresserSettings = GetDresserSettings();
             _report = DefaultDresser.Execute(dresserSettings, out var boneMappings);
@@ -176,7 +178,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             // if clothes is not inside avatar, we instantiate a new copy
             GameObject targetWearable;
-            if (!DTEditorUtils.IsGrandParent(_view.TargetAvatar.transform, _view.TargetClothes.transform))
+            if (!DKRuntimeUtils.IsGrandParent(_view.TargetAvatar.transform, _view.TargetClothes.transform))
             {
                 targetWearable = Object.Instantiate(_view.TargetClothes);
 
@@ -221,13 +223,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // create a cabinet or use existing
-            var cabinet = DTEditorUtils.GetAvatarCabinet(targetAvatar, true);
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(targetAvatar, true);
             AddClothesToCabinet(cabinet, targetAvatar, targetWearable);
 
             // run cabinet applier
-            var report = new DTReport();
-            new CabinetApplier(report, cabinet).Execute();
-            if (report.HasLogType(DTReportLogType.Error))
+            var report = new DKReport();
+            new CabinetApplier(report, cabinet).RunStages();
+            if (report.HasLogType(DressingFramework.Logging.LogType.Error))
             {
                 ReportWindow.ShowWindow(report);
             }
@@ -236,13 +238,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
             SceneView.FrameLastActiveSceneView();
         }
 
-        private void AddClothesToCabinet(DTCabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
+        private void AddClothesToCabinet(ICabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
         {
-            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and create a new one");
                 cabinetConfig = new CabinetConfig();
-                cabinet.configJson = cabinetConfig.Serialize();
+                cabinet.ConfigJson = CabinetConfigUtility.Serialize(cabinetConfig);
             }
 
             // write cabinet config
@@ -254,12 +256,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             DTEditorUtils.PrepareWearableConfig(wearableConfig, targetAvatar, targetWearable);
             wearableConfig.modules.Add(new WearableModule()
             {
-                moduleName = ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER,
+                moduleName = ArmatureMappingWearableModuleConfig.ModuleIdentifier,
                 config = new ArmatureMappingWearableModuleConfig()
                 {
                     dresserName = DefaultDresser.GetType().FullName,
                     wearableArmatureName = _view.ClothesArmatureObjectName,
-                    boneMappingMode = BoneMappingMode.Auto,
+                    boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(GetDresserSettings()),
                     removeExistingPrefixSuffix = _view.RemoveExistingPrefixSuffix,
@@ -268,7 +270,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             });
 
             // add the wearable config to the preview avatar
-            if (!DTEditorUtils.AddCabinetWearable(cabinetConfig, targetAvatar, wearableConfig, targetWearable))
+            if (!DKEditorUtils.AddCabinetWearable(cabinetConfig, targetAvatar, wearableConfig, targetWearable))
             {
                 Debug.LogWarning("[DressingToolsLegacy] Unable to add cabinet wearable to dummy avatar");
             }
@@ -302,7 +304,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar, true);
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar, true);
             AddClothesToCabinet(cabinet, _view.TargetAvatar, _view.TargetClothes);
             Selection.activeGameObject = _view.TargetAvatar;
             SceneView.FrameLastActiveSceneView();
@@ -331,27 +333,27 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 var logEntries = _report.GetLogEntriesAsDictionary();
 
                 _view.ReportData.errorMsgs.Clear();
-                if (logEntries.ContainsKey(DTReportLogType.Error))
+                if (logEntries.ContainsKey(DressingFramework.Logging.LogType.Error))
                 {
-                    foreach (var logEntry in logEntries[DTReportLogType.Error])
+                    foreach (var logEntry in logEntries[DressingFramework.Logging.LogType.Error])
                     {
                         _view.ReportData.errorMsgs.Add(logEntry.message);
                     }
                 }
 
                 _view.ReportData.warnMsgs.Clear();
-                if (logEntries.ContainsKey(DTReportLogType.Warning))
+                if (logEntries.ContainsKey(DressingFramework.Logging.LogType.Warning))
                 {
-                    foreach (var logEntry in logEntries[DTReportLogType.Warning])
+                    foreach (var logEntry in logEntries[DressingFramework.Logging.LogType.Warning])
                     {
                         _view.ReportData.warnMsgs.Add(logEntry.message);
                     }
                 }
 
                 _view.ReportData.infoMsgs.Clear();
-                if (logEntries.ContainsKey(DTReportLogType.Info))
+                if (logEntries.ContainsKey(DressingFramework.Logging.LogType.Info))
                 {
-                    foreach (var logEntry in logEntries[DTReportLogType.Info])
+                    foreach (var logEntry in logEntries[DressingFramework.Logging.LogType.Info])
                     {
                         _view.ReportData.infoMsgs.Add(logEntry.message);
                     }

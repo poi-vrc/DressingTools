@@ -17,14 +17,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.View;
-using Chocopoi.DressingTools.Wearable.Modules;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,7 +28,7 @@ namespace Chocopoi.DressingTools.UI
     [ExcludeFromCodeCoverage]
     public class DTMainEditorWindow : EditorWindow
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         private MainView _view;
 

@@ -1,9 +1,4 @@
 ﻿/*
- * File: BlendshapeSyncModule.cs
- * Project: DressingTools
- * Created Date: Tuesday, August 1st 2023, 12:37:10 am
- * Author: chocopoi (poi@chocopoi.com)
- * -----
  * Copyright (c) 2023 chocopoi
  * 
  * This file is part of DressingTools.
@@ -19,47 +14,44 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Context;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Extensibility.Sequencing;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class BlendshapeSyncWearableModuleConfig : IModuleConfig
-    {
-        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
-
-        public SerializationVersion version;
-        public List<AnimationBlendshapeSync> blendshapeSyncs; // blendshapes to sync from avatar to wearables
-
-        public BlendshapeSyncWearableModuleConfig()
-        {
-            version = CurrentConfigVersion;
-            blendshapeSyncs = new List<AnimationBlendshapeSync>();
-        }
-    }
-
     [InitializeOnLoad]
     internal class BlendshapeSyncWearableModuleProvider : WearableModuleProviderBase
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
-        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.blendshape-sync";
+        internal class EventAdapter : FrameworkEventAdapter
+        {
+            public override void OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
+            {
+                var bsm = wearableConfig.FindModule(BlendshapeSyncWearableModuleConfig.ModuleIdentifier);
+                if (bsm == null) return;
+                FollowBlendshapeSyncValues(avatarGameObject, wearableGameObject, bsm);
+            }
+        }
 
-        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
+
+        [ExcludeFromCodeCoverage] public override string Identifier => BlendshapeSyncWearableModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.blendshapeSync.friendlyName");
-        [ExcludeFromCodeCoverage] public override int CallOrder => 6;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
-        static BlendshapeSyncWearableModuleProvider()
-        {
-            WearableModuleProviderLocator.Instance.Register(new BlendshapeSyncWearableModuleProvider());
-        }
+        public override WearableApplyConstraint Constraint =>
+            ApplyAtStage(CabinetApplyStage.Transpose)
+                .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
         {
@@ -130,51 +122,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        public override bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, ReadOnlyCollection<WearableModule> modules)
-        {
-            if (modules.Count == 0)
-            {
-                return true;
-            }
-
-            FollowBlendshapeSyncValues(avatarGameObject, wearableGameObject, modules[0]);
-            return true;
-        }
-
-        public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
-        {
-            var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
-
-            foreach (var wearable in wearables)
-            {
-                var wearCtx = cabCtx.wearableContexts[wearable];
-                var config = wearCtx.wearableConfig;
-                var module = DTEditorUtils.FindWearableModule(config, MODULE_IDENTIFIER);
-
-                if (module == null)
-                {
-                    // no blendshape sync module, skipping
-                    continue;
-                }
-
-                FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearable.WearableGameObject, module);
-            }
-            return true;
-        }
-
-        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
-        {
-            if (modules.Count == 0)
-            {
-                return true;
-            }
-
-            FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearCtx.wearableGameObject, modules[0]);
-
-            return true;
-        }
-
-        private static AnimationBlendshapeSync FindBlendshapeSync(EditorCurveBinding curveBinding, List<AnimationBlendshapeSync> blendshapeSyncs)
+        private static BlendshapeSyncWearableModuleConfig.BlendshapeSync FindBlendshapeSync(EditorCurveBinding curveBinding, List<BlendshapeSyncWearableModuleConfig.BlendshapeSync> blendshapeSyncs)
         {
             foreach (var blendshapeSync in blendshapeSyncs)
             {
@@ -186,15 +134,23 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             return null;
         }
 
-        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
+        public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
         {
             if (modules.Count == 0) return true;
 
+            FollowBlendshapeSyncValues(cabCtx.avatarGameObject, wearCtx.wearableGameObject, modules[0]);
+
+            if (isPreview)
+            {
+                return true;
+            }
+
+            var dtCabCtx = cabCtx.Extra<DKCabinetContext>();
             var bsm = (BlendshapeSyncWearableModuleConfig)modules[0].config;
 
             // TODO: implement partial boundaries and inverts
 
-            foreach (var clipContainer in cabCtx.animationStore.Clips)
+            foreach (var clipContainer in dtCabCtx.animationStore.Clips)
             {
                 var oldClip = clipContainer.newClip != null ? clipContainer.newClip : clipContainer.originalClip;
                 var newClip = DTEditorUtils.CopyClip(oldClip);

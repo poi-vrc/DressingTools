@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class CabinetPresenter
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         private ICabinetSubView _view;
         private CabinetConfig _cabinetConfig;
@@ -93,7 +94,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 return;
             }
-            DTEditorUtils.GetAvatarCabinet(_view.CreateCabinetAvatarGameObject, true);
+            DKRuntimeUtils.GetAvatarCabinet(_view.CreateCabinetAvatarGameObject, true);
             _view.ShowCreateCabinetPanel = false;
             UpdateView();
         }
@@ -121,7 +122,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnCabinetSettingsChange()
         {
-            var cabinets = DTEditorUtils.GetAllCabinets();
+            var cabinets = DKRuntimeUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -143,7 +144,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _cabinetConfig.groupDynamics = _view.CabinetGroupDynamics;
             _cabinetConfig.groupDynamicsSeparateGameObjects = _view.CabinetGroupDynamicsSeparateGameObjects;
             _cabinetConfig.animationWriteDefaults = _view.CabinetAnimationWriteDefaults;
-            cabinet.configJson = _cabinetConfig.Serialize();
+            cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
         }
 
         private void OnForceUpdateView()
@@ -153,7 +154,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public void SelectCabinet(DTCabinet cabinet)
         {
-            var cabinets = DTEditorUtils.GetAllCabinets();
+            var cabinets = DKRuntimeUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -193,7 +194,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateCabinetContentView()
         {
-            var cabinets = DTEditorUtils.GetAllCabinets();
+            var cabinets = DKRuntimeUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -218,7 +219,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
             // cabinet json is broken, ask user whether to make a new one or not
-            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out _cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out _cabinetConfig))
             {
                 // TODO: ask user
                 Debug.LogError("[DressingTools] [CabinetPresenter] Unable to deserialize cabinet config!");
@@ -243,17 +244,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     _cabinetConfig.modules.Remove(cabinetModule);
                     _view.CabinetModulePreviews.Remove(preview);
-                    cabinet.configJson = _cabinetConfig.Serialize();
+                    cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
                     _view.Repaint();
                 };
                 _view.CabinetModulePreviews.Add(preview);
             }
 
-            var wearables = DTEditorUtils.GetCabinetWearables(cabinet.AvatarGameObject);
+            var wearables = DKRuntimeUtils.GetCabinetWearables(cabinet.AvatarGameObject);
 
             foreach (var wearable in wearables)
             {
-                var config = WearableConfig.Deserialize(wearable.configJson);
+                var config = WearableConfigUtility.Deserialize(wearable.ConfigJson);
                 _view.InstalledWearablePreviews.Add(new WearablePreview()
                 {
                     name = config != null ?
@@ -264,8 +265,15 @@ namespace Chocopoi.DressingTools.UI.Presenters
                         null,
                     RemoveButtonClick = () =>
                     {
-                        DTEditorUtils.RemoveCabinetWearable(cabinet, wearable);
-                        UpdateView();
+                        if (wearable is DTWearable dtWearable)
+                        {
+                            DKEditorUtils.RemoveCabinetWearable(cabinet, dtWearable);
+                            UpdateView();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[DressingTools] Removing non-DressingTools wearable is not currently supported");
+                        }
                     },
                     EditButtonClick = () =>
                     {
@@ -293,7 +301,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddWearableButtonClick()
         {
-            var cabinets = DTEditorUtils.GetAllCabinets();
+            var cabinets = DKRuntimeUtils.GetAllCabinets();
 
             if (cabinets.Length == 0 || _view.SelectedCabinetIndex < 0 || _view.SelectedCabinetIndex >= cabinets.Length)
             {
