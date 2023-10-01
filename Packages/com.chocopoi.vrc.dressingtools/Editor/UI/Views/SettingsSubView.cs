@@ -18,7 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
@@ -31,7 +33,7 @@ namespace Chocopoi.DressingTools.UI.Views
     [ExcludeFromCodeCoverage]
     internal class SettingsSubView : ElementViewBase, ISettingsSubView
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         private const string PopupPlaceholder = "---";
 

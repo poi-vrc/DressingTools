@@ -18,14 +18,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
-using UnityEditor.Presets;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
@@ -34,7 +36,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(CabinetAnimWearableModuleProvider))]
     internal class CabinetAnimWearableModuleEditor : WearableModuleEditor, ICabinetAnimWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.Instance;
+        private static I18nTranslator t = I18n.ToolTranslator;
 
         public event Action AvatarOnWearPresetChangeEvent;
         public event Action AvatarOnWearPresetSaveEvent;

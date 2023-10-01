@@ -17,9 +17,8 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UI.View;
-using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,15 +29,15 @@ namespace Chocopoi.DressingTools.UI
     {
         public GameObject targetAvatar;
         public GameObject targetWearable;
-        public BoneMappingMode boneMappingMode;
-        public List<BoneMapping> generatedBoneMappings;
-        public List<BoneMapping> outputBoneMappings;
+        public ArmatureMappingWearableModuleConfig.BoneMappingMode boneMappingMode;
+        public List<ArmatureMappingWearableModuleConfig.BoneMapping> generatedBoneMappings;
+        public List<ArmatureMappingWearableModuleConfig.BoneMapping> outputBoneMappings;
 
         public DTMappingEditorContainer()
         {
             targetAvatar = null;
             targetWearable = null;
-            boneMappingMode = BoneMappingMode.Auto;
+            boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto;
             generatedBoneMappings = null;
             outputBoneMappings = null;
         }

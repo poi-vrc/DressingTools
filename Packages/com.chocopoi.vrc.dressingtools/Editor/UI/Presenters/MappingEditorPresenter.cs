@@ -17,9 +17,8 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -57,7 +56,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnBoneMappingModeChange()
         {
-            _container.boneMappingMode = (BoneMappingMode)_view.SelectedBoneMappingMode;
+            _container.boneMappingMode = (ArmatureMappingWearableModuleConfig.BoneMappingMode)_view.SelectedBoneMappingMode;
             UpdateOutputBoneMappings();
             UpdateView();
         }
@@ -79,11 +78,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateView();
         }
 
-        private List<BoneMapping> GetAvatarBoneMapping(List<BoneMapping> boneMappings, Transform avatarRoot, Transform targetAvatarBone)
+        private List<ArmatureMappingWearableModuleConfig.BoneMapping> GetAvatarBoneMapping(List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings, Transform avatarRoot, Transform targetAvatarBone)
         {
             var path = AnimationUtils.GetRelativePath(targetAvatarBone, avatarRoot);
 
-            var avatarBoneMappings = new List<BoneMapping>();
+            var avatarBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
 
             foreach (var boneMapping in boneMappings)
             {
@@ -98,15 +97,15 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateOutputBoneMappings()
         {
-            if (_container.boneMappingMode == BoneMappingMode.Auto || _container.boneMappingMode == BoneMappingMode.Manual)
+            if (_container.boneMappingMode == ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto || _container.boneMappingMode == ArmatureMappingWearableModuleConfig.BoneMappingMode.Manual)
             {
                 // copy generated to output
-                _container.outputBoneMappings = new List<BoneMapping>(_container.generatedBoneMappings);
+                _container.outputBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>(_container.generatedBoneMappings);
             }
             else
             {
                 // empty list if override mode
-                _container.outputBoneMappings = new List<BoneMapping>();
+                _container.outputBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
             }
         }
 
@@ -126,7 +125,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // override mode and resultant display mode
             if (_view.SelectedBoneMappingMode == 1 && _view.SelectedBoneMappingDisplayMode == 1)
             {
-                var previewBoneMappings = new List<BoneMapping>(_container.generatedBoneMappings);
+                var previewBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>(_container.generatedBoneMappings);
                 DTEditorUtils.HandleBoneMappingOverrides(previewBoneMappings, _container.outputBoneMappings);
                 UpdateAvatarHierarchy(previewBoneMappings, _container.targetAvatar.transform, _view.AvatarHierachyNodes);
             }
@@ -136,7 +135,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
-        public void UpdateAvatarHierarchy(List<BoneMapping> boneMappings, Transform parent, List<ViewAvatarHierachyNode> nodeList)
+        public void UpdateAvatarHierarchy(List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings, Transform parent, List<ViewAvatarHierachyNode> nodeList)
         {
             for (var i = 0; i < parent.childCount; i++)
             {
@@ -148,11 +147,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     avatarObjectTransform = child,
                     AddMappingButtonClick = () =>
                     {
-                        boneMappings.Add(new BoneMapping()
+                        boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
                         {
                             avatarBonePath = AnimationUtils.GetRelativePath(child, _container.targetAvatar.transform),
                             wearableBonePath = null,
-                            mappingType = BoneMappingType.DoNothing
+                            mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.DoNothing
                         });
                         UpdateView();
                     }
@@ -181,7 +180,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                         boneMapping.avatarBonePath = AnimationUtils.GetRelativePath(child, _container.targetAvatar.transform);
                         boneMapping.wearableBonePath = path;
-                        boneMapping.mappingType = (BoneMappingType)viewBoneMapping.mappingType;
+                        boneMapping.mappingType = (ArmatureMappingWearableModuleConfig.BoneMappingType)viewBoneMapping.mappingType;
                     };
                     viewBoneMapping.RemoveMappingButtonClick = () =>
                     {

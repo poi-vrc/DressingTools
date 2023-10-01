@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -11,11 +11,11 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
     public class NoMissingScriptsHookTest : DTEditorTestBase
     {
-        private bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DTReport report)
+        private bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DKReport report)
         {
-            report = new DTReport();
+            report = new DKReport();
             var settings = new DefaultDresserSettings();
-            var boneMappings = new List<BoneMapping>();
+            var boneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
             var hook = new NoMissingScriptsHook();
 
             settings.targetAvatar = avatarRoot;

@@ -16,17 +16,16 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
-using UnityEditor;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
@@ -36,9 +35,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private IWearableModuleEditorViewParent _parentView;
         private ArmatureMappingWearableModuleConfig _module;
 
-        private DTReport _dresserReport = null;
+        private DKReport _dresserReport = null;
         private DTMappingEditorContainer _mappingEditorContainer;
-        private DTCabinet _cabinet;
+        private ICabinet _cabinet;
 
         public ArmatureMappingWearableModuleEditorPresenter(IArmatureMappingWearableModuleEditorView view, IWearableModuleEditorViewParent parentView, ArmatureMappingWearableModuleConfig module)
         {
@@ -93,7 +92,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _mappingEditorContainer.targetAvatar = null;
             _mappingEditorContainer.targetWearable = null;
             _mappingEditorContainer.generatedBoneMappings = null;
-            _mappingEditorContainer.boneMappingMode = BoneMappingMode.Auto;
+            _mappingEditorContainer.boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto;
         }
 
         private void GenerateDresserMappings()
@@ -129,27 +128,27 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 var logEntries = _dresserReport.GetLogEntriesAsDictionary();
 
                 _view.DresserReportData.errorMsgs.Clear();
-                if (logEntries.ContainsKey(DTReportLogType.Error))
+                if (logEntries.ContainsKey(LogType.Error))
                 {
-                    foreach (var logEntry in logEntries[DTReportLogType.Error])
+                    foreach (var logEntry in logEntries[LogType.Error])
                     {
                         _view.DresserReportData.errorMsgs.Add(logEntry.message);
                     }
                 }
 
                 _view.DresserReportData.warnMsgs.Clear();
-                if (logEntries.ContainsKey(DTReportLogType.Warning))
+                if (logEntries.ContainsKey(LogType.Warning))
                 {
-                    foreach (var logEntry in logEntries[DTReportLogType.Warning])
+                    foreach (var logEntry in logEntries[LogType.Warning])
                     {
                         _view.DresserReportData.warnMsgs.Add(logEntry.message);
                     }
                 }
 
                 _view.DresserReportData.infoMsgs.Clear();
-                if (logEntries.ContainsKey(DTReportLogType.Info))
+                if (logEntries.ContainsKey(LogType.Info))
                 {
-                    foreach (var logEntry in logEntries[DTReportLogType.Info])
+                    foreach (var logEntry in logEntries[LogType.Info])
                     {
                         _view.DresserReportData.infoMsgs.Add(logEntry.message);
                     }
@@ -176,12 +175,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             _view.DresserSettings.targetAvatar = _parentView.TargetAvatar;
             _view.DresserSettings.targetWearable = _parentView.TargetWearable;
-            _cabinet = DTEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = DKRuntimeUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
                 _view.IsAvatarAssociatedWithCabinet = true;
 
-                if (CabinetConfig.TryDeserialize(_cabinet.configJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out var cabinetConfig))
                 {
                     _view.AvatarArmatureName = cabinetConfig.avatarArmatureName;
                     _view.DresserSettings.avatarArmatureName = cabinetConfig.avatarArmatureName;
@@ -291,13 +290,13 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             // update values from mapping editor container
             _module.boneMappingMode = _mappingEditorContainer.boneMappingMode;
-            _module.boneMappings = _module.boneMappingMode != BoneMappingMode.Auto ? _mappingEditorContainer.generatedBoneMappings : new List<BoneMapping>();
+            _module.boneMappings = _module.boneMappingMode != ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto ? _mappingEditorContainer.generatedBoneMappings : new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
         }
 
         public bool IsValid()
         {
             ApplySettings();
-            return _dresserReport != null && !_dresserReport.HasLogType(DTReportLogType.Error) && _module.boneMappings != null;
+            return _dresserReport != null && !_dresserReport.HasLogType(LogType.Error) && _module.boneMappings != null;
         }
     }
 }

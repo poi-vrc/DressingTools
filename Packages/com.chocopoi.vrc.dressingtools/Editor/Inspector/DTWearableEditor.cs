@@ -16,6 +16,8 @@
  */
 
 using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
 using UnityEngine;
@@ -25,7 +27,7 @@ namespace Chocopoi.DressingTools
     [CustomEditor(typeof(DTWearable))]
     internal class DTWearableEditor : Editor
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public override void OnInspectorGUI()
         {
@@ -39,7 +41,7 @@ namespace Chocopoi.DressingTools
 
             if (GUILayout.Button(t._("common.inspector.btn.openInEditor"), GUILayout.Height(40)))
             {
-                var cabinet = DTEditorUtils.FindCabinetComponent(wearable);
+                var cabinet = wearable.FindCabinetComponent();
 
                 if (cabinet != null)
                 {

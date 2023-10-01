@@ -19,8 +19,7 @@ using System;
 using System.Collections.Generic;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
-using Chocopoi.DressingTools.Cabinet;
-using UnityEditor;
+using Chocopoi.DressingFramework.Context;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -46,7 +45,7 @@ namespace Chocopoi.DressingTools.Animations
             {
                 if (clip.newClip != null && clip.originalClip != clip.newClip)
                 {
-                    _cabCtx.CreateUniqueAsset(clip.newClip, $"Clip_{clip.newClip.name}_{DTEditorUtils.RandomString(6)}.anim");
+                    _cabCtx.CreateUniqueAsset(clip.newClip, $"Clip_{clip.newClip.name}_{DKRuntimeUtils.RandomString(6)}.anim");
                     clip.dispatchFunc?.Invoke(clip.newClip);
                 }
             }

@@ -17,6 +17,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Localization;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.Dresser.Default
@@ -32,7 +34,7 @@ namespace Chocopoi.DressingTools.Dresser.Default
 
     internal class DefaultDresserSettings : DresserSettings
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
         public DefaultDresserDynamicsOption dynamicsOption;
 
         public DefaultDresserSettings()

@@ -18,9 +18,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
@@ -33,7 +36,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(BlendshapeSyncWearableModuleProvider))]
     internal class BlendshapeSyncWearableModuleEditor : WearableModuleEditor, IBlendshapeSyncWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.Instance;
+        private static I18nTranslator t = I18n.ToolTranslator;
 
         public event Action AddBlendshapeSyncButtonClick;
         public GameObject TargetAvatar { get => _parentView.TargetAvatar; }
@@ -109,7 +112,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                             EndDisabled();
                         }
 
-                        Toggle(ref blendshapeSync.inverted, blendshapeSync.invertedToggleChangeEvent);
+                        // Toggle(ref blendshapeSync.inverted, blendshapeSync.invertedToggleChangeEvent);
 
                         Button("x", blendshapeSync.removeButtonClickEvent, GUILayout.ExpandWidth(false));
                     }

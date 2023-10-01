@@ -1,9 +1,4 @@
 ﻿/*
- * File: CabinetAnimWearableModule.cs
- * Project: DressingTools
- * Created Date: Tuesday, August 1st 2023, 12:37:10 am
- * Author: chocopoi (poi@chocopoi.com)
- * -----
  * Copyright (c) 2023 chocopoi
  * 
  * This file is part of DressingTools.
@@ -18,50 +13,47 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Context;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Extensibility.Sequencing;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Wearable.Modules
 {
-    internal class CabinetAnimWearableModuleConfig : IModuleConfig
-    {
-        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
-        public SerializationVersion version;
-        public AnimationPreset avatarAnimationOnWear; // execute on wear
-        public AnimationPreset wearableAnimationOnWear;
-        public List<WearableCustomizable> wearableCustomizables; // items that show up in action menu for customization
-
-        public CabinetAnimWearableModuleConfig()
-        {
-            version = CurrentConfigVersion;
-            avatarAnimationOnWear = new AnimationPreset();
-            wearableAnimationOnWear = new AnimationPreset();
-            wearableCustomizables = new List<WearableCustomizable>();
-        }
-    }
-
     [InitializeOnLoad]
     internal class CabinetAnimWearableModuleProvider : WearableModuleProviderBase
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
-        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.built-in.wearable.cabinet-anim";
+        internal class EventAdapter : FrameworkEventAdapter
+        {
+            public override void OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
+            {
+                var agm = wearableConfig.FindModule(CabinetAnimWearableModuleConfig.ModuleIdentifier);
+                if (agm == null) return;
+                InvertToggleStates(avatarGameObject, wearableConfig, wearableGameObject, agm);
+            }
+        }
 
-        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
+
+        [ExcludeFromCodeCoverage] public override string Identifier => CabinetAnimWearableModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.cabnietAnim.friendlyName");
-        [ExcludeFromCodeCoverage] public override int CallOrder => 4;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
-        static CabinetAnimWearableModuleProvider()
-        {
-            WearableModuleProviderLocator.Instance.Register(new CabinetAnimWearableModuleProvider());
-        }
+        [ExcludeFromCodeCoverage]
+        public override WearableApplyConstraint Constraint =>
+            ApplyAtStage(CabinetApplyStage.Transpose)
+                .AfterWearableModule(ArmatureMappingWearableModuleConfig.ModuleIdentifier, true)
+                .AfterWearableModule(MoveRootWearableModuleConfig.ModuleIdentifier, true)
+                .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
         {
@@ -108,73 +100,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        public override bool OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject, ReadOnlyCollection<WearableModule> modules)
-        {
-            if (modules.Count == 0)
-            {
-                // we need the wearable to have our module installed
-                return true;
-            }
-
-            InvertToggleStates(avatarGameObject, wearableConfig, wearableGameObject, modules[0]);
-            return true;
-        }
-
-        public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
-        {
-            var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
-
-            foreach (var wearable in wearables)
-            {
-                var wearCtx = cabCtx.wearableContexts[wearable];
-                var config = wearCtx.wearableConfig;
-                var module = DTEditorUtils.FindWearableModule(config, ModuleIdentifier);
-
-                if (module == null)
-                {
-                    // no animation generation module, skipping
-                    continue;
-                }
-
-                InvertToggleStates(cabCtx.avatarGameObject, config, wearable.WearableGameObject, module);
-
-                // set wearable dynamics inactive
-                var visitedDynamicsTransforms = new List<Transform>();
-                foreach (var dynamics in wearCtx.wearableDynamics)
-                {
-                    if (visitedDynamicsTransforms.Contains(dynamics.Transform))
-                    {
-                        // skip duplicates since it's meaningless
-                        continue;
-                    }
-
-                    // we toggle GameObjects instead of components
-                    dynamics.GameObject.SetActive(false);
-
-                    // mark as visited
-                    visitedDynamicsTransforms.Add(dynamics.Transform);
-                }
-            }
-
-            return true;
-        }
-
-        public override bool OnPreviewWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
-        {
-            if (modules.Count == 0)
-            {
-                return true;
-            }
-
-            var agm = (CabinetAnimWearableModuleConfig)modules[0].config;
-
-            ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
-            ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);
-
-            return true;
-        }
-
-        private void ApplyAnimationPreset(GameObject go, AnimationPreset preset)
+        private void ApplyAnimationPreset(GameObject go, CabinetAnimWearableModuleConfig.Preset preset)
         {
             foreach (var toggle in preset.toggles)
             {
@@ -206,6 +132,44 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                     smr.SetBlendShapeWeight(index, blendshape.value);
                 }
             }
+        }
+
+        public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
+        {
+            if (modules.Count == 0) return true;
+
+            // we only apply preset in preview
+            if (isPreview)
+            {
+                var agm = (CabinetAnimWearableModuleConfig)modules[0].config;
+
+                ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
+                ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);
+
+                return true;
+            }
+
+            InvertToggleStates(cabCtx.avatarGameObject, wearCtx.wearableConfig, wearCtx.wearableGameObject, modules[0]);
+
+            var dtWearCtx = wearCtx.Extra<DKWearableContext>();
+
+            // set wearable dynamics inactive
+            var visitedDynamicsTransforms = new List<Transform>();
+            foreach (var dynamics in dtWearCtx.wearableDynamics)
+            {
+                if (visitedDynamicsTransforms.Contains(dynamics.Transform))
+                {
+                    // skip duplicates since it's meaningless
+                    continue;
+                }
+
+                // we toggle GameObjects instead of components
+                dynamics.GameObject.SetActive(false);
+
+                // mark as visited
+                visitedDynamicsTransforms.Add(dynamics.Transform);
+            }
+            return true;
         }
     }
 

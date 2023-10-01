@@ -18,7 +18,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Threading;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;

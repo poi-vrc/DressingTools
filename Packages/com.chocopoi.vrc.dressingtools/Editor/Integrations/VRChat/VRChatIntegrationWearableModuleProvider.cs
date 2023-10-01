@@ -17,18 +17,21 @@
 
 #if VRC_SDK_VRCSDK3
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.AvatarLib.Expressions;
-using Chocopoi.DressingTools.Animations;
-using Chocopoi.DressingTools.Cabinet;
-using Chocopoi.DressingTools.Integrations.VRChat;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Animations;
-using Chocopoi.DressingFramework.Extensibility.Providers;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Wearable.Modules;
+using Chocopoi.DressingFramework.Context;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Extensibility.Sequencing;
+using Chocopoi.DressingFramework.Integration.VRChat.Modules;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Animations;
+using Chocopoi.DressingTools.Integrations.VRChat;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -38,146 +41,29 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {
-    internal class VRChatIntegrationWearableModuleConfig : IModuleConfig
-    {
-        public string customCabinetToggleName;
-        public bool cabinetThumbnails;
-
-        public VRChatIntegrationWearableModuleConfig()
-        {
-            customCabinetToggleName = null;
-            cabinetThumbnails = true;
-        }
-    }
-
     [InitializeOnLoad]
     internal class VRChatIntegrationWearableModuleProvider : WearableModuleProviderBase
     {
-        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.integrations.vrchat.wearable";
         private const string ExpressionParametersAssetName = "VRC_ExParams.asset";
         private const string ExpressionMenuAssetName = "VRC_ExMenu.asset";
         private const string AnimLayerAssetNamePrefix = "VRC_AnimLayer_";
 
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = Localization.I18n.ToolTranslator;
         private const string LogLabel = "VRChatIntegrationModuleProvider";
 
-        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
+        [ExcludeFromCodeCoverage] public override string Identifier => VRChatIntegrationWearableModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("integrations.vrc.modules.integration.friendlyName");
-        [ExcludeFromCodeCoverage] public override int CallOrder => int.MaxValue;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
-
-        private Dictionary<VRCAvatarDescriptor.AnimLayerType, AnimatorController> _animatorCopies = new Dictionary<VRCAvatarDescriptor.AnimLayerType, AnimatorController>();
-
-        static VRChatIntegrationWearableModuleProvider()
-        {
-            WearableModuleProviderLocator.Instance.Register(new VRChatIntegrationWearableModuleProvider());
-        }
+        [ExcludeFromCodeCoverage] public override WearableApplyConstraint Constraint => ApplyAtStage(CabinetApplyStage.Integration).Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<VRChatIntegrationWearableModuleConfig>();
 
         public override IModuleConfig NewModuleConfig() => new VRChatIntegrationWearableModuleConfig();
 
-        private void ScanAnimLayers(ApplyCabinetContext cabCtx, VRCAvatarDescriptor.CustomAnimLayer[] animLayers)
-        {
-            foreach (var animLayer in animLayers)
-            {
-                if (animLayer.isDefault || animLayer.animatorController == null || !(animLayer.animatorController is AnimatorController))
-                {
-                    continue;
-                }
-
-                var controller = (AnimatorController)animLayer.animatorController;
-
-                // create a copy for operations
-                var copiedPath = cabCtx.MakeUniqueAssetPath($"VRC_AnimLayer_{animLayer.type}.controller");
-                var copiedController = DTEditorUtils.CopyAssetToPathAndImport<AnimatorController>(controller, copiedPath);
-                _animatorCopies[animLayer.type] = copiedController;
-
-                var visitedMotions = new HashSet<Motion>();
-
-                foreach (var layer in copiedController.layers)
-                {
-                    var stack = new Stack<AnimatorStateMachine>();
-                    stack.Push(layer.stateMachine);
-
-                    while (stack.Count > 0)
-                    {
-                        var stateMachine = stack.Pop();
-
-                        foreach (var state in stateMachine.states)
-                        {
-                            cabCtx.animationStore.RegisterMotion(state.state.motion, (AnimationClip clip) => state.state.motion = clip, (Motion m) => !VRCEditorUtils.IsProxyAnimation(m), visitedMotions);
-                        }
-
-                        foreach (var childStateMachine in stateMachine.stateMachines)
-                        {
-                            stack.Push(childStateMachine.stateMachine);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void ApplyAnimLayers(VRCAvatarDescriptor.CustomAnimLayer[] animLayers)
-        {
-            for (var i = 0; i < animLayers.Length; i++)
-            {
-                if (_animatorCopies.TryGetValue(animLayers[i].type, out var copy))
-                {
-                    animLayers[i].isDefault = false;
-                    animLayers[i].animatorController = copy;
-                }
-            }
-        }
-
-        public override bool OnBeforeApplyCabinet(ApplyCabinetContext cabCtx)
-        {
-            // get the avatar descriptor
-            if (!cabCtx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
-            {
-                // not a vrc avatar
-                return true;
-            }
-
-            _animatorCopies.Clear();
-            ScanAnimLayers(cabCtx, avatarDescriptor.baseAnimationLayers);
-            ScanAnimLayers(cabCtx, avatarDescriptor.specialAnimationLayers);
-            ApplyAnimLayers(avatarDescriptor.baseAnimationLayers);
-            ApplyAnimLayers(avatarDescriptor.specialAnimationLayers);
-            // cabCtx.animationStore.Write += () =>
-            // {
-            // };
-
-            return true;
-        }
-
-        public override bool OnAfterApplyCabinet(ApplyCabinetContext cabCtx)
-        {
-            // get the avatar descriptor
-            if (!cabCtx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
-            {
-                // not a vrc avatar
-                return true;
-            }
-
-            var result = false;
-            try
-            {
-                result = ApplyAnimationsAndMenu(cabCtx, avatarDescriptor);
-            }
-            catch (System.Exception ex)
-            {
-                cabCtx.report.LogException(LogLabel, ex);
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-            }
-            return result;
-        }
-
         private static bool ApplyAnimationsAndMenu(ApplyCabinetContext cabCtx, VRCAvatarDescriptor avatarDescriptor)
         {
+            var dtCabCtx = cabCtx.Extra<DKCabinetContext>();
+
             // enable custom expressions and animation layers
             avatarDescriptor.customExpressions = true;
             avatarDescriptor.customizeAnimationLayers = true;
@@ -242,7 +128,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             };
 
             // get wearables
-            var wearables = DTEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
+            var wearables = DKRuntimeUtils.GetCabinetWearables(cabCtx.avatarGameObject);
             var cabinetMenu = baseSubMenu;
             var cabinetMenuIndex = 0;
             var originalLayerLength = fxController.layers.Length;
@@ -251,10 +137,11 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             {
                 // obtain the wearable context
                 var wearCtx = cabCtx.wearableContexts[wearables[i]];
+                var dtWearCtx = wearCtx.Extra<DKWearableContext>();
                 var config = wearCtx.wearableConfig;
 
                 // obtain module
-                var vrcm = DTEditorUtils.FindWearableModuleConfig<VRChatIntegrationWearableModuleConfig>(config);
+                var vrcm = config.FindModuleConfig<VRChatIntegrationWearableModuleConfig>();
                 if (vrcm == null)
                 {
                     // use default settings if no module
@@ -264,7 +151,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.generatingWearableAnimations", config.info.name), i / (float)wearables.Length);
 
                 // find the animation generation module
-                var agm = DTEditorUtils.FindWearableModuleConfig<CabinetAnimWearableModuleConfig>(config);
+                var agm = config.FindModuleConfig<CabinetAnimWearableModuleConfig>();
                 if (agm == null)
                 {
                     continue;
@@ -281,7 +168,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     cabCtx.CreateUniqueAsset(icon, $"Cabinet_{i}_Icon.asset");
                 }
 
-                var animationGenerator = new CabinetAnimGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].WearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
+                var animationGenerator = new CabinetAnimGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].WearableGameObject, dtCabCtx.avatarDynamics, dtWearCtx.wearableDynamics, dtCabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
                 var wearAnimations = animationGenerator.GenerateWearAnimations();
@@ -326,10 +213,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                             customizableMenu = newSubMenu;
                         }
 
-                        var uniqueName = $"Cabinet_{i}_{config.info.name}_{wearableCustomizable.name}_{DTEditorUtils.RandomString(8)}";
+                        var uniqueName = $"Cabinet_{i}_{config.info.name}_{wearableCustomizable.name}_{DKRuntimeUtils.RandomString(8)}";
                         var parameterName = "cpDT_" + uniqueName;
 
-                        if (wearableCustomizable.type == WearableCustomizableType.Toggle)
+                        if (wearableCustomizable.type == CabinetAnimWearableModuleConfig.CustomizableType.Toggle)
                         {
                             AnimationUtils.AddAnimatorParameter(fxController, parameterName, wearableCustomizable.defaultValue > 0);
                             parametersToAdd.Add(new VRCExpressionParameters.Parameter()
@@ -347,7 +234,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                             AnimationUtils.GenerateSingleToggleLayer(fxController, parameterName, parameterName, anims.Item2, anims.Item1, cabCtx.cabinetConfig.animationWriteDefaults, false, null, refTransition);
                             customizableMenu.AddToggle(wearableCustomizable.name, parameterName, 1);
                         }
-                        else if (wearableCustomizable.type == WearableCustomizableType.Blendshape)
+                        else if (wearableCustomizable.type == CabinetAnimWearableModuleConfig.CustomizableType.Blendshape)
                         {
                             AnimationUtils.AddAnimatorParameter(fxController, parameterName, wearableCustomizable.defaultValue);
                             parametersToAdd.Add(new VRCExpressionParameters.Parameter()
@@ -392,7 +279,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             }
             catch (ParameterOverflowException ex)
             {
-                DTReportUtils.LogExceptionLocalized(cabCtx.report, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
+                cabCtx.report.LogExceptionLocalized(t, LogLabel, ex, "integrations.vrc.msgCode.error.parameterOverFlow");
                 return false;
             }
 
@@ -404,6 +291,33 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             AssetDatabase.SaveAssets();
 
             return true;
+        }
+
+        public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
+        {
+            if (isPreview) return true;
+
+            // get the avatar descriptor
+            if (!cabCtx.avatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
+            {
+                // not a vrc avatar
+                return true;
+            }
+
+            var result = false;
+            try
+            {
+                result = ApplyAnimationsAndMenu(cabCtx, avatarDescriptor);
+            }
+            catch (System.Exception ex)
+            {
+                cabCtx.report.LogException(LogLabel, ex);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+            return result;
         }
     }
 }

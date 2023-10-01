@@ -18,18 +18,20 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
-using Chocopoi.DressingTools.Logging;
+using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Dresser
 {
     internal class DefaultDresser : IDresser
     {
-        public const string LogLabel = "DTDefaultDresser";
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
+        public const string LogLabel = "DefaultDresser";
 
         public static class MessageCode
         {
@@ -66,25 +68,25 @@ namespace Chocopoi.DressingTools.Dresser
         [ExcludeFromCodeCoverage]
         public string FriendlyName => "Default Dresser";
 
-        public DTReport Execute(DresserSettings settings, out List<BoneMapping> boneMappings)
+        public DKReport Execute(DresserSettings settings, out List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
         {
-            var report = new DTReport();
+            var report = new DKReport();
             boneMappings = null;
 
             if (!(settings is DefaultDresserSettings))
             {
-                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.NotDefaultSettingsSettings);
+                report.LogErrorLocalized(t, LogLabel, MessageCode.NotDefaultSettingsSettings);
                 return report;
             }
 
             // Reject null target avatar/wearable settings
             if (settings.targetAvatar == null || settings.targetWearable == null)
             {
-                DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.NullAvatarOrWearable);
+                report.LogErrorLocalized(t, LogLabel, MessageCode.NullAvatarOrWearable);
                 return report;
             }
 
-            boneMappings = new List<BoneMapping>();
+            boneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
 
             // evaluate each hooks to generate the bone mappings
             foreach (var hook in Hooks)
@@ -92,7 +94,7 @@ namespace Chocopoi.DressingTools.Dresser
                 if (!hook.Evaluate(report, settings, boneMappings))
                 {
                     // hook error and do not continue
-                    DTReportUtils.LogErrorLocalized(report, LogLabel, MessageCode.HookHasErrors, hook.GetType().Name);
+                    report.LogErrorLocalized(t, LogLabel, MessageCode.HookHasErrors, hook.GetType().Name);
                     boneMappings = null;
                     return report;
                 }

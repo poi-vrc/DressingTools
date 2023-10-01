@@ -1,9 +1,4 @@
 ﻿/*
- * File: ArmatureMappingModuleEditor.cs
- * Project: DressingTools
- * Created Date: Thursday, August 10th 2023, 12:27:04 am
- * Author: chocopoi (poi@chocopoi.com)
- * -----
  * Copyright (c) 2023 chocopoi
  * 
  * This file is part of DressingTools.
@@ -18,8 +13,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Dresser;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
@@ -32,7 +31,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(ArmatureMappingWearableModuleProvider))]
     internal class ArmatureMappingWearableModuleEditor : WearableModuleEditor, IArmatureMappingWearableModuleEditorView
     {
-        private static Localization.I18n t = Localization.I18n.Instance;
+        private static I18nTranslator t = I18n.ToolTranslator;
 
         public event Action DresserChange;
         public event Action ModuleSettingsChange;

@@ -15,12 +15,10 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Diagnostics;
 using System.Threading;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
-using UnityEngine.PlayerLoop;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -34,7 +32,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             // set locale before anything
             var prefs = PreferencesUtility.GetPreferences();
-            Localization.I18n.Instance.SetLocale(prefs.app.selectedLanguage);
+            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
 
             new Thread(() => UpdateChecker.FetchOnlineVersion()).Start();
 

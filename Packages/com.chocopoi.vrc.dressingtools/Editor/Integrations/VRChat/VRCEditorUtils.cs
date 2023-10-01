@@ -17,7 +17,6 @@
 
 #if VRC_SDK_VRCSDK3
 using System.IO;
-using Chocopoi.DressingTools.Cabinet;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Proxy;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -46,55 +48,56 @@ namespace Chocopoi.DressingTools.Tests
         }
 
         #region Expected Bone Mapping Overrides
-        private static readonly BoneMapping[] OriginalBoneMappings = {
-            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] OriginalBoneMappings = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
         };
 
-        private static readonly BoneMapping[] BoneOverrides1 = {
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] BoneOverrides1 = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
         };
 
-        private static readonly BoneMapping[] ExpectedBoneMappings1 = {
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedBoneMappings1 = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
         };
 
-        private static readonly BoneMapping[] BoneOverrides2 = {
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] BoneOverrides2 = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
         };
 
-        private static readonly BoneMapping[] ExpectedBoneMappings2 = {
-            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedBoneMappings2 = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
         };
 
-        private static readonly BoneMapping[] BoneOverrides3 = {
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeRandomBone", wearableBonePath = "Armature/Hips/SomeRandomBone" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] BoneOverrides3 = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeRandomBone", wearableBonePath = "Armature/Hips/SomeRandomBone" },
         };
 
-        private static readonly BoneMapping[] ExpectedBoneMappings3 = {
-            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
-            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeRandomBone", wearableBonePath = "Armature/Hips/SomeRandomBone" },
+        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedBoneMappings3 = {
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeAnotherMyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/SomeRandomBone", wearableBonePath = "Armature/Hips/SomeRandomBone" },
         };
+
         #endregion Expected Bone Mapping Overrides
 
-        private static void PrintMappings(List<BoneMapping> boneMappings)
+        private static void PrintMappings(List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
         {
             foreach (var mapping in boneMappings)
             {
@@ -102,12 +105,12 @@ namespace Chocopoi.DressingTools.Tests
             }
         }
 
-        private static List<BoneMapping> DeepCopyBoneMappings(BoneMapping[] array)
+        private static List<ArmatureMappingWearableModuleConfig.BoneMapping> DeepCopyBoneMappings(ArmatureMappingWearableModuleConfig.BoneMapping[] array)
         {
-            var output = new List<BoneMapping>();
+            var output = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
             foreach (var mapping in array)
             {
-                output.Add(new BoneMapping()
+                output.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
                 {
                     mappingType = mapping.mappingType,
                     avatarBonePath = mapping.avatarBonePath,
@@ -117,7 +120,7 @@ namespace Chocopoi.DressingTools.Tests
             return output;
         }
 
-        private static void AssertBoneMappingsAreEqual(BoneMapping[] expected, List<BoneMapping> actual)
+        private static void AssertBoneMappingsAreEqual(ArmatureMappingWearableModuleConfig.BoneMapping[] expected, List<ArmatureMappingWearableModuleConfig.BoneMapping> actual)
         {
             PrintMappings(actual);
 
@@ -180,7 +183,7 @@ namespace Chocopoi.DressingTools.Tests
             var child2 = CreateGameObject("Child2", child1.transform);
             var child3 = CreateGameObject("Child3", child2.transform);
 
-            string path = DTEditorUtils.GetRelativePath(child3.transform);
+            string path = AnimationUtils.GetRelativePath(child3.transform);
             Assert.AreEqual("Child1/Child2/Child3", path);
         }
 
@@ -192,7 +195,7 @@ namespace Chocopoi.DressingTools.Tests
             var child2 = CreateGameObject("Child2", child1.transform);
             var child3 = CreateGameObject("Child3", child2.transform);
 
-            string path = DTEditorUtils.GetRelativePath(child3.transform, child1.transform);
+            string path = AnimationUtils.GetRelativePath(child3.transform, child1.transform);
             Assert.AreEqual("Child2/Child3", path);
         }
 
@@ -204,7 +207,7 @@ namespace Chocopoi.DressingTools.Tests
             var child2 = CreateGameObject("Child2", child1.transform);
             var child3 = CreateGameObject("Child3", child2.transform);
 
-            string path = DTEditorUtils.GetRelativePath(child3.transform, child1.transform, "SomePrefix/", "/SomeSuffix");
+            string path = AnimationUtils.GetRelativePath(child3.transform, child1.transform, "SomePrefix/", "/SomeSuffix");
             Assert.AreEqual("SomePrefix/Child2/Child3/SomeSuffix", path);
         }
 
@@ -237,37 +240,37 @@ namespace Chocopoi.DressingTools.Tests
             Assert.NotNull(child2);
 
             // depth 0
-            Assert.True(DTEditorUtils.IsGrandParent(root.transform, child1));
-            Assert.True(DTEditorUtils.IsGrandParent(child1, grandChild1));
-            Assert.True(DTEditorUtils.IsGrandParent(grandChild1, grandGrandChild1));
-            Assert.True(DTEditorUtils.IsGrandParent(grandChild1, grandGrandChild2));
-            Assert.True(DTEditorUtils.IsGrandParent(child1, grandChild2));
-            Assert.True(DTEditorUtils.IsGrandParent(root.transform, child2));
-            Assert.False(DTEditorUtils.IsGrandParent(child2, grandChild1));
-            Assert.False(DTEditorUtils.IsGrandParent(child2, grandChild2));
-            Assert.False(DTEditorUtils.IsGrandParent(grandChild2, grandGrandChild1));
-            Assert.False(DTEditorUtils.IsGrandParent(grandChild2, grandGrandChild2));
+            Assert.True(DKRuntimeUtils.IsGrandParent(root.transform, child1));
+            Assert.True(DKRuntimeUtils.IsGrandParent(child1, grandChild1));
+            Assert.True(DKRuntimeUtils.IsGrandParent(grandChild1, grandGrandChild1));
+            Assert.True(DKRuntimeUtils.IsGrandParent(grandChild1, grandGrandChild2));
+            Assert.True(DKRuntimeUtils.IsGrandParent(child1, grandChild2));
+            Assert.True(DKRuntimeUtils.IsGrandParent(root.transform, child2));
+            Assert.False(DKRuntimeUtils.IsGrandParent(child2, grandChild1));
+            Assert.False(DKRuntimeUtils.IsGrandParent(child2, grandChild2));
+            Assert.False(DKRuntimeUtils.IsGrandParent(grandChild2, grandGrandChild1));
+            Assert.False(DKRuntimeUtils.IsGrandParent(grandChild2, grandGrandChild2));
 
             // depth 1
-            Assert.True(DTEditorUtils.IsGrandParent(root.transform, grandChild1));
-            Assert.True(DTEditorUtils.IsGrandParent(root.transform, grandChild2));
-            Assert.True(DTEditorUtils.IsGrandParent(child1, grandGrandChild1));
-            Assert.True(DTEditorUtils.IsGrandParent(child1, grandGrandChild2));
-            Assert.False(DTEditorUtils.IsGrandParent(child2, grandGrandChild1));
-            Assert.False(DTEditorUtils.IsGrandParent(child2, grandGrandChild2));
+            Assert.True(DKRuntimeUtils.IsGrandParent(root.transform, grandChild1));
+            Assert.True(DKRuntimeUtils.IsGrandParent(root.transform, grandChild2));
+            Assert.True(DKRuntimeUtils.IsGrandParent(child1, grandGrandChild1));
+            Assert.True(DKRuntimeUtils.IsGrandParent(child1, grandGrandChild2));
+            Assert.False(DKRuntimeUtils.IsGrandParent(child2, grandGrandChild1));
+            Assert.False(DKRuntimeUtils.IsGrandParent(child2, grandGrandChild2));
 
             // depth 2
-            Assert.True(DTEditorUtils.IsGrandParent(root.transform, grandGrandChild1));
-            Assert.True(DTEditorUtils.IsGrandParent(root.transform, grandGrandChild2));
+            Assert.True(DKRuntimeUtils.IsGrandParent(root.transform, grandGrandChild1));
+            Assert.True(DKRuntimeUtils.IsGrandParent(root.transform, grandGrandChild2));
 
             // Random object
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, root.transform));
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, child1));
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, grandChild1));
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, grandGrandChild1));
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, grandGrandChild2));
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, grandChild2));
-            Assert.False(DTEditorUtils.IsGrandParent(randomObject.transform, child2));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, root.transform));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, child1));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, grandChild1));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, grandGrandChild1));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, grandGrandChild2));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, grandChild2));
+            Assert.False(DKRuntimeUtils.IsGrandParent(randomObject.transform, child2));
         }
 
         private static void AssertScannedDynamics(GameObject root)

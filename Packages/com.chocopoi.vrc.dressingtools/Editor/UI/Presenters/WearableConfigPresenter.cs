@@ -17,24 +17,25 @@
 
 using System;
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
-using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class WearableConfigPresenter
     {
-        private WearableModuleProviderBase[] s_moduleProviders = null;
+        private List<WearableModuleProviderBase> s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
         private IWearableConfigView _view;
@@ -132,7 +133,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 // check if any existing type
                 foreach (var existingModule in _view.Config.modules)
                 {
-                    if (existingModule.moduleName == moduleProvider.ModuleIdentifier)
+                    if (existingModule.moduleName == moduleProvider.Identifier)
                     {
                         _view.ShowModuleAddedBeforeDialog();
                         return;
@@ -142,7 +143,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.Config.modules.Add(new WearableModule()
             {
-                moduleName = moduleProvider.ModuleIdentifier,
+                moduleName = moduleProvider.Identifier,
                 config = moduleProvider.NewModuleConfig()
             });
 
@@ -217,7 +218,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private static void RemoveModuleIfExist(WearableConfig wearableConfig, string moduleName)
         {
-            var module = DTEditorUtils.FindWearableModule(wearableConfig, moduleName);
+            var module = wearableConfig.FindModule(moduleName);
             if (module != null)
             {
                 wearableConfig.modules.Remove(module);
@@ -226,7 +227,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private static void SetModuleConfig(WearableConfig wearableConfig, string moduleName, IModuleConfig moduleConfig)
         {
-            var module = DTEditorUtils.FindWearableModule(wearableConfig, moduleName);
+            var module = wearableConfig.FindModule(moduleName);
             if (module != null)
             {
                 module.config = moduleConfig;
@@ -255,10 +256,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplySimpleConfig()
         {
-            ApplySimpleModuleConfig(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleArmatureMappingConfig, _view.SimpleUseArmatureMapping);
-            ApplySimpleModuleConfig(_view.Config, MoveRootWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleMoveRootConfig, _view.SimpleUseMoveRoot);
-            ApplySimpleModuleConfig(_view.Config, CabinetAnimWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleCabinetAnimConfig, _view.SimpleUseCabinetAnim);
-            ApplySimpleModuleConfig(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER, _view.SimpleBlendshapeSyncConfig, _view.SimpleUseBlendshapeSync);
+            ApplySimpleModuleConfig(_view.Config, ArmatureMappingWearableModuleConfig.ModuleIdentifier, _view.SimpleArmatureMappingConfig, _view.SimpleUseArmatureMapping);
+            ApplySimpleModuleConfig(_view.Config, MoveRootWearableModuleConfig.ModuleIdentifier, _view.SimpleMoveRootConfig, _view.SimpleUseMoveRoot);
+            ApplySimpleModuleConfig(_view.Config, CabinetAnimWearableModuleConfig.ModuleIdentifier, _view.SimpleCabinetAnimConfig, _view.SimpleUseCabinetAnim);
+            ApplySimpleModuleConfig(_view.Config, BlendshapeSyncWearableModuleConfig.ModuleIdentifier, _view.SimpleBlendshapeSyncConfig, _view.SimpleUseBlendshapeSync);
         }
 
         private void ApplyWearableInfoConfig()
@@ -275,7 +276,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplyAvatarConfig()
         {
-            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             // try obtain armature name from cabinet
             if (cabinet == null)
@@ -285,7 +286,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                if (CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
                 {
                     _view.Config.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }
@@ -379,19 +380,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateSimpleView()
         {
-            var armatureMappingModule = DTEditorUtils.FindWearableModule(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER);
+            var armatureMappingModule = _view.Config.FindModule(ArmatureMappingWearableModuleConfig.ModuleIdentifier);
             _view.SimpleUseArmatureMapping = armatureMappingModule != null;
             _view.SimpleArmatureMappingConfig = armatureMappingModule != null ? (ArmatureMappingWearableModuleConfig)armatureMappingModule.config : new ArmatureMappingWearableModuleConfig();
 
-            var moveRootModule = DTEditorUtils.FindWearableModule(_view.Config, MoveRootWearableModuleProvider.MODULE_IDENTIFIER);
+            var moveRootModule = _view.Config.FindModule(MoveRootWearableModuleConfig.ModuleIdentifier);
             _view.SimpleUseMoveRoot = moveRootModule != null;
             _view.SimpleMoveRootConfig = moveRootModule != null ? (MoveRootWearableModuleConfig)moveRootModule.config : new MoveRootWearableModuleConfig();
 
-            var animGenModule = DTEditorUtils.FindWearableModule(_view.Config, CabinetAnimWearableModuleProvider.MODULE_IDENTIFIER);
+            var animGenModule = _view.Config.FindModule(CabinetAnimWearableModuleConfig.ModuleIdentifier);
             _view.SimpleUseCabinetAnim = animGenModule != null;
             _view.SimpleCabinetAnimConfig = animGenModule != null ? (CabinetAnimWearableModuleConfig)animGenModule.config : new CabinetAnimWearableModuleConfig();
 
-            var blendshapeSyncModule = DTEditorUtils.FindWearableModule(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER);
+            var blendshapeSyncModule = _view.Config.FindModule(BlendshapeSyncWearableModuleConfig.ModuleIdentifier);
             _view.SimpleUseBlendshapeSync = blendshapeSyncModule != null;
             _view.SimpleBlendshapeSyncConfig = blendshapeSyncModule != null ? (BlendshapeSyncWearableModuleConfig)blendshapeSyncModule.config : new BlendshapeSyncWearableModuleConfig();
         }
@@ -437,7 +438,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             if (s_moduleProviders == null)
             {
-                s_moduleProviders = WearableModuleProviderLocator.Instance.GetAllProviders();
+                s_moduleProviders = PluginManager.Instance.GetAllWearableModuleProviders();
             }
 
             _view.AdvancedModuleNames.Clear();
@@ -456,7 +457,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             foreach (var module in _view.Config.modules)
             {
-                var provider = WearableModuleProviderLocator.Instance.GetProvider(module.moduleName);
+                var provider = PluginManager.Instance.GetWearableModuleProvider(module.moduleName);
 
                 if (provider == null)
                 {
@@ -537,8 +538,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void AutoSetupMapping()
         {
             // cabinet
-            var cabinet = DTEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
-            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar);
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 _view.ShowCabinetConfigErrorHelpBox = true;
                 return;
@@ -563,7 +564,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 _view.ShowArmatureNotFoundHelpBox = true;
                 _view.ShowArmatureGuessedHelpBox = false;
-                RemoveModuleIfExist(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER);
+                RemoveModuleIfExist(_view.Config, ArmatureMappingWearableModuleConfig.ModuleIdentifier);
             }
             else
             {
@@ -574,13 +575,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armatureName,
-                    boneMappingMode = BoneMappingMode.Auto,
+                    boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(new DefaultDresserSettings()),
                     removeExistingPrefixSuffix = true,
                     groupBones = true
                 };
-                SetModuleConfig(_view.Config, ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER, config);
+                SetModuleConfig(_view.Config, ArmatureMappingWearableModuleConfig.ModuleIdentifier, config);
             }
         }
 
@@ -606,7 +607,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 var transforms = new List<Transform>();
 
-                var armatureMappingModule = DTEditorUtils.FindWearableModuleConfig<ArmatureMappingWearableModuleConfig>(_view.Config);
+                var armatureMappingModule = _view.Config.FindModuleConfig<ArmatureMappingWearableModuleConfig>();
                 if (armatureMappingModule != null)
                 {
                     // skip the armature if used armature mapping
@@ -644,14 +645,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                 foreach (var trans in transforms)
                 {
-                    toggles.Add(new AnimationToggle()
+                    toggles.Add(new CabinetAnimWearableModuleConfig.Toggle()
                     {
-                        path = DTEditorUtils.GetRelativePath(trans, _view.TargetWearable.transform),
+                        path = AnimationUtils.GetRelativePath(trans, _view.TargetWearable.transform),
                         state = true
                     });
                 }
 
-                SetModuleConfig(_view.Config, CabinetAnimWearableModuleProvider.MODULE_IDENTIFIER, config);
+                SetModuleConfig(_view.Config, CabinetAnimWearableModuleConfig.ModuleIdentifier, config);
             }
 
             // generate blendshape syncs
@@ -665,7 +666,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     // transverse up to see if it is originated from ours or an existing wearable
                     if (DTEditorUtils.IsOriginatedFromAnyWearable(_view.TargetAvatar.transform, avatarSmr.transform) ||
-                        DTEditorUtils.IsGrandParent(_view.TargetWearable.transform, avatarSmr.transform))
+                        DKRuntimeUtils.IsGrandParent(_view.TargetWearable.transform, avatarSmr.transform))
                     {
                         // skip this SMR
                         continue;
@@ -701,7 +702,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                         {
                             if (System.Array.IndexOf(avatarBlendshapes, wearableBlendshape) != -1)
                             {
-                                config.blendshapeSyncs.Add(new AnimationBlendshapeSync()
+                                config.blendshapeSyncs.Add(new BlendshapeSyncWearableModuleConfig.BlendshapeSync()
                                 {
                                     avatarBlendshapeName = wearableBlendshape,
                                     avatarFromValue = 0,
@@ -709,8 +710,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                                     wearableFromValue = 0,
                                     wearableToValue = 100,
                                     wearableBlendshapeName = wearableBlendshape,
-                                    avatarPath = DTEditorUtils.GetRelativePath(avatarSmr.transform, _view.TargetAvatar.transform),
-                                    wearablePath = DTEditorUtils.GetRelativePath(wearableSmr.transform, _view.TargetWearable.transform)
+                                    avatarPath = AnimationUtils.GetRelativePath(avatarSmr.transform, _view.TargetAvatar.transform),
+                                    wearablePath = AnimationUtils.GetRelativePath(wearableSmr.transform, _view.TargetWearable.transform)
                                 });
                                 found = true;
                                 break;
@@ -728,11 +729,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 // enable module if count > 0
                 if (config.blendshapeSyncs.Count > 0)
                 {
-                    SetModuleConfig(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER, config);
+                    SetModuleConfig(_view.Config, BlendshapeSyncWearableModuleConfig.ModuleIdentifier, config);
                 }
                 else
                 {
-                    RemoveModuleIfExist(_view.Config, BlendshapeSyncWearableModuleProvider.MODULE_IDENTIFIER);
+                    RemoveModuleIfExist(_view.Config, BlendshapeSyncWearableModuleConfig.ModuleIdentifier);
                 }
             }
         }

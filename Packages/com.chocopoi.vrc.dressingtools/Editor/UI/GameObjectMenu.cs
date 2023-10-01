@@ -16,14 +16,17 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Logging;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.UI.View;
-using Chocopoi.DressingTools.Wearable.Modules;
+using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +36,7 @@ namespace Chocopoi.DressingTools.UI
     [ExcludeFromCodeCoverage]
     public static class GameObjectMenu
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         // note that in order for a menu item in "GameObject/" to be propagated to the
         // hierarchy Create dropdown and hierarchy context menu, it must be grouped with
@@ -60,7 +63,7 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
-            if (!CabinetConfig.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
             {
                 EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.unableToLoadCabinetConfig"), t._("common.dialog.btn.ok"));
                 return;
@@ -97,7 +100,7 @@ namespace Chocopoi.DressingTools.UI
                 var dresser = new DefaultDresser();
                 var report = dresser.Execute(dresserSettings, out _);
 
-                if (report.HasLogType(DTReportLogType.Error))
+                if (report.HasLogType(DressingFramework.Logging.LogType.Error))
                 {
                     ReportWindow.ShowWindow(report);
                     EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.defaultDresserHasErrors"), t._("common.dialog.btn.ok"));
@@ -108,7 +111,7 @@ namespace Chocopoi.DressingTools.UI
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armature.name,
-                    boneMappingMode = BoneMappingMode.Auto,
+                    boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings),
                     removeExistingPrefixSuffix = true,
@@ -117,12 +120,12 @@ namespace Chocopoi.DressingTools.UI
 
                 wearableConfig.modules.Add(new WearableModule()
                 {
-                    moduleName = ArmatureMappingWearableModuleProvider.MODULE_IDENTIFIER,
+                    moduleName = ArmatureMappingWearableModuleConfig.ModuleIdentifier,
                     config = armatureMappingModule
                 });
             }
 
-            DTEditorUtils.AddCabinetWearable(cabinetConfig, cabinet.AvatarGameObject, wearableConfig, wearable);
+            DKEditorUtils.AddCabinetWearable(cabinetConfig, cabinet.AvatarGameObject, wearableConfig, wearable);
         }
 
         [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true, MenuItemPriority)]

@@ -17,88 +17,25 @@
 
 #if VRC_SDK_VRCSDK3
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Extensibility.Providers;
+using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingFramework.Context;
+using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Extensibility.Sequencing;
+using Chocopoi.DressingFramework.Integration.VRChat.Modules;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingTools.Integrations.VRChat;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
-using VRC.SDK3.Avatars.Components;
-using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Integrations.VRChat;
 using UnityEditor.Animations;
-using System.Collections.ObjectModel;
 using UnityEngine;
-using Chocopoi.DressingTools.Logging;
-using Chocopoi.DressingTools.Cabinet;
-using VRC.SDKBase;
+using VRC.SDK3.Avatars.Components;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {
-    internal class VRCMergeAnimLayerWearableModuleConfig : IModuleConfig
-    {
-        public enum AnimLayer
-        {
-            Base = 0,
-            Additive = 1,
-            Gesture = 2,
-            Action = 3,
-            FX = 4,
-            Sitting = 5,
-            TPose = 6,
-            IKPose = 7
-        }
-
-        public enum PathMode
-        {
-            Relative = 0,
-            Absolute = 1
-        }
-
-        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
-
-        public SerializationVersion version;
-        public AnimLayer animLayer;
-        public PathMode pathMode;
-        public bool removeAnimatorAfterApply;
-        public bool matchLayerWriteDefaults;
-        public string animatorPath;
-
-        public VRCMergeAnimLayerWearableModuleConfig()
-        {
-            version = CurrentConfigVersion;
-            animLayer = AnimLayer.FX;
-            pathMode = PathMode.Relative;
-            removeAnimatorAfterApply = true;
-            matchLayerWriteDefaults = true;
-            animatorPath = "";
-        }
-
-        public static VRCAvatarDescriptor.AnimLayerType? ToAnimLayerType(AnimLayer type)
-        {
-            switch (type)
-            {
-                case AnimLayer.Base:
-                    return VRCAvatarDescriptor.AnimLayerType.Base;
-                case AnimLayer.Additive:
-                    return VRCAvatarDescriptor.AnimLayerType.Additive;
-                case AnimLayer.Gesture:
-                    return VRCAvatarDescriptor.AnimLayerType.Gesture;
-                case AnimLayer.Action:
-                    return VRCAvatarDescriptor.AnimLayerType.Action;
-                case AnimLayer.FX:
-                    return VRCAvatarDescriptor.AnimLayerType.FX;
-                case AnimLayer.Sitting:
-                    return VRCAvatarDescriptor.AnimLayerType.Sitting;
-                case AnimLayer.TPose:
-                    return VRCAvatarDescriptor.AnimLayerType.TPose;
-                case AnimLayer.IKPose:
-                    return VRCAvatarDescriptor.AnimLayerType.IKPose;
-            }
-            return null;
-        }
-    }
 
     [InitializeOnLoad]
     internal class VRCMergeAnimLayerWearableModuleProvider : WearableModuleProviderBase
@@ -110,21 +47,15 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             public const string AnimatorNotFound = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.animatorNotFound";
             public const string NoSuchAnimLayer = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.noSuchAnimLayer";
         }
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = Localization.I18n.ToolTranslator;
         private const string LogLabel = "VRCMergeAnimLayer";
-        public const string MODULE_IDENTIFIER = "com.chocopoi.dressingtools.integration.vrchat.wearable.merge-anim-layer";
 
         private const string GestureAvatarMaskGuid = "b2b8bad9583e56a46a3e21795e96ad92";
 
-        [ExcludeFromCodeCoverage] public override string ModuleIdentifier => MODULE_IDENTIFIER;
+        [ExcludeFromCodeCoverage] public override string Identifier => VRCMergeAnimLayerWearableModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("integrations.vrc.modules.mergeAnimLayer.friendlyName");
-        [ExcludeFromCodeCoverage] public override int CallOrder => 6;
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => true;
-
-        static VRCMergeAnimLayerWearableModuleProvider()
-        {
-            WearableModuleProviderLocator.Instance.Register(new VRCMergeAnimLayerWearableModuleProvider());
-        }
+        [ExcludeFromCodeCoverage] public override WearableApplyConstraint Constraint => ApplyAtStage(CabinetApplyStage.Transpose).Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
         {
@@ -225,8 +156,10 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             return output;
         }
 
-        public override bool OnApplyWearable(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules)
+        public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
         {
+            if (isPreview) return true;
+
             if (modules.Count == 0)
             {
                 // no any merge anim layer module
@@ -264,7 +197,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     animatorTransform = wearCtx.wearableGameObject.transform.Find(malm.animatorPath);
                     if (animatorTransform == null)
                     {
-                        DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AnimatorPathNotFound, malm.animatorPath);
+                        cabCtx.report.LogErrorLocalized(t, LogLabel, MessageCode.AnimatorPathNotFound, malm.animatorPath);
                         continue;
                     }
                 }
@@ -272,7 +205,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 // get animator component
                 if (!animatorTransform.TryGetComponent<Animator>(out var animator))
                 {
-                    DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.AnimatorNotFound, animatorTransform.name);
+                    cabCtx.report.LogErrorLocalized(t, LogLabel, MessageCode.AnimatorNotFound, animatorTransform.name);
                     continue;
                 }
 
@@ -284,7 +217,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 var vrcAnimLayer = VRCMergeAnimLayerWearableModuleConfig.ToAnimLayerType(malm.animLayer);
                 if (!vrcAnimLayer.HasValue)
                 {
-                    DTReportUtils.LogErrorLocalized(cabCtx.report, LogLabel, MessageCode.NoSuchAnimLayer);
+                    cabCtx.report.LogErrorLocalized(t, LogLabel, MessageCode.NoSuchAnimLayer);
                     continue;
                 }
 

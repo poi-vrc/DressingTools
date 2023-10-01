@@ -18,7 +18,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -30,7 +32,7 @@ namespace Chocopoi.DressingTools.UI.View
     [ExcludeFromCodeCoverage]
     internal class MainView : ElementViewBase, IMainView
     {
-        private static readonly Localization.I18n t = Localization.I18n.Instance;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public event Action UpdateAvailableUpdateButtonClick;
         public event Action MouseMove;

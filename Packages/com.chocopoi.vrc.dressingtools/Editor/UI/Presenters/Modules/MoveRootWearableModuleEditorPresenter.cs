@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
@@ -92,12 +94,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ApplyMoveToGameObjectFieldChanges()
         {
-            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DTEditorUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
+            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DKRuntimeUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
             {
                 _view.IsGameObjectInvalid = false;
 
                 // renew path if valid
-                _module.avatarPath = DTEditorUtils.GetRelativePath(_view.MoveToGameObject.transform, _parentView.TargetAvatar.transform);
+                _module.avatarPath = AnimationUtils.GetRelativePath(_view.MoveToGameObject.transform, _parentView.TargetAvatar.transform);
             }
             else
             {
