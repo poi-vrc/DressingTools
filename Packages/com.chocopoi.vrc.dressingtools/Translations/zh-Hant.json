@@ -153,7 +153,6 @@
     "mapping.editor.popup.mappingMode.auto": "自動",
     "modules.wearable.armatureMapping.editor.toggle.groupBones": "分組骨頭",
     "modules.wearable.armatureMapping.editor.toggle.removeExistingPrefixesAndSuffixes": "刪除現有的前綴和後綴",
-    "report.editor.label.logs": "記錄",
     "settings.editor.cabinet.defaults.toggle.animWriteDefaults": "動畫寫入預設值",
     "settings.editor.cabinet.defaults.toggle.groupDynamics": "分組動骨",
     "wearable.inspector.settings.wearable": "穿戴物品",
