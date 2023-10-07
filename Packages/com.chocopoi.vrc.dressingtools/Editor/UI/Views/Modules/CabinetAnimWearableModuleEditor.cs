@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 {
     [ExcludeFromCodeCoverage]
     [CustomWearableModuleEditor(typeof(CabinetAnimWearableModuleProvider))]
-    internal class CabinetAnimWearableModuleEditor : WearableModuleEditor, ICabinetAnimWearableModuleEditorView
+    internal class CabinetAnimWearableModuleEditor : WearableModuleEditorIMGUI, ICabinetAnimWearableModuleEditorView
     {
         private static I18nTranslator t = I18n.ToolTranslator;
 
@@ -323,7 +323,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         public override void OnGUI()
         {
-            var module = (CabinetAnimWearableModuleConfig)target;
+            var module = (CabinetAnimWearableModuleConfig)Target;
 
             DrawCabinetAnimAvatarOnWear();
             DrawCabinetAnimWearableOnWear();

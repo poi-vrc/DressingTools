@@ -11,16 +11,8 @@ on:
 
 jobs:
   build:
-    name: Build and Test in ${{ matrix.testMode }}
+    name: Build and Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        testMode: ["EditMode", "PlayMode"]
-        include:
-          - mode: EditMode
-            assemblyName: com.chocopoi.vrc.dressingtools.Editor.Tests
-          - mode: PlayMode
-            assemblyName: com.chocopoi.vrc.dressingtools.Runtime.Tests
     steps:
       # Checkout
       - name: Checkout repository
@@ -63,9 +55,9 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          testMode: ${{ matrix.testMode }}
-          customParameters: '-assemblyNames ${{ matrix.assemblyName }} -nographics'
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.chocopoi.vrc.dressingtools.*'
+          testMode: 'all'
+          customParameters: '-assemblyNames "com.chocopoi.vrc.dressingtools.Editor.Tests;com.chocopoi.vrc.dressingtools.Runtime.Tests" -nographics'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.chocopoi.vrc.dressingtools.Editor,+com.chocopoi.vrc.dressingtools.Runtime'
       
       # Upload coverage report to GitHub
       - uses: actions/upload-artifact@v2
@@ -78,7 +70,6 @@ jobs:
       - name: Upload XML report to Codecov
         uses: codecov/codecov-action@v3
         with:
-          name: ${{ matrix.testMode }}
           flags: automated
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ steps.tests.outputs.coveragePath }}/**/*.xml

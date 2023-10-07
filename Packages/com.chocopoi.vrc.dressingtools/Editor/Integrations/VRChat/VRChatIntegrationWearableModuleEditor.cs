@@ -29,7 +29,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     [ExcludeFromCodeCoverage]
     [CustomWearableModuleEditor(typeof(VRChatIntegrationWearableModuleProvider))]
-    internal class VRChatIntegrationWearableModuleEditor : WearableModuleEditor, IVRChatIntegrationWearableModuleEditorView
+    internal class VRChatIntegrationWearableModuleEditor : WearableModuleEditorIMGUI, IVRChatIntegrationWearableModuleEditorView
     {
         private static readonly I18nTranslator t = Localization.I18n.ToolTranslator;
 

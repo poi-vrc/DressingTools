@@ -19,6 +19,7 @@ using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
@@ -94,7 +95,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 return;
             }
-            DKRuntimeUtils.GetAvatarCabinet(_view.CreateCabinetAvatarGameObject, true);
+            DKEditorUtils.GetAvatarCabinet(_view.CreateCabinetAvatarGameObject, true);
             _view.ShowCreateCabinetPanel = false;
             UpdateView();
         }
@@ -122,7 +123,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnCabinetSettingsChange()
         {
-            var cabinets = DKRuntimeUtils.GetAllCabinets();
+            var cabinets = DKEditorUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -154,7 +155,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         public void SelectCabinet(DTCabinet cabinet)
         {
-            var cabinets = DKRuntimeUtils.GetAllCabinets();
+            var cabinets = DKEditorUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -194,7 +195,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateCabinetContentView()
         {
-            var cabinets = DKRuntimeUtils.GetAllCabinets();
+            var cabinets = DKEditorUtils.GetAllCabinets();
 
             if (cabinets.Length == 0)
             {
@@ -250,7 +251,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.CabinetModulePreviews.Add(preview);
             }
 
-            var wearables = DKRuntimeUtils.GetCabinetWearables(cabinet.AvatarGameObject);
+            var wearables = DKEditorUtils.GetCabinetWearables(cabinet.AvatarGameObject);
 
             foreach (var wearable in wearables)
             {
@@ -267,7 +268,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     {
                         if (wearable is DTWearable dtWearable)
                         {
-                            DKEditorUtils.RemoveCabinetWearable(cabinet, dtWearable);
+                            cabinet.RemoveWearable(dtWearable);
                             UpdateView();
                         }
                         else
@@ -301,7 +302,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnAddWearableButtonClick()
         {
-            var cabinets = DKRuntimeUtils.GetAllCabinets();
+            var cabinets = DKEditorUtils.GetAllCabinets();
 
             if (cabinets.Length == 0 || _view.SelectedCabinetIndex < 0 || _view.SelectedCabinetIndex >= cabinets.Length)
             {

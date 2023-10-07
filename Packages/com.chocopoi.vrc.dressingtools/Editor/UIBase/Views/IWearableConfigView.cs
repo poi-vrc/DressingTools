@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
 {
     internal class WearableConfigModuleViewData
     {
-        public WearableModuleEditor editor;
+        public IWearableModuleEditor editor;
         public Action removeButtonOnClick;
     }
 

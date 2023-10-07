@@ -24,7 +24,6 @@ using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.Proxy;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -200,10 +199,10 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
                     if (avatarBone != null)
                     {
-                        var avatarBoneDynamics = DTEditorUtils.FindDynamicsWithRoot(dtCabCtx.avatarDynamics, avatarBone);
-                        var wearableBoneDynamics = DTEditorUtils.FindDynamicsWithRoot(dtWearCtx.wearableDynamics, wearableChild);
+                        var avatarBoneDynamics = DKEditorUtils.FindDynamicsWithRoot(cabCtx.avatarDynamics, avatarBone);
+                        var wearableBoneDynamics = DKEditorUtils.FindDynamicsWithRoot(wearCtx.wearableDynamics, wearableChild);
 
-                        dtCabCtx.pathRemapper.TagContainerBone(wearableChild.gameObject);
+                        cabCtx.pathRemapper.TagContainerBone(wearableChild.gameObject);
 
                         if (mapping.mappingType == ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone)
                         {
@@ -221,7 +220,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                                     obj.transform.SetParent(avatarBone);
                                     wearableBoneContainer = obj.transform;
                                 }
-                                dtCabCtx.pathRemapper.TagContainerBone(wearableBoneContainer.gameObject);
+                                cabCtx.pathRemapper.TagContainerBone(wearableBoneContainer.gameObject);
                             }
                             else
                             {
@@ -238,7 +237,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                dtWearCtx.wearableDynamics.Remove(wearableBoneDynamics);
+                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             // add parent constraint
@@ -268,7 +267,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                dtWearCtx.wearableDynamics.Remove(wearableBoneDynamics);
+                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             ApplyIgnoreTransforms(wearableName, avatarBoneDynamics, avatarBone, wearableChild);
@@ -279,11 +278,11 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                             {
                                 // remove wearable dynamics if exist
                                 Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                dtWearCtx.wearableDynamics.Remove(wearableBoneDynamics);
+                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
                             }
 
                             // copy component with reflection
-                            var comp = DTEditorUtils.CopyComponent(avatarBoneDynamics.Component, wearableChild.gameObject);
+                            var comp = DKEditorUtils.CopyComponent(avatarBoneDynamics.Component, wearableChild.gameObject);
 
                             // set root transform
                             if (avatarBoneDynamics is DynamicBoneProxy)
@@ -332,7 +331,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return false;
             }
 
-            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.info.name, DKRuntimeUtils.RandomString(16));
+            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.info.name, DKEditorUtils.RandomString(16));
 
             if (!ApplyBoneMappings(cabCtx, wearCtx, armatureMappingConfig, generatedName, boneMappings, cabCtx.avatarGameObject.transform, wearCtx.wearableGameObject.transform, wearCtx.wearableGameObject.transform, ""))
             {

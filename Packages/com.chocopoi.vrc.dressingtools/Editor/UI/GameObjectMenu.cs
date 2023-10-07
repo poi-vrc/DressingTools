@@ -125,7 +125,7 @@ namespace Chocopoi.DressingTools.UI
                 });
             }
 
-            DKEditorUtils.AddCabinetWearable(cabinetConfig, cabinet.AvatarGameObject, wearableConfig, wearable);
+            cabinet.AddWearable(wearableConfig, wearable);
         }
 
         [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true, MenuItemPriority)]

@@ -82,7 +82,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnTargetAvatarOrWearableChange()
         {
             // attempt to get settings from cabinet
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar, false);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar, false);
             if (cabinet != null)
             {
                 if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
@@ -178,7 +178,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             // if clothes is not inside avatar, we instantiate a new copy
             GameObject targetWearable;
-            if (!DKRuntimeUtils.IsGrandParent(_view.TargetAvatar.transform, _view.TargetClothes.transform))
+            if (!DKEditorUtils.IsGrandParent(_view.TargetAvatar.transform, _view.TargetClothes.transform))
             {
                 targetWearable = Object.Instantiate(_view.TargetClothes);
 
@@ -223,7 +223,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // create a cabinet or use existing
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(targetAvatar, true);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(targetAvatar, true);
             AddClothesToCabinet(cabinet, targetAvatar, targetWearable);
 
             // run cabinet applier
@@ -238,7 +238,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             SceneView.FrameLastActiveSceneView();
         }
 
-        private void AddClothesToCabinet(ICabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
+        private void AddClothesToCabinet(DTCabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
         {
             if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
@@ -270,7 +270,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             });
 
             // add the wearable config to the preview avatar
-            if (!DKEditorUtils.AddCabinetWearable(cabinetConfig, targetAvatar, wearableConfig, targetWearable))
+            if (!cabinet.AddWearable(wearableConfig, targetWearable))
             {
                 Debug.LogWarning("[DressingToolsLegacy] Unable to add cabinet wearable to dummy avatar");
             }
@@ -304,7 +304,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar, true);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar, true);
             AddClothesToCabinet(cabinet, _view.TargetAvatar, _view.TargetClothes);
             Selection.activeGameObject = _view.TargetAvatar;
             SceneView.FrameLastActiveSceneView();

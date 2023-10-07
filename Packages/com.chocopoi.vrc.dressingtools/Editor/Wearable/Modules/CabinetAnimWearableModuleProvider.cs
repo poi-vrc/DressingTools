@@ -155,7 +155,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
             // set wearable dynamics inactive
             var visitedDynamicsTransforms = new List<Transform>();
-            foreach (var dynamics in dtWearCtx.wearableDynamics)
+            foreach (var dynamics in wearCtx.wearableDynamics)
             {
                 if (visitedDynamicsTransforms.Contains(dynamics.Transform))
                 {

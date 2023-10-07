@@ -128,7 +128,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             };
 
             // get wearables
-            var wearables = DKRuntimeUtils.GetCabinetWearables(cabCtx.avatarGameObject);
+            var wearables = DKEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
             var cabinetMenu = baseSubMenu;
             var cabinetMenuIndex = 0;
             var originalLayerLength = fxController.layers.Length;
@@ -168,7 +168,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     cabCtx.CreateUniqueAsset(icon, $"Cabinet_{i}_Icon.asset");
                 }
 
-                var animationGenerator = new CabinetAnimGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].WearableGameObject, dtCabCtx.avatarDynamics, dtWearCtx.wearableDynamics, dtCabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
+                var animationGenerator = new CabinetAnimGenerator(cabCtx.report, cabCtx.avatarGameObject, agm, wearables[i].WearableGameObject, cabCtx.avatarDynamics, wearCtx.wearableDynamics, cabCtx.pathRemapper, cabCtx.cabinetConfig.animationWriteDefaults);
 
                 // TODO: merge disable clips and check for conflicts
                 var wearAnimations = animationGenerator.GenerateWearAnimations();
@@ -213,7 +213,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                             customizableMenu = newSubMenu;
                         }
 
-                        var uniqueName = $"Cabinet_{i}_{config.info.name}_{wearableCustomizable.name}_{DKRuntimeUtils.RandomString(8)}";
+                        var uniqueName = $"Cabinet_{i}_{config.info.name}_{wearableCustomizable.name}_{DKEditorUtils.RandomString(8)}";
                         var parameterName = "cpDT_" + uniqueName;
 
                         if (wearableCustomizable.type == CabinetAnimWearableModuleConfig.CustomizableType.Toggle)

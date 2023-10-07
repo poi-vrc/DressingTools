@@ -94,7 +94,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ApplyMoveToGameObjectFieldChanges()
         {
-            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DKRuntimeUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
+            if (_parentView.TargetAvatar != null && _view.MoveToGameObject != null && DKEditorUtils.IsGrandParent(_parentView.TargetAvatar.transform, _view.MoveToGameObject.transform))
             {
                 _view.IsGameObjectInvalid = false;
 

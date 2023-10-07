@@ -27,6 +27,7 @@ using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.UI.Views.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -276,7 +277,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplyAvatarConfig()
         {
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             // try obtain armature name from cabinet
             if (cabinet == null)
@@ -397,7 +398,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.SimpleBlendshapeSyncConfig = blendshapeSyncModule != null ? (BlendshapeSyncWearableModuleConfig)blendshapeSyncModule.config : new BlendshapeSyncWearableModuleConfig();
         }
 
-        private WearableModuleEditor CreateModuleEditor(WearableModuleProviderBase provider, IModuleConfig module)
+        private IWearableModuleEditor CreateModuleEditor(WearableModuleProviderBase provider, IModuleConfig module)
         {
             // prepare cache if not yet
             if (s_moduleEditorTypesCache == null)
@@ -427,11 +428,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // obtain from cache and create an editor instance
             if (s_moduleEditorTypesCache.TryGetValue(provider.GetType(), out var moduleEditorType))
             {
-                return (WearableModuleEditor)Activator.CreateInstance(moduleEditorType, _view, provider, module);
+                return (IWearableModuleEditor)Activator.CreateInstance(moduleEditorType, _view, provider, module);
             }
 
             // default module
-            return new WearableModuleEditor(_view, provider, module);
+            return new DefaultWearableModuleEditor(_view, provider, module);
         }
 
         private void UpdateAdvancedModulesView()
@@ -538,7 +539,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void AutoSetupMapping()
         {
             // cabinet
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
             if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 _view.ShowCabinetConfigErrorHelpBox = true;
@@ -665,8 +666,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 foreach (var avatarSmr in avatarSmrs)
                 {
                     // transverse up to see if it is originated from ours or an existing wearable
-                    if (DTEditorUtils.IsOriginatedFromAnyWearable(_view.TargetAvatar.transform, avatarSmr.transform) ||
-                        DKRuntimeUtils.IsGrandParent(_view.TargetWearable.transform, avatarSmr.transform))
+                    if (DKEditorUtils.IsOriginatedFromAnyWearable(_view.TargetAvatar.transform, avatarSmr.transform) ||
+                        DKEditorUtils.IsGrandParent(_view.TargetWearable.transform, avatarSmr.transform))
                     {
                         // skip this SMR
                         continue;

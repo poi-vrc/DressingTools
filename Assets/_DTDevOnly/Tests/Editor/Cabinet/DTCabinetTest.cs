@@ -27,7 +27,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         public void GetWearables_NoAvatarGameObject_ReturnsEmptyArray()
         {
             var cabinetGo = CreateGameObject("GetWearablesGameObject");
-            var wearables = DKRuntimeUtils.GetCabinetWearables(cabinetGo);
+            var wearables = DKEditorUtils.GetCabinetWearables(cabinetGo);
             Assert.NotNull(wearables);
             Assert.AreEqual(0, wearables.Length);
         }
@@ -41,7 +41,7 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
             Assert.NotNull(cabinet);
             Assert.NotNull(cabinet.AvatarGameObject);
 
-            var wearables = DKRuntimeUtils.GetCabinetWearables(cabinet.AvatarGameObject);
+            var wearables = DKEditorUtils.GetCabinetWearables(cabinet.AvatarGameObject);
             Assert.NotNull(wearables);
             Assert.AreEqual(1, wearables.Length);
 

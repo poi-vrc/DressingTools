@@ -616,7 +616,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             var container = new VisualElement();
             container.AddToClassList("foldout-container");
-            container.Add(moduleViewData.editor);
+            container.Add((VisualElement)moduleViewData.editor);
 
             var foldout = new Foldout
             {

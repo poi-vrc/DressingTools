@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
@@ -96,8 +97,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    var avatarDynamics = DTEditorUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
-                    var wearableDynamics = DTEditorUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
+                    var avatarDynamics = DKEditorUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
+                    var wearableDynamics = DKEditorUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
 
                     if (avatarDynamics != null)
                     {
@@ -247,8 +248,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
 
             // Scan dynamics
-            var avatarDynamicsList = DTEditorUtils.ScanDynamics(settings.targetAvatar, true);
-            var wearableDynamicsList = DTEditorUtils.ScanDynamics(settings.targetWearable, false);
+            var avatarDynamicsList = DKEditorUtils.ScanDynamics(settings.targetAvatar, true);
+            var wearableDynamicsList = DKEditorUtils.ScanDynamics(settings.targetWearable, false);
 
             // Process Armature
             ProcessBone(report, (DefaultDresserSettings)settings, avatarDynamicsList, wearableDynamicsList, 0, avatarArmature, wearableArmature, boneMappings);

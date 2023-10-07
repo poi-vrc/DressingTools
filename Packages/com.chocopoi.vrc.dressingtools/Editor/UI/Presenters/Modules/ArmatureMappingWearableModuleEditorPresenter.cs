@@ -175,7 +175,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             _view.DresserSettings.targetAvatar = _parentView.TargetAvatar;
             _view.DresserSettings.targetWearable = _parentView.TargetWearable;
-            _cabinet = DKRuntimeUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = DKEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
                 _view.IsAvatarAssociatedWithCabinet = true;
