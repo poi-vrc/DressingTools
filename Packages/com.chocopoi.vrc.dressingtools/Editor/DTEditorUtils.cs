@@ -19,24 +19,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Cabinet.Modules;
+using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Context;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
-using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Proxy;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Animations;
-using Chocopoi.DressingTools.Proxy;
 using Chocopoi.DressingTools.Wearable;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -58,7 +51,6 @@ namespace Chocopoi.DressingTools
         private const int MaxLayers = 32;
 
         private static RenderTexture s_thumbnailCameraRenderTexture = null;
-        private static Dictionary<string, System.Type> s_reflectionTypeCache = new Dictionary<string, System.Type>();
         private static readonly System.Random Random = new System.Random();
         private static List<List<string>> s_boneNameMappings = null;
 
@@ -79,7 +71,7 @@ namespace Chocopoi.DressingTools
 
         public static void AddWearableTargetAvatarConfig(WearableConfig wearableConfig, GameObject targetAvatar, GameObject targetWearable)
         {
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(targetAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(targetAvatar);
 
             // try obtain armature name from cabinet
             if (cabinet == null)
@@ -137,31 +129,6 @@ namespace Chocopoi.DressingTools
             config.info.description = "";
         }
 
-        public static System.Type FindType(string typeName)
-        {
-            // try getting from cache to avoid scanning the assemblies again
-            if (s_reflectionTypeCache.ContainsKey(typeName))
-            {
-                return s_reflectionTypeCache[typeName];
-            }
-
-            // scan from assemblies and save to cache
-            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
-            {
-                var type = assembly.GetType(typeName);
-                if (type != null)
-                {
-                    s_reflectionTypeCache[typeName] = type;
-                    return type;
-                }
-            }
-
-            // no such type found
-            return null;
-        }
-
         public static void HandleBoneMappingOverrides(List<ArmatureMappingWearableModuleConfig.BoneMapping> generatedBoneMappings, List<ArmatureMappingWearableModuleConfig.BoneMapping> overrideBoneMappings)
         {
             foreach (var mappingOverride in overrideBoneMappings)
@@ -186,64 +153,6 @@ namespace Chocopoi.DressingTools
                     generatedBoneMappings.Add(mappingOverride);
                 }
             }
-        }
-
-        public static List<IDynamicsProxy> ScanDynamics(GameObject obj, bool doNotScanContainingWearables = false)
-        {
-            var dynamicsList = new List<IDynamicsProxy>();
-
-            // TODO: replace by reading YAML
-
-            // get the dynbone type
-            var DynamicBoneType = FindType("DynamicBone");
-            var PhysBoneType = FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
-
-            // scan dynbones
-            if (DynamicBoneType != null)
-            {
-                var dynBones = obj.GetComponentsInChildren(DynamicBoneType, true);
-                foreach (var dynBone in dynBones)
-                {
-                    if (doNotScanContainingWearables && IsOriginatedFromAnyWearable(obj.transform, dynBone.transform))
-                    {
-                        continue;
-                    }
-                    dynamicsList.Add(new DynamicBoneProxy(dynBone));
-                }
-            }
-
-            // scan physbones
-            if (PhysBoneType != null)
-            {
-                var physBones = obj.GetComponentsInChildren(PhysBoneType, true);
-                foreach (var physBone in physBones)
-                {
-                    if (doNotScanContainingWearables && IsOriginatedFromAnyWearable(obj.transform, physBone.transform))
-                    {
-                        continue;
-                    }
-                    dynamicsList.Add(new PhysBoneProxy(physBone));
-                }
-            }
-
-            return dynamicsList;
-        }
-
-        public static IDynamicsProxy FindDynamicsWithRoot(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
-        {
-            foreach (var bone in avatarDynamics)
-            {
-                if (bone.RootTransform == dynamicsRoot)
-                {
-                    return bone;
-                }
-            }
-            return null;
-        }
-
-        public static bool IsDynamicsExists(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
-        {
-            return FindDynamicsWithRoot(avatarDynamics, dynamicsRoot) != null;
         }
 
         private static void LoadBoneNameMappings()
@@ -351,54 +260,6 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        // referenced from: http://answers.unity3d.com/questions/458207/copy-a-component-at-runtime.html
-        public static Component CopyComponent(Component originalComponent, GameObject destGameObject)
-        {
-            System.Type type = originalComponent.GetType();
-
-            // get the destination component or add new
-            var destComp = destGameObject.AddComponent(type);
-
-            var fields = type.GetFields();
-            foreach (var field in fields)
-            {
-                if (field.IsStatic) continue;
-                field.SetValue(destComp, field.GetValue(originalComponent));
-            }
-
-            var props = type.GetProperties();
-            foreach (var prop in props)
-            {
-                if (!prop.CanWrite || prop.Name == "name")
-                {
-                    continue;
-                }
-                prop.SetValue(destComp, prop.GetValue(originalComponent, null), null);
-            }
-
-            return destComp;
-        }
-
-        public static bool IsOriginatedFromAnyWearable(Transform root, Transform transform)
-        {
-            var found = false;
-            while (transform != null)
-            {
-                transform = transform.parent;
-                if (transform == root || transform == null)
-                {
-                    break;
-                }
-
-                if (transform.TryGetComponent<DTWearable>(out var _))
-                {
-                    found = true;
-                    break;
-                }
-            }
-            return found;
-        }
-
         public static bool PreviewActive { get; private set; }
 
         public static void CleanUpPreviewAvatars()
@@ -424,7 +285,7 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(previewAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(previewAvatar);
 
             if (cabinet == null)
             {
@@ -438,29 +299,28 @@ namespace Chocopoi.DressingTools
             }
 
             var report = new DKReport();
-            var cabCtx = new ApplyCabinetContext()
+            var cabCtx = new ApplyCabinetContext
             {
                 report = report,
                 cabinetConfig = cabinetConfig,
-                avatarGameObject = previewAvatar
+                avatarGameObject = previewAvatar,
+                avatarDynamics = DKEditorUtils.ScanDynamics(previewAvatar, true),
+                pathRemapper = new PathRemapper(previewAvatar)
             };
-            var dkCabCtx = cabCtx.Extra<DKCabinetContext>();
-            dkCabCtx.avatarDynamics = ScanDynamics(previewAvatar, true);
-            dkCabCtx.pathRemapper = new PathRemapper(previewAvatar);
-            dkCabCtx.animationStore = new AnimationStore(cabCtx);
+            cabCtx.animationStore = new AnimationStore(cabCtx);
 
-            var wearCtx = new ApplyWearableContext()
+            var wearCtx = new ApplyWearableContext
             {
                 wearableConfig = newWearableConfig,
-                wearableGameObject = previewWearable
+                wearableGameObject = previewWearable,
+                wearableDynamics = DKEditorUtils.ScanDynamics(previewWearable)
             };
-            wearCtx.Extra<DKWearableContext>().wearableDynamics = ScanDynamics(previewWearable);
 
             var providers = PluginManager.Instance.GetAllWearableModuleProviders();
             foreach (var provider in providers)
             {
                 // TODO: dependency graph
-                if (!provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(DKRuntimeUtils.GetWearableModulesByName(newWearableConfig, provider.Identifier)), true))
+                if (!provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(newWearableConfig.FindModules(provider.Identifier)), true))
                 {
                     Debug.LogError("[DressingTools] Error applying wearable in preview!");
                     break;
@@ -483,7 +343,7 @@ namespace Chocopoi.DressingTools
             previewAvatar = GameObject.Find(objName);
 
             // find path of wearable
-            var path = DKRuntimeUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform) ?
+            var path = DKEditorUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform) ?
                 AnimationUtils.GetRelativePath(targetWearable.transform, targetAvatar.transform) :
                 targetWearable.name;
 
@@ -515,7 +375,7 @@ namespace Chocopoi.DressingTools
             previewAvatar.transform.position = newPos;
 
             // if wearable is not inside avatar, we instantiate a new copy
-            if (!DKRuntimeUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform))
+            if (!DKEditorUtils.IsGrandParent(targetAvatar.transform, targetWearable.transform))
             {
                 previewWearable = Object.Instantiate(targetWearable);
                 previewWearable.transform.position = newPos;

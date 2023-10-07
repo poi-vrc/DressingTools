@@ -29,7 +29,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 {
     [ExcludeFromCodeCoverage]
     [CustomWearableModuleEditor(typeof(ArmatureMappingWearableModuleProvider))]
-    internal class ArmatureMappingWearableModuleEditor : WearableModuleEditor, IArmatureMappingWearableModuleEditorView
+    internal class ArmatureMappingWearableModuleEditor : WearableModuleEditorIMGUI, IArmatureMappingWearableModuleEditorView
     {
         private static I18nTranslator t = I18n.ToolTranslator;
 

@@ -16,6 +16,7 @@
  */
 
 using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -61,7 +62,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateView()
         {
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
             var cabinetIsNull = cabinet == null;
             _view.ShowAvatarNoExistingCabinetHelpbox = cabinetIsNull;
             _view.DisableAddToCabinetButton = cabinetIsNull;
@@ -96,7 +97,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // try find if the wearable has a config, if yes, use advanced mode for editing
             if (_view.TargetWearable != null)
             {
-                var cabinetWearable = DKRuntimeUtils.GetCabinetWearable(_view.TargetWearable);
+                var cabinetWearable = DKEditorUtils.GetCabinetWearable(_view.TargetWearable);
                 if (cabinetWearable != null)
                 {
                     if (WearableConfigUtility.TryDeserialize(cabinetWearable.ConfigJson, out var config))
@@ -127,7 +128,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var cabinet = DKRuntimeUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             if (cabinet == null)
             {
@@ -147,7 +148,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.ApplyToConfig();
 
-            if (DKEditorUtils.AddCabinetWearable(cabinetConfig, _view.TargetAvatar, _view.Config, _view.TargetWearable))
+            if (cabinet.AddWearable(_view.Config, _view.TargetWearable))
             {
                 // reset and return
                 _view.ResetWizardAndConfigView();

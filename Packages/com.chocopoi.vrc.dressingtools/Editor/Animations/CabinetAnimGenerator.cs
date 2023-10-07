@@ -48,10 +48,10 @@ namespace Chocopoi.DressingTools.Animations
         private CabinetAnimWearableModuleConfig _module;
         private List<IDynamicsProxy> _avatarDynamics;
         private List<IDynamicsProxy> _wearableDynamics;
-        private IPathRemapper _pathRemapper;
+        private PathRemapper _pathRemapper;
         private bool _writeDefaults;
 
-        public CabinetAnimGenerator(DKReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, IPathRemapper pathRemapper, bool writeDefaults)
+        public CabinetAnimGenerator(DKReport report, GameObject avatarObject, CabinetAnimWearableModuleConfig module, GameObject wearableObject, List<IDynamicsProxy> avatarDynamics, List<IDynamicsProxy> wearableDynamics, PathRemapper pathRemapper, bool writeDefaults)
         {
             _report = report;
             _avatarObject = avatarObject;
@@ -201,7 +201,7 @@ namespace Chocopoi.DressingTools.Animations
             var disableClip = new AnimationClip();
 
             // prevent unexpected behaviour
-            if (!DKRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
+            if (!DKEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
@@ -216,7 +216,7 @@ namespace Chocopoi.DressingTools.Animations
             var visitedDynamicsTransforms = new List<Transform>();
             foreach (var dynamics in _wearableDynamics)
             {
-                if (!DKRuntimeUtils.IsGrandParent(_avatarObject.transform, dynamics.Transform))
+                if (!DKEditorUtils.IsGrandParent(_avatarObject.transform, dynamics.Transform))
                 {
                     throw new System.Exception(string.Format("Dynamics {0} is not inside avatar {1}, aborting", dynamics.Transform.name, _avatarObject.name));
                 }
@@ -250,7 +250,7 @@ namespace Chocopoi.DressingTools.Animations
         public Dictionary<CabinetAnimWearableModuleConfig.Customizable, System.Tuple<AnimationClip, AnimationClip>> GenerateCustomizableToggleAnimations()
         {
             // prevent unexpected behaviour
-            if (!DKRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
+            if (!DKEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }
@@ -286,7 +286,7 @@ namespace Chocopoi.DressingTools.Animations
         public Dictionary<CabinetAnimWearableModuleConfig.Customizable, AnimationClip> GenerateCustomizableBlendshapeAnimations()
         {
             // prevent unexpected behaviour
-            if (!DKRuntimeUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
+            if (!DKEditorUtils.IsGrandParent(_avatarObject.transform, _wearableObject.transform))
             {
                 throw new System.Exception("Wearable object is not inside avatar! Cannot proceed animation generation.");
             }

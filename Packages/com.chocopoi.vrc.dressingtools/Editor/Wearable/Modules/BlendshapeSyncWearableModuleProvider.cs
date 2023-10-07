@@ -150,7 +150,7 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
             // TODO: implement partial boundaries and inverts
 
-            foreach (var clipContainer in dtCabCtx.animationStore.Clips)
+            foreach (var clipContainer in cabCtx.animationStore.Clips)
             {
                 var oldClip = clipContainer.newClip != null ? clipContainer.newClip : clipContainer.originalClip;
                 var newClip = DTEditorUtils.CopyClip(oldClip);

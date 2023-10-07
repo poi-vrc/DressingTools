@@ -144,7 +144,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeSyncData.avatarGameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeSyncData.avatarGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKRuntimeUtils.IsGrandParent(_view.TargetAvatar.transform, blendshapeSyncData.avatarGameObject.transform))
+                    if (blendshapeSyncData.avatarGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKEditorUtils.IsGrandParent(_view.TargetAvatar.transform, blendshapeSyncData.avatarGameObject.transform))
                     {
                         // renew path if changed
                         blendshapeSyncData.isAvatarGameObjectInvalid = false;
@@ -168,7 +168,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeSyncData.wearableGameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeSyncData.wearableGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKRuntimeUtils.IsGrandParent(_view.TargetWearable.transform, blendshapeSyncData.wearableGameObject.transform))
+                    if (blendshapeSyncData.wearableGameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKEditorUtils.IsGrandParent(_view.TargetWearable.transform, blendshapeSyncData.wearableGameObject.transform))
                     {
                         // renew path if changed
                         blendshapeSyncData.isWearableGameObjectInvalid = false;

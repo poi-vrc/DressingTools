@@ -89,7 +89,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             {
                 _module.animatorPath = "";
             }
-            else if (DKRuntimeUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
+            else if (DKEditorUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
             {
                 _module.animatorPath = AnimationUtils.GetRelativePath(_view.AnimatorObject.transform, _parentView.TargetWearable.transform);
             }
@@ -147,7 +147,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
                 _view.ShowAnimatorObjectPathNotFoundHelpbox = false;
 
                 // verify if in wearable
-                if (!DKRuntimeUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
+                if (!DKEditorUtils.IsGrandParent(_parentView.TargetWearable.transform, _view.AnimatorObject.transform))
                 {
                     _view.ShowNotInWearableHelpbox = true;
                     return;

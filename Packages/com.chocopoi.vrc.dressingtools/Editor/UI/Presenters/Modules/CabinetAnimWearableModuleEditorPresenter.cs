@@ -106,7 +106,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             _module.wearableCustomizables.Add(new CabinetAnimWearableModuleConfig.Customizable()
             {
-                name = "Customizable-" + DKRuntimeUtils.RandomString(6)
+                name = "Customizable-" + DKEditorUtils.RandomString(6)
             });
             UpdateCustomizables();
         }
@@ -259,7 +259,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 };
                 toggleData.changeEvent = () =>
                 {
-                    if (toggleData.gameObject != null && DKRuntimeUtils.IsGrandParent(root, toggleData.gameObject.transform))
+                    if (toggleData.gameObject != null && DKEditorUtils.IsGrandParent(root, toggleData.gameObject.transform))
                     {
                         // renew path if changed
                         toggleData.isInvalid = false;
@@ -337,7 +337,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     var newSmr = blendshapeData.gameObject?.GetComponent<SkinnedMeshRenderer>();
                     var newMesh = newSmr != null ? newSmr.sharedMesh : null;
-                    if (blendshapeData.gameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKRuntimeUtils.IsGrandParent(root, blendshapeData.gameObject.transform))
+                    if (blendshapeData.gameObject != null && newMesh != null && newMesh.blendShapeCount > 0 && DKEditorUtils.IsGrandParent(root, blendshapeData.gameObject.transform))
                     {
                         // renew path if changed
                         blendshapeData.isInvalid = false;
@@ -668,7 +668,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateView()
         {
-            _cabinet = DKRuntimeUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = DKEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
                 if (!CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out _cabinetConfig))

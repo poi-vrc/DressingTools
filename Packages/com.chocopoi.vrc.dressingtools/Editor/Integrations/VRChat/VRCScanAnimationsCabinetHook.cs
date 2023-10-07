@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 
                         foreach (var state in stateMachine.states)
                         {
-                            dtCabCtx.animationStore.RegisterMotion(state.state.motion, (AnimationClip clip) => state.state.motion = clip, (Motion m) => !VRCEditorUtils.IsProxyAnimation(m), visitedMotions);
+                            cabCtx.animationStore.RegisterMotion(state.state.motion, (AnimationClip clip) => state.state.motion = clip, (Motion m) => !VRCEditorUtils.IsProxyAnimation(m), visitedMotions);
                         }
 
                         foreach (var childStateMachine in stateMachine.stateMachines)
