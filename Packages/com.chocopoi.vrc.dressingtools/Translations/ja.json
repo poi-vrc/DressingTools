@@ -8,7 +8,7 @@
     "dressers.default.msgCode.info.multipleBonesInAvatarArmatureDetectedWarningRemoved": "情報: アバター アーマチュアの最初のレベルで複数のボーンが見つけかれました。",
     "dressers.default.msgCode.warn.bonesNotMatchingInArmatureFirstLevel": "警告: 一部のボーンはアーマチュアの最初のレベルで一致しません、これらは移動されません: {0}",
     "integrations.vrc.modules.mergeAnimLayer.editor.helpbox.noAnimatorAttached": "ゲームオブジェクトには アニメーターが見つけかれません。",
-    "legacy.editor.dialog.msg.existingWearableConfigIgnoreConfirm": "衣服に既存の設定があります。続行すると、既存の設定は無視されます。続行しますか？",
+    "legacy.editor.dialog.msg.existingWearableConfigIgnoreConfirm": "衣服に既存の設定があります。続行すると、既存の設定は削除されます。続行しますか？",
     "legacy.editor.textField.newClothesName": "新しい名前",
     "mapping.editor.popup.mappingType.ignoreTransformOnDynamics": "トランスフォーム無視を追加する",
     "modules.wearable.armatureMapping.editor.helpbox.unableToLoadCabinetConfig": "キャビネット設定をロードできません! 設定を確認するかキャビネットを再作成してください。",
@@ -291,5 +291,14 @@
     "wearableConfig.editor.simple.autoSetup.helpbox.unableToLoadCabinetConfig": "自動セットアップ: キャビネット設定をロードできません!",
     "wearableConfig.editor.toolbar.btn.advanced": "上級",
     "wearableConfig.editor.toolbar.btn.simple": "簡易",
-    "cabinet.editor.createCabinet.label.createCabinetToBegin": "まず、キャビネットを作る必要があります!"
+    "cabinet.editor.createCabinet.label.createCabinetToBegin": "まず、キャビネットを作る必要があります!",
+    "integrations.vrc.modules.mergeAnimLayer.msgCode.error.noAnimatorControllerAttached": "エラー: Animator Controller には Animator がありません: {0}",
+    "modules.wearable.cabinetAnim.editor.toggle.invertAvatarToggleOriginalStates": "アバターの切り替えの元の状態を反転する",
+    "menu.dialog.msg.existingWearableConfigWipeConfirm": "衣服に既存の設定があります。続行すると、既存の設定は削除されます。続行しますか？",
+    "modules.wearable.armatureMapping.editor.popup.mappingMode": "マッピングモード",
+    "modules.wearable.armatureMapping.editor.popup.mappingMode.auto": "自動",
+    "modules.wearable.armatureMapping.editor.popup.mappingMode.override": "オーバーライド",
+    "modules.wearable.armatureMapping.editor.popup.mappingMode.manual": "手動",
+    "modules.wearable.cabinetAnim.editor.toggle.invertWearableToggleOriginalStates": "ウェアラブルの切り替えの元の状態を反転する",
+    "modules.wearable.cabinetAnim.editor.toggle.setWearableDynamicsInactive": "ウェアラブルのダイナミクスを無効にする"
 }
