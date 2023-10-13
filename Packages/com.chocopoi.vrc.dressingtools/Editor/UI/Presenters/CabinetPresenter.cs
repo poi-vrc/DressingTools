@@ -20,6 +20,8 @@ using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Api.Wearable;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;

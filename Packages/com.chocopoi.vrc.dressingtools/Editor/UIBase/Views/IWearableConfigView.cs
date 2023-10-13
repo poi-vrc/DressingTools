@@ -19,7 +19,8 @@ using System;
 using System.Collections.Generic;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UIBase.Views

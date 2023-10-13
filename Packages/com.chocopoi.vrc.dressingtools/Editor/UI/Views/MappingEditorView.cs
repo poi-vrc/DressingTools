@@ -62,8 +62,6 @@ namespace Chocopoi.DressingTools.UI.View
             ShowBoneMappingNotAvailableHelpbox = true;
         }
 
-        public void SetContainer(DTMappingEditorContainer container) => _presenter.SetContainer(container);
-
         private void DrawAvatarHierarchy(List<ViewAvatarHierachyNode> nodes)
         {
             var nodeCopy = new List<ViewAvatarHierachyNode>(nodes);

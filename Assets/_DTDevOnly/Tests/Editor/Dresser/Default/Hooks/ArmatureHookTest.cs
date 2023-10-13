@@ -1,7 +1,19 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2023 chocopoi
+ * 
+ * This file is part of DressingTools.
+ * 
+ * DressingTools is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * DressingTools is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Collections.Generic;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
@@ -10,13 +22,13 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
-    public class ArmatureHookTest : DTEditorTestBase
+    public class ArmatureHookTest : EditorTestBase
     {
-        private static bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DKReport report, out List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings, DefaultDresserDynamicsOption dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint)
+        private static bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DKReport report, out List<BoneMapping> boneMappings, DefaultDresserDynamicsOption dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint)
         {
             report = new DKReport();
             var settings = new DefaultDresserSettings();
-            boneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
+            boneMappings = new List<BoneMapping>();
             var hook = new ArmatureHook();
 
             settings.targetAvatar = avatarRoot;
@@ -28,7 +40,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             return hook.Evaluate(report, settings, boneMappings);
         }
 
-        private static void PrintMappings(List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
+        private static void PrintMappings(List<BoneMapping> boneMappings)
         {
             foreach (var mapping in boneMappings)
             {
@@ -197,61 +209,61 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 
         #region Expected Bone Mappings (Identical for either PhysBone or DynamicBones)
         // expected bone mappings
-        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedRemoveDynamicsAndUseParentConstraintsBoneMapping =
+        private static readonly BoneMapping[] ExpectedRemoveDynamicsAndUseParentConstraintsBoneMapping =
         {
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone1" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature/Hips/MyDynBone/MyDynBone2" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
-        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedRemoveDynamicsAndUseParentConstraintsWithSuffixBoneMapping =
+        private static readonly BoneMapping[] ExpectedRemoveDynamicsAndUseParentConstraintsWithSuffixBoneMapping =
         {
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature (Suffix)/Hips (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyBone (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)/MyDynBone1 (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)/MyDynBone2 (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)/MyAnotherDynBone1 (Suffix)" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)/MyAnotherDynBone2 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature (Suffix)/Hips (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyBone (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone1", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)/MyDynBone1 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyDynBone/MyDynBone2", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyDynBone (Suffix)/MyDynBone2 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)/MyAnotherDynBone1 (Suffix)" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature (Suffix)/Hips (Suffix)/MyAnotherDynBone (Suffix)/MyAnotherDynBone2 (Suffix)" },
         };
 
-        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedKeepDynamicsAndUseParentConstraintIfNecessaryBoneMapping =
+        private static readonly BoneMapping[] ExpectedKeepDynamicsAndUseParentConstraintIfNecessaryBoneMapping =
         {
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone1" },
+            new BoneMapping() { mappingType = BoneMappingType.ParentConstraint, avatarBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2", wearableBonePath = "Armature/Hips/MyAnotherDynBone/MyAnotherDynBone2" },
         };
 
-        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedIgnoreTransformBoneMapping =
+        private static readonly BoneMapping[] ExpectedIgnoreTransformBoneMapping =
         {
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.IgnoreTransform, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
         };
 
-        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedCopyDynamicsBoneMapping =
+        private static readonly BoneMapping[] ExpectedCopyDynamicsBoneMapping =
         {
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new BoneMapping() { mappingType = BoneMappingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.CopyDynamics, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
         };
 
-        private static readonly ArmatureMappingWearableModuleConfig.BoneMapping[] ExpectedIgnoreAllBoneMapping =
+        private static readonly BoneMapping[] ExpectedIgnoreAllBoneMapping =
         {
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.DoNothing, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
-            new ArmatureMappingWearableModuleConfig.BoneMapping() { mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.DoNothing, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips", wearableBonePath = "Armature/Hips" },
+            new BoneMapping() { mappingType = BoneMappingType.MoveToBone, avatarBonePath = "Armature/Hips/MyBone", wearableBonePath = "Armature/Hips/MyBone" },
+            new BoneMapping() { mappingType = BoneMappingType.DoNothing, avatarBonePath = "Armature/Hips/MyDynBone", wearableBonePath = "Armature/Hips/MyDynBone" },
+            new BoneMapping() { mappingType = BoneMappingType.DoNothing, avatarBonePath = "Armature/Hips/MyAnotherDynBone", wearableBonePath = "Armature/Hips/MyAnotherDynBone" },
         };
         #endregion Expected Bone Mappings (Identical for either PhysBone or DynamicBones)
 

@@ -18,7 +18,7 @@ using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json.Linq;
 using UnityEditor;

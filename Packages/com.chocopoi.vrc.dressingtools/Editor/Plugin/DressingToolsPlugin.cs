@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.Plugin
 
 #if VRC_SDK_VRCSDK3
             RegisterCabinetHook(new VRCScanAnimationsCabinetHook());
-            RegisterWearableModuleProvider(new VRChatIntegrationWearableModuleProvider());
+            RegisterCabinetModuleProvider(new VRCCabinetAnimCabinetModuleProvider());
             RegisterWearableModuleProvider(new VRCMergeAnimLayerWearableModuleProvider());
 #endif
         }

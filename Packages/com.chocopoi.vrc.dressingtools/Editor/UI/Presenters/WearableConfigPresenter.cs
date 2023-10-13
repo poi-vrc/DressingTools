@@ -24,7 +24,8 @@ using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UI.Views.Modules;
@@ -576,7 +577,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armatureName,
-                    boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto,
+                    boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(new DefaultDresserSettings()),
                     removeExistingPrefixSuffix = true,

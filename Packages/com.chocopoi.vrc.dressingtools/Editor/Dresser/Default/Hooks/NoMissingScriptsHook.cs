@@ -16,10 +16,9 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Localization;
 using UnityEngine;
 
@@ -53,7 +52,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return true;
         }
 
-        public bool Evaluate(DKReport report, DresserSettings settings, List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
+        public bool Evaluate(DKReport report, DresserSettings settings, List<BoneMapping> boneMappings)
         {
             //scan avatar missing scripts
             var avatarResult = ScanGameObject(report, DefaultDresser.MessageCode.MissingScriptsDetectedInAvatar, settings.targetAvatar);

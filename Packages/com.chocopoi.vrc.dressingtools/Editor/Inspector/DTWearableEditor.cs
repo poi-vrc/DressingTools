@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingTools.Api.Wearable;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
@@ -24,6 +25,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools
 {
+    [ExcludeFromCodeCoverage]
     [CustomEditor(typeof(DTWearable))]
     internal class DTWearableEditor : Editor
     {

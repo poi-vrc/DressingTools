@@ -18,10 +18,10 @@
 #if VRC_SDK_VRCSDK3
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Integration.VRChat.Modules;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingTools.Api.Integration.VRChat.Wearable.Modules;
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
 using Chocopoi.DressingTools.Localization;
 using UnityEditor;

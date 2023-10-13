@@ -17,10 +17,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
 using Chocopoi.DressingTools.Localization;
@@ -68,7 +67,7 @@ namespace Chocopoi.DressingTools.Dresser
         [ExcludeFromCodeCoverage]
         public string FriendlyName => "Default Dresser";
 
-        public DKReport Execute(DresserSettings settings, out List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
+        public DKReport Execute(DresserSettings settings, out List<BoneMapping> boneMappings)
         {
             var report = new DKReport();
             boneMappings = null;
@@ -86,7 +85,7 @@ namespace Chocopoi.DressingTools.Dresser
                 return report;
             }
 
-            boneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
+            boneMappings = new List<BoneMapping>();
 
             // evaluate each hooks to generate the bone mappings
             foreach (var hook in Hooks)

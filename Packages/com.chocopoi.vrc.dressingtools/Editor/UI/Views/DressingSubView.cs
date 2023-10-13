@@ -37,11 +37,9 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public event Action TargetAvatarOrWearableChange;
         public event Action AddToCabinetButtonClick;
-        public event Action DressingModeChange;
         public GameObject TargetAvatar { get; set; }
         public GameObject TargetWearable { get; set; }
         public WearableConfig Config { get; set; }
-        public bool ShowAvatarNoExistingCabinetHelpbox { get; set; }
         public bool DisableAllButtons { get; set; }
         public bool DisableAddToCabinetButton { get; set; }
         public int SelectedDressingMode { get => _currentMode; set => _currentMode = value; }
@@ -64,7 +62,6 @@ namespace Chocopoi.DressingTools.UI.Views
             TargetAvatar = null;
             TargetWearable = null;
 
-            ShowAvatarNoExistingCabinetHelpbox = true;
             DisableAllButtons = true;
             DisableAddToCabinetButton = true;
             Config = new WearableConfig();

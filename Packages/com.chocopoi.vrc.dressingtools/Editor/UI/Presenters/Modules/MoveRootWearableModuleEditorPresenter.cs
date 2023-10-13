@@ -18,7 +18,7 @@
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UIBase.Views;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules

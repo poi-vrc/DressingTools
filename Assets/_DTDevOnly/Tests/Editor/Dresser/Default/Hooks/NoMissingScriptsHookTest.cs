@@ -1,6 +1,18 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2023 chocopoi
+ * 
+ * This file is part of DressingTools.
+ * 
+ * DressingTools is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * DressingTools is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Collections.Generic;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
@@ -9,13 +21,13 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
-    public class NoMissingScriptsHookTest : DTEditorTestBase
+    public class NoMissingScriptsHookTest : EditorTestBase
     {
         private bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DKReport report)
         {
             report = new DKReport();
             var settings = new DefaultDresserSettings();
-            var boneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
+            var boneMappings = new List<BoneMapping>();
             var hook = new NoMissingScriptsHook();
 
             settings.targetAvatar = avatarRoot;

@@ -21,6 +21,7 @@ using System.Globalization;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -36,6 +37,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view = view;
             _prefs = PreferencesUtility.GetPreferences();
+
+            _availableLocales = t.GetAvailableLocales();
+            _view.AvailableLanguageKeys.Clear();
+            foreach (var locale in _availableLocales)
+            {
+                _view.AvailableLanguageKeys.Add(new CultureInfo(locale).NativeName);
+            }
 
             SubscribeEvents();
         }
@@ -58,6 +66,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload -= OnUnload;
 
             _view.ForceUpdateView -= OnForceUpdateView;
+            _view.LanguageChanged -= OnLanguageChanged;
             _view.SettingsChanged -= OnSettingsChanged;
             _view.UpdaterCheckUpdateButtonClicked -= OnUpdaterCheckUpdateButtonClicked;
             _view.ResetToDefaultsButtonClicked -= OnResetToDefaultsButtonClicked;
@@ -106,14 +115,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateLanguagePopupView()
         {
-            _availableLocales = t.GetAvailableLocales();
-
-            _view.AvailableLanguageKeys.Clear();
-            foreach (var locale in _availableLocales)
-            {
-                _view.AvailableLanguageKeys.Add(new CultureInfo(locale).NativeName);
-            }
-
             var localeIndex = Array.IndexOf(_availableLocales, _prefs.app.selectedLanguage);
             if (localeIndex == -1)
             {

@@ -99,24 +99,44 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             return copiedMenu;
         }
 
-        public static AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType, string path)
+        public static void FindAnimLayerArrayAndIndex(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType, out VRCAvatarDescriptor.CustomAnimLayer[] layers, out int customAnimLayerIndex)
         {
-            var customAnimLayerIndex = -1;
+            layers = null;
+            customAnimLayerIndex = -1;
+
+            // try find in base anim layers
             for (var i = 0; i < avatarDescriptor.baseAnimationLayers.Length; i++)
             {
                 if (avatarDescriptor.baseAnimationLayers[i].type == animLayerType)
                 {
+                    layers = avatarDescriptor.baseAnimationLayers;
                     customAnimLayerIndex = i;
                     break;
                 }
             }
 
-            if (customAnimLayerIndex == -1)
+            // try find in special layers
+            if (layers == null)
             {
-                return null;
-            }
+                for (var i = 0; i < avatarDescriptor.specialAnimationLayers.Length; i++)
+                {
+                    if (avatarDescriptor.specialAnimationLayers[i].type == animLayerType)
+                    {
+                        layers = avatarDescriptor.specialAnimationLayers;
+                        customAnimLayerIndex = i;
+                        break;
+                    }
+                }
 
-            var animLayer = avatarDescriptor.baseAnimationLayers[customAnimLayerIndex];
+                // not found
+            }
+        }
+
+        public static AnimatorController CopyAndReplaceLayerAnimator(VRCAvatarDescriptor avatarDescriptor, VRCAvatarDescriptor.AnimLayerType animLayerType, string path)
+        {
+            FindAnimLayerArrayAndIndex(avatarDescriptor, animLayerType, out var layers, out var customAnimLayerIndex);
+
+            var animLayer = layers[customAnimLayerIndex];
             var animator = GetAnimLayerAnimator(animLayer);
 
             var fileName = Path.GetFileNameWithoutExtension(path);
@@ -136,7 +156,7 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
             // get back here
             var copiedAnimator = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
             animLayer.animatorController = copiedAnimator;
-            avatarDescriptor.baseAnimationLayers[customAnimLayerIndex] = animLayer;
+            layers[customAnimLayerIndex] = animLayer;
 
             return copiedAnimator;
         }

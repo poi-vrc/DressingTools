@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
 
@@ -26,7 +26,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class MappingEditorPresenter
     {
         private IMappingEditorView _view;
-        private DTMappingEditorContainer _container;
 
         public MappingEditorPresenter(IMappingEditorView view)
         {
@@ -56,7 +55,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnBoneMappingModeChange()
         {
-            _container.boneMappingMode = (ArmatureMappingWearableModuleConfig.BoneMappingMode)_view.SelectedBoneMappingMode;
+            DTMappingEditorWindow.Data.boneMappingMode = (BoneMappingMode)_view.SelectedBoneMappingMode;
+            DTMappingEditorWindow.Data.RaiseMappingEditorChangedEvent();
             UpdateOutputBoneMappings();
             UpdateView();
         }
@@ -71,18 +71,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateView();
         }
 
-        public void SetContainer(DTMappingEditorContainer container)
-        {
-            _container = container;
-            UpdateOutputBoneMappings();
-            UpdateView();
-        }
-
-        private List<ArmatureMappingWearableModuleConfig.BoneMapping> GetAvatarBoneMapping(List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings, Transform avatarRoot, Transform targetAvatarBone)
+        private List<BoneMapping> GetAvatarBoneMapping(List<BoneMapping> boneMappings, Transform avatarRoot, Transform targetAvatarBone)
         {
             var path = AnimationUtils.GetRelativePath(targetAvatarBone, avatarRoot);
 
-            var avatarBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
+            var avatarBoneMappings = new List<BoneMapping>();
 
             foreach (var boneMapping in boneMappings)
             {
@@ -97,45 +90,53 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateOutputBoneMappings()
         {
-            if (_container.boneMappingMode == ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto || _container.boneMappingMode == ArmatureMappingWearableModuleConfig.BoneMappingMode.Manual)
+            if (DTMappingEditorWindow.Data.boneMappingMode == BoneMappingMode.Auto || DTMappingEditorWindow.Data.boneMappingMode == BoneMappingMode.Manual)
             {
                 // copy generated to output
-                _container.outputBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>(_container.generatedBoneMappings);
+                DTMappingEditorWindow.Data.outputBoneMappings = new List<BoneMapping>(DTMappingEditorWindow.Data.generatedBoneMappings);
             }
             else
             {
                 // empty list if override mode
-                _container.outputBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
+                DTMappingEditorWindow.Data.outputBoneMappings = new List<BoneMapping>();
             }
         }
 
         private void UpdateView()
         {
-            if (_container == null || _container.targetAvatar == null || _container.targetWearable == null || _container.generatedBoneMappings == null)
+            if (DTMappingEditorWindow.Data.targetAvatar == null || DTMappingEditorWindow.Data.targetWearable == null || DTMappingEditorWindow.Data.generatedBoneMappings == null)
             {
                 _view.ShowBoneMappingNotAvailableHelpbox = true;
                 return;
             }
 
             _view.ShowBoneMappingNotAvailableHelpbox = false;
-            _view.TargetAvatar = _container.targetAvatar;
-            _view.TargetWearable = _container.targetWearable;
+            _view.TargetAvatar = DTMappingEditorWindow.Data.targetAvatar;
+            _view.TargetWearable = DTMappingEditorWindow.Data.targetWearable;
+            _view.SelectedBoneMappingMode = (int)DTMappingEditorWindow.Data.boneMappingMode;
 
             _view.AvatarHierachyNodes.Clear();
-            // override mode and resultant display mode
-            if (_view.SelectedBoneMappingMode == 1 && _view.SelectedBoneMappingDisplayMode == 1)
+            if (_view.SelectedBoneMappingMode == 0)
             {
-                var previewBoneMappings = new List<ArmatureMappingWearableModuleConfig.BoneMapping>(_container.generatedBoneMappings);
-                DTEditorUtils.HandleBoneMappingOverrides(previewBoneMappings, _container.outputBoneMappings);
-                UpdateAvatarHierarchy(previewBoneMappings, _container.targetAvatar.transform, _view.AvatarHierachyNodes);
+                UpdateAvatarHierarchy(DTMappingEditorWindow.Data.generatedBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
             }
             else
             {
-                UpdateAvatarHierarchy(_container.outputBoneMappings, _container.targetAvatar.transform, _view.AvatarHierachyNodes);
+                if (_view.SelectedBoneMappingMode == 1 && _view.SelectedBoneMappingDisplayMode == 1)
+                {
+                    // override mode and resultant display mode
+                    var previewBoneMappings = new List<BoneMapping>(DTMappingEditorWindow.Data.generatedBoneMappings);
+                    DTEditorUtils.HandleBoneMappingOverrides(previewBoneMappings, DTMappingEditorWindow.Data.outputBoneMappings);
+                    UpdateAvatarHierarchy(previewBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
+                }
+                else
+                {
+                    UpdateAvatarHierarchy(DTMappingEditorWindow.Data.outputBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
+                }
             }
         }
 
-        public void UpdateAvatarHierarchy(List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings, Transform parent, List<ViewAvatarHierachyNode> nodeList)
+        public void UpdateAvatarHierarchy(List<BoneMapping> boneMappings, Transform parent, List<ViewAvatarHierachyNode> nodeList)
         {
             for (var i = 0; i < parent.childCount; i++)
             {
@@ -147,22 +148,23 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     avatarObjectTransform = child,
                     AddMappingButtonClick = () =>
                     {
-                        boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
+                        boneMappings.Add(new BoneMapping()
                         {
-                            avatarBonePath = AnimationUtils.GetRelativePath(child, _container.targetAvatar.transform),
+                            avatarBonePath = AnimationUtils.GetRelativePath(child, DTMappingEditorWindow.Data.targetAvatar.transform),
                             wearableBonePath = null,
-                            mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.DoNothing
+                            mappingType = BoneMappingType.DoNothing
                         });
+                        DTMappingEditorWindow.Data.RaiseMappingEditorChangedEvent();
                         UpdateView();
                     }
                 };
                 nodeList.Add(node);
 
                 // obtain associated mappings
-                var avatarBoneMappings = GetAvatarBoneMapping(boneMappings, _container.targetAvatar.transform, child);
+                var avatarBoneMappings = GetAvatarBoneMapping(boneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, child);
                 foreach (var boneMapping in avatarBoneMappings)
                 {
-                    var wearableTransform = boneMapping.wearableBonePath != null ? _container.targetWearable.transform.Find(boneMapping.wearableBonePath) : null;
+                    var wearableTransform = boneMapping.wearableBonePath != null ? DTMappingEditorWindow.Data.targetWearable.transform.Find(boneMapping.wearableBonePath) : null;
 
                     var viewBoneMapping = new ViewBoneMapping()
                     {
@@ -173,19 +175,21 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     };
                     viewBoneMapping.MappingChange = () =>
                     {
-                        var path = viewBoneMapping.wearableObject != null ? AnimationUtils.GetRelativePath(viewBoneMapping.wearableObject.transform, _container.targetWearable.transform) : null;
+                        var path = viewBoneMapping.wearableObject != null ? AnimationUtils.GetRelativePath(viewBoneMapping.wearableObject.transform, DTMappingEditorWindow.Data.targetWearable.transform) : null;
 
                         viewBoneMapping.isInvalid = path == null;
                         viewBoneMapping.wearablePath = path;
 
-                        boneMapping.avatarBonePath = AnimationUtils.GetRelativePath(child, _container.targetAvatar.transform);
+                        boneMapping.avatarBonePath = AnimationUtils.GetRelativePath(child, DTMappingEditorWindow.Data.targetAvatar.transform);
                         boneMapping.wearableBonePath = path;
-                        boneMapping.mappingType = (ArmatureMappingWearableModuleConfig.BoneMappingType)viewBoneMapping.mappingType;
+                        boneMapping.mappingType = (BoneMappingType)viewBoneMapping.mappingType;
+                        DTMappingEditorWindow.Data.RaiseMappingEditorChangedEvent();
                     };
                     viewBoneMapping.RemoveMappingButtonClick = () =>
                     {
-                        _container.outputBoneMappings.Remove(boneMapping);
+                        DTMappingEditorWindow.Data.outputBoneMappings.Remove(boneMapping);
                         node.wearableMappings.Remove(viewBoneMapping);
+                        DTMappingEditorWindow.Data.RaiseMappingEditorChangedEvent();
                     };
 
                     node.wearableMappings.Add(viewBoneMapping);

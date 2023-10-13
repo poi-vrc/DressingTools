@@ -15,7 +15,7 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [
         "nunit.framework.dll",
         "VRC.SDK3.Dynamics.PhysBone.dll",
@@ -23,7 +23,7 @@
         "Newtonsoft.Json.dll",
         "VRCSDKBase.dll"
     ],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],

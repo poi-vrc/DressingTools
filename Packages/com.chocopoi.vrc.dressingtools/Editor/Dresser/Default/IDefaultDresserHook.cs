@@ -16,14 +16,13 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 {
     internal interface IDefaultDresserHook
     {
-        bool Evaluate(DKReport report, DresserSettings settings, List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings);
+        bool Evaluate(DKReport report, DresserSettings settings, List<BoneMapping> boneMappings);
     }
 }

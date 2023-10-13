@@ -21,10 +21,10 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Cabinet.Modules;
-using Chocopoi.DressingFramework.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Cabinet.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
 
@@ -72,6 +72,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.WearableOnWearPresetDeleteEvent += OnWearableOnWearPresetDeleteEvent;
 
             _view.AddCustomizableEvent += OnAddCustomizableEvent;
+            _view.ConfigChange += OnConfigChange;
 
             _parentView.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
         }
@@ -98,8 +99,16 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.WearableOnWearPresetDeleteEvent -= OnWearableOnWearPresetDeleteEvent;
 
             _view.AddCustomizableEvent -= OnAddCustomizableEvent;
+            _view.ConfigChange -= OnConfigChange;
 
             _parentView.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
+        }
+
+        private void OnConfigChange()
+        {
+            _module.invertAvatarToggleOriginalStates = _view.InvertAvatarToggleOriginalStates;
+            _module.invertWearableToggleOriginalStates = _view.InvertWearableToggleOriginalStates;
+            _module.setWearableDynamicsInactive = _view.SetWearableDynamicsInactive;
         }
 
         private void OnAddCustomizableEvent()
@@ -509,7 +518,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 var wearableTrans = targetWearable.transform;
                 UpdateToggleAndSmrSuggestions(
                     wearableTrans, _module.wearableAnimationOnWear.toggles, presetData.toggles, presetData.toggleSuggestions,
-                     _module.avatarAnimationOnWear.blendshapes, presetData.blendshapes, presetData.smrSuggestions,
+                     _module.wearableAnimationOnWear.blendshapes, presetData.blendshapes, presetData.smrSuggestions,
                       () => UpdateCabinetAnimWearableOnWear(), false);
             }
         }
@@ -666,6 +675,13 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
+        private void UpdateConfig()
+        {
+            _view.InvertAvatarToggleOriginalStates = _module.invertAvatarToggleOriginalStates;
+            _view.InvertWearableToggleOriginalStates = _module.invertWearableToggleOriginalStates;
+            _view.SetWearableDynamicsInactive = _module.setWearableDynamicsInactive;
+        }
+
         private void UpdateView()
         {
             _cabinet = DKEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
@@ -699,6 +715,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             UpdateCabinetAnimAvatarOnWear();
             UpdateCabinetAnimWearableOnWear();
             UpdateCustomizables();
+            UpdateConfig();
         }
 
         private void OnLoad()

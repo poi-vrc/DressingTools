@@ -19,8 +19,8 @@
 using System;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Integration.VRChat.Modules;
 using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingTools.Api.Integration.VRChat.Wearable.Modules;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Integrations.VRChat

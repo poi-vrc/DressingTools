@@ -28,7 +28,7 @@ using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -129,7 +129,7 @@ namespace Chocopoi.DressingTools
             config.info.description = "";
         }
 
-        public static void HandleBoneMappingOverrides(List<ArmatureMappingWearableModuleConfig.BoneMapping> generatedBoneMappings, List<ArmatureMappingWearableModuleConfig.BoneMapping> overrideBoneMappings)
+        public static void HandleBoneMappingOverrides(List<BoneMapping> generatedBoneMappings, List<BoneMapping> overrideBoneMappings)
         {
             foreach (var mappingOverride in overrideBoneMappings)
             {

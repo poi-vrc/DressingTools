@@ -18,11 +18,10 @@
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Proxy;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Localization;
 using UnityEngine;
 
@@ -32,11 +31,11 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private static void AddRecursiveDynamicsBindings(Transform targetAvatarRoot, Transform targetWearableRoot, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot, List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings, ArmatureMappingWearableModuleConfig.BoneMappingType bindingType)
+        private static void AddRecursiveDynamicsBindings(Transform targetAvatarRoot, Transform targetWearableRoot, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot, List<BoneMapping> boneMappings, BoneMappingType bindingType)
         {
             // add bone mapping
 
-            boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
+            boneMappings.Add(new BoneMapping()
             {
                 mappingType = bindingType,
                 avatarBonePath = AnimationUtils.GetRelativePath(avatarDynamicsRoot, targetAvatarRoot),
@@ -62,7 +61,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
         }
 
-        private static void ProcessBone(DKReport report, DefaultDresserSettings settings, List<IDynamicsProxy> avatarDynamicsList, List<IDynamicsProxy> wearableDynamicsList, int level, Transform avatarBoneParent, Transform clothesBoneParent, List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
+        private static void ProcessBone(DKReport report, DefaultDresserSettings settings, List<IDynamicsProxy> avatarDynamicsList, List<IDynamicsProxy> wearableDynamicsList, int level, Transform avatarBoneParent, Transform clothesBoneParent, List<BoneMapping> boneMappings)
         {
             var childs = new List<Transform>();
 
@@ -104,29 +103,29 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     {
                         if (settings.dynamicsOption == DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint) //remove and use parent constraints
                         {
-                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint);
+                            AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, BoneMappingType.ParentConstraint);
                         }
                         else if (settings.dynamicsOption == DefaultDresserDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary) //keep dynbone and use parentconstraint if necessary
                         {
                             if (wearableDynamics == null)
                             {
-                                AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, ArmatureMappingWearableModuleConfig.BoneMappingType.ParentConstraint);
+                                AddRecursiveDynamicsBindings(settings.targetAvatar.transform, settings.targetWearable.transform, avatarTrans, child, boneMappings, BoneMappingType.ParentConstraint);
                             }
                         }
                         else if (settings.dynamicsOption == DefaultDresserDynamicsOption.IgnoreTransform) //use legacy child gameobject
                         {
-                            boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
+                            boneMappings.Add(new BoneMapping()
                             {
-                                mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.IgnoreTransform,
+                                mappingType = BoneMappingType.IgnoreTransform,
                                 avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                                 wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
                         }
                         else if (settings.dynamicsOption == DefaultDresserDynamicsOption.CopyDynamics) //copy dyn bone to clothes bone
                         {
-                            boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
+                            boneMappings.Add(new BoneMapping()
                             {
-                                mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.CopyDynamics,
+                                mappingType = BoneMappingType.CopyDynamics,
                                 avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                                 wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
@@ -134,9 +133,9 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                         else if (settings.dynamicsOption == DefaultDresserDynamicsOption.IgnoreAll) //ignore all
                         {
                             report.LogInfoLocalized(t, DefaultDresser.LogLabel, DefaultDresser.MessageCode.DynamicBoneAllIgnored);
-                            boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
+                            boneMappings.Add(new BoneMapping()
                             {
-                                mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.DoNothing,
+                                mappingType = BoneMappingType.DoNothing,
                                 avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                                 wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                             });
@@ -145,9 +144,9 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     }
                     else
                     {
-                        boneMappings.Add(new ArmatureMappingWearableModuleConfig.BoneMapping()
+                        boneMappings.Add(new BoneMapping()
                         {
-                            mappingType = ArmatureMappingWearableModuleConfig.BoneMappingType.MoveToBone,
+                            mappingType = BoneMappingType.MoveToBone,
                             avatarBonePath = AnimationUtils.GetRelativePath(avatarTrans, settings.targetAvatar.transform),
                             wearableBonePath = AnimationUtils.GetRelativePath(child, settings.targetWearable.transform)
                         });
@@ -171,7 +170,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             return count == 1;
         }
 
-        public bool Evaluate(DKReport report, DresserSettings settings, List<ArmatureMappingWearableModuleConfig.BoneMapping> boneMappings)
+        public bool Evaluate(DKReport report, DresserSettings settings, List<BoneMapping> boneMappings)
         {
             var avatarArmature = settings.targetAvatar.transform.Find(settings.avatarArmatureName);
             var wearableArmature = settings.targetWearable.transform.Find(settings.wearableArmatureName);

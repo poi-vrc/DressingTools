@@ -17,7 +17,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Chocopoi.DressingFramework.Dresser;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 
 namespace Chocopoi.DressingTools.Dresser
 {
