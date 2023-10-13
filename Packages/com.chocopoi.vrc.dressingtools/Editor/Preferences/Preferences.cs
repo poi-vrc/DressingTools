@@ -18,7 +18,6 @@
 using System;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
-using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools
 {
@@ -40,6 +39,7 @@ namespace Chocopoi.DressingTools
             public void ResetToDefaults()
             {
                 selectedLanguage = I18nManager.DefaultLocale;
+                // TODO: change update branch not to use v2
                 updateBranch = "v2";
             }
         }
@@ -80,12 +80,6 @@ namespace Chocopoi.DressingTools
         {
             app.ResetToDefaults();
             cabinet.ResetToDefaults();
-        }
-
-        public string Serialize()
-        {
-            version = CurrentConfigVersion;
-            return JsonConvert.SerializeObject(this);
         }
     }
 }

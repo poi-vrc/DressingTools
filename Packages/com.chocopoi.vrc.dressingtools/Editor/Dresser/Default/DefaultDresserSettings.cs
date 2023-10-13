@@ -16,8 +16,8 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Localization;
 using UnityEditor;
 

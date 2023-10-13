@@ -23,7 +23,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
     internal interface IDressingSubView : IEditorView, IWearableConfigViewParent
     {
         event Action AddToCabinetButtonClick;
-        bool ShowAvatarNoExistingCabinetHelpbox { get; set; }
         bool DisableAllButtons { get; set; }
         bool DisableAddToCabinetButton { get; set; }
         int SelectedDressingMode { get; set; }

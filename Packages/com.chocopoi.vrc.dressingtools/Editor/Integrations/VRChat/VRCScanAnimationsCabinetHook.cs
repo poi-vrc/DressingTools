@@ -12,6 +12,7 @@
 
 #if VRC_SDK_VRCSDK3
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Context;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
@@ -23,8 +24,10 @@ namespace Chocopoi.DressingTools.Integrations.VRChat
 {
     internal class VRCScanAnimationsCabinetHook : CabinetHookBase
     {
+        [ExcludeFromCodeCoverage]
         public override string FriendlyName => "VRChat Scan Animations";
 
+        [ExcludeFromCodeCoverage]
         public override CabinetApplyConstraint Constraint =>
             ApplyAtStage(CabinetApplyStage.Analyzing, CabinetHookStageRunOrder.After)
                 .Build();

@@ -17,9 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingTools.UI;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 
 namespace Chocopoi.DressingTools.UIBase.Views
 {
@@ -39,16 +38,17 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface IArmatureMappingWearableModuleEditorView : IEditorView
     {
+        event Action MappingModeChange;
         event Action DresserChange;
         event Action ModuleSettingsChange;
         event Action DresserSettingsChange;
         event Action RegenerateMappingsButtonClick;
         event Action ViewEditMappingsButtonClick;
-        event Action ViewReportButtonClick;
 
         ReportData DresserReportData { get; set; }
         DresserSettings DresserSettings { get; set; }
         string[] AvailableDresserKeys { get; set; }
+        int SelectedMappingMode { get; set; }
         int SelectedDresserIndex { get; set; }
         bool IsAvatarAssociatedWithCabinet { get; set; }
         bool IsLoadCabinetConfigError { get; set; }
@@ -56,6 +56,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool RemoveExistingPrefixSuffix { get; set; }
         bool GroupBones { get; set; }
 
-        void StartMappingEditor(DTMappingEditorContainer container);
+        void StartMappingEditor();
     }
 }

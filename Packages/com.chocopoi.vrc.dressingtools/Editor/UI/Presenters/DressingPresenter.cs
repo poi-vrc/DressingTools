@@ -63,9 +63,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void UpdateView()
         {
             var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
-            var cabinetIsNull = cabinet == null;
-            _view.ShowAvatarNoExistingCabinetHelpbox = cabinetIsNull;
-            _view.DisableAddToCabinetButton = cabinetIsNull;
+            _view.DisableAddToCabinetButton = cabinet == null;
             _view.Repaint();
         }
 
@@ -124,6 +122,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             if (!_view.IsConfigValid())
             {
+                _view.ShowFixAllInvalidConfig();
                 Debug.Log("[DressingTools] Invalid configuration. Cannot proceed adding to cabinet");
                 return;
             }

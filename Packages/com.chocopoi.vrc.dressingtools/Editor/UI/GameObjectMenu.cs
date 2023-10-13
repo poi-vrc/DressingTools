@@ -16,14 +16,16 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Api.Wearable;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
@@ -43,7 +45,7 @@ namespace Chocopoi.DressingTools.UI
         // the other GameObject creation menu items. This can be achieved by setting its priority to 10 
         private const int MenuItemPriority = 20;
 
-        [MenuItem("GameObject/DressingTools/Auto-setup wearable (Mappings Only)", false, MenuItemPriority)]
+        [MenuItem("GameObject/DressingTools/Quick setup clothes", false, MenuItemPriority)]
         public static void QuickAutoSetup(MenuCommand menuCommand)
         {
             if (!(menuCommand.context is GameObject))
@@ -67,6 +69,16 @@ namespace Chocopoi.DressingTools.UI
             {
                 EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.unableToLoadCabinetConfig"), t._("common.dialog.btn.ok"));
                 return;
+            }
+
+            if (wearable.TryGetComponent<DTWearable>(out var existingComp))
+            {
+                if (!EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.existingWearableConfigWipeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
+                {
+                    return;
+                }
+
+                Object.DestroyImmediate(existingComp);
             }
 
             var wearableConfig = new WearableConfig();
@@ -111,7 +123,7 @@ namespace Chocopoi.DressingTools.UI
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armature.name,
-                    boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto,
+                    boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings),
                     removeExistingPrefixSuffix = true,
@@ -128,38 +140,7 @@ namespace Chocopoi.DressingTools.UI
             cabinet.AddWearable(wearableConfig, wearable);
         }
 
-        [MenuItem("GameObject/DressingTools/Setup wearable with wizard", true, MenuItemPriority)]
-        [MenuItem("GameObject/DressingTools/Auto-setup wearable (Mappings Only)", true, MenuItemPriority)]
-        public static bool ValidateSetupMenus()
-        {
-            // no selected objects
-            if (Selection.objects.Length == 0)
-            {
-                return false;
-            }
-
-            foreach (var obj in Selection.objects)
-            {
-                if (!(obj is GameObject go))
-                {
-                    // not a GameObject
-                    return false;
-                }
-
-                // find the avatar
-                var avatarTransform = go.transform.parent;
-
-                if (avatarTransform == null || !avatarTransform.TryGetComponent(out DTCabinet _))
-                {
-                    // no parent or grandparents has the cabinet
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        [MenuItem("GameObject/DressingTools/Setup wearable with wizard", false, MenuItemPriority)]
+        [MenuItem("GameObject/DressingTools/Setup wearable with editor", false, MenuItemPriority)]
         public static void StartSetupWizard(MenuCommand menuCommand)
         {
             if (!(menuCommand.context is GameObject))

@@ -22,7 +22,7 @@ using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -145,7 +145,6 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return true;
             }
 
-            var dtCabCtx = cabCtx.Extra<DKCabinetContext>();
             var bsm = (BlendshapeSyncWearableModuleConfig)modules[0].config;
 
             // TODO: implement partial boundaries and inverts

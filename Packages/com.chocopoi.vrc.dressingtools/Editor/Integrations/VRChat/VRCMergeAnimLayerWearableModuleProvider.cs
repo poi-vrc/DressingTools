@@ -23,7 +23,6 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework.Context;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
-using Chocopoi.DressingFramework.Integration.VRChat.Modules;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable.Modules;
@@ -33,6 +32,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
+using Chocopoi.DressingTools.Api.Integration.VRChat.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {
@@ -46,6 +46,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             public const string AnimatorPathNotFound = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.animatorPathNotFound";
             public const string AnimatorNotFound = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.animatorNotFound";
             public const string NoSuchAnimLayer = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.noSuchAnimLayer";
+            public const string NoAnimatorControllerAttached = "integrations.vrc.modules.mergeAnimLayer.msgCode.error.noAnimatorControllerAttached";
         }
         private static readonly I18nTranslator t = Localization.I18n.ToolTranslator;
         private const string LogLabel = "VRCMergeAnimLayer";
@@ -209,6 +210,12 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                     continue;
                 }
 
+                if (animator.runtimeAnimatorController == null)
+                {
+                    cabCtx.report.LogErrorLocalized(t, LogLabel, MessageCode.NoAnimatorControllerAttached, animatorTransform.name);
+                    continue;
+                }
+
                 // rebase path
                 var rebasePath = malm.pathMode == VRCMergeAnimLayerWearableModuleConfig.PathMode.Absolute ?
                                 "" :
@@ -224,7 +231,7 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
                 // create merger if haven't
                 if (!mergerByLayer.TryGetValue(vrcAnimLayer.Value, out var merger))
                 {
-                    merger = new AnimatorMerger(cabCtx.MakeUniqueName($"VRC_Merged_{malm.animLayer}.controller"));
+                    merger = new AnimatorMerger(cabCtx.MakeUniqueAssetPath($"VRC_Merged_{malm.animLayer}.controller"));
                     mergerByLayer[vrcAnimLayer.Value] = merger;
 
                     // add root controller

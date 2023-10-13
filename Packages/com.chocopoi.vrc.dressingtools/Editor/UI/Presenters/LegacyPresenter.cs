@@ -18,13 +18,15 @@
 using System.Collections.Generic;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Api.Wearable;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -135,7 +137,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             };
         }
 
-        private List<ArmatureMappingWearableModuleConfig.BoneMapping> GenerateMappings()
+        private List<BoneMapping> GenerateMappings()
         {
             var dresserSettings = GetDresserSettings();
             _report = DefaultDresser.Execute(dresserSettings, out var boneMappings);
@@ -261,7 +263,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     dresserName = DefaultDresser.GetType().FullName,
                     wearableArmatureName = _view.ClothesArmatureObjectName,
-                    boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto,
+                    boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,
                     serializedDresserConfig = JsonConvert.SerializeObject(GetDresserSettings()),
                     removeExistingPrefixSuffix = _view.RemoveExistingPrefixSuffix,

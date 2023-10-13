@@ -17,7 +17,7 @@ using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Proxy;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Localization;
 using UnityEngine;
 
@@ -114,10 +114,11 @@ namespace Chocopoi.DressingTools.Animations
                 }
                 else
                 {
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, toggle.path, toggle.state);
+                    var remappedPath = AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform);
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, remappedPath, toggle.state);
                     if (!_writeDefaults)
                     {
-                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, toggle.path, obj.gameObject.activeSelf);
+                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, remappedPath, obj.gameObject.activeSelf);
                     }
                 }
             }
@@ -140,11 +141,12 @@ namespace Chocopoi.DressingTools.Animations
                     continue;
                 }
 
-                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, blendshape.path, blendshape.blendshapeName, blendshape.value);
+                var remappedPath = AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform);
+                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, remappedPath, blendshape.blendshapeName, blendshape.value);
                 if (!_writeDefaults)
                 {
                     // write the original value if not write defaults
-                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, blendshape.path, blendshape.blendshapeName, originalValue);
+                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, remappedPath, blendshape.blendshapeName, originalValue);
                 }
             }
         }
@@ -160,10 +162,11 @@ namespace Chocopoi.DressingTools.Animations
                 }
                 else
                 {
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), toggle.state);
+                    var remappedPath = AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform);
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, remappedPath, toggle.state);
                     if (!_writeDefaults)
                     {
-                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), obj.gameObject.activeSelf);
+                        AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, remappedPath, obj.gameObject.activeSelf);
                     }
                 }
             }
@@ -186,11 +189,12 @@ namespace Chocopoi.DressingTools.Animations
                     continue;
                 }
 
-                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), blendshape.blendshapeName, blendshape.value);
+                var remappedPath = AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform);
+                AnimationUtils.SetSingleFrameBlendshapeCurve(enableClip, remappedPath, blendshape.blendshapeName, blendshape.value);
                 if (!_writeDefaults)
                 {
                     // write the original value if not write defaults
-                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, AnimationUtils.GetRelativePath(obj.transform, _avatarObject.transform), blendshape.blendshapeName, originalValue);
+                    AnimationUtils.SetSingleFrameBlendshapeCurve(disableClip, remappedPath, blendshape.blendshapeName, originalValue);
                 }
             }
         }
@@ -228,10 +232,11 @@ namespace Chocopoi.DressingTools.Animations
                 }
 
                 // enable/disable dynamics object
-                AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform), true);
+                var remappedPath = AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform);
+                AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, remappedPath, true);
                 if (!_writeDefaults)
                 {
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform), false);
+                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, remappedPath, false);
                 }
 
                 // mark as visited

@@ -21,7 +21,7 @@ using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Localization;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -36,16 +36,19 @@ namespace Chocopoi.DressingTools.Wearable.Modules
         {
             public override void OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
             {
-                var agm = wearableConfig.FindModule(CabinetAnimWearableModuleConfig.ModuleIdentifier);
-                if (agm == null) return;
-                InvertToggleStates(avatarGameObject, wearableConfig, wearableGameObject, agm);
+                var wearableModule = wearableConfig.FindModule(CabinetAnimWearableModuleConfig.ModuleIdentifier);
+                if (wearableModule == null) return;
+
+                var agm = wearableConfig.FindModuleConfig<CabinetAnimWearableModuleConfig>();
+                if (agm.invertAvatarToggleOriginalStates) InvertAvatarToggleStates(agm, avatarGameObject);
+                if (agm.invertWearableToggleOriginalStates) InvertWearableToggleStates(agm, wearableGameObject);
             }
         }
 
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         [ExcludeFromCodeCoverage] public override string Identifier => CabinetAnimWearableModuleConfig.ModuleIdentifier;
-        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.cabnietAnim.friendlyName");
+        [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.cabinetAnim.friendlyName");
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
 
         [ExcludeFromCodeCoverage]
@@ -70,10 +73,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
 
         public override IModuleConfig NewModuleConfig() => new CabinetAnimWearableModuleConfig();
 
-        private static void InvertToggleStates(GameObject avatarGameObject, WearableConfig config, GameObject wearableGameObject, WearableModule module)
+        private static void InvertAvatarToggleStates(CabinetAnimWearableModuleConfig agm, GameObject avatarGameObject)
         {
-            var agm = (CabinetAnimWearableModuleConfig)module.config;
-
             // invert avatar toggles
             foreach (var toggle in agm.avatarAnimationOnWear.toggles)
             {
@@ -85,11 +86,13 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 }
                 avatarToggleObj.gameObject.SetActive(!toggle.state);
             }
+        }
 
+        private static void InvertWearableToggleStates(CabinetAnimWearableModuleConfig agm, GameObject wearableGameObject)
+        {
             // invert wearable toggles
             foreach (var toggle in agm.wearableAnimationOnWear.toggles)
             {
-                Debug.Log("toggle: " + toggle != null);
                 var wearableToggleObj = wearableGameObject.transform.Find(toggle.path);
                 if (wearableToggleObj == null)
                 {
@@ -134,25 +137,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
+        private static void SetDynamicsInactive(ApplyWearableContext wearCtx)
         {
-            if (modules.Count == 0) return true;
-
-            // we only apply preset in preview
-            if (isPreview)
-            {
-                var agm = (CabinetAnimWearableModuleConfig)modules[0].config;
-
-                ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
-                ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);
-
-                return true;
-            }
-
-            InvertToggleStates(cabCtx.avatarGameObject, wearCtx.wearableConfig, wearCtx.wearableGameObject, modules[0]);
-
-            var dtWearCtx = wearCtx.Extra<DKWearableContext>();
-
             // set wearable dynamics inactive
             var visitedDynamicsTransforms = new List<Transform>();
             foreach (var dynamics in wearCtx.wearableDynamics)
@@ -169,6 +155,25 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 // mark as visited
                 visitedDynamicsTransforms.Add(dynamics.Transform);
             }
+        }
+
+        public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
+        {
+            if (modules.Count == 0) return true;
+            var agm = (CabinetAnimWearableModuleConfig)modules[0].config;
+
+            // we only apply preset in preview
+            if (isPreview)
+            {
+                ApplyAnimationPreset(cabCtx.avatarGameObject, agm.avatarAnimationOnWear);
+                ApplyAnimationPreset(wearCtx.wearableGameObject, agm.wearableAnimationOnWear);
+
+                return true;
+            }
+
+            if (agm.invertAvatarToggleOriginalStates) InvertAvatarToggleStates(agm, cabCtx.avatarGameObject);
+            if (agm.invertWearableToggleOriginalStates) InvertWearableToggleStates(agm, wearCtx.wearableGameObject);
+            if (agm.setWearableDynamicsInactive) SetDynamicsInactive(wearCtx);
             return true;
         }
     }

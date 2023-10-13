@@ -12,12 +12,12 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Dresser;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
@@ -33,16 +33,17 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     {
         private static I18nTranslator t = I18n.ToolTranslator;
 
+        public event Action MappingModeChange;
         public event Action DresserChange;
         public event Action ModuleSettingsChange;
         public event Action DresserSettingsChange;
         public event Action RegenerateMappingsButtonClick;
         public event Action ViewEditMappingsButtonClick;
-        public event Action ViewReportButtonClick;
 
         public ReportData DresserReportData { get; set; }
         public DresserSettings DresserSettings { get; set; }
         public string[] AvailableDresserKeys { get; set; }
+        public int SelectedMappingMode { get => _selectedMappingMode; set => _selectedMappingMode = value; }
         public int SelectedDresserIndex { get => _selectedDresserIndex; set => _selectedDresserIndex = value; }
         public bool IsAvatarAssociatedWithCabinet { get; set; }
         public bool IsLoadCabinetConfigError { get; set; }
@@ -52,6 +53,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         private ArmatureMappingWearableModuleEditorPresenter _presenter;
         private IWearableModuleEditorViewParent _parentView;
+        private int _selectedMappingMode;
         private int _selectedDresserIndex;
         private string _avatarArmatureName;
         private bool _foldoutDresserReportLogEntries;
@@ -72,13 +74,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             DresserSettings = null;
         }
 
-        public void StartMappingEditor(DTMappingEditorContainer container)
+        public void StartMappingEditor()
         {
-            var boneMappingEditorWindow = (DTMappingEditorWindow)EditorWindow.GetWindow(typeof(DTMappingEditorWindow));
-
-            boneMappingEditorWindow.SetContainer(container);
-            boneMappingEditorWindow.titleContent = new GUIContent(t._("modules.wearable.armatureMapping.editor.title"));
-            boneMappingEditorWindow.Show();
+            DTMappingEditorWindow.StartMappingEditor();
         }
 
         private void DrawDresserReportGUI()
@@ -138,67 +136,60 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
 
         public override void OnGUI()
         {
-            // list all available dressers
-            Popup(t._("modules.wearable.armatureMapping.editor.popup.dressers"), ref _selectedDresserIndex, AvailableDresserKeys, DresserChange);
-
-            if (IsAvatarAssociatedWithCabinet)
-            {
-                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.assocatedWithCabinetUseEditorChangeArmatureName"), MessageType.Info);
-            }
-            if (IsLoadCabinetConfigError)
-            {
-                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.unableToLoadCabinetConfig"), MessageType.Error);
-            }
-            BeginDisabled(IsAvatarAssociatedWithCabinet);
-            {
-                DelayedTextField(t._("modules.wearable.armatureMapping.editor.textField.avatarArmatureName"), ref _avatarArmatureName, ModuleSettingsChange);
-            }
-            EndDisabled();
             ToggleLeft(t._("modules.wearable.armatureMapping.editor.toggle.removeExistingPrefixesAndSuffixes"), ref _removeExistingPrefixSuffix, ModuleSettingsChange);
             ToggleLeft(t._("modules.wearable.armatureMapping.editor.toggle.groupBones"), ref _groupBones, ModuleSettingsChange);
 
-            // TODO: the current way to draw dresser settings is not in MVP pattern
-            if (DresserSettings != null)
+            Popup(t._("modules.wearable.armatureMapping.editor.popup.mappingMode"), ref _selectedMappingMode, new string[] {
+                t._("modules.wearable.armatureMapping.editor.popup.mappingMode.auto"),
+                t._("modules.wearable.armatureMapping.editor.popup.mappingMode.override"),
+                t._("modules.wearable.armatureMapping.editor.popup.mappingMode.manual") }, MappingModeChange);
+
+            Button(t._("modules.wearable.armatureMapping.editor.btn.viewEditMappings"), ViewEditMappingsButtonClick);
+
+            // not manual mode
+            if (_selectedMappingMode != 2)
             {
-                if (DresserSettings.DrawEditorGUI())
+                HorizontalLine();
+
+                // list all available dressers
+                Popup(t._("modules.wearable.armatureMapping.editor.popup.dressers"), ref _selectedDresserIndex, AvailableDresserKeys, DresserChange);
+
+                if (IsAvatarAssociatedWithCabinet)
                 {
-                    // raise dresser settings changed event
-                    DresserSettingsChange?.Invoke();
+                    HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.assocatedWithCabinetUseEditorChangeArmatureName"), MessageType.Info);
                 }
-            }
-            else
-            {
-                HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.unableToRenderDresserSettings"), MessageType.Error);
-            }
+                if (IsLoadCabinetConfigError)
+                {
+                    HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.unableToLoadCabinetConfig"), MessageType.Error);
+                }
+                BeginDisabled(IsAvatarAssociatedWithCabinet);
+                {
+                    DelayedTextField(t._("modules.wearable.armatureMapping.editor.textField.avatarArmatureName"), ref _avatarArmatureName, ModuleSettingsChange);
+                }
+                EndDisabled();
 
-            Separator();
+                // TODO: the current way to draw dresser settings is not in MVP pattern
+                if (DresserSettings != null)
+                {
+                    if (DresserSettings.DrawEditorGUI())
+                    {
+                        // raise dresser settings changed event
+                        DresserSettingsChange?.Invoke();
+                    }
+                }
+                else
+                {
+                    HelpBox(t._("modules.wearable.armatureMapping.editor.helpbox.unableToRenderDresserSettings"), MessageType.Error);
+                }
 
-            BeginHorizontal();
-            {
+                Separator();
+
                 Button(t._("modules.wearable.armatureMapping.editor.btn.regenerateMappings"), RegenerateMappingsButtonClick);
-                Button(t._("modules.wearable.armatureMapping.editor.btn.viewEditMappings"), ViewEditMappingsButtonClick);
+
+                HorizontalLine();
+
+                DrawDresserReportGUI();
             }
-            EndHorizontal();
-
-            BeginHorizontal();
-            {
-                BeginDisabled(DresserReportData == null);
-                {
-                    Button(t._("modules.wearable.armatureMapping.editor.btn.viewReport"), ViewReportButtonClick);
-                }
-                EndDisabled();
-                BeginDisabled(true);
-                {
-                    // TODO: handle test now
-                    Button(t._("modules.wearable.armatureMapping.editor.btn.testNow"));
-                }
-                EndDisabled();
-            }
-            EndHorizontal();
-
-            HorizontalLine();
-
-            DrawDresserReportGUI();
         }
 
         public override bool IsValid() => _presenter.IsValid();

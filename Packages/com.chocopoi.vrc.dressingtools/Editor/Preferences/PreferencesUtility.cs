@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingTools.Localization;
@@ -31,9 +32,9 @@ namespace Chocopoi.DressingTools
 
         private static readonly string EditorPrefsKey = "Chocopoi.DressingTools.Preferences";
 
-        private static readonly string DefaultUpdateBranch = "stable";
-
         private static Preferences s_prefs = null;
+
+        internal static IUI ui = new UnityEditorUI();
 
         public static Preferences GetPreferences()
         {
@@ -63,7 +64,7 @@ namespace Chocopoi.DressingTools
                 if (jObject == null)
                 {
                     Debug.LogWarning("[DressingTools] Invalid preferences detected, using default preferences instead");
-                    EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.invalidPrefsUsingDefault"), t._("common.dialog.btn.ok"));
+                    ui.ShowInvalidPrefsUsingDefaultDialog();
                     return new Preferences();
                 }
 
@@ -71,7 +72,7 @@ namespace Chocopoi.DressingTools
                 if (version.Major > Preferences.CurrentConfigVersion.Major)
                 {
                     Debug.LogWarning("[DressingTools] Incompatible preferences version detected, expected version " + Preferences.CurrentConfigVersion + " but preferences file is at a newer version " + version + ", using default preferences file instead");
-                    EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.incompatiblePrefsVersionUsingDefault", version, Preferences.CurrentConfigVersion), t._("common.dialog.btn.ok"));
+                    ui.ShowIncompatiblePrefsVersionUsingDefaultDialog(version.ToString());
                     return new Preferences();
                 }
 
@@ -81,8 +82,8 @@ namespace Chocopoi.DressingTools
             }
             catch (System.Exception e)
             {
-                Debug.LogError(e);
-                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.unableToLoadPrefsUsingDefault", e.Message), t._("common.dialog.btn.ok"));
+                Debug.LogException(e);
+                ui.ShowUnableToLoadPrefsVersionUsingDefaultDialog(e);
                 return new Preferences();
             }
         }
@@ -95,8 +96,8 @@ namespace Chocopoi.DressingTools
             }
             catch (System.Exception e)
             {
-                Debug.LogError(e);
-                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.unableToSavePreferences", e.Message), t._("common.dialog.btn.ok"));
+                Debug.LogException(e);
+                ui.ShowUnableToSavePrefsVersionUsingDefaultDialog(e);
             }
         }
 
@@ -104,6 +105,38 @@ namespace Chocopoi.DressingTools
         {
             s_prefs.ResetToDefaults();
             SavePreferences();
+        }
+
+        // interface for mocking in unit tests
+        internal interface IUI
+        {
+            void ShowInvalidPrefsUsingDefaultDialog();
+            void ShowIncompatiblePrefsVersionUsingDefaultDialog(string version);
+            void ShowUnableToLoadPrefsVersionUsingDefaultDialog(Exception e);
+            void ShowUnableToSavePrefsVersionUsingDefaultDialog(Exception e);
+        }
+
+        internal class UnityEditorUI : IUI
+        {
+            public void ShowIncompatiblePrefsVersionUsingDefaultDialog(string version)
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.incompatiblePrefsVersionUsingDefault", version, Preferences.CurrentConfigVersion), t._("common.dialog.btn.ok"));
+            }
+
+            public void ShowInvalidPrefsUsingDefaultDialog()
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.invalidPrefsUsingDefault"), t._("common.dialog.btn.ok"));
+            }
+
+            public void ShowUnableToLoadPrefsVersionUsingDefaultDialog(Exception e)
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.unableToLoadPrefsUsingDefault", e.Message), t._("common.dialog.btn.ok"));
+            }
+
+            public void ShowUnableToSavePrefsVersionUsingDefaultDialog(Exception e)
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.dialog.msg.unableToSavePreferences", e.Message), t._("common.dialog.btn.ok"));
+            }
         }
     }
 }

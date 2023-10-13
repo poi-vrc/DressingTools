@@ -188,6 +188,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
     internal interface ICabinetAnimWearableModuleEditorView : IEditorView
     {
+        event Action ConfigChange;
         event Action AvatarOnWearPresetChangeEvent;
         event Action AvatarOnWearPresetSaveEvent;
         event Action AvatarOnWearPresetDeleteEvent;
@@ -199,6 +200,10 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action WearableOnWearToggleAddEvent;
         event Action WearableOnWearBlendshapeAddEvent;
         event Action AddCustomizableEvent;
+
+        bool InvertAvatarToggleOriginalStates { get; set; }
+        bool InvertWearableToggleOriginalStates { get; set; }
+        bool SetWearableDynamicsInactive { get; set; }
         bool ShowCannotRenderPresetWithoutTargetAvatarHelpBox { get; set; }
         bool ShowCannotRenderPresetWithoutTargetWearableHelpBox { get; set; }
         PresetViewData AvatarOnWearPresetData { get; set; }

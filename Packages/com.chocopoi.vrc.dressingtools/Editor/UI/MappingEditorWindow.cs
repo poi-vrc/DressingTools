@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.View;
 using UnityEditor;
 using UnityEngine;
@@ -25,50 +28,54 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI
 {
     [ExcludeFromCodeCoverage]
-    internal class DTMappingEditorContainer
-    {
-        public GameObject targetAvatar;
-        public GameObject targetWearable;
-        public ArmatureMappingWearableModuleConfig.BoneMappingMode boneMappingMode;
-        public List<ArmatureMappingWearableModuleConfig.BoneMapping> generatedBoneMappings;
-        public List<ArmatureMappingWearableModuleConfig.BoneMapping> outputBoneMappings;
-
-        public DTMappingEditorContainer()
-        {
-            targetAvatar = null;
-            targetWearable = null;
-            boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto;
-            generatedBoneMappings = null;
-            outputBoneMappings = null;
-        }
-    }
-
     internal class DTMappingEditorWindow : EditorWindow
     {
-        private MappingEditorView _view;
-        private DTMappingEditorContainer _container;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        public DTMappingEditorWindow()
+        internal class ViewData
         {
-            _container = null;
-        }
+            public event Action MappingEditorChanged;
 
-        public void SetContainer(DTMappingEditorContainer container)
-        {
-            _container = container;
-            if (_view != null)
+            public GameObject targetAvatar;
+            public GameObject targetWearable;
+            public BoneMappingMode boneMappingMode;
+            public List<BoneMapping> generatedBoneMappings;
+            public List<BoneMapping> outputBoneMappings;
+
+            public ViewData()
             {
-                _view.SetContainer(_container);
+                Reset();
+            }
+
+            internal void RaiseMappingEditorChangedEvent()
+            {
+                MappingEditorChanged?.Invoke();
+            }
+
+            public void Reset()
+            {
+                targetAvatar = null;
+                targetWearable = null;
+                boneMappingMode = BoneMappingMode.Auto;
+                generatedBoneMappings = null;
+                outputBoneMappings = new List<BoneMapping>();
             }
         }
+
+        internal static ViewData Data { get; private set; } = new ViewData();
+
+        public static void StartMappingEditor()
+        {
+            var boneMappingEditorWindow = GetWindow<DTMappingEditorWindow>();
+            boneMappingEditorWindow.titleContent = new GUIContent(t._("modules.wearable.armatureMapping.editor.title"));
+            boneMappingEditorWindow.Show();
+        }
+
+        private MappingEditorView _view;
 
         public void OnEnable()
         {
             _view = new MappingEditorView();
-            if (_container != null)
-            {
-                _view.SetContainer(_container);
-            }
             rootVisualElement.Add(_view);
             _view.OnEnable();
         }
@@ -76,6 +83,11 @@ namespace Chocopoi.DressingTools.UI
         public void OnDisable()
         {
             _view.OnDisable();
+        }
+
+        public MappingEditorView GetView()
+        {
+            return _view;
         }
     }
 }

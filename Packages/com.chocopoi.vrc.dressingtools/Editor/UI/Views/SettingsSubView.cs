@@ -73,7 +73,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public SettingsSubView(IMainView mainView)
         {
             _mainView = mainView;
-            _presenter = new SettingsPresenter(this);
             AvailableLanguageKeys = new List<string>() { PopupPlaceholder };
             AvailableBranchKeys = new List<string>() { PopupPlaceholder };
 
@@ -88,6 +87,8 @@ namespace Chocopoi.DressingTools.UI.Views
             UpdaterShowHelpboxUpdateNotChecked = true;
             UpdaterDefaultBranch = "";
             UpdaterSelectedBranch = null;
+
+            _presenter = new SettingsPresenter(this);
         }
 
         private void InitVisualTree()

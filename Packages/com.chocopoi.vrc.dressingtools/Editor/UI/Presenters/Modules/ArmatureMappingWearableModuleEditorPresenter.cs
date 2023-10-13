@@ -16,16 +16,21 @@
  */
 
 using System.Collections.Generic;
+using System.Reflection;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.UIBase.Views;
 using Newtonsoft.Json;
+using UnityEditor;
+using UnityEngine;
+using LogType = Chocopoi.DressingFramework.Logging.LogType;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
@@ -36,7 +41,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private ArmatureMappingWearableModuleConfig _module;
 
         private DKReport _dresserReport = null;
-        private DTMappingEditorContainer _mappingEditorContainer;
         private ICabinet _cabinet;
 
         public ArmatureMappingWearableModuleEditorPresenter(IArmatureMappingWearableModuleEditorView view, IWearableModuleEditorViewParent parentView, ArmatureMappingWearableModuleConfig module)
@@ -45,7 +49,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _parentView = parentView;
             _module = module;
 
-            _mappingEditorContainer = new DTMappingEditorContainer();
             ResetMappingEditorContainer();
 
             SubscribeEvents();
@@ -62,7 +65,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.DresserSettingsChange += OnDresserSettingsChange;
             _view.RegenerateMappingsButtonClick += OnRegenerateMappingsButtonClick;
             _view.ViewEditMappingsButtonClick += OnViewEditMappingsButtonClick;
-            _view.ViewReportButtonClick += OnViewReportButtonClick;
+            _view.MappingModeChange += OnMappingModeChange;
+            DTMappingEditorWindow.Data.MappingEditorChanged += OnMappingEditorDataChange;
         }
 
         private void UnsubscribeEvents()
@@ -76,35 +80,51 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.DresserSettingsChange -= OnDresserSettingsChange;
             _view.RegenerateMappingsButtonClick -= OnRegenerateMappingsButtonClick;
             _view.ViewEditMappingsButtonClick -= OnViewEditMappingsButtonClick;
-            _view.ViewReportButtonClick -= OnViewReportButtonClick;
+            _view.MappingModeChange -= OnMappingModeChange;
+            DTMappingEditorWindow.Data.MappingEditorChanged -= OnMappingEditorDataChange;
         }
 
-        private void OnViewReportButtonClick()
+        private void OnMappingEditorDataChange()
         {
-            if (_dresserReport != null)
-            {
-                ReportWindow.ShowWindow(_dresserReport);
-            }
+            _module.boneMappingMode = DTMappingEditorWindow.Data.boneMappingMode;
+            _module.boneMappings = _module.boneMappingMode != BoneMappingMode.Auto ? DTMappingEditorWindow.Data.outputBoneMappings : new List<BoneMapping>();
+            UpdateView();
+        }
+
+        private void OnMappingModeChange()
+        {
+            _module.boneMappingMode = DTMappingEditorWindow.Data.boneMappingMode = (BoneMappingMode)_view.SelectedMappingMode;
+            UpdateMappingEditorView();
         }
 
         private void ResetMappingEditorContainer()
         {
-            _mappingEditorContainer.targetAvatar = null;
-            _mappingEditorContainer.targetWearable = null;
-            _mappingEditorContainer.generatedBoneMappings = null;
-            _mappingEditorContainer.boneMappingMode = ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto;
+            DTMappingEditorWindow.Data.Reset();
+        }
+
+        private void UpdateMappingEditorView(List<BoneMapping> generatedMappings = null)
+        {
+            // update data
+            DTMappingEditorWindow.Data.targetAvatar = _parentView.TargetAvatar;
+            DTMappingEditorWindow.Data.targetWearable = _parentView.TargetWearable;
+            DTMappingEditorWindow.Data.boneMappingMode = _module.boneMappingMode;
+            DTMappingEditorWindow.Data.outputBoneMappings = _module.boneMappings;
+            if (generatedMappings != null) DTMappingEditorWindow.Data.generatedBoneMappings = generatedMappings;
+
+            // force update if opened
+            if (EditorWindow.HasOpenInstances<DTMappingEditorWindow>())
+            {
+                var window = EditorWindow.GetWindow<DTMappingEditorWindow>();
+                window.GetView().RaiseForceUpdateViewEvent();
+            }
         }
 
         private void GenerateDresserMappings()
         {
-            // reset mapping editor container
-            ResetMappingEditorContainer();
-            _mappingEditorContainer.targetAvatar = _parentView.TargetAvatar;
-            _mappingEditorContainer.targetWearable = _parentView.TargetWearable;
-
             // execute dresser
             var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
-            _dresserReport = dresser.Execute(_view.DresserSettings, out _mappingEditorContainer.generatedBoneMappings);
+            _dresserReport = dresser.Execute(_view.DresserSettings, out var generatedMappings);
+            UpdateMappingEditorView(generatedMappings);
 
             ApplySettings();
             UpdateDresserReport();
@@ -235,11 +255,13 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnViewEditMappingsButtonClick()
         {
-            _view.StartMappingEditor(_mappingEditorContainer);
+            _view.StartMappingEditor();
         }
 
         public void UpdateView()
         {
+            _view.SelectedMappingMode = (int)_module.boneMappingMode;
+
             // list all available dressers
             _view.AvailableDresserKeys = DresserRegistry.GetAvailableDresserKeys();
             _view.SelectedDresserIndex = DresserRegistry.GetDresserKeyIndexByTypeName(_module.dresserName);
@@ -251,19 +273,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.GroupBones = _module.groupBones;
             _view.RemoveExistingPrefixSuffix = _module.removeExistingPrefixSuffix;
 
-            var regenerateMappingsNeeded = false;
-
             CheckCorrectDresserSettingsType();
-
             UpdateDresserSettings();
-
             UpdateDresserReport();
-
-            if (regenerateMappingsNeeded)
-            {
-                regenerateMappingsNeeded = false;
-                GenerateDresserMappings();
-            }
+            UpdateMappingEditorView();
         }
 
         private void OnLoad()
@@ -289,8 +302,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _module.serializedDresserConfig = JsonConvert.SerializeObject(_view.DresserSettings);
 
             // update values from mapping editor container
-            _module.boneMappingMode = _mappingEditorContainer.boneMappingMode;
-            _module.boneMappings = _module.boneMappingMode != ArmatureMappingWearableModuleConfig.BoneMappingMode.Auto ? _mappingEditorContainer.generatedBoneMappings : new List<ArmatureMappingWearableModuleConfig.BoneMapping>();
+            _module.boneMappingMode = DTMappingEditorWindow.Data.boneMappingMode;
+            _module.boneMappings = _module.boneMappingMode != BoneMappingMode.Auto ? DTMappingEditorWindow.Data.outputBoneMappings : new List<BoneMapping>();
         }
 
         public bool IsValid()
