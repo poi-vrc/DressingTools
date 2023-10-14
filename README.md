@@ -7,7 +7,7 @@
   <br>
   
   <p>
-  A simple but advanced, non-destructive and automated cabinet system.
+  A simple but advanced, non-destructive cabinet system.
   <br>
   シンプルだが高度な非破壊キャビネットシステム
   <br>
@@ -21,6 +21,10 @@
   
   [BOOTH](https://chocopoi.booth.pm/items/3639300) | [Discord](https://discord.gg/Gyst8Pr2ay) | [Twitter](https://twitter.com/chocolapoi)
 </div>
+
+https://github.com/poi-vrc/DressingTools/assets/77053052/6cc4f998-321e-4b4b-a99f-f0e8f2bb6ffc
+
+[[Play in YouTube]](https://youtu.be/WKYKn1aTLwg)
 
 ## Licensing
 https://dressingtools.chocopoi.com/docs/extending-dt/licensing
