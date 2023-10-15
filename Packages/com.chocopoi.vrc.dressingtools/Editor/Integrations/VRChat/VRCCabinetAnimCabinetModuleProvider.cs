@@ -17,13 +17,16 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.AvatarLib.Expressions;
 using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Cabinet.Modules;
 using Chocopoi.DressingFramework.Context;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.Animations;
+using Chocopoi.DressingTools.Api.Integration.VRChat.Cabinet.Modules;
+using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Integrations.VRChat;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -31,11 +34,6 @@ using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Api.Integration.VRChat.Cabinet.Modules;
-using Chocopoi.DressingFramework.Cabinet.Modules;
-using Chocopoi.DressingFramework.Wearable;
-using System;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {

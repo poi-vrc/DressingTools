@@ -21,7 +21,6 @@ using System.Globalization;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
