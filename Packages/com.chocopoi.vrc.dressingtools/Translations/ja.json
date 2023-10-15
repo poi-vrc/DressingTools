@@ -242,7 +242,6 @@
     "modules.wearable.moveRoot.friendlyName": "オブジェクトに移動する",
     "report.helpbox.noReport": "レポートはありません。",
     "settings.dialog.msg.incompatiblePrefsVersionUsingDefault": "互換性がない設定バージョン {0} > {1}。代わりにデフォルトを使用します",
-    "settings.editor.dialog.msg.confirmUpdateLocaleReloadWindow": "新しい言語を適用するには、ウィンドウを再ロードする必要があります。よろしてしょうか ？",
     "settings.editor.cabinet.defaults.toggle.animWriteDefaults": "アニメーションデフォルトを書き込む (Write Defaults)",
     "settings.editor.cabinet.defaults.toggle.groupDynamics": "ダイナミクスをグループする",
     "settings.editor.cabinet.defaults.toggle.separateDynamics": "ダイナミクスを異なるオブジェクトに分離する",

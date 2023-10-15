@@ -239,7 +239,6 @@
     "modules.wearable.cabinetAnim.friendlyName": "衣櫃動畫",
     "modules.wearable.moveRoot.editor.helpbox.selectAvatarFirst": "請先選擇一個角色。",
     "settings.editor.cabinet.defaults.toggle.separateDynamics": "將動骨分離到不同的物件中",
-    "settings.editor.dialog.msg.confirmUpdateLocaleReloadWindow": "要套用新語言，您必須重新載入視窗。你確定嗎？",
     "settings.editor.i18n.popup.language": "語言",
     "settings.editor.updateChecker.btn.checkUpdate": "檢查更新",
     "settings.editor.updateChecker.foldout": "更新檢查器",
