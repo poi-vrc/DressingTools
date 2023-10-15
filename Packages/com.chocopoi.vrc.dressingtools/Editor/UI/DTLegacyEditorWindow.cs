@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.UI
 
         private LegacyView _view;
 
-        [MenuItem("Tools/chocopoi/Legacy Editor", false, 0)]
+        [MenuItem("Tools/chocopoi/DT Legacy Editor", false, 0)]
         static void ShowWindow()
         {
             var window = (DTLegacyEditorWindow)GetWindow(typeof(DTLegacyEditorWindow));

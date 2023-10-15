@@ -230,10 +230,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             // run cabinet applier
             var report = new DKReport();
+            var avatarObj = cabinet.AvatarGameObject;
             new CabinetApplier(report, cabinet).RunStages();
+            ReportWindow.AddReport(avatarObj.name, report);
             if (report.HasLogType(DressingFramework.Logging.LogType.Error))
             {
-                ReportWindow.ShowWindow(report);
+                ReportWindow.ShowWindow();
             }
 
             Selection.activeGameObject = targetAvatar;
