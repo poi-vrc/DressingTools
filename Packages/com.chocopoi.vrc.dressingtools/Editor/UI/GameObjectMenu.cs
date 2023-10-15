@@ -114,7 +114,8 @@ namespace Chocopoi.DressingTools.UI
 
                 if (report.HasLogType(DressingFramework.Logging.LogType.Error))
                 {
-                    ReportWindow.ShowWindow(report);
+                    ReportWindow.AddReport(cabinet.AvatarGameObject.name, report);
+                    ReportWindow.ShowWindow();
                     EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.defaultDresserHasErrors"), t._("common.dialog.btn.ok"));
                     return;
                 }
