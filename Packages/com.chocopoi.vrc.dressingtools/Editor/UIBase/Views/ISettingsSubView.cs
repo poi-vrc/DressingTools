@@ -28,6 +28,8 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action UpdaterCheckUpdateButtonClicked;
         event Action ResetToDefaultsButtonClicked;
 
+        bool ShowLanguageReloadWindowHelpbox { get; set; }
+
         List<string> AvailableLanguageKeys { get; set; }
         List<string> AvailableBranchKeys { get; set; }
 
@@ -42,7 +44,5 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
         string UpdaterDefaultBranch { get; set; }
         string UpdaterSelectedBranch { get; set; }
-
-        void AskReloadWindow();
     }
 }

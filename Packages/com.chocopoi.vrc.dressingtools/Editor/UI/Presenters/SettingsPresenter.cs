@@ -98,7 +98,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             I18nManager.Instance.SetLocale(locale);
             PreferencesUtility.SavePreferences();
 
-            _view.AskReloadWindow();
+            _view.ShowLanguageReloadWindowHelpbox = true;
+            _view.Repaint();
         }
 
         private void OnSettingsChanged()

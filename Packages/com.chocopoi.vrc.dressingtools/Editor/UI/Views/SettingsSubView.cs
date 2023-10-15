@@ -42,6 +42,8 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action UpdaterCheckUpdateButtonClicked;
         public event Action ResetToDefaultsButtonClicked;
 
+        public bool ShowLanguageReloadWindowHelpbox { get; set; }
+
         public List<string> AvailableLanguageKeys { get; set; }
         public List<string> AvailableBranchKeys { get; set; }
 
@@ -69,12 +71,15 @@ namespace Chocopoi.DressingTools.UI.Views
         private VisualElement _updaterBranchSelectionContainer;
         private Label _updaterDefBranchLabel;
         private PopupField<string> _updaterBranchPopup;
+        private VisualElement _languageHelpboxContainer;
 
         public SettingsSubView(IMainView mainView)
         {
             _mainView = mainView;
             AvailableLanguageKeys = new List<string>() { PopupPlaceholder };
             AvailableBranchKeys = new List<string>() { PopupPlaceholder };
+
+            ShowLanguageReloadWindowHelpbox = false;
 
             LanguageSelected = null;
 
@@ -113,6 +118,8 @@ namespace Chocopoi.DressingTools.UI.Views
                 LanguageChanged?.Invoke();
             });
             languagePopupContainer.Add(_languagePopup);
+
+            _languageHelpboxContainer = Q<VisualElement>("language-helpbox-container").First();
         }
 
         private void InitCabinetDefaults()
@@ -198,6 +205,11 @@ namespace Chocopoi.DressingTools.UI.Views
         public override void Repaint()
         {
             _languagePopup.value = LanguageSelected;
+            _languageHelpboxContainer.Clear();
+            if (ShowLanguageReloadWindowHelpbox)
+            {
+                _languageHelpboxContainer.Add(CreateHelpBox(t._("settings.editor.helpbox.updateLocaleReloadWindow"), MessageType.Warning));
+            }
 
             RepaintCabinetDefaults();
             RepaintUpdateChecker();
@@ -218,17 +230,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public override void OnDisable()
         {
             base.OnDisable();
-        }
-
-        public void AskReloadWindow()
-        {
-            if (EditorUtility.DisplayDialog(t._("tool.name"), t._("settings.editor.dialog.msg.confirmUpdateLocaleReloadWindow"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
-            {
-                var window = EditorWindow.GetWindow(typeof(DTMainEditorWindow));
-                window.Close();
-
-                DTMainEditorWindow.ShowWindow();
-            }
         }
     }
 }

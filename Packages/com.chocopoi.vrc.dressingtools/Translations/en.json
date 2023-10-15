@@ -246,7 +246,7 @@
     "settings.editor.cabinet.defaults.toggle.animWriteDefaults": "Animation write defaults",
     "settings.editor.cabinet.defaults.toggle.groupDynamics": "Group dynamics",
     "settings.editor.cabinet.defaults.toggle.separateDynamics": "Separate dynamics into different objects",
-    "settings.editor.dialog.msg.confirmUpdateLocaleReloadWindow": "To apply the new language, you have to reload the window. Are you sure?",
+    "settings.editor.helpbox.updateLocaleReloadWindow": "To apply the new language, you have to reload the window.",
     "settings.editor.i18n.popup.language": "Language",
     "settings.editor.updateChecker.btn.checkUpdate": "Check update",
     "settings.editor.updateChecker.foldout": "Update checker",
