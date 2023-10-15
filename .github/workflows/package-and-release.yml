@@ -48,9 +48,7 @@ jobs:
           directory: "Packages/${{env.dtPackageName}}/"
           filename: "../../${{env.zipFile}}" # make the zip file two directories up, since we start two directories in above
           
-      - run: find "Packages/${{env.dtPackageName}}/" -name \*.meta >> metaList
-      - run: find "Packages/${{env.dkPackageName}}/" -name \*.meta >> metaList
-      - run: find "Packages/${{env.alPackageName}}/" -name \*.meta >> metaList
+      - run: find Packages/${{env.dtPackageName}}/ Packages/${{env.dkPackageName}}/ Packages/${{env.alPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> metaList
           
       - name: Create UnityPackage
         uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
