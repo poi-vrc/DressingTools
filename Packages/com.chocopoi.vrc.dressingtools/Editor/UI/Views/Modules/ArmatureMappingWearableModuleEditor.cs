@@ -23,7 +23,6 @@ using Chocopoi.DressingTools.UI.Presenters.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {

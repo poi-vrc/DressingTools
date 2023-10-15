@@ -18,8 +18,6 @@ using Chocopoi.DressingTools.Wearable.Modules;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using UnityEditor;
-using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Wearable.Modules
 {

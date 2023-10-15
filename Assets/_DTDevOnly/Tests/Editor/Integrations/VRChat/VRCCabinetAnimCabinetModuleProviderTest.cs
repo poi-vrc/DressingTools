@@ -12,15 +12,8 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Cabinet.Modules;
-using Chocopoi.DressingFramework.Context;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingTools.Api.Cabinet;
 using Chocopoi.DressingTools.Api.Integration.VRChat.Cabinet.Modules;
-using Chocopoi.DressingTools.Api.Wearable;
 using Chocopoi.DressingTools.Integration.VRChat.Modules;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

@@ -11,7 +11,6 @@
  */
 
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingTools.Api.Cabinet;
 using NUnit.Framework;

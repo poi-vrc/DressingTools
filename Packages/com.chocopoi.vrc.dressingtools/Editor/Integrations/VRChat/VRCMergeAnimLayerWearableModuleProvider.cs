@@ -26,13 +26,13 @@ using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable.Modules;
+using Chocopoi.DressingTools.Api.Integration.VRChat.Wearable.Modules;
 using Chocopoi.DressingTools.Integrations.VRChat;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
-using Chocopoi.DressingTools.Api.Integration.VRChat.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.Integration.VRChat.Modules
 {

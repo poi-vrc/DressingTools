@@ -16,7 +16,6 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Cabinet;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Api.Cabinet;
 using Chocopoi.DressingTools.Localization;
