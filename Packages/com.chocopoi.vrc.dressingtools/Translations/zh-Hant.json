@@ -146,7 +146,6 @@
     "legacy.editor.helpbox.moveClothesIntoPlace": "穿前記得把衣服放好！工具僅將衣服合併到您的角色中！",
     "legacy.editor.popup.dynamicsOption.removeDynamicsAndAddParentConstraint": "刪除穿戴物品動骨並新增父約束",
     "modules.wearable.armatureMapping.editor.textField.avatarArmatureName": "角色骨架名稱",
-    "mapping.editor.helpbox.boneMappingsNotAvailable": "沒有可用的骨頭映射。",
     "mapping.editor.helpbox.invalidMapping": "無效映射：",
     "mapping.editor.helpbox.overrideModeExplanation": "在覆蓋模式下，此處的映射將覆蓋由穿著器產生的映射。它對於修復一些較小的骨骼映射可能很有用。",
     "mapping.editor.popup.mappingMode": "模式",
