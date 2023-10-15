@@ -165,9 +165,6 @@ namespace Chocopoi.DressingTools
 
         public static ManifestBranch GetBranchLatestVersion(string branchName)
         {
-            // TODO: hardcoding till release
-            branchName = "v2";
-
             var branch = GetManifestBranch(branchName);
 
             if (branch == null)
