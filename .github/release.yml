@@ -2,10 +2,7 @@ changelog:
   categories:
     - title: 🏕 Features
       labels:
-        - '*'
-      exclude:
-        labels:
-          - dependencies
-    - title: 👒 Dependencies
+        - "feat"
+    - title: 🛠 Fixes
       labels:
-        - dependencies
+        - "fix"
