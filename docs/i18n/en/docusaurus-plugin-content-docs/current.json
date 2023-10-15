@@ -19,6 +19,14 @@
     "message": "Guides of DressingTools specific features.",
     "description": "The generated-index page description for category Guides in sidebar tutorialSidebar"
   },
+  "sidebar.tutorialSidebar.category.For Creators": {
+    "message": "For Creators",
+    "description": "The label for category For Creators in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.For Creators.link.generated-index.description": {
+    "message": "Details for creators",
+    "description": "The generated-index page description for category For Creators in sidebar tutorialSidebar"
+  },
   "sidebar.tutorialSidebar.category.Technical Design": {
     "message": "Technical Design",
     "description": "The label for category Technical Design in sidebar tutorialSidebar"

@@ -9,7 +9,7 @@ DressingTools supports internationalization (i18n), and mainly supports English,
 ### Weblate
 
 :::info
-Sign up is disabled right now. It will be available soon.
+You have to login using GitHub to make translation suggestions.
 :::
 
 [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/)

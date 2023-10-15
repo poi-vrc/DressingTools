@@ -15,6 +15,12 @@
   "sidebar.tutorialSidebar.category.Guides.link.generated-index.description": {
     "message": "DressingTools的功能指南"
   },
+  "sidebar.tutorialSidebar.category.For Creators": {
+    "message": "創作者用"
+  },
+  "sidebar.tutorialSidebar.category.For Creators.link.generated-index.description": {
+    "message": "創作者用的詳細"
+  },
   "sidebar.tutorialSidebar.category.Technical Design": {
     "message": "技術設計"
   },
