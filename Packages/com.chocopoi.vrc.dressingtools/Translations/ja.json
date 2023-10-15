@@ -35,7 +35,6 @@
     "mapping.editor.helpbox.manualModeExplanation": "手動モードでは、ドレッサーは無視され、ここで定義されたマッピングは、他のアバター/ユーザーに適用される場合にまったく同じになります。非互換性の問題が発生する可能性がありますので、注意して使用してください。",
     "mapping.editor.helpbox.overrideModeExplanation": "上書きモードでは、ここでのマッピングはドレッサーに生成されたマッピングを上書きします。いくつかのボーンマッピングを修正するのに役に立つかもしれない。",
     "mapping.editor.helpbox.autoModeExplanation": "自動モードでは、すべてがドレッサーとその生成されたマッピングにコントロールされます。マッピングを編集するには、上書きモードまたは手動モードを使用してください。",
-    "mapping.editor.helpbox.boneMappingsNotAvailable": "ボーンマッピングはありません。",
     "mapping.editor.popup.mappingMode.manual": "手動",
     "mapping.editor.popup.mappingMode.override": "上書き",
     "wearableConfig.editor.advanced.avatarConfig.helpbox.unableToFindGuidFromUnpackedAvatar": "アバターは展開されており、GUID は自動的に見つかりません。他のユーザーが設定を見つけやすいように、アバターの元の展開されないプレハブをここにドラッグして GUID を取得してください。",
