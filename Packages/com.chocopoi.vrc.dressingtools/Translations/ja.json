@@ -300,5 +300,9 @@
     "modules.wearable.armatureMapping.editor.popup.mappingMode.override": "オーバーライド",
     "modules.wearable.armatureMapping.editor.popup.mappingMode.manual": "手動",
     "modules.wearable.cabinetAnim.editor.toggle.invertWearableToggleOriginalStates": "ウェアラブルの切り替えの元の状態を反転する",
-    "modules.wearable.cabinetAnim.editor.toggle.setWearableDynamicsInactive": "ウェアラブルのダイナミクスを無効にする"
+    "modules.wearable.cabinetAnim.editor.toggle.setWearableDynamicsInactive": "ウェアラブルのダイナミクスを無効にする",
+    "preview.dialog.msg.unresolvedDependencies": "エラー: 未解決の依存関係が検出されました。必要なモジュールやフックがインポートされていないかを確認してください。",
+    "preview.dialog.msg.cyclicDependencies": "エラー: 循環依存関係が検出されました。プレビューを作成できません。",
+    "wearableConfig.editor.toolbar.btn.import": "インポート",
+    "wearableConfig.editor.toolbar.btn.export": "エクスポート"
 }
