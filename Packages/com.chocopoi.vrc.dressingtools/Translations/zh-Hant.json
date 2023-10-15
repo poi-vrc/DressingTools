@@ -302,5 +302,8 @@
     "preview.dialog.msg.unresolvedDependencies": "錯誤：偵測到未解決的依賴關係、請檢查是否有一些需要的模組或鉤子沒有導入。",
     "preview.dialog.msg.cyclicDependencies": "錯誤：偵測到循環依賴關係、無法建立預覽。",
     "wearableConfig.editor.toolbar.btn.import": "導入",
-    "wearableConfig.editor.toolbar.btn.export": "匯出"
+    "wearableConfig.editor.toolbar.btn.export": "匯出",
+    "settings.editor.helpbox.updateLocaleReloadWindow": "要套用新語言，您必須重新載入視窗。",
+    "mapping.editor.helpbox.generatedBoneMappingsNotAvailable": "沒有已生成的骨頭映射。",
+    "mapping.editor.helpbox.noAvatarOrWearableSelected": "未選擇角色或穿戴物品。"
 }
