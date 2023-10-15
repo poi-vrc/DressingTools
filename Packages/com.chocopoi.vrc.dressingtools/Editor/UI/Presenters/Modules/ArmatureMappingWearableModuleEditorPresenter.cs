@@ -94,7 +94,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private void OnMappingModeChange()
         {
             _module.boneMappingMode = DTMappingEditorWindow.Data.boneMappingMode = (BoneMappingMode)_view.SelectedMappingMode;
-            UpdateMappingEditorView();
+            UpdateMappingEditorView(DTMappingEditorWindow.Data.generatedBoneMappings);
         }
 
         private void ResetMappingEditorContainer()
@@ -102,14 +102,14 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             DTMappingEditorWindow.Data.Reset();
         }
 
-        private void UpdateMappingEditorView(List<BoneMapping> generatedMappings = null)
+        private void UpdateMappingEditorView(List<BoneMapping> generatedMappings)
         {
             // update data
             DTMappingEditorWindow.Data.targetAvatar = _parentView.TargetAvatar;
             DTMappingEditorWindow.Data.targetWearable = _parentView.TargetWearable;
             DTMappingEditorWindow.Data.boneMappingMode = _module.boneMappingMode;
             DTMappingEditorWindow.Data.outputBoneMappings = _module.boneMappings;
-            if (generatedMappings != null) DTMappingEditorWindow.Data.generatedBoneMappings = generatedMappings;
+            DTMappingEditorWindow.Data.generatedBoneMappings = generatedMappings;
 
             // force update if opened
             if (EditorWindow.HasOpenInstances<DTMappingEditorWindow>())
@@ -276,7 +276,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             CheckCorrectDresserSettingsType();
             UpdateDresserSettings();
             UpdateDresserReport();
-            UpdateMappingEditorView();
+            UpdateMappingEditorView(DTMappingEditorWindow.Data.generatedBoneMappings);
         }
 
         private void OnLoad()
@@ -309,7 +309,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         public bool IsValid()
         {
             ApplySettings();
-            return _dresserReport != null && !_dresserReport.HasLogType(LogType.Error) && _module.boneMappings != null;
+            var validate = true;
+            if (_module.boneMappingMode != BoneMappingMode.Manual)
+            {
+                validate &= _dresserReport != null && !_dresserReport.HasLogType(LogType.Error);
+            }
+            return validate && _module.boneMappings != null;
         }
     }
 }

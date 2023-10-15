@@ -90,6 +90,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateOutputBoneMappings()
         {
+            if (DTMappingEditorWindow.Data.generatedBoneMappings == null) return;
+
             if (DTMappingEditorWindow.Data.boneMappingMode == BoneMappingMode.Auto || DTMappingEditorWindow.Data.boneMappingMode == BoneMappingMode.Manual)
             {
                 // copy generated to output
@@ -104,25 +106,28 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateView()
         {
-            if (DTMappingEditorWindow.Data.targetAvatar == null || DTMappingEditorWindow.Data.targetWearable == null || DTMappingEditorWindow.Data.generatedBoneMappings == null)
+            if (DTMappingEditorWindow.Data.targetAvatar == null || DTMappingEditorWindow.Data.targetWearable == null)
             {
-                _view.ShowBoneMappingNotAvailableHelpbox = true;
+                _view.ShowNoAvatarOrWearableSelectedHelpbox = true;
                 return;
             }
+            _view.ShowNoAvatarOrWearableSelectedHelpbox = false;
 
-            _view.ShowBoneMappingNotAvailableHelpbox = false;
+            var generatedBoneMappingsAvailable = DTMappingEditorWindow.Data.generatedBoneMappings != null;
+            _view.ShowGeneratedBoneMappingNotAvailableHelpbox = !generatedBoneMappingsAvailable;
+
             _view.TargetAvatar = DTMappingEditorWindow.Data.targetAvatar;
             _view.TargetWearable = DTMappingEditorWindow.Data.targetWearable;
             _view.SelectedBoneMappingMode = (int)DTMappingEditorWindow.Data.boneMappingMode;
 
             _view.AvatarHierachyNodes.Clear();
-            if (_view.SelectedBoneMappingMode == 0)
+            if (_view.SelectedBoneMappingMode == 0 && generatedBoneMappingsAvailable)
             {
                 UpdateAvatarHierarchy(DTMappingEditorWindow.Data.generatedBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
             }
-            else
+            else if (_view.SelectedBoneMappingMode == 1 && generatedBoneMappingsAvailable)
             {
-                if (_view.SelectedBoneMappingMode == 1 && _view.SelectedBoneMappingDisplayMode == 1)
+                if (_view.SelectedBoneMappingDisplayMode == 1)
                 {
                     // override mode and resultant display mode
                     var previewBoneMappings = new List<BoneMapping>(DTMappingEditorWindow.Data.generatedBoneMappings);
@@ -133,6 +138,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     UpdateAvatarHierarchy(DTMappingEditorWindow.Data.outputBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
                 }
+            }
+            else if (_view.SelectedBoneMappingMode == 2)
+            {
+                UpdateAvatarHierarchy(DTMappingEditorWindow.Data.outputBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
             }
         }
 

@@ -67,6 +67,7 @@ namespace Chocopoi.DressingTools.UIBase.Views
         int SelectedBoneMappingMode { get; set; }
         int SelectedBoneMappingDisplayMode { get; set; }
         List<ViewAvatarHierachyNode> AvatarHierachyNodes { get; set; }
-        bool ShowBoneMappingNotAvailableHelpbox { get; set; }
+        bool ShowNoAvatarOrWearableSelectedHelpbox { get; set; }
+        bool ShowGeneratedBoneMappingNotAvailableHelpbox { get; set; }
     }
 }
