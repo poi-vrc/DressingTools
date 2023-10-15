@@ -47,6 +47,8 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action CaptureSettingsChange;
         public event Action ToolbarAutoSetupButtonClick;
         public event Action ToolbarPreviewButtonClick;
+        public event Action ToolbarImportButtonClick;
+        public event Action ToolbarExportButtonClick;
         public event Action AdvancedModuleAddButtonClick;
         public event Action ModeChange;
         public event Action AvatarConfigChange;
@@ -204,7 +206,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _infoWearableNameLabel = Q<Label>("wearable-info-name-label").First();
 
             _infoCustomNameField = Q<TextField>("wearable-info-custom-name-field").First();
-            // TODO: due to a weird bug, we have to localize text field here
             _infoCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 var val = _infoCustomNameField.value;
@@ -220,7 +221,7 @@ namespace Chocopoi.DressingTools.UI.Views
             _infoUseCustomNameToggle = Q<Toggle>("wearable-info-custom-name-toggle").First();
             _infoUseCustomNameToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
             {
-                if (TargetWearable != null)
+                if (!InfoUseCustomWearableName && TargetWearable != null)
                 {
                     _infoCustomNameField.value = _infoWearableNameLabel.text = InfoCustomWearableName = TargetWearable.name;
                 }
@@ -336,6 +337,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
             _toolbarPreviewBtn = Q<Button>("toolbar-preview-btn").First();
             _toolbarPreviewBtn.clicked += ToolbarPreviewButtonClick;
+
+            var importBtn = Q<Button>("toolbar-import-btn").First();
+            importBtn.clicked += ToolbarImportButtonClick;
+
+            var exportBtn = Q<Button>("toolbar-export-btn").First();
+            exportBtn.clicked += ToolbarExportButtonClick;
 
             BindToolbarModes();
         }
@@ -535,10 +542,13 @@ namespace Chocopoi.DressingTools.UI.Views
             if (InfoUseCustomWearableName)
             {
                 _infoWearableNameLabel.text = InfoCustomWearableName;
+                _infoCustomNameField.value = InfoCustomWearableName;
             }
             else
             {
-                _infoWearableNameLabel.text = TargetWearable != null ? TargetWearable.name : "---";
+                var text = TargetWearable != null ? TargetWearable.name : "---";
+                _infoWearableNameLabel.text = text;
+                _infoCustomNameField.value = text;
             }
 
             _infoOthersUuidLabel.text = InfoUuid;

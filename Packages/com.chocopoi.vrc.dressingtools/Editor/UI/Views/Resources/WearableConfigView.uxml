@@ -51,6 +51,8 @@
         <Style src="WearableConfigViewStyles.uss" />
         <uie:ToolbarButton text="@wearableConfig.editor.toolbar.btn.autoSetup" name="toolbar-auto-setup-btn" />
         <uie:ToolbarButton text="@wearableConfig.editor.toolbar.btn.preview" name="toolbar-preview-btn" />
+        <uie:ToolbarButton text="@wearableConfig.editor.toolbar.btn.import" name="toolbar-import-btn" />
+        <uie:ToolbarButton text="@wearableConfig.editor.toolbar.btn.export" name="toolbar-export-btn" />
         <ui:VisualElement style="flex-grow: 1;" />
         <uie:ToolbarButton text="@wearableConfig.editor.toolbar.btn.simple" name="toolbar-simple-btn" />
         <uie:ToolbarButton text="@wearableConfig.editor.toolbar.btn.advanced" name="toolbar-advanced-btn" />
