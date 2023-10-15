@@ -299,7 +299,7 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            var cabinet = DKEditorUtils.GetAvatarCabinet(previewAvatar);
+            var cabinet = DKEditorUtils.GetAvatarCabinet(targetAvatar);
 
             if (cabinet == null)
             {
