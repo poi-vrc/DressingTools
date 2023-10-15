@@ -703,7 +703,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public void ApplyToConfig() => _presenter.ApplyToConfig();
 
-        public void UpdateAvatarPreview() => _presenter.UpdateAvatarPreview();
+        public void UpdateAvatarPreview(bool forceRecreate = false) => _presenter.UpdateAvatarPreview(forceRecreate);
 
         public void AutoSetup() => _presenter.AutoSetup();
 

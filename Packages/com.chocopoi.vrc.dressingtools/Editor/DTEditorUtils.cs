@@ -24,11 +24,13 @@ using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Context;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingFramework.Wearable.Modules;
 using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.Wearable;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -276,9 +278,21 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        public static void UpdatePreviewAvatar(GameObject targetAvatar, WearableConfig newWearableConfig, GameObject newWearable)
+        private static T GetWearableModuleProviderByTuple<T>(List<T> hooks, System.Tuple<DependencySource, string> tuple) where T : WearableModuleProviderBase
         {
-            PreviewAvatar(targetAvatar, newWearable, out var previewAvatar, out var previewWearable);
+            foreach (var hook in hooks)
+            {
+                if (tuple.Item2 == hook.Identifier)
+                {
+                    return hook;
+                }
+            }
+            return default;
+        }
+
+        public static void UpdatePreviewAvatar(GameObject targetAvatar, WearableConfig newWearableConfig, GameObject newWearable, bool forceRecreate = false)
+        {
+            PreviewAvatar(targetAvatar, newWearable, out var previewAvatar, out var previewWearable, forceRecreate);
 
             if (previewAvatar == null || previewWearable == null)
             {
@@ -317,9 +331,31 @@ namespace Chocopoi.DressingTools
             };
 
             var providers = PluginManager.Instance.GetAllWearableModuleProviders();
+
+            // build graph
+            var graph = new DependencyGraph();
             foreach (var provider in providers)
             {
-                // TODO: dependency graph
+                graph.Add(DependencySource.WearableModule, provider.Identifier, provider.Constraint);
+            }
+
+            var t = I18n.ToolTranslator;
+            if (!graph.IsResolved())
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("preview.dialog.msg.unresolvedDependencies"), t._("common.dialog.btn.ok"));
+                return;
+            }
+
+            var topOrder = graph.Sort();
+            if (topOrder == null)
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("preview.dialog.msg.cyclicDependencies"), t._("common.dialog.btn.ok"));
+                return;
+            }
+
+            foreach (var order in topOrder)
+            {
+                var provider = GetWearableModuleProviderByTuple(providers, order);
                 if (!provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(newWearableConfig.FindModules(provider.Identifier)), true))
                 {
                     Debug.LogError("[DressingTools] Error applying wearable in preview!");
@@ -328,7 +364,7 @@ namespace Chocopoi.DressingTools
             }
         }
 
-        public static void PreviewAvatar(GameObject targetAvatar, GameObject targetWearable, out GameObject previewAvatar, out GameObject previewWearable)
+        public static void PreviewAvatar(GameObject targetAvatar, GameObject targetWearable, out GameObject previewAvatar, out GameObject previewWearable, bool forceRecreate = false)
         {
             if (targetAvatar == null || targetWearable == null)
             {
@@ -348,7 +384,7 @@ namespace Chocopoi.DressingTools
                 targetWearable.name;
 
             // return existing preview object if any
-            if (previewAvatar != null)
+            if (previewAvatar != null && !forceRecreate)
             {
                 var wearableTransform = previewAvatar.transform.Find(path);
 

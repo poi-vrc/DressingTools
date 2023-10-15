@@ -109,7 +109,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                UpdateAvatarPreview();
+                UpdateAvatarPreview(true);
             }
         }
 
@@ -531,10 +531,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UnsubscribeEvents();
         }
 
-        public void UpdateAvatarPreview()
+        public void UpdateAvatarPreview(bool forceRecreate = false)
         {
             ApplyToConfig();
-            DTEditorUtils.UpdatePreviewAvatar(_view.TargetAvatar, _view.Config, _view.TargetWearable);
+            DTEditorUtils.UpdatePreviewAvatar(_view.TargetAvatar, _view.Config, _view.TargetWearable, forceRecreate);
         }
 
         private void AutoSetupMapping()

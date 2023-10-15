@@ -300,5 +300,7 @@
     "wearableConfig.editor.toolbar.btn.advanced": "Advanced",
     "wearableConfig.editor.toolbar.btn.autoSetup": "Auto-setup",
     "wearableConfig.editor.toolbar.btn.preview": "Preview",
-    "wearableConfig.editor.toolbar.btn.simple": "Simple"
+    "wearableConfig.editor.toolbar.btn.simple": "Simple",
+    "preview.dialog.msg.unresolvedDependencies": "Error: Unresolved dependencies detected. Please check if some required modules or hooks are not imported.",
+    "preview.dialog.msg.cyclicDependencies": "Error: Cyclic hook dependencies detected. Unable to create preview."
 }

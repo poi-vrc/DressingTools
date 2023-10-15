@@ -285,7 +285,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     toggles.Remove(toggle);
                     toggleDataList.Remove(toggleData);
-                    _parentView.UpdateAvatarPreview();
+                    _parentView.UpdateAvatarPreview(true);
                     updateView?.Invoke();
                 };
 
@@ -371,7 +371,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                     if (blendshapeData.selectedBlendshapeIndex != 0)
                     {
                         blendshape.blendshapeName = blendshapeData.availableBlendshapeNames[blendshapeData.selectedBlendshapeIndex];
-                        _parentView.UpdateAvatarPreview();
+                        _parentView.UpdateAvatarPreview(true);
                     }
                 };
                 blendshapeData.sliderChangeEvent = () =>
@@ -383,7 +383,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     blendshapes.Remove(blendshape);
                     blendshapeDataList.Remove(blendshapeData);
-                    _parentView.UpdateAvatarPreview();
+                    _parentView.UpdateAvatarPreview(true);
                     updateView?.Invoke();
                 };
 
