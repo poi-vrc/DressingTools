@@ -54,11 +54,17 @@ DressingToolsは自動的にウェアラブル切り替えを下書きするの�
 
 切り替えとブレンドシェイプを編集時、アニメーションを**リアルタイムプレビュー**することができます！
 
-:::tip
-着用時のプリセットを活用してください。自分のプリセットを保存して読み込めば、次回から早く着こなすことができます！[プリセット](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::caution
+`キャビネットアニメーション` がオンになっていることを確認してください。これは自動セットアップで自動的にオンになります。
+
+[![Ensure on](/img/setup-cabanim-5-ensure-cabanim-on.PNG)](/img/setup-cabanim-5-ensure-cabanim-on.PNG)
+
+`自動セットアップ` ボタンを使って、自動セットアップを再度実行することができます。
+
+[![Auto-setup button](/img/setup-cabanim-5-auto-setup-btn.PNG)](/img/setup-cabanim-5-auto-setup-btn.PNG)
 :::
 
-#### 着用時のアバター切り替え
+#### 5.1 着用時のアバター切り替え
 
 与えられた`提案`を利用し、あなたの服が既存の服と重ならなくなるまでアバターの切り替えを追加してください。オブジェクトフィールドの隣にあるチェックボックスは、そのオブジェクトがオンウェアで有効になるかどうかのステータスです。
 
@@ -66,17 +72,23 @@ DressingToolsは自動的にウェアラブル切り替えを下書きするの�
 
 [![切り替え](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
 
-#### アバターの着用時のブレンドシェイプ
+#### 5.2 アバターの着用時のブレンドシェイプ
 
 与えられた `提案` を利用して、服とアバターが正常に見えるまでブレンドシェイプの変更を追加してください。 (例：胸/足/ハイヒールのシェイプキーを変更する)
 
 [![ブレンドシェイプ](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
 
-#### ウェアラブルの着用時の切り替えを確認する
+#### 5.3 ウェアラブルの着用時の切り替えを確認する
 
 自動生成されたウェアラブルな着用時の切り替えが好みと一致するかどうかを確認してください。最初から有効になっており、ウェアラブル ルートに配置されている場合にのみ自動的に追加されます。
 
 [![ウェアラブル着用時](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
+
+:::tip
+着用時のプリセットを活用してください。自分のプリセットを保存して読み込めば、次回から早く着こなすことができます！
+
+[![プリセット](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::
 
 ### 6. ブレンドシェイプの同期を確認する
 

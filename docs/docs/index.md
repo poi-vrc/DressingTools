@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introduction
 
-DressingTools is a **simple but advanced**, **non-destructive** cabinet/wardrobe system. Dressing an avatar with multiple wearables is as simple as just one click!
+DressingTools<sup>2</sup> is a **simple but advanced**, **non-destructive** cabinet/wardrobe system. Dressing an avatar with multiple wearables is as simple as just one click!
 
 It also includes **advanced features** that allows you to **customize the bone mappings for incompatible wearables**, **create your own wearable toggles and blendshapes controls**. This can be automatically drafted for you!
 
@@ -20,8 +20,6 @@ By design, DressingTools is portable and not a VRChat-only software. You can use
 
 ## Features
 
-DressingTools<sup>2</sup> is currently in :warning: **beta development stage**. Most critical features are working but might experience bugs. Feel free to try it!
-
 Currently supported (at the time of writing):
 - VRCSDK and DynamicBones not required
 - Cabinet system
@@ -32,10 +30,11 @@ Currently supported (at the time of writing):
 - Multiple animator merging and animation remapping
 - Centralized wearable configuration
 - Extensible modules
+- Sharable wearable configuration
 
 Will be supported in the future:
 - Reading DynamicsBones/VRCPhysBone values generically
+- Auto menu and parameters installing and management
 - Mixing different clothes for toggling
-- Sharable wearable configuration
 - Conversion from other tools' configuration
 

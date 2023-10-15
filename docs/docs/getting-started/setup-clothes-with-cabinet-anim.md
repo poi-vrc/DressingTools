@@ -20,7 +20,7 @@ In the series of getting started, we will dress [Eliya Workshop's Summer Streat]
 
 ### 1. Drag the clothes to the avatar
 
-Drag the clothes to the avatar and right-click to choose `DressingTools -> Setup wearable with wizard`
+Drag the clothes to the avatar and right-click to choose `DressingTools -> Setup wearable with editor`
 
 [![Setup Wearable](/img/setup-cabanim-1-setup-wearable.PNG)](/img/setup-cabanim-1-setup-wearable.PNG)
 
@@ -54,12 +54,17 @@ DressingTools automatically drafts wearable toggles (adds currently enabled obje
 
 Editing these toggles and blendshapes will trigger the **real-time preview** for you to preview the animation immediately!
 
-:::tip
-You can make use of on-wear presets. Save and load your own presets to dress faster next time!
-[![Presets](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::caution
+Ensure `Cabinet animation` is on. This is turned on by auto-setup automatically.
+
+[![Ensure on](/img/setup-cabanim-5-ensure-cabanim-on.PNG)](/img/setup-cabanim-5-ensure-cabanim-on.PNG)
+
+You can run auto-setup again using the `Auto-setup` button.
+
+[![Auto-setup button](/img/setup-cabanim-5-auto-setup-btn.PNG)](/img/setup-cabanim-5-auto-setup-btn.PNG)
 :::
 
-#### Avatar on-wear toggles
+#### 5.1. Avatar on-wear toggles
 
 Make use of the `Suggestions` given and add the avatar toggle until your clothes no longer collides with the existing clothes. The checkbox next to the object field is the status if the object will be enabled or not on-wear.
 
@@ -67,17 +72,22 @@ You can also use `+ Add` to add a toggle that is located elsewhere, or `x` to re
 
 [![Toggles](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
 
-#### Avatar on-wear blendshapes
+#### 5.2. Avatar on-wear blendshapes
 
 Make use of the `Suggestions` given to add a blendshape change until your avatar looks normal with your clothes. (i.e. changing the Chest/Foot/High heeled shapekeys)
 
 [![Blendshapes](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
 
-#### Confirm wearable on-wear toggles
+#### 5.3. Confirm wearable on-wear toggles
 
 Confirm if the auto-generated wearable on-wear toggles matches your preferences. They are automatically added only if it is originally enabled and located at the wearable root.
 
 [![Wearable on-wear](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
+
+:::tip
+You can make use of on-wear presets. Save and load your own presets to dress faster next time!
+[![Presets](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::
 
 ### 6. Confirm blendshape synchronizations
 

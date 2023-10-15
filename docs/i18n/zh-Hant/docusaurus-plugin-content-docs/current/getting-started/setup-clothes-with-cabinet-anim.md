@@ -54,11 +54,17 @@ DressingTools 會自動起草穿戴物品開關（新增目前啟用的物件）
 
 編輯這些開關和混合形狀將自動開啟**即時預覽**，讓您立即預覽動畫！
 
-:::tip
-您可以使用預設。儲存並載入您自己的預設，以便下次穿得更快！ [![預設](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::caution
+確保 `衣櫃動畫` 已開啟。 自動設定時會自動開啟的。
+
+[![確保已開啟](/img/setup-cabanim-5-ensure-cabanim-on.PNG)](/img/setup-cabanim-5-ensure-cabanim-on.PNG)
+
+您可以使用 `自動設定` 按鈕再次運行自動設定。
+
+[![Auto-setup button](/img/setup-cabanim-5-auto-setup-btn.PNG)](/img/setup-cabanim-5-auto-setup-btn.PNG)
 :::
 
-#### 角色穿着時的開關
+#### 5.1 角色穿着時的開關
 
 利用給予的`建議`並添加角色開關，直到你的衣服不再與現有的衣服重曡。物件欄位旁的複選框是物件是否啟用或不啟用的狀態。
 
@@ -66,17 +72,21 @@ DressingTools 會自動起草穿戴物品開關（新增目前啟用的物件）
 
 [![開關](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)](/img/setup-cabanim-5-avatar-onwear-toggles.PNG)
 
-#### 角色穿着時的混合形狀
+#### 5.2 角色穿着時的混合形狀
 
 利用`建議`添加更改混合形狀，直到您的角色和衣服看起來正常。 （即更改胸部/腳/高跟鞋形狀鍵）
 
 [![混合形狀](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)](/img/setup-cabanim-5-avatar-onwear-blendshapes.PNG)
 
-#### 確認穿戴物品穿着時的開關
+#### 5.3 確認穿戴物品穿着時的開關
 
 確認自動產生的穿戴物品穿着時的開關是否符合您的偏好。只有當最初啟用並位於穿戴物品根時，它們才會自動添加。
 
 [![穿戴物品穿着時](/img/setup-cabanim-5-wearable-onwear.PNG)](/img/setup-cabanim-5-wearable-onwear.PNG)
+
+:::tip
+您可以使用預設。儲存並載入您自己的預設，以便下次穿得更快！ [![預設](/img/setup-cabanim-5-tip-presets.PNG)](/img/setup-cabanim-5-tip-presets.PNG)
+:::
 
 ### 6. 確認混合形狀同步
 

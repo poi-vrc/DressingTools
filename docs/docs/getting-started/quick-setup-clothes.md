@@ -27,7 +27,7 @@ In the series of getting started, we will dress [Eliya Workshop's Summer Streat]
 
 ### 1. Drag the clothes to the avatar
 
-Drag the clothes to the avatar and right-click to choose `DressingTools -> Auto-setup wearable (Mappings Only)`
+Drag the clothes to the avatar and right-click to choose `DressingTools -> Quick setup clothes`
 
 [![Setup wearable](/img/setup-simple-2-setup-wearable.PNG)](/img/setup-simple-2-setup-wearable.PNG)
 
@@ -41,10 +41,10 @@ Get into Play Mode and then you will be able to test the wearable whether it's m
 
 ### Using "Auto-setup wearable (Mappings Only)"
 
-When you click on `Auto-setup wearable (Mappings Only)`, DressingTools runs an automatic setup to find the wearable armature and attempts
+When you click on `Quick setup clothes`, DressingTools runs an automatic setup to find the wearable armature and attempts
 to dry-run and generate bone mappings for it.
 
-It will create a `DT Cabinet Wearable` component on the wearable root with the generated configuration.
+It will create a `DT Wearable` component on the wearable root with the generated configuration.
 
 ### Entering Play Mode
 

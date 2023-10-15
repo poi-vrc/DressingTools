@@ -2,9 +2,6 @@
 sidebar_position: 1
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # Mapping Editor
 
 The mapping editor **allows incompatible wearables to be dressed** using DressingTools by manually setting up overrides and mappings.
@@ -20,18 +17,7 @@ It is also recommended to report such issues / make feature requests to see if w
 
 ### Starting the mapping editor
 
-<Tabs>
-  <TabItem value="wizard" label="Wizard" default>
-    The mapping editor can be started from the setup wizard:
-    <br />
-    <img src={require('@site/static/img/mapping-editor-start-wizard.PNG').default} />
-  </TabItem>
-  <TabItem value="orange" label="Advanced Mode">
-    In advanced mode, you have to locate the Armature Mapping Module and start the mapping editor from there.
-    <br />
-    <img src={require('@site/static/img/mapping-editor-start-advanced.PNG').default} />
-  </TabItem>
-</Tabs>
+[![Mapping editor start](/img/mapping-editor-start.png)](/img/mapping-editor-start.png)
 
 ### Mapping modes
 
@@ -83,4 +69,4 @@ There are currently 5 mapping types:
 
 A mapping can be removed using the cross `x` button.
 
-[![Mapping editor add](/img/mapping-editor-remove-mapping.PNG)](/img/mapping-editor-remove-mapping.PNG)
+[![Mapping editor remove](/img/mapping-editor-remove-mapping.PNG)](/img/mapping-editor-remove-mapping.PNG)
