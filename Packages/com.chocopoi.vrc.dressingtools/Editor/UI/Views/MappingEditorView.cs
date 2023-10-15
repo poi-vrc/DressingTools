@@ -41,7 +41,8 @@ namespace Chocopoi.DressingTools.UI.View
         public int SelectedBoneMappingMode { get => _selectedBoneMappingMode; set => _selectedBoneMappingMode = value; }
         public int SelectedBoneMappingDisplayMode { get => _selectedBoneMappingDisplayMode; set => _selectedBoneMappingDisplayMode = value; }
         public List<ViewAvatarHierachyNode> AvatarHierachyNodes { get; set; }
-        public bool ShowBoneMappingNotAvailableHelpbox { get; set; }
+        public bool ShowNoAvatarOrWearableSelectedHelpbox { get; set; }
+        public bool ShowGeneratedBoneMappingNotAvailableHelpbox { get; set; }
 
         private MappingEditorPresenter _presenter;
         private GameObject _targetAvatar;
@@ -59,7 +60,8 @@ namespace Chocopoi.DressingTools.UI.View
             SelectedBoneMappingMode = 0;
             SelectedBoneMappingDisplayMode = 0;
             AvatarHierachyNodes = new List<ViewAvatarHierachyNode>();
-            ShowBoneMappingNotAvailableHelpbox = true;
+            ShowNoAvatarOrWearableSelectedHelpbox = true;
+            ShowGeneratedBoneMappingNotAvailableHelpbox = true;
         }
 
         private void DrawAvatarHierarchy(List<ViewAvatarHierachyNode> nodes)
@@ -198,12 +200,19 @@ namespace Chocopoi.DressingTools.UI.View
                 // scroll view
                 _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
 
-                // disable on Auto mode
-                BeginDisabled(_selectedBoneMappingMode == 0 || (_selectedBoneMappingMode == 1 && _selectedBoneMappingDisplayMode == 1));
+                if ((_selectedBoneMappingMode == 0 || _selectedBoneMappingMode == 1) && ShowGeneratedBoneMappingNotAvailableHelpbox)
                 {
-                    DrawAvatarHierarchy(AvatarHierachyNodes);
+                    HelpBox(t._("mapping.editor.helpbox.generatedBoneMappingNotAvailable"), MessageType.Error);
                 }
-                EndDisabled();
+                else
+                {
+                    // disable on Auto mode
+                    BeginDisabled(_selectedBoneMappingMode == 0 || (_selectedBoneMappingMode == 1 && _selectedBoneMappingDisplayMode == 1));
+                    {
+                        DrawAvatarHierarchy(AvatarHierachyNodes);
+                    }
+                    EndDisabled();
+                }
 
                 EditorGUILayout.EndScrollView();
             }
@@ -212,9 +221,9 @@ namespace Chocopoi.DressingTools.UI.View
 
         public override void OnGUI()
         {
-            if (ShowBoneMappingNotAvailableHelpbox)
+            if (ShowNoAvatarOrWearableSelectedHelpbox)
             {
-                HelpBox(t._("mapping.editor.helpbox.boneMappingsNotAvailable"), MessageType.Error);
+                HelpBox(t._("mapping.editor.helpbox.noAvatarOrWearableSelected"), MessageType.Error);
                 return;
             }
 
