@@ -17,9 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Extensibility.Plugin;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingFramework.Wearable;
@@ -28,15 +30,19 @@ using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Views.Modules;
 using Chocopoi.DressingTools.UIBase.Views;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class WearableConfigPresenter
     {
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
+
         private List<WearableModuleProviderBase> s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
@@ -63,6 +69,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AdvancedModuleAddButtonClick += OnAdvancedModuleAddButtonClick;
             _view.ToolbarPreviewButtonClick += OnPreviewButtonClick;
             _view.ToolbarAutoSetupButtonClick += OnToolbarAutoSetupButtonClick;
+            _view.ToolbarImportButtonClick += OnToolbarImportButtonClick;
+            _view.ToolbarExportButtonClick += OnToolbarExportButtonClick;
             _view.AvatarConfigChange += OnAvatarConfigChange;
         }
 
@@ -81,6 +89,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AdvancedModuleAddButtonClick -= OnAdvancedModuleAddButtonClick;
             _view.ToolbarPreviewButtonClick -= OnPreviewButtonClick;
             _view.ToolbarAutoSetupButtonClick -= OnToolbarAutoSetupButtonClick;
+            _view.ToolbarImportButtonClick -= OnToolbarImportButtonClick;
+            _view.ToolbarExportButtonClick -= OnToolbarExportButtonClick;
             _view.AvatarConfigChange -= OnAvatarConfigChange;
         }
 
@@ -110,6 +120,45 @@ namespace Chocopoi.DressingTools.UI.Presenters
             else
             {
                 UpdateAvatarPreview(true);
+            }
+        }
+
+        private void OnToolbarExportButtonClick()
+        {
+            if (_view.Config == null) return;
+            ApplyToConfig();
+
+            var path = EditorUtility.SaveFilePanel(t._("tool.name"), "", $"{_view.Config.info.name}.dt2conf", "json");
+            if (!string.IsNullOrEmpty(path))
+            {
+                try
+                {
+                    File.WriteAllText(path, WearableConfigUtility.Serialize(_view.Config));
+                }
+                catch (IOException e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog(t._("tool.name"), e.Message, t._("common.dialog.btn.ok"));
+                }
+            }
+        }
+
+        private void OnToolbarImportButtonClick()
+        {
+            var path = EditorUtility.OpenFilePanel(t._("tool.name"), "", "json");
+            if (!string.IsNullOrEmpty(path))
+            {
+                try
+                {
+                    var json = File.ReadAllText(path);
+                    _view.Config = WearableConfigUtility.Deserialize(json);
+                    UpdateView();
+                }
+                catch (IOException e)
+                {
+                    Debug.LogException(e);
+                    EditorUtility.DisplayDialog(t._("tool.name"), e.Message, t._("common.dialog.btn.ok"));
+                }
             }
         }
 

@@ -39,6 +39,8 @@ namespace Chocopoi.DressingTools.UIBase.Views
         event Action CaptureSettingsChange;
         event Action ToolbarAutoSetupButtonClick;
         event Action ToolbarPreviewButtonClick;
+        event Action ToolbarImportButtonClick;
+        event Action ToolbarExportButtonClick;
         event Action AdvancedModuleAddButtonClick;
         event Action ModeChange;
         event Action AvatarConfigChange;
