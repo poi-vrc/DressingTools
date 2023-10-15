@@ -202,7 +202,7 @@ namespace Chocopoi.DressingTools.UI.View
 
                 if ((_selectedBoneMappingMode == 0 || _selectedBoneMappingMode == 1) && ShowGeneratedBoneMappingNotAvailableHelpbox)
                 {
-                    HelpBox(t._("mapping.editor.helpbox.generatedBoneMappingNotAvailable"), MessageType.Error);
+                    HelpBox(t._("mapping.editor.helpbox.generatedBoneMappingsNotAvailable"), MessageType.Error);
                 }
                 else
                 {
