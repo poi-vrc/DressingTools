@@ -362,6 +362,13 @@ namespace Chocopoi.DressingTools
                     break;
                 }
             }
+
+            // remove all DK components
+            var dkComps = previewAvatar.GetComponentsInChildren<DKBaseComponent>();
+            foreach (var comp in dkComps)
+            {
+                Object.DestroyImmediate(comp);
+            }
         }
 
         public static void PreviewAvatar(GameObject targetAvatar, GameObject targetWearable, out GameObject previewAvatar, out GameObject previewWearable, bool forceRecreate = false)
