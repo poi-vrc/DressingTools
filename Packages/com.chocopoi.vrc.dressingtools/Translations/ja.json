@@ -302,5 +302,8 @@
     "preview.dialog.msg.unresolvedDependencies": "エラー: 未解決の依存関係が検出されました。必要なモジュールやフックがインポートされていないかを確認してください。",
     "preview.dialog.msg.cyclicDependencies": "エラー: 循環依存関係が検出されました。プレビューを作成できません。",
     "wearableConfig.editor.toolbar.btn.import": "インポート",
-    "wearableConfig.editor.toolbar.btn.export": "エクスポート"
+    "wearableConfig.editor.toolbar.btn.export": "エクスポート",
+    "settings.editor.helpbox.updateLocaleReloadWindow": "新しい言語を適用するには、ウィンドウを再ロードする必要があります。",
+    "mapping.editor.helpbox.noAvatarOrWearableSelected": "アバターまたはウェアラブルが選択されていません。",
+    "mapping.editor.helpbox.generatedBoneMappingsNotAvailable": "ボーンマッピングは生成されません。"
 }
