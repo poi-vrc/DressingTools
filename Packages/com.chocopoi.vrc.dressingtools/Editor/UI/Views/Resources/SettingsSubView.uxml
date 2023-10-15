@@ -2,6 +2,7 @@
     <ui:ScrollView style="flex-grow: 1;">
         <Style src="SettingsSubViewStyles.uss" />
         <ui:VisualElement name="language-popup-container" />
+        <ui:VisualElement name="language-helpbox-container" />
         <ui:Foldout text="@settings.editor.cabinet.defaults.foldout">
             <ui:TextField picking-mode="Ignore" label="@settings.editor.cabinet.defaults.textfield.armatureName" name="cabinet-def-armature-name-field" />
             <ui:Toggle label="@settings.editor.cabinet.defaults.toggle.groupDynamics" name="cabinet-def-group-dynamics-toggle" />

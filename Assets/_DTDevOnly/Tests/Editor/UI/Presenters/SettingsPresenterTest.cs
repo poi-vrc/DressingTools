@@ -91,7 +91,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var mock = SetupMock();
             mock.SetupProperty(m => m.LanguageSelected, "English");
             mock.Raise(m => m.LanguageChanged += null);
-            mock.Verify(m => m.AskReloadWindow(), Times.Once);
+            mock.VerifySet(m => m.ShowLanguageReloadWindowHelpbox = true);
         }
 
         [Test]
