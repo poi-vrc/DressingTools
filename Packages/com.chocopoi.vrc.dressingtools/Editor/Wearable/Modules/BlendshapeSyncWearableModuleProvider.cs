@@ -122,16 +122,17 @@ namespace Chocopoi.DressingTools.Wearable.Modules
             }
         }
 
-        private static BlendshapeSyncWearableModuleConfig.BlendshapeSync FindBlendshapeSync(EditorCurveBinding curveBinding, List<BlendshapeSyncWearableModuleConfig.BlendshapeSync> blendshapeSyncs)
+        private static List<BlendshapeSyncWearableModuleConfig.BlendshapeSync> FindBlendshapeSyncs(EditorCurveBinding curveBinding, List<BlendshapeSyncWearableModuleConfig.BlendshapeSync> blendshapeSyncs)
         {
+            var list = new List<BlendshapeSyncWearableModuleConfig.BlendshapeSync>();
             foreach (var blendshapeSync in blendshapeSyncs)
             {
                 if (curveBinding.path == blendshapeSync.avatarPath && curveBinding.propertyName == "blendShape." + blendshapeSync.avatarBlendshapeName)
                 {
-                    return blendshapeSync;
+                    list.Add(blendshapeSync);
                 }
             }
-            return null;
+            return list;
         }
 
         public override bool Invoke(ApplyCabinetContext cabCtx, ApplyWearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
@@ -158,8 +159,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 var curveBindings = AnimationUtility.GetCurveBindings(oldClip);
                 foreach (var curveBinding in curveBindings)
                 {
-                    var blendshapeSync = FindBlendshapeSync(curveBinding, bsm.blendshapeSyncs);
-                    if (blendshapeSync != null)
+                    var blendshapeSyncs = FindBlendshapeSyncs(curveBinding, bsm.blendshapeSyncs);
+                    foreach (var blendshapeSync in blendshapeSyncs)
                     {
                         var basePath = AnimationUtils.GetRelativePath(wearCtx.wearableGameObject.transform, cabCtx.avatarGameObject.transform);
                         newClip.SetCurve(basePath + "/" + blendshapeSync.wearablePath, curveBinding.type, "blendShape." + blendshapeSync.wearableBlendshapeName, AnimationUtility.GetEditorCurve(oldClip, curveBinding));
