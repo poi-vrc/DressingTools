@@ -19,16 +19,27 @@ using System;
 using Chocopoi.DressingFramework.UI;
 using UnityEngine;
 
+#if UNITY_2021_2_OR_NEWER
+using PrefabStage = UnityEditor.SceneManagement.PrefabStage;
+#elif UNITY_2018_3_OR_NEWER
+using PrefabStage = UnityEditor.Experimental.SceneManagement.PrefabStage;
+#else
+#error The current Unity version does not support PrefabStage.
+#endif
+
 namespace Chocopoi.DressingTools.UIBase.Views
 {
     internal interface IMainView : IEditorView
     {
         event Action UpdateAvailableUpdateButtonClick;
         event Action MouseMove;
+        event Action<PrefabStage> PrefabStageClosing;
+        event Action<PrefabStage> PrefabStageOpened;
 
         string UpdateAvailableFromVersion { get; set; }
         string UpdateAvailableToVersion { get; set; }
         bool ShowExitPlayModeHelpbox { get; set; }
+        bool ShowExitPrefabModeHelpbox { get; set; }
         int SelectedTab { get; set; }
 
         void ForceUpdateCabinetSubView();

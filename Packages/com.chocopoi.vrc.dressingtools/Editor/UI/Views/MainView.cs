@@ -27,6 +27,14 @@ using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+#if UNITY_2021_2_OR_NEWER
+using PrefabStage = UnityEditor.SceneManagement.PrefabStage;
+#elif UNITY_2018_3_OR_NEWER
+using PrefabStage = UnityEditor.Experimental.SceneManagement.PrefabStage;
+#else
+#error The current Unity version does not support PrefabStage.
+#endif
+
 namespace Chocopoi.DressingTools.UI.View
 {
     [ExcludeFromCodeCoverage]
@@ -34,6 +42,8 @@ namespace Chocopoi.DressingTools.UI.View
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
+        public event Action<PrefabStage> PrefabStageClosing { add { PrefabStage.prefabStageClosing += value; } remove { PrefabStage.prefabStageClosing -= value; } }
+        public event Action<PrefabStage> PrefabStageOpened { add { PrefabStage.prefabStageOpened += value; } remove { PrefabStage.prefabStageOpened -= value; } }
         public event Action UpdateAvailableUpdateButtonClick;
         public event Action MouseMove;
 
@@ -50,6 +60,7 @@ namespace Chocopoi.DressingTools.UI.View
         public string UpdateAvailableFromVersion { get; set; }
         public string UpdateAvailableToVersion { get; set; }
         public bool ShowExitPlayModeHelpbox { get; set; }
+        public bool ShowExitPrefabModeHelpbox { get; set; }
 
         private MainPresenter _presenter;
         private CabinetSubView _cabinetSubView;
@@ -195,8 +206,12 @@ namespace Chocopoi.DressingTools.UI.View
             {
                 _helpboxContainer.Add(CreateHelpBox(t._("main.editor.helpbox.exitPlayMode"), UnityEditor.MessageType.Warning));
             }
-            _tabContainer.style.display = ShowExitPlayModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
-            _tabContentContainer.style.display = ShowExitPlayModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
+            if (ShowExitPrefabModeHelpbox)
+            {
+                _helpboxContainer.Add(CreateHelpBox(t._("main.editor.helpbox.exitPrefabMode"), UnityEditor.MessageType.Warning));
+            }
+            _tabContainer.style.display = ShowExitPlayModeHelpbox || ShowExitPrefabModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
+            _tabContentContainer.style.display = ShowExitPlayModeHelpbox || ShowExitPrefabModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
 
             if (UpdateAvailableFromVersion != null && UpdateAvailableToVersion != null)
             {

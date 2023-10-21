@@ -20,6 +20,14 @@ using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 
+#if UNITY_2021_2_OR_NEWER
+using PrefabStage = UnityEditor.SceneManagement.PrefabStage;
+#elif UNITY_2018_3_OR_NEWER
+using PrefabStage = UnityEditor.Experimental.SceneManagement.PrefabStage;
+#else
+#error The current Unity version does not support PrefabStage.
+#endif
+
 namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class MainPresenter
@@ -47,6 +55,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.MouseMove += OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick += OnUpdateAvailableUpdateButtonClick;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            _view.PrefabStageOpened += OnPrefabStageOpened;
+            _view.PrefabStageClosing += OnPrefabStageClosing;
         }
 
         private void UnsubscribeEvents()
@@ -57,6 +67,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.MouseMove -= OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick -= OnUpdateAvailableUpdateButtonClick;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            PrefabStage.prefabStageOpened -= OnPrefabStageOpened;
+            PrefabStage.prefabStageClosing -= OnPrefabStageClosing;
         }
 
         private void OnPlayModeStateChanged(PlayModeStateChange change)
@@ -91,6 +103,18 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.UpdateAvailableToVersion = latestVersion?.version;
                 _view.Repaint();
             }
+        }
+
+        private void OnPrefabStageOpened(PrefabStage stage)
+        {
+            _view.ShowExitPrefabModeHelpbox = true;
+            _view.Repaint();
+        }
+
+        private void OnPrefabStageClosing(PrefabStage stage)
+        {
+            _view.ShowExitPrefabModeHelpbox = false;
+            _view.Repaint();
         }
 
         private void OnLoad()
