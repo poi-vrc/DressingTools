@@ -36,5 +36,29 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
 
             mock.Raise(m => m.Unload += null);
         }
+
+        [Test]
+        public void OnPrefabStageClosingTest()
+        {
+            var mock = new Mock<IMainView>();
+            var view = mock.Object;
+            new MainPresenter(view);
+
+            mock.Raise(m => m.PrefabStageClosing += null, (object)null);
+            mock.VerifySet(m => m.ShowExitPrefabModeHelpbox = false);
+            mock.Verify(m => m.Repaint(), Times.Once);
+        }
+
+        [Test]
+        public void OnPrefabStageOpenedTest()
+        {
+            var mock = new Mock<IMainView>();
+            var view = mock.Object;
+            new MainPresenter(view);
+
+            mock.Raise(m => m.PrefabStageOpened += null, (object)null);
+            mock.VerifySet(m => m.ShowExitPrefabModeHelpbox = true);
+            mock.Verify(m => m.Repaint(), Times.Once);
+        }
     }
 }

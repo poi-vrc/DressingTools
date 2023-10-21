@@ -134,6 +134,7 @@
     "legacy.editor.toggle.removeExistingPrefixesAndSuffixes": "Remove existing prefixes and suffixes",
     "legacy.editor.toggle.useCustomArmatureNames": "Use custom armature names",
     "main.editor.helpbox.exitPlayMode": "Please exit play mode to continue.",
+    "main.editor.helpbox.exitPrefabMode": "Please exit prefab mode to continue. Editing in prefab mode is currently not supported.",
     "main.editor.tabs.cabinet": "Cabinet",
     "main.editor.tabs.dressing": "Dressing",
     "main.editor.tabs.settings": "Settings",
