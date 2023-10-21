@@ -305,5 +305,6 @@
     "wearableConfig.editor.toolbar.btn.export": "匯出",
     "settings.editor.helpbox.updateLocaleReloadWindow": "要套用新語言，您必須重新載入視窗。",
     "mapping.editor.helpbox.generatedBoneMappingsNotAvailable": "沒有已生成的骨頭映射。",
-    "mapping.editor.helpbox.noAvatarOrWearableSelected": "未選擇角色或穿戴物品。"
+    "mapping.editor.helpbox.noAvatarOrWearableSelected": "未選擇角色或穿戴物品。",
+    "main.editor.helpbox.exitPrefabMode": "請退出預製件模式以繼續, 目前不支援在預製件模式下進行編輯。"
 }
