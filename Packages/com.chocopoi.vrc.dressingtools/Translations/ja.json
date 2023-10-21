@@ -305,5 +305,6 @@
     "wearableConfig.editor.toolbar.btn.export": "エクスポート",
     "settings.editor.helpbox.updateLocaleReloadWindow": "新しい言語を適用するには、ウィンドウを再ロードする必要があります。",
     "mapping.editor.helpbox.noAvatarOrWearableSelected": "アバターまたはウェアラブルが選択されていません。",
-    "mapping.editor.helpbox.generatedBoneMappingsNotAvailable": "ボーンマッピングは生成されません。"
+    "mapping.editor.helpbox.generatedBoneMappingsNotAvailable": "ボーンマッピングは生成されません。",
+    "main.editor.helpbox.exitPrefabMode": "続行するにはプレハブ モードを終了してください。プレハブ モードでの編集は現在サポートされていません。"
 }
