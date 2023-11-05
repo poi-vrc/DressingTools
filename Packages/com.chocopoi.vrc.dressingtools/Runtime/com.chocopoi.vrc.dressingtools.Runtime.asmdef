@@ -3,10 +3,7 @@
     "references": [
         "GUID:dcaf16fd99f37914888e6e13bdf533ea"
     ],
-    "includePlatforms": [
-        "Editor",
-        "WindowsStandalone64"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
