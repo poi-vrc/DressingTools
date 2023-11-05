@@ -171,8 +171,8 @@ namespace Chocopoi.DressingTools.Wearable.Modules
                 return true;
             }
 
-            if (agm.invertAvatarToggleOriginalStates) InvertAvatarToggleStates(agm, cabCtx.avatarGameObject);
-            if (agm.invertWearableToggleOriginalStates) InvertWearableToggleStates(agm, wearCtx.wearableGameObject);
+            // Now we don't invert states on entering play to avoid user confusion
+            // We only switch the dynamics inactive
             if (agm.setWearableDynamicsInactive) SetDynamicsInactive(wearCtx);
             return true;
         }
