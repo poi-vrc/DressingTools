@@ -269,43 +269,46 @@ namespace Chocopoi.DressingTools.Integration.VRChat.Modules
             PrepareAnimatorAndExpressions(cabCtx, avatarDescriptor, out var fxController, out var exParams, out var exMenu, out var parametersToAdd, out var pairs);
             var refTransition = GetStateTransitionReference();
 
-            var baseSubMenu = new ExpressionMenuBuilder();
-            baseSubMenu.AddToggle("Original", "cpDT_Cabinet", 0);
-            baseSubMenu.CreateAsset(cabCtx.MakeUniqueAssetPath("Cabinet_Menu.asset"));
-
             // get wearables
             var wearables = DKEditorUtils.GetCabinetWearables(cabCtx.avatarGameObject);
-            var cabinetMenu = baseSubMenu;
-            var cabinetMenuIndex = 0;
-            var originalLayerLength = fxController.layers.Length;
 
-            for (var i = 0; i < wearables.Length; i++)
-            {
-                // obtain the wearable context
-                var wearCtx = cabCtx.wearableContexts[wearables[i]];
-                var config = wearCtx.wearableConfig;
+            if (wearables.Length > 0) {
+                var baseSubMenu = new ExpressionMenuBuilder();
+                baseSubMenu.AddToggle("Original", "cpDT_Cabinet", 0);
+                baseSubMenu.CreateAsset(cabCtx.MakeUniqueAssetPath("Cabinet_Menu.asset"));
 
-                EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.generatingWearableAnimations", config.info.name), i / (float)wearables.Length);
+                var cabinetMenu = baseSubMenu;
+                var cabinetMenuIndex = 0;
+                var originalLayerLength = fxController.layers.Length;
 
-                // find the animation generation module
-                var agm = config.FindModuleConfig<CabinetAnimWearableModuleConfig>();
-                if (agm == null)
+                for (var i = 0; i < wearables.Length; i++)
                 {
-                    continue;
+                    // obtain the wearable context
+                    var wearCtx = cabCtx.wearableContexts[wearables[i]];
+                    var config = wearCtx.wearableConfig;
+
+                    EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.generatingWearableAnimations", config.info.name), i / (float)wearables.Length);
+
+                    // find the animation generation module
+                    var agm = config.FindModuleConfig<CabinetAnimWearableModuleConfig>();
+                    if (agm == null)
+                    {
+                        continue;
+                    }
+
+                    ApplyWearableAnimationsAndMenus(cabCtx, wearCtx, vrcm, agm, i, refTransition, fxController, pairs, parametersToAdd, ref cabinetMenu, ref cabinetMenuIndex);
                 }
 
-                ApplyWearableAnimationsAndMenus(cabCtx, wearCtx, vrcm, agm, i, refTransition, fxController, pairs, parametersToAdd, ref cabinetMenu, ref cabinetMenuIndex);
+                // create cabinet layer
+                AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, cabCtx.cabinetConfig.animationWriteDefaults, null, refTransition);
+
+                // we push our cabinet layer to the top
+                PushCabinetLayerToTop(fxController, originalLayerLength);
+
+                EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.addingExParams"), 1.0f);
+
+                if (!TryAddExMenusAndParams(cabCtx, exParams, exMenu, baseSubMenu, parametersToAdd)) return false;
             }
-
-            // create cabinet layer
-            AnimationUtils.GenerateAnyStateLayer(fxController, "cpDT_Cabinet", "cpDT_Cabinet", pairs, cabCtx.cabinetConfig.animationWriteDefaults, null, refTransition);
-
-            // we push our cabinet layer to the top
-            PushCabinetLayerToTop(fxController, originalLayerLength);
-
-            EditorUtility.DisplayProgressBar(t._("tool.name"), t._("integrations.vrc.progressBar.msg.addingExParams"), 1.0f);
-
-            if (!TryAddExMenusAndParams(cabCtx, exParams, exMenu, baseSubMenu, parametersToAdd)) return false;
 
             EditorUtility.SetDirty(fxController);
             EditorUtility.SetDirty(exMenu);
