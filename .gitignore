@@ -112,3 +112,6 @@ UpgradeLog.htm
 
 # Ignore code coverage files
 CodeCoverage
+
+Tests
+Tests.meta
