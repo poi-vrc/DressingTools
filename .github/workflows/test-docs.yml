@@ -3,12 +3,12 @@ name: Test documentations
 on:
   push:
     paths:
-      - "docs/**"
+      - "docs~/**"
   pull_request:
     branches:
       - master
     paths:
-      - "docs/**"
+      - "docs~/**"
   workflow_dispatch:
 
 jobs:
@@ -21,11 +21,11 @@ jobs:
         with:
           node-version: 18
           cache: npm
-          cache-dependency-path: docs/package-lock.json
+          cache-dependency-path: docs~/package-lock.json
 
       - name: Install dependencies
-        run: cd docs && npm ci
+        run: cd docs~ && npm ci
       - name: Prepare i18n
-        run: cd docs && node prepare_i18n.js
+        run: cd docs~ && node prepare_i18n.js
       - name: Test build website
-        run: cd docs && npm run build
+        run: cd docs~ && npm run build

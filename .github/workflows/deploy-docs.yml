@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - "docs/**"
+      - "docs~/**"
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -29,14 +29,14 @@ jobs:
         with:
           node-version: 18
           cache: npm
-          cache-dependency-path: docs/package-lock.json
+          cache-dependency-path: docs~/package-lock.json
 
       - name: Install dependencies
-        run: cd docs && npm ci
+        run: cd docs~ && npm ci
       - name: Prepare i18n
-        run: cd docs && node prepare_i18n.js
+        run: cd docs~ && node prepare_i18n.js
       - name: Build website
-        run: cd docs && npm run build
+        run: cd docs~ && npm run build
  
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -44,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./docs/build
+          path: ./docs~/build
           
       - name: Deploy to GitHub Pages
         id: deployment

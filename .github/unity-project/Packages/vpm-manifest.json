@@ -1,0 +1,40 @@
+{
+  "dependencies": {
+    "com.vrchat.avatars": {
+      "version": "3.4.2"
+    },
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.26"
+    },
+    "com.chocopoi.vrc.dressingframework": {
+      "version": "1.0.6"
+    },
+    "com.chocopoi.vrc.avatarlib": {
+      "version": "1.0.2"
+    }
+  },
+  "locked": {
+    "com.vrchat.avatars": {
+      "version": "3.4.2",
+      "dependencies": {
+        "com.vrchat.base": "3.4.2"
+      }
+    },
+    "com.vrchat.base": {
+      "version": "3.4.2",
+      "dependencies": {}
+    },
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.26",
+      "dependencies": {}
+    },
+    "com.chocopoi.vrc.dressingframework": {
+      "version": "1.0.6",
+      "dependencies": {}
+    },
+    "com.chocopoi.vrc.avatarlib": {
+      "version": "1.0.2",
+      "dependencies": {}
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <div align="center">
   <a href="#">
-    <img src="logo/png/dt-banner-pink.png" width="50%">
+    <img src="logo~/png/dt-banner-pink.png" width="50%">
   </a>
   
   <br>

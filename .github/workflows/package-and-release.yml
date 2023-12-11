@@ -26,8 +26,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v3
         with:
-          submodules: true
+          dotnet-version: '6.0.x'
+
+      - name: Prepare Unity Project
+        run: |
+          mv Tests~ Tests
+          mkdir -p .github/unity-project/Packages/com.chocopoi.vrc.dressingtools
+          mv [!.github]* .github/unity-project/Packages/com.chocopoi.vrc.dressingtools/
+          mv .github/unity-project/* .
+          rm -rf .github/unity-project
+          ls -l
+          ls -l Packages/com.chocopoi.vrc.dressingtools
+
+      - name: Resolve VPM Project
+        run: |
+          dotnet tool install --global vrchat.vpm.cli
+          vpm add repo https://vpm.chocopoi.com/index.json
+          vpm resolve project
           
       - name: Obtain package version
         id: version
@@ -39,7 +58,8 @@ jobs:
       - name: Set Environment Variables
         run: |
           echo "zipFile=${{ env.dtPackageName }}-${{ steps.version.outputs.prop }}".zip >> $GITHUB_ENV
-          echo "unityPackage=DressingTools-${{ steps.version.outputs.prop }}-with-deps.unitypackage" >> $GITHUB_ENV
+          echo "singleUnityPackage=${{ env.dtPackageName }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_ENV
+          echo "unityPackageWithDeps=DressingTools-${{ steps.version.outputs.prop }}-with-deps.unitypackage" >> $GITHUB_ENV
         
       - name: Create Zip
         uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
@@ -48,13 +68,21 @@ jobs:
           directory: "Packages/${{env.dtPackageName}}/"
           filename: "../../${{env.zipFile}}" # make the zip file two directories up, since we start two directories in above
           
-      - run: find Packages/${{env.dtPackageName}}/ Packages/${{env.dkPackageName}}/ Packages/${{env.alPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> metaList
+      - run: find Packages/${{env.dtPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> singleMetaList
+  
+      - run: find Packages/${{env.dtPackageName}}/ Packages/${{env.dkPackageName}}/ Packages/${{env.alPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> withDepsMetaList
           
-      - name: Create UnityPackage
+      - name: Create Single UnityPackage
         uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
         with:
-          package-path: ${{ env.unityPackage }}
-          include-files: metaList
+          package-path: ${{ env.singleUnityPackage }}
+          include-files: singleMetaList
+
+      - name: Create With Deps UnityPackage
+        uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
+        with:
+          package-path: ${{ env.unityPackageWithDeps }}
+          include-files: withDepsMetaList
           
       # upload artifact
       - uses: actions/upload-artifact@v3
@@ -62,7 +90,8 @@ jobs:
           name: DT-${{ steps.version.outputs.prop }}
           path: |
             ${{ env.zipFile }}
-            ${{ env.unityPackage }}
+            ${{ env.singleUnityPackage }}
+            ${{ env.unityPackageWithDeps }}
             Packages/${{ env.dtPackageName }}/package.json
             
       # create release
@@ -72,5 +101,6 @@ jobs:
         with:
           files: |
             ${{ env.zipFile }}
-            ${{ env.unityPackage }}
+            ${{ env.singleUnityPackage }}
+            ${{ env.unityPackageWithDeps }}
             Packages/${{ env.dtPackageName }}/package.json
