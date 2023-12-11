@@ -1,6 +1,0 @@
-[submodule "Packages/com.chocopoi.vrc.avatarlib"]
-	path = Packages/com.chocopoi.vrc.avatarlib
-	url = https://github.com/poi-vrc/AvatarLib.git
-[submodule "Packages/com.chocopoi.vrc.dressingframework"]
-	path = Packages/com.chocopoi.vrc.dressingframework
-	url = https://github.com/poi-vrc/DressingFramework.git
