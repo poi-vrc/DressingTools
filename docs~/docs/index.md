@@ -37,4 +37,3 @@ Will be supported in the future:
 - Auto menu and parameters installing and management
 - Mixing different clothes for toggling
 - Conversion from other tools' configuration
-
