@@ -233,10 +233,10 @@ namespace Chocopoi.DressingTools.Animations
 
                 // enable/disable dynamics object
                 var remappedPath = AnimationUtils.GetRelativePath(dynamics.Transform, _avatarObject.transform);
-                AnimationUtils.SetSingleFrameGameObjectEnabledCurve(enableClip, remappedPath, true);
+                AnimationUtils.SetSingleFrameComponentEnabledCurve(enableClip, remappedPath, dynamics.Component.GetType(), true);
                 if (!_writeDefaults)
                 {
-                    AnimationUtils.SetSingleFrameGameObjectEnabledCurve(disableClip, remappedPath, false);
+                    AnimationUtils.SetSingleFrameComponentEnabledCurve(disableClip, remappedPath, dynamics.Component.GetType(), false);
                 }
 
                 // mark as visited

@@ -41,6 +41,11 @@ jobs:
           restore-keys: |
             Library-
 
+      - name: Pre-clone Git Dependencies
+        run: |
+          git clone https://github.com/poi-vrc/AvatarLib.git Packages/com.chocopoi.vrc.avatarlib
+          git clone https://github.com/poi-vrc/DressingFramework.git Packages/com.chocopoi.vrc.dressingframework
+
       - name: Resolve VPM Project
         run: |
           dotnet tool install --global vrchat.vpm.cli
