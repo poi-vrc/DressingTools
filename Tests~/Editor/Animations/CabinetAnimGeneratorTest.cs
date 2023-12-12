@@ -16,6 +16,7 @@ using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -24,10 +25,20 @@ namespace Chocopoi.DressingTools.Tests.Animation
 {
     public class CabinetAnimGeneratorTest : EditorTestBase
     {
-        private void CreateAnimGen(CabinetAnimWearableModuleConfig module, bool writeDefaults, out GameObject avatarObject, out GameObject wearableObject, out DKReport report, out CabinetAnimGenerator ag)
+        private void CreateAnimGenDynBone(CabinetAnimWearableModuleConfig module, bool writeDefaults, out GameObject avatarObject, out GameObject wearableObject, out DKReport report, out CabinetAnimGenerator ag)
+        {
+            CreateAnimGen("DTTest_DynBoneCabinetAnimGenAvatar.prefab", module, writeDefaults, out avatarObject, out wearableObject, out report, out ag);
+        }
+
+        private void CreateAnimGenPhysBone(CabinetAnimWearableModuleConfig module, bool writeDefaults, out GameObject avatarObject, out GameObject wearableObject, out DKReport report, out CabinetAnimGenerator ag)
+        {
+            CreateAnimGen("DTTest_PhysBoneCabinetAnimGenAvatar.prefab", module, writeDefaults, out avatarObject, out wearableObject, out report, out ag);
+        }
+
+        private void CreateAnimGen(string testPrefabName, CabinetAnimWearableModuleConfig module, bool writeDefaults, out GameObject avatarObject, out GameObject wearableObject, out DKReport report, out CabinetAnimGenerator ag)
         {
             report = new DKReport();
-            avatarObject = InstantiateEditorTestPrefab("DTTest_CabinetAnimGenAvatar.prefab");
+            avatarObject = InstantiateEditorTestPrefab(testPrefabName);
             var wearableTransform = avatarObject.transform.Find("Wearable");
             Assert.NotNull(wearableTransform);
             wearableObject = wearableTransform.gameObject;
@@ -100,7 +111,7 @@ namespace Chocopoi.DressingTools.Tests.Animation
         public void GenerateWearAnimations_NotGrandParent_ThrowsException()
         {
             var module = new CabinetAnimWearableModuleConfig();
-            CreateAnimGen(module, true, out var avatarObject, out var wearableObject, out var report, out var ag);
+            CreateAnimGenDynBone(module, true, out var avatarObject, out var wearableObject, out var report, out var ag);
             wearableObject.transform.SetParent(null);
             Assert.Throws(typeof(System.Exception), () => ag.GenerateWearAnimations());
         }
@@ -126,10 +137,28 @@ namespace Chocopoi.DressingTools.Tests.Animation
             if (!found) Assert.Fail("Curve not found");
         }
 
-        private void GenerateWearAnimations_NoRemapping_AllTests(bool writeDefaults)
+        private enum TestDynamicsType
+        {
+            DynamicBone,
+            VRCPhysBone
+        }
+
+        private void GenerateWearAnimations_NoRemapping_AllTests(bool writeDefaults, TestDynamicsType testDynamicsType)
         {
             var module = CreateModule();
-            CreateAnimGen(module, writeDefaults, out var avatarObject, out var wearableObject, out var report, out var ag);
+
+            CabinetAnimGenerator ag = null;
+            System.Type compType = null;
+            if (testDynamicsType == TestDynamicsType.DynamicBone)
+            {
+                CreateAnimGenDynBone(module, writeDefaults, out _, out _, out _, out ag);
+                compType = DKEditorUtils.FindType("DynamicBone");
+            }
+            else if (testDynamicsType == TestDynamicsType.VRCPhysBone)
+            {
+                CreateAnimGenPhysBone(module, writeDefaults, out _, out _, out _, out ag);
+                compType = DKEditorUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+            }
 
             var tuple = ag.GenerateWearAnimations();
             var enableClip = tuple.Item1;
@@ -156,7 +185,7 @@ namespace Chocopoi.DressingTools.Tests.Animation
 
             // there is a dynamics at Wearable/Armature/Hips/MyDynBone
             // usually this will be grouped by cabinet applier to the root
-            AssertCurve(enableClip, curveBindings, typeof(GameObject), "Wearable/Armature/Hips/MyDynBone", "m_IsActive", 1.0f);
+            AssertCurve(enableClip, curveBindings, compType, "Wearable/Armature/Hips/MyDynBone", "m_Enabled", 1.0f);
 
             //
             // Disable clip
@@ -182,14 +211,28 @@ namespace Chocopoi.DressingTools.Tests.Animation
                 AssertCurve(disableClip, curveBindings, typeof(SkinnedMeshRenderer), "Wearable/WearableBlendshapeCube", "blendShape.SomeKey", 30.0f);
 
                 // turn off dynbone
-                AssertCurve(disableClip, curveBindings, typeof(GameObject), "Wearable/Armature/Hips/MyDynBone", "m_IsActive", 0.0f);
+                AssertCurve(disableClip, curveBindings, compType, "Wearable/Armature/Hips/MyDynBone", "m_Enabled", 0.0f);
             }
         }
 
-        private void GenerateWearAnimations_WithRemapping_AllTests(bool writeDefaults)
+        private void GenerateWearAnimations_WithRemapping_AllTests(bool writeDefaults, TestDynamicsType testDynamicsType)
         {
             var module = CreateModule();
-            CreateAnimGen(module, writeDefaults, out var avatarObject, out var wearableObject, out var report, out var ag);
+
+            CabinetAnimGenerator ag = null;
+            GameObject avatarObject = null;
+            GameObject wearableObject = null;
+            System.Type compType = null;
+            if (testDynamicsType == TestDynamicsType.DynamicBone)
+            {
+                CreateAnimGenDynBone(module, writeDefaults, out avatarObject, out wearableObject, out _, out ag);
+                compType = DKEditorUtils.FindType("DynamicBone");
+            }
+            else if (testDynamicsType == TestDynamicsType.VRCPhysBone)
+            {
+                CreateAnimGenPhysBone(module, writeDefaults, out avatarObject, out wearableObject, out _, out ag);
+                compType = DKEditorUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
+            }
 
             // move the SomeRootObject1 away somewhere to trigger remapping
             var ro1 = avatarObject.transform.Find("SomeRootObject1");
@@ -245,7 +288,7 @@ namespace Chocopoi.DressingTools.Tests.Animation
             // there is a dynamics at Wearable/Armature/Hips/MyDynBone
             // usually this will be grouped by cabinet applier to the root
             // MyDynBone is now at avatar root
-            AssertCurve(enableClip, curveBindings, typeof(GameObject), "MyDynBone", "m_IsActive", 1.0f);
+            AssertCurve(enableClip, curveBindings, compType, "MyDynBone", "m_Enabled", 1.0f);
 
             //
             // Disable clip
@@ -271,39 +314,62 @@ namespace Chocopoi.DressingTools.Tests.Animation
                 AssertCurve(disableClip, curveBindings, typeof(SkinnedMeshRenderer), "WearableBlendshapeCube", "blendShape.SomeKey", 30.0f);
 
                 // turn off dynbone
-                AssertCurve(disableClip, curveBindings, typeof(GameObject), "MyDynBone", "m_IsActive", 0.0f);
+                AssertCurve(disableClip, curveBindings, compType, "MyDynBone", "m_Enabled", 0.0f);
             }
         }
 
         [Test]
-        public void GenerateWearAnimations_WriteDefaults_NoRemapping_AllTests()
+        public void GenerateWearAnimations_WriteDefaults_NoRemapping_AllTests_DynBone()
         {
-            GenerateWearAnimations_NoRemapping_AllTests(true);
+            GenerateWearAnimations_NoRemapping_AllTests(true, TestDynamicsType.DynamicBone);
+        }
+        [Test]
+        public void GenerateWearAnimations_WriteDefaults_NoRemapping_AllTests_PhysBone()
+        {
+            GenerateWearAnimations_NoRemapping_AllTests(true, TestDynamicsType.VRCPhysBone);
         }
 
         [Test]
-        public void GenerateWearAnimations_NoWriteDefaults_NoRemapping_AllTests()
+        public void GenerateWearAnimations_NoWriteDefaults_NoRemapping_AllTests_DynBone()
         {
-            GenerateWearAnimations_NoRemapping_AllTests(false);
+            GenerateWearAnimations_NoRemapping_AllTests(false, TestDynamicsType.DynamicBone);
         }
 
         [Test]
-        public void GenerateWearAnimations_WriteDefaults_WithRemapping_AllTests()
+        public void GenerateWearAnimations_NoWriteDefaults_NoRemapping_AllTests_PhysBone()
         {
-            GenerateWearAnimations_WithRemapping_AllTests(true);
+            GenerateWearAnimations_NoRemapping_AllTests(false, TestDynamicsType.VRCPhysBone);
         }
 
         [Test]
-        public void GenerateWearAnimations_NoWriteDefaults_WithRemapping_AllTests()
+        public void GenerateWearAnimations_WriteDefaults_WithRemapping_AllTests_DynBone()
         {
-            GenerateWearAnimations_WithRemapping_AllTests(false);
+            GenerateWearAnimations_WithRemapping_AllTests(true, TestDynamicsType.DynamicBone);
+        }
+
+        [Test]
+        public void GenerateWearAnimations_WriteDefaults_WithRemapping_AllTests_PhysBone()
+        {
+            GenerateWearAnimations_WithRemapping_AllTests(true, TestDynamicsType.VRCPhysBone);
+        }
+
+        [Test]
+        public void GenerateWearAnimations_NoWriteDefaults_WithRemapping_AllTests_DynBone()
+        {
+            GenerateWearAnimations_WithRemapping_AllTests(false, TestDynamicsType.DynamicBone);
+        }
+
+        [Test]
+        public void GenerateWearAnimations_NoWriteDefaults_WithRemapping_AllTests_PhysBone()
+        {
+            GenerateWearAnimations_WithRemapping_AllTests(false, TestDynamicsType.VRCPhysBone);
         }
 
         [Test]
         public void GenerateCustomizableToggleAnimations_NotGrandParent_ThrowsException()
         {
             var module = new CabinetAnimWearableModuleConfig();
-            CreateAnimGen(module, true, out var avatarObject, out var wearableObject, out var report, out var ag);
+            CreateAnimGenDynBone(module, true, out var avatarObject, out var wearableObject, out var report, out var ag);
             wearableObject.transform.SetParent(null);
             Assert.Throws(typeof(System.Exception), () => ag.GenerateCustomizableToggleAnimations());
         }
@@ -323,7 +389,7 @@ namespace Chocopoi.DressingTools.Tests.Animation
         private void GenerateCustomizableToggleAnimations_AllTests(bool writeDefaults)
         {
             var module = CreateModule();
-            CreateAnimGen(module, writeDefaults, out var avatarObject, out var wearableObject, out var report, out var ag);
+            CreateAnimGenDynBone(module, writeDefaults, out var avatarObject, out var wearableObject, out var report, out var ag);
 
             var dict = ag.GenerateCustomizableToggleAnimations();
             var toggleCustomizable = FindCustomizableByName(dict.Keys, "ToggleCustomizable");
@@ -405,7 +471,7 @@ namespace Chocopoi.DressingTools.Tests.Animation
         {
             // there are no difference with write defaults or not
             var module = CreateModule();
-            CreateAnimGen(module, true, out var avatarObject, out var wearableObject, out var report, out var ag);
+            CreateAnimGenDynBone(module, true, out var avatarObject, out var wearableObject, out var report, out var ag);
 
             var dict = ag.GenerateCustomizableBlendshapeAnimations();
             var blendshapeCustomizable = FindCustomizableByName(dict.Keys, "BlendshapeCustomizable");
