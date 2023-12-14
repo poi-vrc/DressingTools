@@ -28,6 +28,10 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         [Test]
         public void ApplyErrors_ReturnsCorrectErrorCodes()
         {
+            // TODO: dynbone check?
+            // This test requires PhysBone
+            AssertPassImportedVRCSDK();
+
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearableModuleError.prefab");
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);

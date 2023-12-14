@@ -47,6 +47,10 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         [Test]
         public void GetWearables_ReturnsOneWearable()
         {
+            // TODO: dynbone check?
+            // This test requires PhysBone
+            AssertPassImportedVRCSDK();
+
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
 
             var cabinet = avatarRoot.GetComponent<DTCabinet>();
@@ -64,6 +68,10 @@ namespace Chocopoi.DressingTools.Tests.Cabinet
         [Test]
         public void ApplyInEditorMode_AppliesNormally()
         {
+            // TODO: dynbone check?
+            // This test requires PhysBone
+            AssertPassImportedVRCSDK();
+
             var avatarRoot = InstantiateEditorTestPrefab("DTTest_PhysBoneAvatarWithWearable.prefab");
 
             var cabinet = avatarRoot.GetComponent<DTCabinet>();

@@ -1,0 +1,1 @@
+Renaming Moq.dll to DressingTools.Tests.Moq.dll causes Unity Burst compiler to fail with Mono.Cecil being unable to resolve the mocked classes.

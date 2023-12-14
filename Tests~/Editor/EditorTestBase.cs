@@ -80,5 +80,20 @@ namespace Chocopoi.DressingTools.Tests
 
             return wearCtx;
         }
+
+        public void AssertPassImportedDynamicBone()
+        {
+            if (DKEditorUtils.FindType("DynamicBone") == null)
+            {
+                Assert.Pass("This test requires DynamicBones to be imported");
+            }
+        }
+
+        public void AssertPassImportedVRCSDK()
+        {
+#if !VRC_SDK_VRCSDK3
+            Assert.Pass("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
+#endif
+        }
     }
 }
