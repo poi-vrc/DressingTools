@@ -16,7 +16,6 @@ using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -151,11 +150,13 @@ namespace Chocopoi.DressingTools.Tests.Animation
             System.Type compType = null;
             if (testDynamicsType == TestDynamicsType.DynamicBone)
             {
+                AssertPassImportedDynamicBone();
                 CreateAnimGenDynBone(module, writeDefaults, out _, out _, out _, out ag);
                 compType = DKEditorUtils.FindType("DynamicBone");
             }
             else if (testDynamicsType == TestDynamicsType.VRCPhysBone)
             {
+                AssertPassImportedVRCSDK();
                 CreateAnimGenPhysBone(module, writeDefaults, out _, out _, out _, out ag);
                 compType = DKEditorUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
             }
@@ -225,11 +226,13 @@ namespace Chocopoi.DressingTools.Tests.Animation
             System.Type compType = null;
             if (testDynamicsType == TestDynamicsType.DynamicBone)
             {
+                AssertPassImportedDynamicBone();
                 CreateAnimGenDynBone(module, writeDefaults, out avatarObject, out wearableObject, out _, out ag);
                 compType = DKEditorUtils.FindType("DynamicBone");
             }
             else if (testDynamicsType == TestDynamicsType.VRCPhysBone)
             {
+                AssertPassImportedVRCSDK();
                 CreateAnimGenPhysBone(module, writeDefaults, out avatarObject, out wearableObject, out _, out ag);
                 compType = DKEditorUtils.FindType("VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone");
             }

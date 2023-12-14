@@ -2,11 +2,7 @@ name: Package and Release
 
 on:
   push:
-    paths:
-      - "Packages/**"
   pull_request:
-    paths:
-      - "Packages/**"
   create:
     ref_type: tag
   workflow_dispatch:
@@ -35,17 +31,20 @@ jobs:
       - name: Prepare Unity Project
         run: |
           mv Tests~ Tests
-          mkdir -p .github/unity-project/Packages/com.chocopoi.vrc.dressingtools
-          mv [!.github]* .github/unity-project/Packages/com.chocopoi.vrc.dressingtools/
+          mkdir -p .github/unity-project/Packages/${{ env.dtPackageName }}
+          mv [!.github]* .github/unity-project/Packages/${{ env.dtPackageName }}/
           mv .github/unity-project/* .
           rm -rf .github/unity-project
           ls -l
-          ls -l Packages/com.chocopoi.vrc.dressingtools
+          ls -l Packages/${{ env.dtPackageName }}
 
       - name: Resolve VPM Project
         run: |
+          mv Packages/vpm-manifest.2022.3.6f1.json Packages/vpm-manifest.json
           dotnet tool install --global vrchat.vpm.cli
           vpm add repo https://vpm.chocopoi.com/index.json
+          vpm add package com.chocopoi.vrc.avatarlib
+          vpm add package com.chocopoi.vrc.dressingframework
           vpm resolve project
           
       - name: Obtain package version

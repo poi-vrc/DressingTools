@@ -4,15 +4,24 @@ on:
   push:
     paths:
       - "**.cs"
+      - ".github/unity-project/**/*"
       - ".github/workflows/unity-tests.yml"
-  pull_request:
-    paths:
-      - "**.cs"
 
 jobs:
   build:
-    name: Build and Test
+    name: Build and Test (${{ matrix.unity-version }}${{ matrix.import-vrcsdk && ', VRC' || '' }}${{ matrix.import-dynbone && ', DynBone' || '' }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        unity-version: ['2019.4.31f1', '2021.3.33f1', '2022.3.6f1', '2023.2.2f1']
+        import-vrcsdk: [false, true]
+        import-dynbone: [false, true]
+        exclude:
+          - unity-version: "2021.3.33f1"
+            import-vrcsdk: true
+          - unity-version: "2023.2.2f1"
+            import-vrcsdk: true
     steps:
       # Checkout
       - name: Checkout repository
@@ -37,9 +46,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-${{ matrix.unity-version }}-${{ matrix.import-vrcsdk }}-${{ matrix.import-dynbone }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-
+            Library-${{ matrix.unity-version }}-${{ matrix.import-vrcsdk }}-${{ matrix.import-dynbone }}-
 
       - name: Pre-clone Git Dependencies
         run: |
@@ -47,13 +56,16 @@ jobs:
           git clone https://github.com/poi-vrc/DressingFramework.git Packages/com.chocopoi.vrc.dressingframework
 
       - name: Resolve VPM Project
+        if: matrix.import-vrcsdk
         run: |
+          mv Packages/vpm-manifest.${{ matrix.unity-version }}.json Packages/vpm-manifest.json
           dotnet tool install --global vrchat.vpm.cli
           vpm add repo https://vpm.chocopoi.com/index.json
           vpm resolve project
 
       # DynamicsBones stub
-      - name: Download and copy DynamicBones stub
+      - name: Import DynamicBones stub
+        if: matrix.import-dynbone
         run: |
           wget -O Dynamic-Bones-Stub-main.zip https://github.com/VRLabs/Dynamic-Bones-Stub/archive/refs/heads/main.zip
           unzip Dynamic-Bones-Stub-main.zip
@@ -62,21 +74,30 @@ jobs:
 
       # Test
       - name: Run tests
-        uses: game-ci/unity-test-runner@v2
+        uses: game-ci/unity-test-runner@v4.0.0
         id: tests
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          unityVersion: ${{ matrix.unity-version }}
+          # we have too many tests, exceeded the github limit
+          # https://github.com/game-ci/unity-test-runner/issues/142
+          # githubToken: ${{ secrets.GITHUB_TOKEN }}
           testMode: 'all'
           customParameters: '-assemblyNames "com.chocopoi.vrc.dressingtools.Editor.Tests;com.chocopoi.vrc.dressingtools.Runtime.Tests" -nographics'
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.chocopoi.vrc.dressingtools.Editor,+com.chocopoi.vrc.dressingtools.Runtime'
       
-      # Upload coverage report to GitHub
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: Coverage results
+          name: Test results (${{ matrix.unity-version }}${{ matrix.import-vrcsdk && ', VRC' || '' }}${{ matrix.import-dynbone && ', DynBone' || '' }})
+          path: artifacts
+      
+      # Upload coverage report to GitHub
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Coverage results (${{ matrix.unity-version }}${{ matrix.import-vrcsdk && ', VRC' || '' }}${{ matrix.import-dynbone && ', DynBone' || '' }})
           path: ${{ steps.tests.outputs.coveragePath }}
           
       # Upload coverage report to Codecov

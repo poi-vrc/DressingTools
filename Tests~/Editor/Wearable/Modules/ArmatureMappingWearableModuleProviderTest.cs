@@ -44,6 +44,10 @@ namespace Chocopoi.DressingTools.Tests.Wearable.Modules
         [Test]
         public void MapAutoTest()
         {
+            // TODO: dynbone check?
+            // This test requires PhysBone
+            AssertPassImportedVRCSDK();
+
             var provider = new ArmatureMappingWearableModuleProvider();
 
             var avatarObj = InstantiateEditorTestPrefab("DTTest_MapAutoAvatar.prefab");
@@ -66,6 +70,10 @@ namespace Chocopoi.DressingTools.Tests.Wearable.Modules
         [Test]
         public void MapOverrideTest()
         {
+            // TODO: dynbone check?
+            // This test requires PhysBone
+            AssertPassImportedVRCSDK();
+
             var provider = new ArmatureMappingWearableModuleProvider();
 
             var avatarObj = InstantiateEditorTestPrefab("DTTest_MapOverrideAvatar.prefab");
