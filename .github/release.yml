@@ -1,8 +1,0 @@
-changelog:
-  categories:
-    - title: 🏕 Features
-      labels:
-        - "feat"
-    - title: 🛠 Fixes
-      labels:
-        - "fix"

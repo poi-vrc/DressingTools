@@ -30,7 +30,7 @@ jobs:
 
       - name: Prepare Unity Project
         run: |
-          mv Tests~ Tests
+          rm -rf Tests~ docs~ logo~
           mkdir -p .github/unity-project/Packages/${{ env.dtPackageName }}
           mv [!.github]* .github/unity-project/Packages/${{ env.dtPackageName }}/
           mv .github/unity-project/* .
@@ -64,6 +64,7 @@ jobs:
         uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
         with:
           type: "zip"
+          exclusions: 'Doxyfile* *.bat*'
           directory: "Packages/${{env.dtPackageName}}/"
           filename: "../../${{env.zipFile}}" # make the zip file two directories up, since we start two directories in above
           
