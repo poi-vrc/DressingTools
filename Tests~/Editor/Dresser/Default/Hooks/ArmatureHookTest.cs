@@ -295,21 +295,6 @@ namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
             }
         }
 
-        private void AssertPassImportedDynamicBone()
-        {
-            if (DKEditorUtils.FindType("DynamicBone") == null)
-            {
-                Assert.Pass("This test requires DynamicBones to be imported");
-            }
-        }
-
-        private void AssertPassImportedVRCSDK()
-        {
-#if !VRC_SDK_VRCSDK3
-            Assert.Pass("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
-#endif
-        }
-
         [Test]
         public void DynamicBone_RemoveDynamicsAndUseParentConstraints_ReturnsCorrectBoneMappingAndLogCodes()
         {

@@ -15,13 +15,6 @@
                 <ui:Label name="updater-current-ver-label" class="readonly-label-right" />
             </ui:VisualElement>
             <ui:VisualElement name="updater-helpbox-container" />
-            <ui:VisualElement name="updater-branch-selection-container">
-                <ui:VisualElement class="readonly-label-container">
-                    <ui:Label text="@settings.editor.updateChecker.label.defaultBranch" class="readonly-label-left" />
-                    <ui:Label name="updater-def-branch-label" class="readonly-label-right" />
-                </ui:VisualElement>
-                <ui:VisualElement name="updater-branch-popup-container" />
-            </ui:VisualElement>
             <ui:Button text="@settings.editor.updateChecker.btn.checkUpdate" name="updater-check-update-btn" />
         </ui:Foldout>
         <ui:Button text="@settings.editor.btn.resetToDefaults" name="reset-defaults-btn" />

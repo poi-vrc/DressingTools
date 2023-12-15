@@ -45,7 +45,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowLanguageReloadWindowHelpbox { get; set; }
 
         public List<string> AvailableLanguageKeys { get; set; }
-        public List<string> AvailableBranchKeys { get; set; }
 
         public string LanguageSelected { get; set; }
 
@@ -56,8 +55,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public string UpdaterCurrentVersion { get; set; }
         public bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
-        public string UpdaterDefaultBranch { get; set; }
-        public string UpdaterSelectedBranch { get; set; }
 
         private IMainView _mainView;
         private SettingsPresenter _presenter;
@@ -68,16 +65,12 @@ namespace Chocopoi.DressingTools.UI.Views
         private Toggle _cabinetAnimWriteDefToggle;
         private Label _updaterCurrentVerLabel;
         private VisualElement _updaterHelpboxContainer;
-        private VisualElement _updaterBranchSelectionContainer;
-        private Label _updaterDefBranchLabel;
-        private PopupField<string> _updaterBranchPopup;
         private VisualElement _languageHelpboxContainer;
 
         public SettingsSubView(IMainView mainView)
         {
             _mainView = mainView;
             AvailableLanguageKeys = new List<string>() { PopupPlaceholder };
-            AvailableBranchKeys = new List<string>() { PopupPlaceholder };
 
             ShowLanguageReloadWindowHelpbox = false;
 
@@ -90,8 +83,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
             UpdaterCurrentVersion = "";
             UpdaterShowHelpboxUpdateNotChecked = true;
-            UpdaterDefaultBranch = "";
-            UpdaterSelectedBranch = null;
 
             _presenter = new SettingsPresenter(this);
         }
@@ -156,17 +147,6 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             _updaterCurrentVerLabel = Q<Label>("updater-current-ver-label").First();
             _updaterHelpboxContainer = Q<VisualElement>("updater-helpbox-container").First();
-            _updaterBranchSelectionContainer = Q<VisualElement>("updater-branch-selection-container").First();
-            _updaterDefBranchLabel = Q<Label>("updater-def-branch-label").First();
-
-            var updaterBranchPopupContainer = Q<VisualElement>("updater-branch-popup-container").First();
-            _updaterBranchPopup = new PopupField<string>(t._("settings.editor.updateChecker.popup.branch"), AvailableBranchKeys, 0);
-            _updaterBranchPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
-            {
-                UpdaterSelectedBranch = evt.newValue;
-                SettingsChanged?.Invoke();
-            });
-            updaterBranchPopupContainer.Add(_updaterBranchPopup);
 
             var updaterCheckUpdateBtn = Q<Button>("updater-check-update-btn").First();
             updaterCheckUpdateBtn.clicked += UpdaterCheckUpdateButtonClicked;
@@ -190,16 +170,8 @@ namespace Chocopoi.DressingTools.UI.Views
             _updaterHelpboxContainer.Clear();
             if (UpdaterShowHelpboxUpdateNotChecked)
             {
-                _updaterBranchSelectionContainer.style.display = DisplayStyle.None;
-                _updaterHelpboxContainer.Add(CreateHelpBox(t._("settings.editor.updaterChecker.helpbox.msg.updateNotChecked"), UnityEditor.MessageType.Warning));
+                _updaterHelpboxContainer.Add(CreateHelpBox(t._("settings.editor.updaterChecker.helpbox.msg.updateNotChecked"), MessageType.Warning));
             }
-            else
-            {
-                _updaterBranchSelectionContainer.style.display = DisplayStyle.Flex;
-                _updaterBranchPopup.value = UpdaterSelectedBranch;
-            }
-
-            _updaterDefBranchLabel.text = UpdaterDefaultBranch;
         }
 
         public override void Repaint()
