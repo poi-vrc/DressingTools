@@ -330,7 +330,7 @@ namespace Chocopoi.DressingTools.UI.View
         private void DrawFooter()
         {
             HorizontalLine();
-            Label(t._("legacy.editor.label.toolVersion", CurrentVersion?.fullVersionString));
+            Label(t._("legacy.editor.label.toolVersion", CurrentVersion?.fullString));
             // TODO: version checker
             EditorGUILayout.SelectableLabel("https://dressingtools.chocopoi.com");
         }

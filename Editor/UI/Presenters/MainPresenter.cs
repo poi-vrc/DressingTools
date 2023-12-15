@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Threading;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
@@ -32,6 +31,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class MainPresenter
     {
+        private const string GithubReleasesTagUrlPrefix = "https://github.com/poi-vrc/DressingTools/releases/tag/";
+
         private IMainView _view;
 
         public MainPresenter(IMainView view)
@@ -41,8 +42,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // set locale before anything
             var prefs = PreferencesUtility.GetPreferences();
             I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
-
-            new Thread(() => UpdateChecker.FetchOnlineVersion()).Start();
 
             SubscribeEvents();
         }
@@ -87,20 +86,25 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnUpdateAvailableUpdateButtonClick()
         {
-            var prefs = PreferencesUtility.GetPreferences();
-            var latestVersion = UpdateChecker.GetBranchLatestVersion(prefs.app.updateBranch);
-            _view.OpenUrl(latestVersion.github_url);
+            var version = UpdateChecker.LatestVersion.fullString;
+            _view.OpenUrl(GithubReleasesTagUrlPrefix + version);
         }
 
         private void OnMouseMove()
         {
-            // a dummy way to check if updatechecker check done
-            if (UpdateChecker.IsUpdateChecked() && UpdateChecker.IsUpdateAvailable())
+            // a dummy way to check update periodically
+            if (!UpdateChecker.IsUpdateChecked())
             {
-                var prefs = PreferencesUtility.GetPreferences();
-                var latestVersion = UpdateChecker.GetBranchLatestVersion(prefs.app.updateBranch);
-                _view.UpdateAvailableFromVersion = UpdateChecker.CurrentVersion?.fullVersionString;
-                _view.UpdateAvailableToVersion = latestVersion?.version;
+                // invalidate the info in our view
+                _view.UpdateAvailableFromVersion = null;
+                _view.UpdateAvailableToVersion = null;
+                _view.Repaint();
+            }
+
+            if (UpdateChecker.IsUpdateAvailable())
+            {
+                _view.UpdateAvailableFromVersion = UpdateChecker.CurrentVersion.fullString;
+                _view.UpdateAvailableToVersion = UpdateChecker.LatestVersion.fullString;
                 _view.Repaint();
             }
         }

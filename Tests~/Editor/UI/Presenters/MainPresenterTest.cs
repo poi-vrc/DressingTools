@@ -22,7 +22,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
         [Test]
         public void UpdateAvailableUpdateButtonClickTest()
         {
-            UpdateChecker.FetchOnlineVersion();
+            UpdateChecker.InvalidateVersionCheckCache();
 
             var mock = new Mock<IMainView>();
             var view = mock.Object;

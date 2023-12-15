@@ -28,7 +28,6 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
 
             mock.SetupAllProperties();
             mock.SetupProperty(m => m.AvailableLanguageKeys, new List<string>());
-            mock.SetupProperty(m => m.AvailableBranchKeys, new List<string>());
 
             new SettingsPresenter(mock.Object);
 
@@ -55,7 +54,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
         private static void AssertUpdateChecker(ISettingsSubView view)
         {
             Assert.NotNull(UpdateChecker.CurrentVersion);
-            Assert.AreEqual(UpdateChecker.CurrentVersion.fullVersionString, view.UpdaterCurrentVersion);
+            Assert.AreEqual(UpdateChecker.CurrentVersion.fullString, view.UpdaterCurrentVersion);
         }
 
         private static void AssertUpdateView(Mock<ISettingsSubView> mock)

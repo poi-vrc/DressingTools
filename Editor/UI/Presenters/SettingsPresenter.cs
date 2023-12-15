@@ -84,7 +84,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnUpdaterCheckUpdateButtonClicked()
         {
-            UpdateChecker.FetchOnlineVersion();
+            UpdateChecker.InvalidateVersionCheckCache();
+            var _ = UpdateChecker.LatestVersion;
             UpdateView();
         }
 
@@ -107,8 +108,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _prefs.cabinet.defaultGroupDynamics = _view.CabinetDefaultsGroupDynamics;
             _prefs.cabinet.defaultGroupDynamicsSeparateDynamics = _view.CabinetDefaultsSeparateDynamics;
             _prefs.cabinet.defaultAnimationWriteDefaults = _view.CabinetDefaultsAnimWriteDefaults;
-
-            _prefs.app.updateBranch = _view.UpdaterSelectedBranch;
 
             PreferencesUtility.SavePreferences();
         }
@@ -133,28 +132,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateUpdateCheckerView()
         {
-            _view.UpdaterCurrentVersion = UpdateChecker.CurrentVersion?.fullVersionString;
-
-            if (UpdateChecker.IsUpdateChecked())
-            {
-                _view.UpdaterShowHelpboxUpdateNotChecked = false;
-                _view.UpdaterDefaultBranch = UpdateChecker.GetDefaultBranchName();
-
-                _view.AvailableBranchKeys.Clear();
-                var branches = UpdateChecker.GetAvailableBranches();
-                _view.AvailableBranchKeys.AddRange(branches);
-
-                var branchIndex = Array.IndexOf(branches, _prefs.app.updateBranch);
-                if (branchIndex == -1)
-                {
-                    branchIndex = 0;
-                }
-                _view.UpdaterSelectedBranch = branches[branchIndex];
-            }
-            else
-            {
-                _view.UpdaterShowHelpboxUpdateNotChecked = true;
-            }
+            _view.UpdaterCurrentVersion = UpdateChecker.CurrentVersion?.fullString;
+            _view.UpdaterShowHelpboxUpdateNotChecked = !UpdateChecker.IsUpdateChecked();
         }
 
         private void UpdateView()

@@ -31,7 +31,6 @@ namespace Chocopoi.DressingTools.UIBase.Views
         bool ShowLanguageReloadWindowHelpbox { get; set; }
 
         List<string> AvailableLanguageKeys { get; set; }
-        List<string> AvailableBranchKeys { get; set; }
 
         string LanguageSelected { get; set; }
 
@@ -42,7 +41,5 @@ namespace Chocopoi.DressingTools.UIBase.Views
 
         string UpdaterCurrentVersion { get; set; }
         bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
-        string UpdaterDefaultBranch { get; set; }
-        string UpdaterSelectedBranch { get; set; }
     }
 }
