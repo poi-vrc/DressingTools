@@ -45,6 +45,21 @@ namespace Chocopoi.DressingTools.UI
         // the other GameObject creation menu items. This can be achieved by setting its priority to 10 
         private const int MenuItemPriority = 20;
 
+        private static DTCabinet LookUpCabinet(Transform transform)
+        {
+            var p = transform.parent;
+            DTCabinet cabinet = null;
+            while (p != null)
+            {
+                if (p.TryGetComponent(out cabinet))
+                {
+                    break;
+                }
+                p = p.parent;
+            }
+            return cabinet;
+        }
+
         [MenuItem("GameObject/DressingTools/Quick setup clothes", false, MenuItemPriority)]
         public static void QuickAutoSetup(MenuCommand menuCommand)
         {
@@ -56,9 +71,9 @@ namespace Chocopoi.DressingTools.UI
             var wearable = (GameObject)menuCommand.context;
 
             // find the avatar
-            var avatarTransform = wearable.transform.parent;
+            var cabinet = LookUpCabinet(wearable.transform);
 
-            if (avatarTransform == null || !avatarTransform.TryGetComponent(out DTCabinet cabinet))
+            if (cabinet == null)
             {
                 // no parent or grandparents has the cabinet
                 EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.avatarNoCabinetAttached"), t._("common.dialog.btn.ok"));
@@ -152,9 +167,9 @@ namespace Chocopoi.DressingTools.UI
             var wearable = (GameObject)menuCommand.context;
 
             // find the avatar
-            var avatarTransform = wearable.transform.parent;
+            var cabinet = LookUpCabinet(wearable.transform);
 
-            if (avatarTransform == null || !avatarTransform.TryGetComponent(out DTCabinet cabinet))
+            if (cabinet == null)
             {
                 // no parent or grandparents has the cabinet
                 EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.avatarNoCabinetAttached"), t._("common.dialog.btn.ok"));
@@ -164,7 +179,7 @@ namespace Chocopoi.DressingTools.UI
             var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
             window.titleContent = new GUIContent(t._("tool.name"));
             window.Show();
-            window.StartDressing(avatarTransform.gameObject, wearable);
+            window.StartDressing(cabinet.gameObject, wearable);
         }
     }
 }
