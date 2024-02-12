@@ -17,7 +17,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools
 
             var cabinet = (DTCabinet)target;
 
-            cabinet.AvatarGameObject = (GameObject)EditorGUILayout.ObjectField(t._("cabinet.inspector.settings.avatar"), cabinet.AvatarGameObject, typeof(GameObject), true);
+            cabinet.rootGameObject = (GameObject)EditorGUILayout.ObjectField(t._("cabinet.inspector.settings.avatar"), cabinet.rootGameObject, typeof(GameObject), true);
             EditorGUILayout.Separator();
 
             if (GUILayout.Button(t._("common.inspector.btn.openInEditor"), GUILayout.Height(40)))

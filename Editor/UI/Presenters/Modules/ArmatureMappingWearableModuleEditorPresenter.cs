@@ -16,16 +16,15 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.UI.Views.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
 using LogType = Chocopoi.DressingFramework.Logging.LogType;
@@ -39,7 +38,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private ArmatureMappingWearableModuleConfig _module;
 
         private DKReport _dresserReport = null;
-        private ICabinet _cabinet;
+        private DTCabinet _cabinet;
 
         public ArmatureMappingWearableModuleEditorPresenter(IArmatureMappingWearableModuleEditorView view, IWearableModuleEditorViewParent parentView, ArmatureMappingWearableModuleConfig module)
         {
@@ -193,12 +192,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             _view.DresserSettings.targetAvatar = _parentView.TargetAvatar;
             _view.DresserSettings.targetWearable = _parentView.TargetWearable;
-            _cabinet = DKEditorUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
                 _view.IsAvatarAssociatedWithCabinet = true;
 
-                if (CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(_cabinet.configJson, out var cabinetConfig))
                 {
                     _view.AvatarArmatureName = cabinetConfig.avatarArmatureName;
                     _view.DresserSettings.avatarArmatureName = cabinetConfig.avatarArmatureName;

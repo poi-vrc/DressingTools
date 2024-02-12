@@ -17,8 +17,9 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -131,7 +132,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     // override mode and resultant display mode
                     var previewBoneMappings = new List<BoneMapping>(DTMappingEditorWindow.Data.generatedBoneMappings);
-                    DTEditorUtils.HandleBoneMappingOverrides(previewBoneMappings, DTMappingEditorWindow.Data.outputBoneMappings);
+                    OneConfUtils.HandleBoneMappingOverrides(previewBoneMappings, DTMappingEditorWindow.Data.outputBoneMappings);
                     UpdateAvatarHierarchy(previewBoneMappings, DTMappingEditorWindow.Data.targetAvatar.transform, _view.AvatarHierachyNodes);
                 }
                 else

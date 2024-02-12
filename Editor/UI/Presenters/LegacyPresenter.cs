@@ -17,23 +17,25 @@
 
 using System.Collections.Generic;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingTools.Api.Cabinet;
-using Chocopoi.DressingTools.Api.Wearable;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
+using Chocopoi.DressingTools.Components.Generic;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.UI.Views;
+using Chocopoi.DressingTools.UI.Views.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using AvatarBuilder = Chocopoi.DressingFramework.Detail.DK.AvatarBuilder;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -84,13 +86,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnTargetAvatarOrWearableChange()
         {
             // attempt to get settings from cabinet
-            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar, false);
+            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar, false);
             if (cabinet != null)
             {
-                if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
+                if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
                 {
                     Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and creating a new config");
-                    cabinet.ConfigJson = CabinetConfigUtility.Serialize(new CabinetConfig());
+                    cabinet.configJson = CabinetConfigUtility.Serialize(new CabinetConfig());
                 }
 
                 _view.ShowHasCabinetHelpbox = true;
@@ -225,15 +227,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // create a cabinet or use existing
-            var cabinet = DKEditorUtils.GetAvatarCabinet(targetAvatar, true);
+            var cabinet = OneConfUtils.GetAvatarCabinet(targetAvatar, true);
             AddClothesToCabinet(cabinet, targetAvatar, targetWearable);
 
             // run cabinet applier
-            var report = new DKReport();
-            var avatarObj = cabinet.AvatarGameObject;
-            new CabinetApplier(report, cabinet).RunStages();
-            ReportWindow.AddReport(avatarObj.name, report);
-            if (report.HasLogType(DressingFramework.Logging.LogType.Error))
+            var avatarObj = cabinet.rootGameObject;
+            var ab = new AvatarBuilder(avatarObj);
+            var dkReport = (DKReport)ab.Context.Report;
+            DKEditorUtils.TrySafeRun("LegacyPresenter", dkReport, () => ab.RunStages());
+            ReportWindow.AddReport(avatarObj.name, dkReport);
+            if (dkReport.HasLogType(DressingFramework.Logging.LogType.Error))
             {
                 ReportWindow.ShowWindow();
             }
@@ -244,11 +247,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void AddClothesToCabinet(DTCabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
         {
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
             {
                 Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and create a new one");
                 cabinetConfig = new CabinetConfig();
-                cabinet.ConfigJson = CabinetConfigUtility.Serialize(cabinetConfig);
+                cabinet.configJson = CabinetConfigUtility.Serialize(cabinetConfig);
             }
 
             // write cabinet config
@@ -257,7 +260,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             // create a wearable config
             var wearableConfig = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(wearableConfig, targetAvatar, targetWearable);
+            OneConfUtils.PrepareWearableConfig(wearableConfig, targetAvatar, targetWearable);
             wearableConfig.modules.Add(new WearableModule()
             {
                 moduleName = ArmatureMappingWearableModuleConfig.ModuleIdentifier,
@@ -308,7 +311,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar, true);
+            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar, true);
             AddClothesToCabinet(cabinet, _view.TargetAvatar, _view.TargetClothes);
             Selection.activeGameObject = _view.TargetAvatar;
             SceneView.FrameLastActiveSceneView();

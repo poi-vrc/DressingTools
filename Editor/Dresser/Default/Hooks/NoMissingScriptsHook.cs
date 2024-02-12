@@ -16,10 +16,10 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks

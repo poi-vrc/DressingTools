@@ -11,16 +11,16 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default
 {
-    public class DefaultDresserTest : EditorTestBase
+    internal class DefaultDresserTest : EditorTestBase
     {
         [Test]
         public void NotDTDefaultDresserSettings_ReturnsCorrectErrorCode()

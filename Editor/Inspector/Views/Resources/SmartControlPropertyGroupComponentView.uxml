@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Box class="container">
+        <ui:VisualElement name="component-obj-fields-container">
+            <Style src="SmartControlPropertyGroupComponentViewStyles.uss" />
+        </ui:VisualElement>
+        <uie:Toolbar name="property-type-toolbar">
+            <Style src="SmartControlPropertyGroupComponentViewStyles.uss" />
+            <uie:ToolbarButton name="blendshapes-btn" text="Blendshapes" />
+            <uie:ToolbarButton name="material-btn" text="Material" />
+            <uie:ToolbarButton name="generic-btn" text="Generic" />
+        </uie:Toolbar>
+        <ui:TextField name="search-field" picking-mode="Ignore" label="Search" style="display: none">
+            <Style src="SmartControlPropertyGroupComponentViewStyles.uss" />
+        </ui:TextField>
+        <ui:VisualElement name="search-result-container">
+            <Style src="SmartControlPropertyGroupComponentViewStyles.uss" />
+        </ui:VisualElement>
+        <ui:VisualElement name="properties-container">
+            <Style src="SmartControlPropertyGroupComponentViewStyles.uss" />
+        </ui:VisualElement>
+    </ui:Box>
+</ui:UXML>

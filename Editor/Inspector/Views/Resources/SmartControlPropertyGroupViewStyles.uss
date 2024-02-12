@@ -1,0 +1,38 @@
+.add-field-container {
+    flex-direction: row;
+}
+
+.add-field-container Label {
+    -unity-text-align: middle-center;
+}
+
+.add-field-container ObjectField {
+    flex-grow: 1;
+}
+
+.object-field-entry {
+    flex-direction: row;
+}
+
+.object-field-entry ObjectField {
+    flex-grow: 1;
+}
+
+.object-field-entry FloatField {
+    width: 36px;
+}
+
+.container {
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.title-container {
+    flex-direction: row;
+    margin-bottom: 8px;
+}
+
+.title-container Label {
+    flex-grow: 1;
+}
+

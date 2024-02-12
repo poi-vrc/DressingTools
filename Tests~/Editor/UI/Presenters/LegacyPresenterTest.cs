@@ -11,13 +11,13 @@
  */
 
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.UI.Views;
 using Moq;
 using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.UI.Presenters
 {
-    public class LegacyPresenterTest : EditorTestBase
+    internal class LegacyPresenterTest : EditorTestBase
     {
         private static Mock<ILegacyView> SetupMock()
         {

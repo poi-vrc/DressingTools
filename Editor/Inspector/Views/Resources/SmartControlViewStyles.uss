@@ -1,0 +1,36 @@
+.foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+}
+
+.foldout-header Toggle {
+    background-color: rgb(65, 65, 65);
+}
+
+.foldout-container {
+    margin: 8px;
+}
+
+.add-field-container {
+    flex-direction: row;
+}
+
+.add-field-container Label {
+    -unity-text-align: middle-center;
+}
+
+.add-field-container ObjectField {
+    flex-grow: 1;
+}
+
+.object-field-entry {
+    flex-direction: row;
+}
+
+.object-field-entry ObjectField {
+    flex-grow: 1;
+}
+
+.object-field-entry FloatField {
+    width: 36px;
+}

@@ -1,0 +1,66 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="background-image: resource(&apos;dt-banner&apos;); width: auto; -unity-background-scale-mode: scale-to-fit; height: 36px; margin-left: 20px; margin-right: 20px; margin-top: 10px; margin-bottom: 10px;">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:Foldout text="Driver: Animator Parameter" name="driver-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="driver-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="driver-type-popup-container" />
+        <ui:VisualElement name="anim-param-driver-container">
+            <ui:TextField picking-mode="Ignore" label="Parameter Name" binding-path="m_AnimatorConfig.parameterName" />
+            <ui:Toggle label="Default Value" name="anim-param-defval-bool-toggle" value="false" />
+            <ui:VisualElement name="anim-param-defval-float-container" style="flex-direction: row;">
+                <ui:Slider picking-mode="Ignore" label="Default Value" value="0" high-value="1" name="anim-param-defval-float-slider" style="flex-grow: 1;" />
+                <uie:FloatField picking-mode="Ignore" value="0" text="0" name="anim-param-defval-float-field" style="width: 36px" />
+            </ui:VisualElement>
+            <ui:Toggle label="Network Synced" binding-path="m_AnimatorConfig.networkSynced" value="true" />
+            <ui:Toggle label="Saved" binding-path="m_AnimatorConfig.saved" value="true" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Foldout text="Control: Binary" name="control-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="control-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="control-type-popup-container" />
+        <ui:VisualElement name="control-binary-container" />
+        <ui:VisualElement name="control-motion-time-container" style="display: none">
+            <uie:CurveField label="Curve" binding-path="m_Curve" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Foldout text="Object Toggles (n)" name="object-toggles-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="object-toggles-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="object-toggles-list-container" />
+        <ui:VisualElement name="object-toggles-add-field-container" class="add-field-container" />
+    </ui:VisualElement>
+    <ui:Foldout text="Property Groups (n)" value="true" name="prop-gps-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="prop-gps-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="prop-gps-list-container" />
+        <ui:Button text="+ Add" name="prop-gp-add-btn" />
+    </ui:VisualElement>
+    <ui:Foldout text="Cross-control Actions (n)" name="cross-ctrl-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="cross-ctrl-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:Foldout text="Values (n)" name="cross-ctrl-values-foldout" class="foldout-header">
+            <Style src="SmartControlViewStyles.uss" />
+        </ui:Foldout>
+        <ui:VisualElement name="cross-ctrl-values-container" class="foldout-container">
+            <ui:Label text="Set these values when enabled" />
+            <ui:VisualElement name="cross-ctrl-values-on-enabled-container" />
+            <ui:VisualElement name="cross-ctrl-values-on-enabled-add-field-container" class="add-field-container" />
+            <ui:Label text="Set these values when disabled" />
+            <ui:VisualElement name="cross-ctrl-values-on-disabled-container" />
+            <ui:VisualElement name="cross-ctrl-values-on-disabled-add-field-container" class="add-field-container" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
