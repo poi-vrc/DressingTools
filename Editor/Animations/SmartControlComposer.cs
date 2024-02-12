@@ -275,21 +275,6 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-#if DT_VRCSDK3A
-        // TODO: directly copied from the pass, should move this to a common location to remove code duplication
-        private static VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver MakeVRCAvatarParameterDriver(string name, float value)
-        {
-            var driver = ScriptableObject.CreateInstance<VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver>();
-            driver.parameters.Add(new VRC.SDKBase.VRC_AvatarParameterDriver.Parameter()
-            {
-                type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set,
-                name = name,
-                value = value
-            });
-            return driver;
-        }
-#endif
-
         private static void ClipToggle(AnimationClipBuilder clip, Component target, bool enabled)
         {
             if (target is Transform)
@@ -322,6 +307,20 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
+#if DT_VRCSDK3A
+        // TODO: directly copied from the pass, should move this to a common location to remove code duplication
+        private static VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver MakeVRCAvatarParameterDriver(string name, float value)
+        {
+            var driver = ScriptableObject.CreateInstance<VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver>();
+            driver.parameters.Add(new VRC.SDKBase.VRC_AvatarParameterDriver.Parameter()
+            {
+                type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set,
+                name = name,
+                value = value
+            });
+            return driver;
+        }
+
         private void ComposeCrossControlValueActions(AnimatorController controller, AnimatorStateBuilder state, List<DTSmartControl.SmartControlCrossControlActions.ControlValueActions.ControlValue> values)
         {
             foreach (var value in values)
@@ -339,6 +338,7 @@ namespace Chocopoi.DressingTools.Animations
                 state.AddBehaviour(MakeVRCAvatarParameterDriver(anotherCtrl.AnimatorConfig.ParameterName, value.Value));
             }
         }
+#endif
 
         private void ComposeBinaryToggles(AnimatorController controller, AnimatorStateBuilder disabledState, AnimatorStateBuilder enabledState, DTSmartControl ctrl)
         {
