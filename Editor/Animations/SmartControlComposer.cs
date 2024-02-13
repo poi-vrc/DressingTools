@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
+using Chocopoi.DressingFramework.Menu;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
@@ -71,7 +72,23 @@ namespace Chocopoi.DressingTools.Animations
                     return;
                 }
 
-                menuItem.Controller.AnimatorParameterName = ctrl.AnimatorConfig.ParameterName;
+                if (menuItem.Type == DTMenuItem.ItemType.Button || menuItem.Type == DTMenuItem.ItemType.Toggle)
+                {
+                    menuItem.Controller.AnimatorParameterName = ctrl.AnimatorConfig.ParameterName;
+                }
+                else if (menuItem.Type == DTMenuItem.ItemType.Radial)
+                {
+                    menuItem.SubControllers = new DTMenuItem.ItemController[] {
+                        new DTMenuItem.ItemController() {
+                            AnimatorParameterName = ctrl.AnimatorConfig.ParameterName,
+                            AnimatorParameterValue = 1.0f
+                        }
+                    };
+                }
+                else
+                {
+                    Debug.LogWarning("Unsupported menu item type");
+                }
             }
         }
 
