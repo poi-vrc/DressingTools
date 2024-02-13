@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Inspector.Views;
 
@@ -32,6 +33,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.NameChanged += OnNameChanged;
             _view.TypeChanged += OnTypeChanged;
+            _view.IconChanged += OnIconChanged;
         }
 
         private void UnsubscribeEvents()
@@ -41,6 +43,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.NameChanged -= OnNameChanged;
         }
+
+        private void OnIconChanged()
+        {
+            _view.Target.Icon = _view.Icon;
+            _view.Repaint();
+        }
+
 
         private void OnNameChanged()
         {
@@ -58,6 +67,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.Name = _view.Target.Name;
             _view.Type = (int)_view.Target.Type;
+            _view.Icon = _view.Target.Icon;
             _view.Repaint();
         }
 

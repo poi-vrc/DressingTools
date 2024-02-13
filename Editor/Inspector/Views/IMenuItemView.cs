@@ -13,6 +13,7 @@
 using System;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.UI.Views;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Inspector.Views
 {
@@ -20,9 +21,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
     {
         event Action NameChanged;
         event Action TypeChanged;
+        event Action IconChanged;
 
         DTMenuItem Target { get; set; }
         string Name { get; set; }
         int Type { get; set; }
+        Texture2D Icon { get; set; }
     }
 }

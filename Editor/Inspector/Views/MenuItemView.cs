@@ -28,19 +28,23 @@ namespace Chocopoi.DressingTools.Inspector.Views
     internal class MenuItemView : ElementView, IMenuItemView
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
+        private static Texture2D s_iconPlaceholderImage;
 
         public event Action NameChanged;
         public event Action TypeChanged;
+        public event Action IconChanged;
 
         public DTMenuItem Target { get; set; }
         public string Name { get => _itemInfoNameField.value; set => _itemInfoNameField.value = value; }
         public int Type { get => _itemTypePopup.index; set => _itemTypePopup.index = value; }
+        public Texture2D Icon { get; set; }
 
         private Foldout _itemInfoFoldout;
         private VisualElement _itemInfoContainer;
         private Foldout _itemDetailsFoldout;
         private VisualElement _itemDetailsContainer;
         private VisualElement _itemInfoIconContainer;
+        private ObjectField _itemInfoIconObjField;
         private Label _itemInfoNameLabel;
         private TextField _itemInfoNameField;
         private PopupField<string> _itemTypePopup;
@@ -58,7 +62,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private VisualElement _itemDetailsDownParameterField;
         private VisualElement _itemDetailsLeftParameterField;
         private VisualElement _itemDetailsRadialParameterField;
-
         private readonly MenuItemPresenter _presenter;
 
         public MenuItemView(DTMenuItem target)
@@ -84,8 +87,19 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemInfoContainer = Q<VisualElement>("item-info-container").First();
             BindFoldoutHeaderAndContainerWithPrefix("item-info");
 
-            // TODO: icon
             _itemInfoIconContainer = Q<VisualElement>("item-icon").First();
+            var iconObjFieldContainer = Q<VisualElement>("item-icon-objfield-container").First();
+            _itemInfoIconObjField = new ObjectField()
+            {
+                objectType = typeof(Texture2D)
+            };
+            _itemInfoIconObjField.RegisterValueChangedCallback(evt =>
+            {
+                Icon = (Texture2D)_itemInfoIconObjField.value;
+                IconChanged?.Invoke();
+            });
+            iconObjFieldContainer.Add(_itemInfoIconObjField);
+
             _itemInfoNameLabel = Q<Label>("item-info-name-label").First();
             _itemInfoNameField = Q<TextField>("item-info-name-field").First();
             _itemInfoNameField.RegisterValueChangedCallback((evt) => NameChanged?.Invoke());
@@ -247,6 +261,17 @@ namespace Chocopoi.DressingTools.Inspector.Views
             }
         }
 
+        private void UpdateIcon()
+        {
+            if (s_iconPlaceholderImage == null)
+            {
+                s_iconPlaceholderImage = Resources.Load<Texture2D>("thumbnailPlaceholder");
+            }
+
+            _itemInfoIconObjField.value = Icon;
+            _itemInfoIconContainer.style.backgroundImage = new StyleBackground(Icon != null ? Icon : s_iconPlaceholderImage);
+        }
+
         public override void OnEnable()
         {
             InitVisualTree();
@@ -265,6 +290,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         public override void Repaint()
         {
+            UpdateIcon();
             UpdateItemDisplay();
         }
     }
