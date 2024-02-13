@@ -57,11 +57,25 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private VisualElement _itemDetailsParameterValueField;
         private VisualElement _itemDetailsHorizontalParameterField;
         private VisualElement _itemDetailsVerticalParameterField;
+        private VisualElement _axisPanel;
+        private VisualElement _paramsPanel;
         private VisualElement _itemDetailsUpParameterField;
         private VisualElement _itemDetailsRightParameterField;
         private VisualElement _itemDetailsDownParameterField;
         private VisualElement _itemDetailsLeftParameterField;
         private VisualElement _itemDetailsRadialParameterField;
+        private VisualElement _axisUpIcon;
+        private ObjectField _axisUpIconObjField;
+        private TextField _axisUpLabelField;
+        private VisualElement _axisLeftIcon;
+        private ObjectField _axisLeftIconObjField;
+        private TextField _axisLeftLabelField;
+        private VisualElement _axisRightIcon;
+        private ObjectField _axisRightIconObjField;
+        private TextField _axisRightLabelField;
+        private VisualElement _axisDownIcon;
+        private ObjectField _axisDownIconObjField;
+        private TextField _axisDownLabelField;
         private readonly MenuItemPresenter _presenter;
 
         public MenuItemView(DTMenuItem target)
@@ -156,12 +170,65 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemDetailsHorizontalParameterField = Q<VisualElement>("details-horizontal-parameter-text-field").First();
             _itemDetailsVerticalParameterField = Q<VisualElement>("details-vertical-parameter-text-field").First();
 
+            _axisPanel = Q<VisualElement>("axis-panel").First();
+            _paramsPanel = Q<VisualElement>("params-panel").First();
+
             _itemDetailsUpParameterField = Q<VisualElement>("details-up-parameter-text-field").First();
             _itemDetailsRightParameterField = Q<VisualElement>("details-right-parameter-text-field").First();
             _itemDetailsDownParameterField = Q<VisualElement>("details-down-parameter-text-field").First();
             _itemDetailsLeftParameterField = Q<VisualElement>("details-left-parameter-text-field").First();
 
             _itemDetailsRadialParameterField = Q<VisualElement>("details-radial-parameter-text-field").First();
+
+            InitAxisLabels();
+        }
+
+        private void InitAxisLabels()
+        {
+            var axisUpContainer = Q<VisualElement>("axis-up-container").First();
+            var axisLeftContainer = Q<VisualElement>("axis-left-container").First();
+            var axisRightContainer = Q<VisualElement>("axis-right-container").First();
+            var axisDownContainer = Q<VisualElement>("axis-down-container").First();
+
+            _axisUpIcon = new VisualElement();
+            _axisUpIconObjField = new ObjectField()
+            {
+                objectType = typeof(Texture2D)
+            };
+            _axisUpLabelField = new TextField();
+            axisUpContainer.Add(_axisUpIcon);
+            axisUpContainer.Add(_axisUpIconObjField);
+            axisUpContainer.Add(_axisUpLabelField);
+
+            _axisLeftIcon = new VisualElement();
+            _axisLeftIconObjField = new ObjectField()
+            {
+                objectType = typeof(Texture2D)
+            };
+            _axisLeftLabelField = new TextField();
+            axisLeftContainer.Add(_axisLeftIcon);
+            axisLeftContainer.Add(_axisLeftIconObjField);
+            axisLeftContainer.Add(_axisLeftLabelField);
+
+            _axisRightIcon = new VisualElement();
+            _axisRightIconObjField = new ObjectField()
+            {
+                objectType = typeof(Texture2D)
+            };
+            _axisRightLabelField = new TextField();
+            axisRightContainer.Add(_axisRightIcon);
+            axisRightContainer.Add(_axisRightIconObjField);
+            axisRightContainer.Add(_axisRightLabelField);
+
+            _axisDownIcon = new VisualElement();
+            _axisDownIconObjField = new ObjectField()
+            {
+                objectType = typeof(Texture2D)
+            };
+            _axisDownLabelField = new TextField();
+            axisDownContainer.Add(_axisDownIcon);
+            axisDownContainer.Add(_axisDownIconObjField);
+            axisDownContainer.Add(_axisDownLabelField);
         }
 
         private void UpdateItemDisplay()
@@ -188,6 +255,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemDetailsLeftParameterField.style.display = DisplayStyle.None;
 
             _itemDetailsRadialParameterField.style.display = DisplayStyle.None;
+
+            _axisPanel.style.display = DisplayStyle.None;
+            _paramsPanel.style.display = DisplayStyle.None;
 
             _subMenuTypePopup.style.display = DisplayStyle.None;
             _dtSubMenuObjField.style.display = DisplayStyle.None;
@@ -228,6 +298,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 _itemDetailsFoldout.style.display = DisplayStyle.Flex;
                 _itemDetailsContainer.style.display = _itemDetailsFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
+                _axisPanel.style.display = DisplayStyle.Flex;
+                _paramsPanel.style.display = DisplayStyle.Flex;
+
                 _itemDetailsParameterNameField.style.display = DisplayStyle.Flex;
                 _itemDetailsParameterValueField.style.display = DisplayStyle.Flex;
 
@@ -239,6 +312,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 // Four-axis
                 _itemDetailsFoldout.style.display = DisplayStyle.Flex;
                 _itemDetailsContainer.style.display = _itemDetailsFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+
+                _axisPanel.style.display = DisplayStyle.Flex;
+                _paramsPanel.style.display = DisplayStyle.Flex;
 
                 _itemDetailsParameterNameField.style.display = DisplayStyle.Flex;
                 _itemDetailsParameterValueField.style.display = DisplayStyle.Flex;
@@ -253,6 +329,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 // Radial
                 _itemDetailsFoldout.style.display = DisplayStyle.Flex;
                 _itemDetailsContainer.style.display = _itemDetailsFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+
+                _paramsPanel.style.display = DisplayStyle.Flex;
 
                 _itemDetailsParameterNameField.style.display = DisplayStyle.Flex;
                 _itemDetailsParameterValueField.style.display = DisplayStyle.Flex;

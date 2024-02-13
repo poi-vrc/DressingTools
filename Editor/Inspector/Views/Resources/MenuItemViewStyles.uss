@@ -49,9 +49,33 @@
     margin-bottom: 8px;
 }
 
-.grid Box {
-    width: 84px;
-    height: 84px;
+.axis-grid {
+    align-items: center;
+}
+
+.details-panel {
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.details-panel > Label {
+    margin-bottom: 8px;
+    -unity-font-style: bold;
+}
+
+.axis-grid > .axis-grid-row {
+    flex-direction: row;
+}
+
+.axis-grid-row > .axis-grid-col {
+    width: 96px;
+    height: 96px;
+}
+
+.axis-grid-col > VisualElement {
+    background-image: resource("thumbnailPlaceholder");
+    -unity-background-scale-mode: scale-to-fit;
+    flex-grow: 1;
 }
 
 .grid Label {

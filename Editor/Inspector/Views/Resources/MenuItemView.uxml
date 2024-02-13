@@ -29,34 +29,40 @@
     </ui:Foldout>
     <ui:VisualElement name="details-container" class="foldout-container">
         <Style src="MenuItemViewStyles.uss" />
-        <ui:Box style="padding: 8px;">
-            <ui:Label text="Controller On Open" style="margin-bottom: 8px; -unity-font-style: bold;" />
-            <ui:TextField picking-mode="Ignore" label="Parameter Name" name="details-parameter-name-field" binding-path="m_Controller.m_AnimatorParameterName" />
-            <ui:TextField picking-mode="Ignore" label="Parameter Value" name="details-parameter-value-field" binding-path="m_Controller.m_AnimatorParameterValue" />
-        </ui:Box>
-        <ui:Box class="grid" style="align-items: center;">
-            <ui:Box>
-                <!-- <ui:VisualElement style="width: 84px; height: 84px; background-image: resource('thumbnailPlaceholder');" /> -->
-                <ui:Label text="Parameter" />
-                <ui:TextField/>
-                <ui:Label text="Icon" />
-                <uie:ObjectField />
-                <ui:Label text="Label" />
-                <ui:TextField/>
-            </ui:Box>
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:Box />
-                <ui:Box />
-                <ui:Box />
+        <ui:Box class="details-panel" name="axis-panel" >
+            <ui:Label text="Axis labels" />
+            <ui:VisualElement class="axis-grid">
+                <ui:VisualElement class="axis-grid-row">
+                    <ui:VisualElement class="axis-grid-col" />
+                    <ui:Box class="axis-grid-col" name="axis-up-container" />
+                    <ui:VisualElement class="axis-grid-col" />
+                </ui:VisualElement>
+                <ui:VisualElement class="axis-grid-row">
+                    <ui:Box class="axis-grid-col" name="axis-left-container" />
+                    <ui:VisualElement class="axis-grid-col" />
+                    <ui:Box class="axis-grid-col" name="axis-right-container" />
+                </ui:VisualElement>
+                <ui:VisualElement class="axis-grid-row">
+                    <ui:VisualElement class="axis-grid-col" />
+                    <ui:Box class="axis-grid-col" name="axis-down-container" />
+                    <ui:VisualElement class="axis-grid-col" />
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:Box />
         </ui:Box>
-        <ui:TextField picking-mode="Ignore" label="Horizontal Parameter" name="details-horizontal-parameter-text-field" />
-        <ui:TextField picking-mode="Ignore" label="Vertical Parameter" name="details-vertical-parameter-text-field" />
-        <ui:TextField picking-mode="Ignore" label="Up Parameter" name="details-up-parameter-text-field" />
-        <ui:TextField picking-mode="Ignore" label="Right Parameter" name="details-right-parameter-text-field" />
-        <ui:TextField picking-mode="Ignore" label="Down Parameter" name="details-down-parameter-text-field" />
-        <ui:TextField picking-mode="Ignore" label="Left Parameter" name="details-left-parameter-text-field" />
-        <ui:TextField picking-mode="Ignore" label="Radial Parameter" name="details-radial-parameter-text-field" />
+        <ui:Box class="details-panel" name="params-panel">
+            <ui:Label text="Parameters" />
+            <ui:TextField picking-mode="Ignore" label="Horizontal" name="details-horizontal-parameter-text-field" />
+            <ui:TextField picking-mode="Ignore" label="Vertical" name="details-vertical-parameter-text-field" />
+            <ui:TextField picking-mode="Ignore" label="Up" name="details-up-parameter-text-field" />
+            <ui:TextField picking-mode="Ignore" label="Right" name="details-right-parameter-text-field" />
+            <ui:TextField picking-mode="Ignore" label="Down" name="details-down-parameter-text-field" />
+            <ui:TextField picking-mode="Ignore" label="Left" name="details-left-parameter-text-field" />
+            <ui:TextField picking-mode="Ignore" label="Radial" name="details-radial-parameter-text-field" />
+        </ui:Box>
+        <ui:Box class="details-panel">
+            <ui:Label text="Controller on open" />
+            <ui:TextField picking-mode="Ignore" label="Parameter Name" name="details-parameter-name-field" binding-path="m_Controller.m_AnimatorParameterName" />
+            <uie:FloatField picking-mode="Ignore" label="Parameter Value" name="details-parameter-value-field" binding-path="m_Controller.m_AnimatorParameterValue" />
+        </ui:Box>
     </ui:VisualElement>
 </ui:UXML>
