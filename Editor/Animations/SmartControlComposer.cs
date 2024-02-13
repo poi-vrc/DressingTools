@@ -17,6 +17,7 @@ using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
+using Chocopoi.DressingTools.Components.Menu;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -61,6 +62,19 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
+        private static void HandleDriver(DTSmartControl ctrl)
+        {
+            if (ctrl.DriverType == DTSmartControl.SmartControlDriverType.MenuItem)
+            {
+                if (!ctrl.TryGetComponent<DTMenuItem>(out var menuItem))
+                {
+                    return;
+                }
+
+                menuItem.Controller.AnimatorParameterName = ctrl.AnimatorConfig.ParameterName;
+            }
+        }
+
         public void Compose(DTSmartControl ctrl)
         {
             if (_controls.Contains(ctrl))
@@ -76,7 +90,7 @@ namespace Chocopoi.DressingTools.Animations
             // }
 
             GenerateParameterNameIfNeeded(ctrl);
-
+            HandleDriver(ctrl);
             AddParameterConfig(ctrl);
 
             if (ctrl.ControlType == DTSmartControl.SmartControlControlType.Binary)
