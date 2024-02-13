@@ -1,0 +1,62 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="background-image: resource(&apos;dt-banner&apos;); width: auto; -unity-background-scale-mode: scale-to-fit; height: 36px; margin-left: 20px; margin-right: 20px; margin-top: 10px; margin-bottom: 10px;">
+        <Style src="MenuItemViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:Foldout text="Button: My Button" name="item-info-foldout" class="foldout-header">
+        <Style src="MenuItemViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="item-info-container" class="foldout-container">
+        <Style src="MenuItemViewStyles.uss" />
+        <ui:VisualElement style="flex-direction: row;">
+            <ui:VisualElement class="item-info-left-panel">
+                <ui:VisualElement name="item-icon" />
+                <ui:VisualElement name="item-icon-objfield-container" />
+            </ui:VisualElement>
+            <ui:VisualElement name="item-info-panel" class="item-info-right-panel">
+                <ui:Label text="---" name="item-info-name-label" />
+                <ui:TextField picking-mode="Ignore" label="Name" name="item-info-name-field" />
+                <ui:VisualElement name="item-info-item-type-popup-container" />
+                <ui:TextField picking-mode="Ignore" label="Parameter Name" name="item-info-parameter-name-field" binding-path="m_Controller.m_AnimatorParameterName" />
+                <uie:FloatField picking-mode="Ignore" label="Parameter Value" name="item-info-parameter-value-field" binding-path="m_Controller.m_AnimatorParameterValue" />
+                <ui:VisualElement name="item-info-submenu-type-popup-container" />
+                <ui:VisualElement name="item-info-dtsubmenu-objfield-container" />
+                <ui:VisualElement name="item-info-vrcsubmenu-objfield-container" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Foldout text="Details" name="details-foldout" class="foldout-header">
+        <Style src="MenuItemViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="details-container" class="foldout-container">
+        <Style src="MenuItemViewStyles.uss" />
+        <ui:Box style="padding: 8px;">
+            <ui:Label text="Controller On Open" style="margin-bottom: 8px; -unity-font-style: bold;" />
+            <ui:TextField picking-mode="Ignore" label="Parameter Name" name="details-parameter-name-field" binding-path="m_Controller.m_AnimatorParameterName" />
+            <ui:TextField picking-mode="Ignore" label="Parameter Value" name="details-parameter-value-field" binding-path="m_Controller.m_AnimatorParameterValue" />
+        </ui:Box>
+        <ui:Box class="grid" style="align-items: center;">
+            <ui:Box>
+                <!-- <ui:VisualElement style="width: 84px; height: 84px; background-image: resource('thumbnailPlaceholder');" /> -->
+                <ui:Label text="Parameter" />
+                <ui:TextField/>
+                <ui:Label text="Icon" />
+                <uie:ObjectField />
+                <ui:Label text="Label" />
+                <ui:TextField/>
+            </ui:Box>
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:Box />
+                <ui:Box />
+                <ui:Box />
+            </ui:VisualElement>
+            <ui:Box />
+        </ui:Box>
+        <ui:TextField picking-mode="Ignore" label="Horizontal Parameter" name="details-horizontal-parameter-text-field" />
+        <ui:TextField picking-mode="Ignore" label="Vertical Parameter" name="details-vertical-parameter-text-field" />
+        <ui:TextField picking-mode="Ignore" label="Up Parameter" name="details-up-parameter-text-field" />
+        <ui:TextField picking-mode="Ignore" label="Right Parameter" name="details-right-parameter-text-field" />
+        <ui:TextField picking-mode="Ignore" label="Down Parameter" name="details-down-parameter-text-field" />
+        <ui:TextField picking-mode="Ignore" label="Left Parameter" name="details-left-parameter-text-field" />
+        <ui:TextField picking-mode="Ignore" label="Radial Parameter" name="details-radial-parameter-text-field" />
+    </ui:VisualElement>
+</ui:UXML>
