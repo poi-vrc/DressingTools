@@ -9,14 +9,14 @@
         <Style src="SmartControlViewStyles.uss" />
         <ui:VisualElement name="driver-type-popup-container" />
         <ui:VisualElement name="anim-param-driver-container">
-            <ui:TextField picking-mode="Ignore" label="Parameter Name" binding-path="m_AnimatorConfig.parameterName" />
+            <ui:TextField picking-mode="Ignore" label="Parameter Name" binding-path="m_AnimatorConfig.m_ParameterName" />
             <ui:Toggle label="Default Value" name="anim-param-defval-bool-toggle" value="false" />
             <ui:VisualElement name="anim-param-defval-float-container" style="flex-direction: row;">
                 <ui:Slider picking-mode="Ignore" label="Default Value" value="0" high-value="1" name="anim-param-defval-float-slider" style="flex-grow: 1;" />
                 <uie:FloatField picking-mode="Ignore" value="0" text="0" name="anim-param-defval-float-field" style="width: 36px" />
             </ui:VisualElement>
-            <ui:Toggle label="Network Synced" binding-path="m_AnimatorConfig.networkSynced" value="true" />
-            <ui:Toggle label="Saved" binding-path="m_AnimatorConfig.saved" value="true" />
+            <ui:Toggle label="Network Synced" binding-path="m_AnimatorConfig.m_NetworkSynced" value="true" />
+            <ui:Toggle label="Saved" binding-path="m_AnimatorConfig.m_Saved" value="true" />
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:Foldout text="Control: Binary" name="control-foldout" class="foldout-header">
