@@ -35,8 +35,8 @@ namespace Chocopoi.DressingTools.Components.Menu
         {
             Children = 0,
             DTMenuGroupComponent = 1,
-            // DTMenuAsset = 100,
-            VRCExpressionsMenuAsset = 101,
+            VRCExpressionsMenuAsset = 100,
+            // DTMenuAsset = 101,
         }
 
         [Serializable]

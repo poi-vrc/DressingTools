@@ -23,16 +23,11 @@ namespace Chocopoi.DressingTools.Components.Menu
     [AddComponentMenu("DressingTools/DT Menu Install (Beta)")]
     internal class DTMenuInstall : DTBaseComponent
     {
-        public DTMenuGroup SourceMenuGroup { get => m_SourceMenuGroup; set => m_SourceMenuGroup = value; }
 #if DT_VRCSDK3A
         public VRCExpressionsMenu VRCSourceMenu { get => m_VRCSourceMenu; set => m_VRCSourceMenu = value; }
         public VRCExpressionsMenu VRCTargetMenu { get => m_VRCTargetMenu; set => m_VRCTargetMenu = value; }
-#else
-        public ScriptableObject VRCSourceMenu { get => m_VRCSourceMenu; set => m_VRCSourceMenu = value; }
-        public ScriptableObject VRCTargetMenu { get => m_VRCTargetMenu; set => m_VRCTargetMenu = value; }
 #endif
 
-        [SerializeField] private DTMenuGroup m_SourceMenuGroup;
 #if DT_VRCSDK3A
         [SerializeField] private VRCExpressionsMenu m_VRCSourceMenu;
         [SerializeField] private VRCExpressionsMenu m_VRCTargetMenu;

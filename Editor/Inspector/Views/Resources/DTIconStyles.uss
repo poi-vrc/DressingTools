@@ -1,0 +1,10 @@
+.dt-inspector-icon {
+    background-image: resource("dt-banner");
+    width: auto;
+    -unity-background-scale-mode: scale-to-fit;
+    height: 36px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

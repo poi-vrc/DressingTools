@@ -13,9 +13,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Menu;
-using Chocopoi.DressingTools.Inspector.Views;
 using Chocopoi.DressingTools.Localization;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,18 +23,15 @@ namespace Chocopoi.DressingTools.Inspector
 {
     [ExecuteInEditMode]
     [ExcludeFromCodeCoverage]
-    [CustomEditor(typeof(DTMenuItem))]
-    internal class DTMenuItemEditor : Editor
+    [CustomEditor(typeof(DTMenuInstall))]
+    internal class DTMenuInstallEditor : Editor
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
-
-        private MenuItemView _view;
 
         public override VisualElement CreateInspectorGUI()
         {
             var rootElement = new VisualElement();
 
-            // we want to reuse MenuItemView so we remove the icon and place it here
             var iconStyleSheet = Resources.Load<StyleSheet>("DTIconStyles");
             if (!rootElement.styleSheets.Contains(iconStyleSheet))
             {
@@ -45,20 +42,23 @@ namespace Chocopoi.DressingTools.Inspector
             icon.AddToClassList("dt-inspector-icon");
             rootElement.Add(icon);
 
-            rootElement.Add(_view);
+#if DT_VRCSDK3A
+            var vrcSourceMenuObjField = new ObjectField("Source VRC Menu")
+            {
+                objectType = typeof(VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu),
+                bindingPath = "m_VRCSourceMenu"
+            };
+            rootElement.Add(vrcSourceMenuObjField);
+
+            var vrcTargetMenuObjField = new ObjectField("Target VRC Menu")
+            {
+                objectType = typeof(VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu),
+                bindingPath = "m_VRCTargetMenu"
+            };
+            rootElement.Add(vrcTargetMenuObjField);
+#endif
+
             return rootElement;
-        }
-
-        public void OnEnable()
-        {
-            _view = new MenuItemView((DTMenuItem)target);
-            _view.OnEnable();
-        }
-
-        public void OnDisable()
-        {
-            _view?.OnDisable();
-            _view = null;
         }
     }
 }

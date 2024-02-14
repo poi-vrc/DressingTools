@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="background-image: resource(&apos;dt-banner&apos;); width: auto; -unity-background-scale-mode: scale-to-fit; height: 36px; margin-left: 20px; margin-right: 20px; margin-top: 10px; margin-bottom: 10px;">
+    <ui:VisualElement class="dt-inspector-icon">
         <Style src="SmartControlViewStyles.uss" />
     </ui:VisualElement>
     <ui:Foldout text="Driver: Animator Parameter" name="driver-foldout" class="foldout-header">

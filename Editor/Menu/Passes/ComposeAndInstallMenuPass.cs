@@ -330,11 +330,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 }
 #endif
 
-                var menuGroup = miComp.SourceMenuGroup != null ?
-                    miComp.SourceMenuGroup :
-                    miComp.GetComponent<DTMenuGroup>();
-
-                if (menuGroup == null)
+                if (!miComp.TryGetComponent<DTMenuGroup>(out var menuGroup))
                 {
                     continue;
                 }

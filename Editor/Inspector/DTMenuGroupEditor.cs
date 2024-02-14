@@ -23,35 +23,21 @@ namespace Chocopoi.DressingTools.Inspector
 {
     [ExecuteInEditMode]
     [ExcludeFromCodeCoverage]
-    [CustomEditor(typeof(DTMenuItem))]
-    internal class DTMenuItemEditor : Editor
+    [CustomEditor(typeof(DTMenuGroup))]
+    internal class DTMenuGroupEditor : Editor
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private MenuItemView _view;
+        private MenuGroupView _view;
 
         public override VisualElement CreateInspectorGUI()
         {
-            var rootElement = new VisualElement();
-
-            // we want to reuse MenuItemView so we remove the icon and place it here
-            var iconStyleSheet = Resources.Load<StyleSheet>("DTIconStyles");
-            if (!rootElement.styleSheets.Contains(iconStyleSheet))
-            {
-                rootElement.styleSheets.Add(iconStyleSheet);
-            }
-
-            var icon = new VisualElement();
-            icon.AddToClassList("dt-inspector-icon");
-            rootElement.Add(icon);
-
-            rootElement.Add(_view);
-            return rootElement;
+            return _view;
         }
 
         public void OnEnable()
         {
-            _view = new MenuItemView((DTMenuItem)target);
+            _view = new MenuGroupView((DTMenuGroup)target);
             _view.OnEnable();
         }
 
