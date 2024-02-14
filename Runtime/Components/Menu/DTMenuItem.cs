@@ -64,6 +64,12 @@ namespace Chocopoi.DressingTools.Components.Menu
 
             [SerializeField] private string m_Name;
             [SerializeField] private Texture2D m_Icon;
+
+            public Label()
+            {
+                m_Name = "";
+                m_Icon = null;
+            }
         }
 
         public string Name { get => name; set => name = value; }

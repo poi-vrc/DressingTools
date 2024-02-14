@@ -33,11 +33,26 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public event Action NameChanged;
         public event Action TypeChanged;
         public event Action IconChanged;
+        public event Action AxisLabelChanged;
+        public event Action TwoAxisControllerChanged;
+        public event Action FourAxisControllerChanged;
+        public event Action RadialControllerChanged;
 
         public DTMenuItem Target { get; set; }
         public string Name { get => _itemInfoNameField.value; set => _itemInfoNameField.value = value; }
         public int Type { get => _itemTypePopup.index; set => _itemTypePopup.index = value; }
         public Texture2D Icon { get; set; }
+        public AxisLabel AxisUpLabel { get; set; }
+        public AxisLabel AxisRightLabel { get; set; }
+        public AxisLabel AxisDownLabel { get; set; }
+        public AxisLabel AxisLeftLabel { get; set; }
+        public string HorizontalParameter { get => _itemDetailsHorizontalParameterField.value; set => _itemDetailsHorizontalParameterField.value = value; }
+        public string VerticalParameter { get => _itemDetailsVerticalParameterField.value; set => _itemDetailsVerticalParameterField.value = value; }
+        public string UpParameter { get => _itemDetailsUpParameterField.value; set => _itemDetailsUpParameterField.value = value; }
+        public string RightParameter { get => _itemDetailsRightParameterField.value; set => _itemDetailsRightParameterField.value = value; }
+        public string DownParameter { get => _itemDetailsDownParameterField.value; set => _itemDetailsDownParameterField.value = value; }
+        public string LeftParameter { get => _itemDetailsLeftParameterField.value; set => _itemDetailsLeftParameterField.value = value; }
+        public string RadialParameter { get => _itemDetailsRadialParameterField.value; set => _itemDetailsRadialParameterField.value = value; }
 
         private Foldout _itemInfoFoldout;
         private VisualElement _itemInfoContainer;
@@ -55,15 +70,15 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private VisualElement _itemInfoParameterValueField;
         private VisualElement _itemDetailsParameterNameField;
         private VisualElement _itemDetailsParameterValueField;
-        private VisualElement _itemDetailsHorizontalParameterField;
-        private VisualElement _itemDetailsVerticalParameterField;
+        private TextField _itemDetailsHorizontalParameterField;
+        private TextField _itemDetailsVerticalParameterField;
         private VisualElement _axisPanel;
         private VisualElement _paramsPanel;
-        private VisualElement _itemDetailsUpParameterField;
-        private VisualElement _itemDetailsRightParameterField;
-        private VisualElement _itemDetailsDownParameterField;
-        private VisualElement _itemDetailsLeftParameterField;
-        private VisualElement _itemDetailsRadialParameterField;
+        private TextField _itemDetailsUpParameterField;
+        private TextField _itemDetailsRightParameterField;
+        private TextField _itemDetailsDownParameterField;
+        private TextField _itemDetailsLeftParameterField;
+        private TextField _itemDetailsRadialParameterField;
         private VisualElement _axisUpIcon;
         private ObjectField _axisUpIconObjField;
         private TextField _axisUpLabelField;
@@ -81,6 +96,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public MenuItemView(DTMenuItem target)
         {
             Target = target;
+            AxisUpLabel = new AxisLabel();
+            AxisRightLabel = new AxisLabel();
+            AxisDownLabel = new AxisLabel();
+            AxisLeftLabel = new AxisLabel();
             _presenter = new MenuItemPresenter(this);
         }
 
@@ -167,20 +186,42 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemDetailsParameterNameField = Q<VisualElement>("details-parameter-name-field").First();
             _itemDetailsParameterValueField = Q<VisualElement>("details-parameter-value-field").First();
 
-            _itemDetailsHorizontalParameterField = Q<VisualElement>("details-horizontal-parameter-text-field").First();
-            _itemDetailsVerticalParameterField = Q<VisualElement>("details-vertical-parameter-text-field").First();
+            _itemDetailsHorizontalParameterField = Q<TextField>("details-horizontal-parameter-text-field").First();
+            _itemDetailsVerticalParameterField = Q<TextField>("details-vertical-parameter-text-field").First();
+            _itemDetailsHorizontalParameterField.RegisterValueChangedCallback(evt => TwoAxisControllerChanged?.Invoke());
+            _itemDetailsVerticalParameterField.RegisterValueChangedCallback(evt => TwoAxisControllerChanged?.Invoke());
 
             _axisPanel = Q<VisualElement>("axis-panel").First();
             _paramsPanel = Q<VisualElement>("params-panel").First();
 
-            _itemDetailsUpParameterField = Q<VisualElement>("details-up-parameter-text-field").First();
-            _itemDetailsRightParameterField = Q<VisualElement>("details-right-parameter-text-field").First();
-            _itemDetailsDownParameterField = Q<VisualElement>("details-down-parameter-text-field").First();
-            _itemDetailsLeftParameterField = Q<VisualElement>("details-left-parameter-text-field").First();
+            _itemDetailsUpParameterField = Q<TextField>("details-up-parameter-text-field").First();
+            _itemDetailsRightParameterField = Q<TextField>("details-right-parameter-text-field").First();
+            _itemDetailsDownParameterField = Q<TextField>("details-down-parameter-text-field").First();
+            _itemDetailsLeftParameterField = Q<TextField>("details-left-parameter-text-field").First();
+            _itemDetailsUpParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
+            _itemDetailsRightParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
+            _itemDetailsDownParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
+            _itemDetailsLeftParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
 
-            _itemDetailsRadialParameterField = Q<VisualElement>("details-radial-parameter-text-field").First();
+            _itemDetailsRadialParameterField = Q<TextField>("details-radial-parameter-text-field").First();
+            _itemDetailsRadialParameterField.RegisterValueChangedCallback(evt => RadialControllerChanged?.Invoke());
 
             InitAxisLabels();
+        }
+
+        private void InitAxisLabel(ref VisualElement axisContainer, ref VisualElement iconContainer, ref ObjectField objField, ref TextField textField, Action onChange)
+        {
+            iconContainer = new VisualElement();
+            objField = new ObjectField()
+            {
+                objectType = typeof(Texture2D)
+            };
+            objField.RegisterValueChangedCallback(evt => onChange?.Invoke());
+            textField = new TextField();
+            textField.RegisterValueChangedCallback(evt => onChange?.Invoke());
+            axisContainer.Add(iconContainer);
+            axisContainer.Add(objField);
+            axisContainer.Add(textField);
         }
 
         private void InitAxisLabels()
@@ -190,45 +231,33 @@ namespace Chocopoi.DressingTools.Inspector.Views
             var axisRightContainer = Q<VisualElement>("axis-right-container").First();
             var axisDownContainer = Q<VisualElement>("axis-down-container").First();
 
-            _axisUpIcon = new VisualElement();
-            _axisUpIconObjField = new ObjectField()
+            InitAxisLabel(ref axisUpContainer, ref _axisUpIcon, ref _axisUpIconObjField, ref _axisUpLabelField, () =>
             {
-                objectType = typeof(Texture2D)
-            };
-            _axisUpLabelField = new TextField();
-            axisUpContainer.Add(_axisUpIcon);
-            axisUpContainer.Add(_axisUpIconObjField);
-            axisUpContainer.Add(_axisUpLabelField);
+                AxisUpLabel.icon = (Texture2D)_axisUpIconObjField.value;
+                AxisUpLabel.name = _axisUpLabelField.value;
+                AxisLabelChanged?.Invoke();
+            });
 
-            _axisLeftIcon = new VisualElement();
-            _axisLeftIconObjField = new ObjectField()
+            InitAxisLabel(ref axisRightContainer, ref _axisRightIcon, ref _axisRightIconObjField, ref _axisRightLabelField, () =>
             {
-                objectType = typeof(Texture2D)
-            };
-            _axisLeftLabelField = new TextField();
-            axisLeftContainer.Add(_axisLeftIcon);
-            axisLeftContainer.Add(_axisLeftIconObjField);
-            axisLeftContainer.Add(_axisLeftLabelField);
+                AxisRightLabel.icon = (Texture2D)_axisRightIconObjField.value;
+                AxisRightLabel.name = _axisRightLabelField.value;
+                AxisLabelChanged?.Invoke();
+            });
 
-            _axisRightIcon = new VisualElement();
-            _axisRightIconObjField = new ObjectField()
+            InitAxisLabel(ref axisDownContainer, ref _axisDownIcon, ref _axisDownIconObjField, ref _axisDownLabelField, () =>
             {
-                objectType = typeof(Texture2D)
-            };
-            _axisRightLabelField = new TextField();
-            axisRightContainer.Add(_axisRightIcon);
-            axisRightContainer.Add(_axisRightIconObjField);
-            axisRightContainer.Add(_axisRightLabelField);
+                AxisDownLabel.icon = (Texture2D)_axisDownIconObjField.value;
+                AxisDownLabel.name = _axisDownLabelField.value;
+                AxisLabelChanged?.Invoke();
+            });
 
-            _axisDownIcon = new VisualElement();
-            _axisDownIconObjField = new ObjectField()
+            InitAxisLabel(ref axisLeftContainer, ref _axisLeftIcon, ref _axisLeftIconObjField, ref _axisLeftLabelField, () =>
             {
-                objectType = typeof(Texture2D)
-            };
-            _axisDownLabelField = new TextField();
-            axisDownContainer.Add(_axisDownIcon);
-            axisDownContainer.Add(_axisDownIconObjField);
-            axisDownContainer.Add(_axisDownLabelField);
+                AxisLeftLabel.icon = (Texture2D)_axisLeftIconObjField.value;
+                AxisLeftLabel.name = _axisLeftLabelField.value;
+                AxisLabelChanged?.Invoke();
+            });
         }
 
         private void UpdateItemDisplay()
@@ -350,6 +379,21 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemInfoIconContainer.style.backgroundImage = new StyleBackground(Icon != null ? Icon : s_iconPlaceholderImage);
         }
 
+        private void UpdateAxisLabels()
+        {
+            UpdateAxisLabel(_axisUpIcon, _axisUpIconObjField, _axisUpLabelField, AxisUpLabel);
+            UpdateAxisLabel(_axisRightIcon, _axisRightIconObjField, _axisRightLabelField, AxisRightLabel);
+            UpdateAxisLabel(_axisDownIcon, _axisDownIconObjField, _axisDownLabelField, AxisDownLabel);
+            UpdateAxisLabel(_axisLeftIcon, _axisLeftIconObjField, _axisLeftLabelField, AxisLeftLabel);
+        }
+
+        private void UpdateAxisLabel(VisualElement iconContainer, ObjectField objField, TextField textField, AxisLabel data)
+        {
+            iconContainer.style.backgroundImage = new StyleBackground(data.icon != null ? data.icon : s_iconPlaceholderImage);
+            objField.value = data.icon;
+            textField.value = data.name;
+        }
+
         public override void OnEnable()
         {
             InitVisualTree();
@@ -370,6 +414,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             UpdateIcon();
             UpdateItemDisplay();
+            UpdateAxisLabels();
         }
     }
 }

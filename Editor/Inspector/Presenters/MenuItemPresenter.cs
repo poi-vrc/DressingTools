@@ -18,6 +18,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class MenuItemPresenter
     {
+        private const int SubParametersControllersLength = 4;
+
         private readonly IMenuItemView _view;
 
         public MenuItemPresenter(IMenuItemView view)
@@ -34,6 +36,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.NameChanged += OnNameChanged;
             _view.TypeChanged += OnTypeChanged;
             _view.IconChanged += OnIconChanged;
+            _view.AxisLabelChanged += OnAxisLabelChanged;
+            _view.TwoAxisControllerChanged += OnTwoAxisControllerChanged;
+            _view.FourAxisControllerChanged += OnFourAxisControllerChanged;
+            _view.RadialControllerChanged += OnRadialControllerChanged;
         }
 
         private void UnsubscribeEvents()
@@ -42,6 +48,62 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Unload -= OnUnload;
 
             _view.NameChanged -= OnNameChanged;
+            _view.TypeChanged -= OnTypeChanged;
+            _view.IconChanged -= OnIconChanged;
+            _view.AxisLabelChanged -= OnAxisLabelChanged;
+            _view.TwoAxisControllerChanged -= OnTwoAxisControllerChanged;
+            _view.FourAxisControllerChanged -= OnFourAxisControllerChanged;
+            _view.RadialControllerChanged -= OnRadialControllerChanged;
+        }
+
+        private static void WriteAnimatorParameterController(DTMenuItem.ItemController controller, string parameter)
+        {
+            controller.Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter;
+            controller.AnimatorParameterName = parameter;
+            controller.AnimatorParameterValue = 0.0f;
+        }
+
+        private void OnRadialControllerChanged()
+        {
+            CreateTargetSubControllersIfNotExist();
+            WriteAnimatorParameterController(_view.Target.SubControllers[0], _view.RadialParameter);
+        }
+
+        private void OnFourAxisControllerChanged()
+        {
+            CreateTargetSubControllersIfNotExist();
+            WriteAnimatorParameterController(_view.Target.SubControllers[0], _view.UpParameter);
+            WriteAnimatorParameterController(_view.Target.SubControllers[1], _view.RightParameter);
+            WriteAnimatorParameterController(_view.Target.SubControllers[2], _view.DownParameter);
+            WriteAnimatorParameterController(_view.Target.SubControllers[3], _view.LeftParameter);
+        }
+
+        private void OnTwoAxisControllerChanged()
+        {
+            CreateTargetSubControllersIfNotExist();
+            WriteAnimatorParameterController(_view.Target.SubControllers[0], _view.HorizontalParameter);
+            WriteAnimatorParameterController(_view.Target.SubControllers[1], _view.VerticalParameter);
+        }
+
+        private void WriteAxisLabel(DTMenuItem.Label compLabel, AxisLabel label)
+        {
+            compLabel.Name = label.name;
+            compLabel.Icon = label.icon;
+        }
+
+        private void WriteAxisLabels()
+        {
+            CreateTargetSubLabelsIfNotExist();
+            WriteAxisLabel(_view.Target.SubLabels[0], _view.AxisUpLabel);
+            WriteAxisLabel(_view.Target.SubLabels[1], _view.AxisRightLabel);
+            WriteAxisLabel(_view.Target.SubLabels[2], _view.AxisDownLabel);
+            WriteAxisLabel(_view.Target.SubLabels[3], _view.AxisLeftLabel);
+        }
+
+        private void OnAxisLabelChanged()
+        {
+            WriteAxisLabels();
+            _view.Repaint();
         }
 
         private void OnIconChanged()
@@ -63,11 +125,72 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Repaint();
         }
 
+        private void UpdateAxisLabel(DTMenuItem.Label compLabel, AxisLabel label)
+        {
+            label.name = compLabel.Name;
+            label.icon = compLabel.Icon;
+        }
+
+        private void CreateTargetSubLabelsIfNotExist()
+        {
+            if (_view.Target.SubLabels.Length != SubParametersControllersLength)
+            {
+                _view.Target.SubLabels = new DTMenuItem.Label[] {
+                    new DTMenuItem.Label(),
+                    new DTMenuItem.Label(),
+                    new DTMenuItem.Label(),
+                    new DTMenuItem.Label(),
+                };
+            }
+        }
+
+        private void CreateTargetSubControllersIfNotExist()
+        {
+            if (_view.Target.SubControllers.Length != SubParametersControllersLength)
+            {
+                _view.Target.SubControllers = new DTMenuItem.ItemController[SubParametersControllersLength];
+                for (var i = 0; i < SubParametersControllersLength; i++)
+                {
+                    _view.Target.SubControllers[i] = new DTMenuItem.ItemController()
+                    {
+                        Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter,
+                        AnimatorParameterName = "",
+                        AnimatorParameterValue = 1.0f
+                    };
+                }
+            }
+        }
+
+        private void UpdateAxisLabels()
+        {
+            CreateTargetSubLabelsIfNotExist();
+            UpdateAxisLabel(_view.Target.SubLabels[0], _view.AxisUpLabel);
+            UpdateAxisLabel(_view.Target.SubLabels[1], _view.AxisRightLabel);
+            UpdateAxisLabel(_view.Target.SubLabels[2], _view.AxisDownLabel);
+            UpdateAxisLabel(_view.Target.SubLabels[3], _view.AxisLeftLabel);
+        }
+
+        private void UpdateParameters()
+        {
+            CreateTargetSubControllersIfNotExist();
+            _view.UpParameter = _view.Target.SubControllers[0].AnimatorParameterName;
+            _view.RightParameter = _view.Target.SubControllers[1].AnimatorParameterName;
+            _view.DownParameter = _view.Target.SubControllers[2].AnimatorParameterName;
+            _view.LeftParameter = _view.Target.SubControllers[3].AnimatorParameterName;
+
+            _view.HorizontalParameter = _view.Target.SubControllers[0].AnimatorParameterName;
+            _view.VerticalParameter = _view.Target.SubControllers[1].AnimatorParameterName;
+
+            _view.RadialParameter = _view.Target.SubControllers[0].AnimatorParameterName;
+        }
+
         private void UpdateView()
         {
             _view.Name = _view.Target.Name;
             _view.Type = (int)_view.Target.Type;
             _view.Icon = _view.Target.Icon;
+            UpdateAxisLabels();
+            UpdateParameters();
             _view.Repaint();
         }
 

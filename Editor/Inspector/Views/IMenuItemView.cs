@@ -17,15 +17,46 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Inspector.Views
 {
+    internal class AxisLabel
+    {
+        public string name;
+        public Texture2D icon;
+
+        public AxisLabel()
+        {
+            name = "";
+            icon = null;
+        }
+    }
+
     internal interface IMenuItemView : IEditorView
     {
         event Action NameChanged;
         event Action TypeChanged;
         event Action IconChanged;
+        event Action AxisLabelChanged;
+        event Action TwoAxisControllerChanged;
+        event Action FourAxisControllerChanged;
+        event Action RadialControllerChanged;
 
         DTMenuItem Target { get; set; }
         string Name { get; set; }
         int Type { get; set; }
         Texture2D Icon { get; set; }
+
+        AxisLabel AxisUpLabel { get; set; }
+        AxisLabel AxisRightLabel { get; set; }
+        AxisLabel AxisDownLabel { get; set; }
+        AxisLabel AxisLeftLabel { get; set; }
+
+        string HorizontalParameter { get; set; }
+        string VerticalParameter { get; set; }
+
+        string UpParameter { get; set; }
+        string RightParameter { get; set; }
+        string DownParameter { get; set; }
+        string LeftParameter { get; set; }
+
+        string RadialParameter { get; set; }
     }
 }
