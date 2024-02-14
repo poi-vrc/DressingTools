@@ -93,9 +93,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private TextField _axisDownLabelField;
         private readonly MenuItemPresenter _presenter;
 
-        public MenuItemView(DTMenuItem target)
+        public MenuItemView()
         {
-            Target = target;
             AxisUpLabel = new AxisLabel();
             AxisRightLabel = new AxisLabel();
             AxisDownLabel = new AxisLabel();

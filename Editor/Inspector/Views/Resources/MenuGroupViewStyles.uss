@@ -13,3 +13,8 @@
     padding: 4px;
     margin-bottom: 8px;
 }
+
+.rmv-btn-container {
+    flex-direction: row;
+    justify-content: flex-end;
+}

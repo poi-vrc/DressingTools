@@ -54,6 +54,13 @@ namespace Chocopoi.DressingTools.Components.Menu
             [SerializeField] private ControllerType m_Type;
             [SerializeField] private string m_AnimatorParameterName;
             [SerializeField] private float m_AnimatorParameterValue;
+
+            public ItemController()
+            {
+                m_Type = ControllerType.AnimatorParameter;
+                m_AnimatorParameterName = "";
+                m_AnimatorParameterValue = 1.0f;
+            }
         }
 
         [Serializable]
@@ -99,5 +106,14 @@ namespace Chocopoi.DressingTools.Components.Menu
 #else
         [SerializeField] private ScriptableObject m_VRCSubMenu;
 #endif
+
+        public DTMenuItem()
+        {
+            m_Type = ItemType.Button;
+            m_Controller = new ItemController();
+            m_SubControllers = new ItemController[0];
+            m_SubLabels = new Label[0];
+            m_SubMenuType = ItemSubMenuType.Children;
+        }
     }
 }

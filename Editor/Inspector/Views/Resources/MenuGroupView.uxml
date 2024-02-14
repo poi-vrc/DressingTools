@@ -3,4 +3,5 @@
         <Style src="SmartControlViewStyles.uss" />
     </ui:VisualElement>
     <ui:VisualElement name="items-container" />
+    <ui:Button name="add-btn" text="+ Add Item" />
 </ui:UXML>

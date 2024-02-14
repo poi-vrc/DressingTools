@@ -37,7 +37,7 @@ namespace Chocopoi.DressingTools.Inspector
 
         public void OnEnable()
         {
-            _view = new MenuGroupView((DTMenuGroup)target);
+            _view = new MenuGroupView() { Target = (DTMenuGroup)target };
             _view.OnEnable();
         }
 

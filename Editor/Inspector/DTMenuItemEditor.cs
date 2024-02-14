@@ -46,12 +46,13 @@ namespace Chocopoi.DressingTools.Inspector
             rootElement.Add(icon);
 
             rootElement.Add(_view);
+
             return rootElement;
         }
 
         public void OnEnable()
         {
-            _view = new MenuItemView((DTMenuItem)target);
+            _view = new MenuItemView() { Target = (DTMenuItem)target };
             _view.OnEnable();
         }
 

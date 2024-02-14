@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.UI.Views;
 
@@ -17,6 +18,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
 {
     internal interface IMenuGroupView : IEditorView
     {
+        event Action AddItem;
+        event Action<int> RemoveItem;
+
         DTMenuGroup Target { get; set; }
+
+        bool ShowConfirmRemoveDialog();
     }
 }
