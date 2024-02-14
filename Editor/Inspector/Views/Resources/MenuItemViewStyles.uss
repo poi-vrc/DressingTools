@@ -3,7 +3,7 @@
     flex-direction: row;
 }
 
-.foldout-header Toggle {
+.foldout-header > Toggle {
     background-color: rgb(65, 65, 65);
 }
 
