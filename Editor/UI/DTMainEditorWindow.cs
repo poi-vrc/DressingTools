@@ -17,16 +17,16 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.UI.View;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI
 {
     [ExcludeFromCodeCoverage]
-    public class DTMainEditorWindow : EditorWindow
+    internal class DTMainEditorWindow : EditorWindow
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 

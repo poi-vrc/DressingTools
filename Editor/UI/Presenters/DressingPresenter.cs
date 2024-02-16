@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateView()
         {
-            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar);
             _view.DisableAddToCabinetButton = cabinet == null;
             _view.Repaint();
         }
@@ -85,7 +85,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             _view.Config = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(_view.Config, _view.TargetAvatar, _view.TargetWearable);
+            OneConfUtils.PrepareWearableConfig(_view.Config, _view.TargetAvatar, _view.TargetWearable);
             _view.ForceUpdateConfigView();
             _view.AutoSetup();
         }
@@ -95,10 +95,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             // try find if the wearable has a config, if yes, use advanced mode for editing
             if (_view.TargetWearable != null)
             {
-                var cabinetWearable = DKEditorUtils.GetCabinetWearable(_view.TargetWearable);
+                var cabinetWearable = OneConfUtils.GetCabinetWearable(_view.TargetWearable);
                 if (cabinetWearable != null)
                 {
-                    if (WearableConfigUtility.TryDeserialize(cabinetWearable.ConfigJson, out var config))
+                    if (WearableConfigUtility.TryDeserialize(cabinetWearable.configJson, out var config))
                     {
                         _view.Config = config;
                         _view.SelectedDressingMode = 1;
@@ -127,14 +127,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             if (cabinet == null)
             {
                 return;
             }
 
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
             {
                 // TODO: handle deserialization error
                 Debug.Log("[DressingTools] Could not deserialize cabinet config");

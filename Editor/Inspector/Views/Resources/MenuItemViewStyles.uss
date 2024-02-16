@@ -1,0 +1,87 @@
+.foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+}
+
+.foldout-header > Toggle {
+    background-color: rgb(65, 65, 65);
+}
+
+.foldout-container {
+    margin: 8px;
+}
+
+#item-icon {
+    width: 84px;
+    height: 84px;
+    background-image: resource('thumbnailPlaceholder');
+    -unity-background-scale-mode: scale-to-fit;
+    margin-bottom: 8px;
+}
+
+#item-icon-objfield-container {
+    width: 84px;
+}
+
+.item-info-container {
+    margin-bottom: 8px;
+}
+
+.item-info-left-panel {
+    justify-content: center;
+}
+
+.item-info-right-panel {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    flex-shrink: 1;
+    margin-left: 8px;
+    margin-right: 8px;
+    flex-grow: 1;
+    display: flex;
+}
+
+#item-info-name-field Label {
+    min-width: 0;
+    margin-right: 8px;
+}
+
+#item-info-name-label {
+    font-size: 18px;
+    white-space: normal;
+    flex-direction: row;
+    margin-bottom: 8px;
+}
+
+.axis-grid {
+    align-items: center;
+}
+
+.details-panel {
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.details-panel > Label {
+    margin-bottom: 8px;
+    -unity-font-style: bold;
+}
+
+.axis-grid > .axis-grid-row {
+    flex-direction: row;
+}
+
+.axis-grid-row > .axis-grid-col {
+    width: 96px;
+    height: 96px;
+}
+
+.axis-grid-col > VisualElement {
+    background-image: resource("thumbnailPlaceholder");
+    -unity-background-scale-mode: scale-to-fit;
+    flex-grow: 1;
+}
+
+.grid Label {
+    min-width: 0px;
+}

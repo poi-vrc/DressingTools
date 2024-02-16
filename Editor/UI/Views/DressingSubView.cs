@@ -18,11 +18,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf.Wearable;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -31,7 +29,7 @@ using UnityEngine.UIElements;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class DressingSubView : ElementViewBase, IDressingSubView, IWearableConfigViewParent
+    internal class DressingSubView : ElementView, IDressingSubView, IWearableConfigViewParent
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 

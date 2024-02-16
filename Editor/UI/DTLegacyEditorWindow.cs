@@ -18,7 +18,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.UI.View;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
 using UnityEngine;
 

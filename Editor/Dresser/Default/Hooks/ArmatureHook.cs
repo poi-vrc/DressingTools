@@ -17,12 +17,13 @@
 
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Proxy;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Dynamics;
+using Chocopoi.DressingTools.Dynamics.Proxy;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
@@ -53,7 +54,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 
             foreach (var child in childs)
             {
-                var avatarTrans = DTEditorUtils.GuessMatchingAvatarBone(avatarDynamicsRoot, child.name);
+                var avatarTrans = OneConfUtils.GuessMatchingAvatarBone(avatarDynamicsRoot, child.name);
                 if (avatarTrans != null)
                 {
                     AddRecursiveDynamicsBindings(targetAvatarRoot, targetWearableRoot, avatarTrans, child, boneMappings, bindingType);
@@ -78,7 +79,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                     continue;
                 }
 
-                var avatarTrans = DTEditorUtils.GuessMatchingAvatarBone(avatarBoneParent, child.name);
+                var avatarTrans = OneConfUtils.GuessMatchingAvatarBone(avatarBoneParent, child.name);
 
                 if (avatarTrans == null)
                 {
@@ -96,8 +97,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
                 {
                     // Find whether there is a DynamicBone/PhysBone component controlling the bone
 
-                    var avatarDynamics = DKEditorUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
-                    var wearableDynamics = DKEditorUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
+                    var avatarDynamics = DynamicsUtils.FindDynamicsWithRoot(avatarDynamicsList, avatarTrans);
+                    var wearableDynamics = DynamicsUtils.FindDynamicsWithRoot(wearableDynamicsList, child);
 
                     if (avatarDynamics != null)
                     {
@@ -178,7 +179,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             if (!avatarArmature)
             {
                 //guess the armature object by finding if the object name contains settings.avatarArmatureObjectName, but don't rename it
-                avatarArmature = DTEditorUtils.GuessArmature(settings.targetAvatar, settings.avatarArmatureName, false);
+                avatarArmature = OneConfUtils.GuessArmature(settings.targetAvatar, settings.avatarArmatureName, false);
 
                 if (avatarArmature)
                 {
@@ -193,7 +194,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             if (!wearableArmature)
             {
                 //guess the armature object by finding if the object name contains settings.clothesArmatureObjectName and do not rename it
-                wearableArmature = DTEditorUtils.GuessArmature(settings.targetWearable, settings.wearableArmatureName, false);
+                wearableArmature = OneConfUtils.GuessArmature(settings.targetWearable, settings.wearableArmatureName, false);
 
                 if (wearableArmature)
                 {
@@ -247,8 +248,8 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
 
             // Scan dynamics
-            var avatarDynamicsList = DKEditorUtils.ScanDynamics(settings.targetAvatar, true);
-            var wearableDynamicsList = DKEditorUtils.ScanDynamics(settings.targetWearable, false);
+            var avatarDynamicsList = OneConfUtils.ScanAvatarOnlyDynamics(settings.targetAvatar); // TODO remove connections with OneConf
+            var wearableDynamicsList = DynamicsUtils.ScanDynamics(settings.targetWearable);
 
             // Process Armature
             ProcessBone(report, (DefaultDresserSettings)settings, avatarDynamicsList, wearableDynamicsList, 0, avatarArmature, wearableArmature, boneMappings);

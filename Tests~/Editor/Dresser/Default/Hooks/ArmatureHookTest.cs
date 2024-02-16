@@ -11,18 +11,17 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.Dresser.Default.Hooks
 {
-    public class ArmatureHookTest : EditorTestBase
+    internal class ArmatureHookTest : EditorTestBase
     {
         private static bool EvaluateHook(GameObject avatarRoot, GameObject wearableRoot, out DKReport report, out List<BoneMapping> boneMappings, DefaultDresserDynamicsOption dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint)
         {

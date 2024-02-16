@@ -18,12 +18,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UI.Views;
-using Chocopoi.DressingTools.UIBase.Views;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -35,10 +32,10 @@ using PrefabStage = UnityEditor.Experimental.SceneManagement.PrefabStage;
 #error The current Unity version does not support PrefabStage.
 #endif
 
-namespace Chocopoi.DressingTools.UI.View
+namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class MainView : ElementViewBase, IMainView
+    internal class MainView : ElementView, IMainView
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 

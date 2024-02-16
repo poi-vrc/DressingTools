@@ -16,19 +16,19 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Cabinet;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingTools.Api.Cabinet;
-using Chocopoi.DressingTools.Api.Wearable;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -36,7 +36,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI
 {
     [ExcludeFromCodeCoverage]
-    public static class GameObjectMenu
+    internal static class GameObjectMenu
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
@@ -97,12 +97,12 @@ namespace Chocopoi.DressingTools.UI
             }
 
             var wearableConfig = new WearableConfig();
-            DTEditorUtils.PrepareWearableConfig(wearableConfig, cabinet.AvatarGameObject, wearable);
+            OneConfUtils.PrepareWearableConfig(wearableConfig, cabinet.rootGameObject, wearable);
 
             var armatureName = cabinetConfig.avatarArmatureName;
 
             // attempt to find wearable armature using avatar armature name
-            var armature = DTEditorUtils.GuessArmature(wearable, armatureName);
+            var armature = OneConfUtils.GuessArmature(wearable, armatureName);
 
             if (armature == null)
             {
@@ -119,7 +119,7 @@ namespace Chocopoi.DressingTools.UI
 
                 var dresserSettings = new DefaultDresserSettings()
                 {
-                    targetAvatar = cabinet.AvatarGameObject,
+                    targetAvatar = cabinet.rootGameObject,
                     targetWearable = wearable,
                     dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
                 };
@@ -129,7 +129,7 @@ namespace Chocopoi.DressingTools.UI
 
                 if (report.HasLogType(DressingFramework.Logging.LogType.Error))
                 {
-                    ReportWindow.AddReport(cabinet.AvatarGameObject.name, report);
+                    ReportWindow.AddReport(cabinet.rootGameObject.name, report);
                     ReportWindow.ShowWindow();
                     EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.defaultDresserHasErrors"), t._("common.dialog.btn.ok"));
                     return;

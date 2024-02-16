@@ -1,0 +1,57 @@
+.dt-inspector-icon {
+    background-image: resource("dt-banner");
+    width: auto;
+    -unity-background-scale-mode: scale-to-fit;
+    height: 36px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+}
+
+.foldout-header Toggle {
+    background-color: rgb(65, 65, 65);
+}
+
+.foldout-container {
+    margin: 8px;
+}
+
+.add-field-container {
+    flex-direction: row;
+}
+
+.add-field-container Label {
+    -unity-text-align: middle-center;
+}
+
+.add-field-container ObjectField {
+    flex-grow: 1;
+}
+
+.object-field-entry {
+    flex-direction: row;
+}
+
+.object-field-entry ObjectField {
+    flex-grow: 1;
+}
+
+.object-field-entry FloatField {
+    width: 36px;
+}
+
+#driver-container > Box {
+    padding: 8px;
+    margin-top: 8px;
+}
+
+#driver-container > Box > Label {
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}

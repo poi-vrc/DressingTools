@@ -18,14 +18,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.UI;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.UI.Views.Modules;
 using UnityEditor;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.UI.View
+namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
     internal class LegacyView : IMGUIViewBase, ILegacyView

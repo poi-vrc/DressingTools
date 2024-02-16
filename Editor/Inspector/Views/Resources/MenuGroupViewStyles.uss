@@ -1,0 +1,31 @@
+.dt-inspector-icon {
+    background-image: resource("dt-banner");
+    width: auto;
+    -unity-background-scale-mode: scale-to-fit;
+    height: 36px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.item-view-container {
+    padding: 4px;
+    margin-bottom: 8px;
+}
+
+.header-container {
+    flex-direction: row;
+}
+
+.header-container > ObjectField {
+    flex-grow: 1;
+}
+
+#add-btns-container {
+    flex-direction: row;
+}
+
+#add-btns-container > Button {
+    flex-grow: 1;
+}

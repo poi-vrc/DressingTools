@@ -1,0 +1,71 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="dt-inspector-icon">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:Foldout text="Driver: Animator Parameter" name="driver-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="driver-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="driver-type-popup-container" />
+        <ui:Box name="menu-item-driver-container">
+            <ui:Label text="@inspector.smartcontrol.driver.menuItem" />
+            <ui:TextField picking-mode="Ignore" name="menu-item-name-field" label="@inspector.smartcontrol.driver.menuItem.textField.name" />
+            <ui:VisualElement name="menu-icon-obj-field-container" />
+            <ui:VisualElement name="menu-item-type-popup-container" />
+        </ui:Box>
+        <ui:Box name="anim-param-driver-container">
+            <ui:Label text="@inspector.smartcontrol.driver.animatorParameter" />
+            <ui:TextField picking-mode="Ignore" label="@inspector.smartcontrol.driver.animatorParameter.textField.parameterName" binding-path="m_AnimatorConfig.m_ParameterName" />
+            <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.defaultValue" name="anim-param-defval-bool-toggle" value="false" />
+            <ui:VisualElement name="anim-param-defval-float-container" style="flex-direction: row;">
+                <ui:Slider picking-mode="Ignore" label="@inspector.smartcontrol.driver.animatorParameter.defaultValue" value="0" high-value="1" name="anim-param-defval-float-slider" style="flex-grow: 1;" />
+                <uie:FloatField picking-mode="Ignore" value="0" text="0" name="anim-param-defval-float-field" style="width: 36px" />
+            </ui:VisualElement>
+            <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.toggle.networkSynced" binding-path="m_AnimatorConfig.m_NetworkSynced" value="true" />
+            <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.toggle.saved" binding-path="m_AnimatorConfig.m_Saved" value="true" />
+        </ui:Box>
+    </ui:VisualElement>
+    <ui:Foldout text="Control: Binary" name="control-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="control-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="control-type-popup-container" />
+        <ui:VisualElement name="control-binary-container" />
+        <ui:VisualElement name="control-motion-time-container" style="display: none" />
+    </ui:VisualElement>
+    <ui:Foldout text="Object Toggles (n)" name="object-toggles-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="object-toggles-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="object-toggles-list-container" />
+        <ui:VisualElement name="object-toggles-add-field-container" class="add-field-container" />
+    </ui:VisualElement>
+    <ui:Foldout text="Property Groups (n)" value="true" name="prop-gps-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="prop-gps-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:VisualElement name="prop-gps-list-container" />
+        <ui:Button text="+ Add" name="prop-gp-add-btn" />
+    </ui:VisualElement>
+    <ui:Foldout text="Cross-control Actions (n)" name="cross-ctrl-foldout" class="foldout-header">
+        <Style src="SmartControlViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="cross-ctrl-container" class="foldout-container">
+        <Style src="SmartControlViewStyles.uss" />
+        <ui:Foldout text="Values (n)" name="cross-ctrl-values-foldout" class="foldout-header">
+            <Style src="SmartControlViewStyles.uss" />
+        </ui:Foldout>
+        <ui:VisualElement name="cross-ctrl-values-container" class="foldout-container">
+            <ui:Label text="@inspector.smartcontrol.crossControlActions.values.setTheseValuesWhenEnabled" />
+            <ui:VisualElement name="cross-ctrl-values-on-enabled-container" />
+            <ui:VisualElement name="cross-ctrl-values-on-enabled-add-field-container" class="add-field-container" />
+            <ui:Label text="@inspector.smartcontrol.crossControlActions.values.setTheseValuesWhenDisabled" />
+            <ui:VisualElement name="cross-ctrl-values-on-disabled-container" />
+            <ui:VisualElement name="cross-ctrl-values-on-disabled-add-field-container" class="add-field-container" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

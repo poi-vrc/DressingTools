@@ -20,13 +20,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf.Wearable;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views.Modules;
-using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -35,7 +33,7 @@ using UnityEngine.UIElements;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class WearableConfigView : ElementViewBase, IWearableConfigView
+    internal class WearableConfigView : ElementView, IWearableConfigView
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
         private static Texture2D ThumbnailPlaceholderImage;

@@ -18,15 +18,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
-using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 using UnityEngine;
 
@@ -47,7 +45,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private IWearableModuleEditorViewParent _parentView;
         private BlendshapeSyncWearableModuleEditorPresenter _presenter;
 
-        public BlendshapeSyncWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProviderBase provider, IModuleConfig target) : base(parentView, provider, target)
+        public BlendshapeSyncWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
             _presenter = new BlendshapeSyncWearableModuleEditorPresenter(this, (BlendshapeSyncWearableModuleConfig)target);

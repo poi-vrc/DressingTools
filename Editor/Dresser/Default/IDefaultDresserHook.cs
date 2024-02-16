@@ -16,8 +16,8 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 
 namespace Chocopoi.DressingTools.Dresser.Default.Hooks
 {
