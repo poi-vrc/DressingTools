@@ -12,16 +12,14 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.UI.Presenters.Modules;
-using Chocopoi.DressingTools.UIBase.Views;
-using Chocopoi.DressingTools.Wearable.Modules;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
@@ -59,7 +57,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         private bool _removeExistingPrefixSuffix;
         private bool _groupBones;
 
-        public ArmatureMappingWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProviderBase provider, IModuleConfig target) : base(parentView, provider, target)
+        public ArmatureMappingWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)
         {
             _parentView = parentView;
             _presenter = new ArmatureMappingWearableModuleEditorPresenter(this, parentView, (ArmatureMappingWearableModuleConfig)target);

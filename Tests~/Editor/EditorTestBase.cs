@@ -1,10 +1,10 @@
 ﻿using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
-using Chocopoi.DressingFramework.Context;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingTools.Api.Cabinet;
-using Chocopoi.DressingTools.Api.Wearable;
+using Chocopoi.DressingFramework.Detail.DK;
+using Chocopoi.DressingTools.Components.OneConf;
+using Chocopoi.DressingTools.Dynamics;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Serialization;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.Tests
 {
     // a test script base containing utility functions
-    public class EditorTestBase : RuntimeTestBase
+    internal class EditorTestBase : RuntimeTestBase
     {
         protected T LoadEditorTestAsset<T>(string relativePath) where T : Object
         {
@@ -42,38 +42,36 @@ namespace Chocopoi.DressingTools.Tests
             base.SetUp();
 
             // remove previous generated files
-            AssetDatabase.DeleteAsset(ApplyCabinetContext.GeneratedAssetsPath);
-            AssetDatabase.CreateFolder("Assets", ApplyCabinetContext.GeneratedAssetsFolderName);
+            AssetDatabase.DeleteAsset(DKNativeContext.GeneratedAssetsPath);
+            AssetDatabase.CreateFolder("Assets", DKNativeContext.GeneratedAssetsFolderName);
         }
 
-        public ApplyCabinetContext CreateCabinetContext(GameObject avatarObj)
+        public CabinetContext CreateCabinetContext(GameObject avatarObj)
         {
             var cabinet = avatarObj.GetComponent<DTCabinet>();
             Assert.NotNull(cabinet);
 
-            var cabCtx = new ApplyCabinetContext()
+            var dkCtx = new DKNativeContext(avatarObj);
+            var cabCtx = new CabinetContext()
             {
-                report = new DKReport(),
+                dkCtx = dkCtx,
                 cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.configJson),
-                avatarGameObject = avatarObj,
-                pathRemapper = new PathRemapper(avatarObj),
-                avatarDynamics = DKEditorUtils.ScanDynamics(avatarObj, true)
+                avatarDynamics = OneConfUtils.ScanAvatarOnlyDynamics(avatarObj)
             };
-            cabCtx.animationStore = new AnimationStore(cabCtx);
 
             return cabCtx;
         }
 
-        public ApplyWearableContext CreateWearableContext(ApplyCabinetContext cabCtx, GameObject wearableObj)
+        public WearableContext CreateWearableContext(CabinetContext cabCtx, GameObject wearableObj)
         {
             var wearableComp = wearableObj.GetComponent<DTWearable>();
             Assert.NotNull(wearableComp);
 
-            var wearCtx = new ApplyWearableContext()
+            var wearCtx = new WearableContext()
             {
                 wearableConfig = WearableConfigUtility.Deserialize(wearableComp.configJson),
                 wearableGameObject = wearableObj,
-                wearableDynamics = DKEditorUtils.ScanDynamics(wearableObj, false)
+                wearableDynamics = DynamicsUtils.ScanDynamics(wearableObj)
             };
 
             cabCtx.wearableContexts[wearableComp] = wearCtx;
@@ -91,7 +89,7 @@ namespace Chocopoi.DressingTools.Tests
 
         public void AssertPassImportedVRCSDK()
         {
-#if !VRC_SDK_VRCSDK3
+#if !DT_VRCSDK3A
             Assert.Pass("This test requires VRCSDK3 (>=2022.04.21.03.29) to be imported");
 #endif
         }

@@ -11,9 +11,8 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Extensibility.Plugin;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Serialization;
 using UnityEditor;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
@@ -21,7 +20,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [ExcludeFromCodeCoverage]
     internal class DefaultWearableModuleEditor : WearableModuleEditorIMGUI
     {
-        public DefaultWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProviderBase provider, IModuleConfig target) : base(parentView, provider, target)
+        public DefaultWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)
         {
         }
 

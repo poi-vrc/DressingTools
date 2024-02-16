@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Box class="container">
+        <ui:VisualElement class="title-container">
+            <ui:Label name="title-label" />
+            <ui:Button name="remove-btn" text="x" />
+        </ui:VisualElement>
+        <ui:VisualElement name="selection-type-popup-container" />
+        <ui:VisualElement name="search-from-objfield-container" />
+        <ui:Label name="include-exclude-objs-label" text="Include these objects" />
+        <ui:VisualElement name="selection-objs-container" />
+        <ui:VisualElement name="selection-obj-add-field-container" />
+        <ui:VisualElement name="pick-from-objfield-container" />
+        <ui:VisualElement name="components-container" />
+    </ui:Box>
+</ui:UXML>

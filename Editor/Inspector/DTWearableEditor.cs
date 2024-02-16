@@ -17,7 +17,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Api.Wearable;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI;
 using UnityEditor;
@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools
 
             var wearable = (DTWearable)target;
 
-            wearable.WearableGameObject = (GameObject)EditorGUILayout.ObjectField(t._("wearable.inspector.settings.wearable"), wearable.WearableGameObject, typeof(GameObject), true);
+            wearable.rootGameObject = (GameObject)EditorGUILayout.ObjectField(t._("wearable.inspector.settings.wearable"), wearable.rootGameObject, typeof(GameObject), true);
             EditorGUILayout.Separator();
 
             if (GUILayout.Button(t._("common.inspector.btn.openInEditor"), GUILayout.Height(40)))
@@ -50,7 +50,7 @@ namespace Chocopoi.DressingTools
                     var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
                     window.titleContent = new GUIContent(t._("tool.name"));
                     window.Show();
-                    window.StartDressing(cabinet.AvatarGameObject, wearable.WearableGameObject);
+                    window.StartDressing(cabinet.rootGameObject, wearable.rootGameObject);
                 }
                 else
                 {

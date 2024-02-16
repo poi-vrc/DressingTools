@@ -20,7 +20,7 @@ using System;
 using System.Globalization;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.UI.Views;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {

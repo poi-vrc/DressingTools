@@ -17,12 +17,12 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Logging;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Dresser.Default.Hooks;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Newtonsoft.Json;
 
 namespace Chocopoi.DressingTools.Dresser

@@ -15,7 +15,7 @@ using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.Dresser
 {
-    public class DresserRegistryTest : EditorTestBase
+    internal class DresserRegistryTest : EditorTestBase
     {
         [Test]
         public void GetDresserByTypeNameTest()

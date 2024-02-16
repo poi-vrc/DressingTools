@@ -20,19 +20,18 @@ using System.Collections.Generic;
 using System.IO;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Extensibility.Plugin;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingFramework.Wearable;
-using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.Api.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UI.Views.Modules;
-using Chocopoi.DressingTools.UIBase.Views;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -43,7 +42,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private List<WearableModuleProviderBase> s_moduleProviders = null;
+        private List<WearableModuleProvider> s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
         private IWearableConfigView _view;
@@ -235,7 +234,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnCaptureThumbnailButtonClick()
         {
             var texture = DTEditorUtils.GetThumbnailCameraPreview();
-            _view.Config.info.thumbnail = DTEditorUtils.GetBase64FromTexture(texture);
+            _view.Config.info.thumbnail = OneConfUtils.GetBase64FromTexture(texture);
             _view.InfoThumbnail = texture;
             ReturnToInfoPanel();
         }
@@ -327,7 +326,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void ApplyAvatarConfig()
         {
-            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
+            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar);
 
             // try obtain armature name from cabinet
             if (cabinet == null)
@@ -337,7 +336,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                if (CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
                 {
                     _view.Config.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }
@@ -353,7 +352,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
+            var avatarPrefabGuid = OneConfUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
             _view.Config.avatarConfig.guids.Clear();
@@ -391,7 +390,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 try
                 {
-                    _view.InfoThumbnail = DTEditorUtils.GetTextureFromBase64(_view.Config.info.thumbnail);
+                    _view.InfoThumbnail = OneConfUtils.GetTextureFromBase64(_view.Config.info.thumbnail);
                 }
                 catch (Exception ex)
                 {
@@ -448,7 +447,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.SimpleBlendshapeSyncConfig = blendshapeSyncModule != null ? (BlendshapeSyncWearableModuleConfig)blendshapeSyncModule.config : new BlendshapeSyncWearableModuleConfig();
         }
 
-        private IWearableModuleEditor CreateModuleEditor(WearableModuleProviderBase provider, IModuleConfig module)
+        private IWearableModuleEditor CreateModuleEditor(WearableModuleProvider provider, IModuleConfig module)
         {
             // prepare cache if not yet
             if (s_moduleEditorTypesCache == null)
@@ -489,7 +488,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             if (s_moduleProviders == null)
             {
-                s_moduleProviders = PluginManager.Instance.GetAllWearableModuleProviders();
+                s_moduleProviders = ModuleManager.Instance.GetAllWearableModuleProviders();
             }
 
             _view.AdvancedModuleNames.Clear();
@@ -508,7 +507,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             foreach (var module in _view.Config.modules)
             {
-                var provider = PluginManager.Instance.GetWearableModuleProvider(module.moduleName);
+                var provider = ModuleManager.Instance.GetWearableModuleProvider(module.moduleName);
 
                 if (provider == null)
                 {
@@ -543,7 +542,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var avatarPrefabGuid = DTEditorUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
+            var avatarPrefabGuid = OneConfUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
             _view.AdvancedAvatarConfigGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;
@@ -589,8 +588,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void AutoSetupMapping()
         {
             // cabinet
-            var cabinet = DKEditorUtils.GetAvatarCabinet(_view.TargetAvatar);
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
+            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar);
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
             {
                 _view.ShowCabinetConfigErrorHelpBox = true;
                 return;
@@ -609,7 +608,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // attempt to find wearable armature using avatar armature name
-            var armature = DTEditorUtils.GuessArmature(_view.TargetWearable, armatureName);
+            var armature = OneConfUtils.GuessArmature(_view.TargetWearable, armatureName);
 
             if (armature == null)
             {
@@ -662,7 +661,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 if (armatureMappingModule != null)
                 {
                     // skip the armature if used armature mapping
-                    var wearableArmature = DTEditorUtils.GuessArmature(_view.TargetWearable, armatureMappingModule.wearableArmatureName);
+                    var wearableArmature = OneConfUtils.GuessArmature(_view.TargetWearable, armatureMappingModule.wearableArmatureName);
                     for (var i = 0; i < _view.TargetWearable.transform.childCount; i++)
                     {
                         // do not auto add wearable toggle if state is disabled initially
@@ -716,7 +715,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 foreach (var avatarSmr in avatarSmrs)
                 {
                     // transverse up to see if it is originated from ours or an existing wearable
-                    if (DKEditorUtils.IsOriginatedFromAnyWearable(_view.TargetAvatar.transform, avatarSmr.transform) ||
+                    if (OneConfUtils.IsOriginatedFromAnyWearable(_view.TargetAvatar.transform, avatarSmr.transform) ||
                         DKEditorUtils.IsGrandParent(_view.TargetWearable.transform, avatarSmr.transform))
                     {
                         // skip this SMR

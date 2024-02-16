@@ -16,7 +16,7 @@
  */
 
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
 
 #if UNITY_2021_2_OR_NEWER

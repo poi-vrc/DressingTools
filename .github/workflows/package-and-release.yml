@@ -38,14 +38,25 @@ jobs:
           ls -l
           ls -l Packages/${{ env.dtPackageName }}
 
-      - name: Resolve VPM Project
+      - name: Prepare VPM CLI
         run: |
           mv Packages/vpm-manifest.2022.3.6f1.json Packages/vpm-manifest.json
           dotnet tool install --global vrchat.vpm.cli
           vpm add repo https://vpm.chocopoi.com/index.json
+
+      - name: Allow VPM Prerelease Packages
+        if: ${{ github.ref_type != 'tag' }}
+        run: |
+          tmp=$(mktemp)
+          jq '.showPrereleasePackages = true' ~/.local/share/VRChatCreatorCompanion/settings.json > "$tmp" && mv "$tmp" ~/.local/share/VRChatCreatorCompanion/settings.json
+
+      - name: Resolve VPM Project
+        run: |
           vpm add package com.chocopoi.vrc.avatarlib
           vpm add package com.chocopoi.vrc.dressingframework
           vpm resolve project
+          jq '.version' Packages/${{env.alPackageName}}/package.json
+          jq '.version' Packages/${{env.dkPackageName}}/package.json
           
       - name: Obtain package version
         id: version

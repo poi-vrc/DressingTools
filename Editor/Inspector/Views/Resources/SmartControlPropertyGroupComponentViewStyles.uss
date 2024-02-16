@@ -1,0 +1,61 @@
+.container {
+    padding: 8px;
+    margin-top: 8px;
+}
+
+#component-obj-fields-container {
+    flex-direction: row;
+}
+
+#component-obj-fields-container ObjectField {
+    width: 50%;
+}
+
+#property-type-toolbar {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+#property-type-toolbar ToolbarButton {
+    -unity-text-align: middle-center;
+    flex-grow: 1;
+}
+
+#property-type-toolbar ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+.property-entry {
+    flex-direction: row;
+}
+
+.property-entry > Label.name {
+    flex-grow: 1;
+}
+
+.property-entry Label.right {
+    -unity-text-align: middle-right;
+}
+
+.property-entry TextField {
+    flex-grow: 1;
+}
+
+.property-entry FloatField {
+    width: 36px;
+}
+
+.property-entry ColorField {
+    width: 36px;
+}
+
+#search-result-container {
+    padding: 8px;
+}
+
+.not-supported-property-entry {
+    flex-direction: row;
+}

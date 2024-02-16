@@ -19,11 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingFramework.UI;
-using Chocopoi.DressingTools.Api.Cabinet;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -32,7 +30,7 @@ using UnityEngine.UIElements;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class CabinetSubView : ElementViewBase, ICabinetSubView
+    internal class CabinetSubView : ElementView, ICabinetSubView
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
         private static VisualTreeAsset s_installedThumbnailVisualTree = null;

@@ -20,7 +20,7 @@ using UnityEngine.TestTools;
 
 namespace Chocopoi.DressingTools.Tests.Prefs
 {
-    public class PreferencesTest : EditorTestBase
+    internal class PreferencesTest : EditorTestBase
     {
         private const string EditorPrefsKey = "Chocopoi.DressingTools.Preferences";
 

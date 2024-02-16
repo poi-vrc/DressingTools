@@ -11,17 +11,18 @@
  */
 
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Cabinet;
-using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingFramework.Wearable;
+using Chocopoi.DressingTools.OneConf;
+using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable;
 using Chocopoi.DressingTools.UI.Presenters;
-using Chocopoi.DressingTools.UIBase.Views;
+using Chocopoi.DressingTools.UI.Views;
 using Moq;
 using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.UI.Presenters
 {
-    public class DressingPresenterTest : EditorTestBase
+    internal class DressingPresenterTest : EditorTestBase
     {
         private static Mock<IDressingSubView> SetupMock()
         {
@@ -46,7 +47,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var mock = SetupMock();
 
             var cabinetAvatar = CreateGameObject("CabinetAvatar");
-            DKEditorUtils.GetAvatarCabinet(cabinetAvatar, true);
+            OneConfUtils.GetAvatarCabinet(cabinetAvatar, true);
             mock.SetupProperty(m => m.TargetAvatar, cabinetAvatar);
 
             mock.Raise(m => m.Load += null);
@@ -73,7 +74,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var mock = SetupMock();
 
             var avatarObj = CreateGameObject("Avatar");
-            var cabinet = DKEditorUtils.GetAvatarCabinet(avatarObj, true);
+            var cabinet = OneConfUtils.GetAvatarCabinet(avatarObj, true);
             mock.SetupProperty(m => m.TargetAvatar, avatarObj);
 
             var wearableObj = CreateGameObject("Wearable", avatarObj.transform);
@@ -93,7 +94,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var mock = SetupMock();
 
             var avatarObj = CreateGameObject("Avatar");
-            var cabinet = DKEditorUtils.GetAvatarCabinet(avatarObj, true);
+            var cabinet = OneConfUtils.GetAvatarCabinet(avatarObj, true);
             mock.SetupProperty(m => m.TargetAvatar, avatarObj);
 
             var wearableObj = CreateGameObject("Wearable", avatarObj.transform);
@@ -128,7 +129,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             mock.SetupProperty(m => m.Config, new WearableConfig());
 
             var avatarObj = CreateGameObject("Avatar");
-            var cabinet = DKEditorUtils.GetAvatarCabinet(avatarObj, true);
+            var cabinet = OneConfUtils.GetAvatarCabinet(avatarObj, true);
             cabinet.configJson = CabinetConfigUtility.Serialize(new CabinetConfig());
             mock.SetupProperty(m => m.TargetAvatar, avatarObj);
 
@@ -154,7 +155,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var mock = SetupMock();
 
             var avatar = CreateGameObject("Avatar");
-            DKEditorUtils.GetAvatarCabinet(avatar, true);
+            OneConfUtils.GetAvatarCabinet(avatar, true);
             mock.SetupProperty(m => m.TargetAvatar, avatar);
 
             mock.Raise(m => m.ForceUpdateView += null);

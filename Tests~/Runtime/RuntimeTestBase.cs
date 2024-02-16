@@ -52,7 +52,7 @@ namespace Chocopoi.DressingTools.Tests
             return obj;
         }
 
-#if VRC_SDK_VRCSDK3
+#if DT_VRCSDK3A
         private const string InitialVrcAvatarPrefabGuid = "505980abfabf5544b913cd14405b65e6";
 
         protected GameObject InstantiateInitialVRCAvatar()
