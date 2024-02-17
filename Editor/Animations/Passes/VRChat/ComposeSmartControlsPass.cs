@@ -13,6 +13,7 @@
 #if DT_VRCSDK3A
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations.VRChat;
+using Chocopoi.DressingFramework.Detail.DK.Passes;
 using Chocopoi.DressingFramework.Detail.DK.Passes.VRChat;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingTools.Animations.Fluent;
@@ -29,6 +30,7 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
         public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose)
             .BeforePass<ComposeAndInstallMenuPass>()
             .BeforePass<ApplyVRCExParamsPass>()
+            .BeforePass<RemapAnimationsPass>()
             .Build();
 
         public override bool Invoke(Context ctx)
