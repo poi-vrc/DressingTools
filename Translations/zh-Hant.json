@@ -385,5 +385,12 @@
     "inspector.smartcontrol.propertyGroup.component.helpbox.tooManySearchResults": "結果太多 ({0})。使用搜尋框或按下面的按鈕顯示全部內容。",
     "inspector.smartcontrol.propertyGroup.component.btn.displayAllSearchResults": "顯示全部",
     "inspector.smartcontrol.propertyGroup.label.excludeTheseObjects": "排除這些物件",
-    "inspector.smartcontrol.propertyGroup.helpbox.tooManyComponentsFound": "發現太多元件 {0}。 請從較少元件的位置選擇屬性, 以縮小結果範圍。"
+    "inspector.smartcontrol.propertyGroup.helpbox.tooManyComponentsFound": "發現太多元件 {0}。 請從較少元件的位置選擇屬性, 以縮小結果範圍。",
+    "inspector.animParams.helpbox.description": "此元件用於覆蓋由 DressingTools 建立的網路同步、保存等設定。參數通常已經被自動掃描和產生設定的，不需要增加全部參數。",
+    "inspector.animParams.label.parameter": "參數",
+    "inspector.animParams.defaultValue": "預設值",
+    "inspector.animParams.helpbox.noCompatibleParameterFound": "從任何動畫層中都找不到具有此名稱的相容參數。它必須是 Int、Float 或 Bool 類型。",
+    "inspector.animParams.toggle.networkSynced": "網路同步",
+    "inspector.animParams.toggle.saved": "會儲存",
+    "inspector.animParams.btn.add": "+ 新增"
 }

@@ -385,5 +385,12 @@
     "inspector.menu.item.details.controllerOnOpen.label.parameterName": "パラメータ名",
     "inspector.smartcontrol.propertyGroup.component.btn.add": "+ 追加",
     "inspector.smartcontrol.propertyGroup.component.helpbox.tooManySearchResults": "結果が多すぎます ({0})。上の検索ボックスを使用するか、下のボタンを押してすべてを表示します。",
-    "inspector.smartcontrol.propertyGroup.helpbox.tooManyComponentsFound": "見つかったコンポーネントが多すぎます ({0})。 コンポーネントが少ない場所から選択して結果を絞り込んでください。"
+    "inspector.smartcontrol.propertyGroup.helpbox.tooManyComponentsFound": "見つかったコンポーネントが多すぎます ({0})。 コンポーネントが少ない場所から選択して結果を絞り込んでください。",
+    "inspector.animParams.btn.add": "+ 追加",
+    "inspector.animParams.label.parameter": "パラメーター",
+    "inspector.animParams.defaultValue": "デフォルト値",
+    "inspector.animParams.helpbox.noCompatibleParameterFound": "この名前と互換性のあるパラメータはどのアニメーター レイヤからも見つかりません。 Int、Float、または Bool 型のパラメータが必要です。",
+    "inspector.animParams.toggle.networkSynced": "ネットワーク同期",
+    "inspector.animParams.toggle.saved": "保存される",
+    "inspector.animParams.helpbox.description": "このコンポーネントは、DressingTools によって作成されたネットワーク同期、保存などの設定をオーバーライドするためのものです。通常、パラメータの設定は自動的に生成されるので、特に設定するのは必要がありません。"
 }
