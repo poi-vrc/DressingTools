@@ -11,6 +11,7 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingTools.Dynamics.Proxy;
 using Chocopoi.DressingTools.OneConf;
@@ -23,7 +24,11 @@ namespace Chocopoi.DressingFramework.Wearable.Hooks
         private const string DynamicsContainerName = "DT_Dynamics";
 
         public override string FriendlyName => "Group Dynamics";
-        public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose).Build();
+
+        // we actually shouldn't do any changes in generation stage, but for now we have to do it like this
+        public override BuildConstraint Constraint =>
+            InvokeAtStage(BuildStage.Generation)
+                .Build();
 
         private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
         {
@@ -114,6 +119,9 @@ namespace Chocopoi.DressingFramework.Wearable.Hooks
                     CopyDynamicsToContainer(dynamics, dynamicsContainer.gameObject);
                 }
             }
+
+            var pathRemapper = cabCtx.dkCtx.Feature<PathRemapper>();
+            pathRemapper.InvalidateCache();
 
             return true;
         }

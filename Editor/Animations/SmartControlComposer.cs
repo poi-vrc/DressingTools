@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Chocopoi.AvatarLib.Animations;
-using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;

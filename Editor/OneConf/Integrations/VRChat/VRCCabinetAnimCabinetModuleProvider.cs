@@ -17,6 +17,7 @@ using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Animations.VRChat;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingFramework.Wearable.Hooks;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.OneConf.Animations;
 using Chocopoi.DressingTools.OneConf.Cabinet;
@@ -36,7 +37,11 @@ namespace Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules
         [ExcludeFromCodeCoverage] public override string Identifier => VRCCabinetAnimCabinetModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("integrations.vrc.modules.cabinetAnim.friendlyName");
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
-        [ExcludeFromCodeCoverage] public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Generation).Build();
+        [ExcludeFromCodeCoverage]
+        public override BuildConstraint Constraint =>
+            InvokeAtStage(BuildStage.Generation)
+                .AfterPass<GroupDynamicsWearablePass>()
+                .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject) => jObject.ToObject<VRCCabinetAnimCabinetModuleConfig>();
 

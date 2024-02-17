@@ -16,6 +16,8 @@ using Chocopoi.DressingFramework.Wearable.Hooks;
 using Chocopoi.DressingTools.Menu.Passes;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.Optimization.Passes;
+
 
 #if DT_VRCSDK3A
 using Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules;
@@ -39,6 +41,7 @@ namespace Chocopoi.DressingTools
             RegisterBuildPass(new MoveRootWearableModuleProvider());
             RegisterBuildPass(new ComposeAndInstallMenuPass());
             RegisterBuildPass(new GroupDynamicsWearablePass());
+            RegisterBuildPass(new GCGameObjectsPass());
 
 #if DT_VRCSDK3A
             RegisterBuildPass(new VRCCabinetAnimCabinetModuleProvider());
