@@ -11,6 +11,7 @@
  */
 
 using System;
+using Chocopoi.DressingFramework;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Inspector.Views;
 using UnityEditor;
@@ -47,6 +48,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.DetailsParameterFieldsChanged += OnDetailsParameterFieldsChanged;
 
             _view.SubMenuObjectFieldsChanged += OnSubMenuObjectFieldsChanged;
+
+            EditorApplication.hierarchyChanged += OnHierachyChanged;
         }
 
         private void UnsubscribeEvents()
@@ -67,6 +70,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.DetailsParameterFieldsChanged -= OnDetailsParameterFieldsChanged;
 
             _view.SubMenuObjectFieldsChanged -= OnSubMenuObjectFieldsChanged;
+
+            EditorApplication.hierarchyChanged -= OnHierachyChanged;
+        }
+
+        private void UpdateAnimatorParameterTextFieldAvatarGameObject()
+        {
+            var avatarRoot = DKRuntimeUtils.GetAvatarRoot(_view.Target.gameObject);
+            _view.SetAnimatorParameterTextFieldAvatarGameObject(avatarRoot);
+        }
+
+        private void OnHierachyChanged()
+        {
+            UpdateAnimatorParameterTextFieldAvatarGameObject();
         }
 
         private void OnSubMenuObjectFieldsChanged()
@@ -270,6 +286,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             UpdateAxisLabels();
             UpdateParameters();
+            UpdateAnimatorParameterTextFieldAvatarGameObject();
             _view.Repaint();
         }
 

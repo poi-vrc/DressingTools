@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:dte="Chocopoi.DressingTools.UI.Elements">
     <ui:VisualElement style="flex-direction: row;" class="item-info-container">
         <ui:VisualElement class="item-info-left-panel">
             <ui:VisualElement name="item-icon" />
@@ -8,7 +8,7 @@
             <ui:Label text="---" name="item-info-name-label" />
             <ui:TextField picking-mode="Ignore" label="Name" name="item-info-name-field" />
             <ui:VisualElement name="item-info-item-type-popup-container" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.label.parameterName" name="item-info-parameter-name-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.label.parameterName" name="item-info-parameter-name-field" />
             <uie:FloatField picking-mode="Ignore" label="@inspector.menu.item.label.parameterValue" name="item-info-parameter-value-field" />
             <ui:VisualElement name="item-info-submenu-type-popup-container" />
             <ui:VisualElement name="item-info-dtsubmenu-objfield-container" />
@@ -42,17 +42,17 @@
         </ui:Box>
         <ui:Box class="details-panel" name="params-panel">
             <ui:Label text="@inspector.menu.item.details.label.parameters" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.horizontal" name="details-horizontal-parameter-text-field" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.vertical" name="details-vertical-parameter-text-field" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.up" name="details-up-parameter-text-field" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.right" name="details-right-parameter-text-field" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.down" name="details-down-parameter-text-field" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.left" name="details-left-parameter-text-field" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.parameters.textField.radial" name="details-radial-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.horizontal" name="details-horizontal-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.vertical" name="details-vertical-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.up" name="details-up-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.right" name="details-right-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.down" name="details-down-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.left" name="details-left-parameter-text-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.parameters.textField.radial" name="details-radial-parameter-text-field" />
         </ui:Box>
         <ui:Box class="details-panel">
             <ui:Label text="@inspector.menu.item.details.label.controllerOnOpen" />
-            <ui:TextField picking-mode="Ignore" label="@inspector.menu.item.details.controllerOnOpen.label.parameterName" name="details-parameter-name-field" />
+            <dte:AnimatorParameterTextField label="@inspector.menu.item.details.controllerOnOpen.label.parameterName" name="details-parameter-name-field" />
             <uie:FloatField picking-mode="Ignore" label="@inspector.menu.item.details.controllerOnOpen.label.parameterValue" name="details-parameter-value-field" />
         </ui:Box>
     </ui:VisualElement>

@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="dt-inspector-icon">
+        <Style src="AnimatorParametersViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:VisualElement name="helpbox-container" />
+    <ui:VisualElement name="configs-container">
+        <Style src="AnimatorParametersViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:Button name="add-config-btn" text="@inspector.animParams.btn.add">
+        <Style src="AnimatorParametersViewStyles.uss" />
+    </ui:Button>
+</ui:UXML>
