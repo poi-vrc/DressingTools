@@ -14,12 +14,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        unity-version: ['2019.4.31f1', '2021.3.33f1', '2022.3.6f1', '2023.2.2f1']
+        unity-version: ['2019.4.31f1', '2022.3.6f1', '2023.2.2f1']
         import-vrcsdk: [false, true]
         import-dynbone: [false, true]
         exclude:
-          - unity-version: "2021.3.33f1"
-            import-vrcsdk: true
           - unity-version: "2023.2.2f1"
             import-vrcsdk: true
     steps:
