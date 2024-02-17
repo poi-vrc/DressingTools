@@ -146,7 +146,7 @@ namespace Chocopoi.DressingTools.Animations.Fluent
         {
             var clip = new AnimationClip();
             _state.motion = clip;
-            _options.context.CreateUniqueAsset(clip, $"{_state.name}_{DKEditorUtils.RandomString(6)}.anim");
+            _options.context.CreateUniqueAsset(clip, _state.name);
 
             // register this clip to allow remapping later on
             var store = _options.context.Feature<AnimationStore>();

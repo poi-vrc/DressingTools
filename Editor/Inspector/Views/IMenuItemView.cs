@@ -72,6 +72,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu VRCSubMenu { get; set; }
 #endif
 
+        void SetAnimatorParameterTextFieldAvatarGameObject(GameObject avatarGameObject);
         void RepaintInfoParameterFields();
         void RepaintDetailsParameterFields();
     }

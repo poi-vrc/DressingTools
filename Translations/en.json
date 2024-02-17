@@ -385,5 +385,12 @@
     "inspector.smartcontrol.foldout.crossControlActions": "Cross-control Actions ({0})",
     "inspector.smartcontrol.crossControlActions.foldout.values": "Values ({0})",
     "inspector.smartcontrol.crossControlActions.values.setTheseValuesWhenEnabled": "Set these values when enabled",
-    "inspector.smartcontrol.crossControlActions.values.setTheseValuesWhenDisabled": "Set these values when disabled"
+    "inspector.smartcontrol.crossControlActions.values.setTheseValuesWhenDisabled": "Set these values when disabled",
+    "inspector.animParams.btn.add": "+ Add",
+    "inspector.animParams.helpbox.description": "This component is for overriding network synced, saved etc settings created by DressingTools. They are usually automatically scanned and generated and you do not need to explicitly specify them.",
+    "inspector.animParams.label.parameter": "Parameter",
+    "inspector.animParams.defaultValue": "Default Value",
+    "inspector.animParams.helpbox.noCompatibleParameterFound": "No compatible parameter with such name is found from any animator layers. It has to be either Int, Float or Bool type.",
+    "inspector.animParams.toggle.networkSynced": "Network Synced",
+    "inspector.animParams.toggle.saved": "Saved"
 }

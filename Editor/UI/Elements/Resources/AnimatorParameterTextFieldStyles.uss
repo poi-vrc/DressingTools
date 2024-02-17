@@ -1,0 +1,19 @@
+.parameter-field-with-popup {
+    flex-direction: row;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    flex-grow: 1;
+}
+
+.parameter-field-with-popup > Label {
+    padding-left: 1px;
+    padding-right: 2px;
+    padding-top: 2px;
+    padding-bottom: 0px;
+}
+
+.parameter-field-with-popup > TextField {
+    flex-grow: 1;
+}

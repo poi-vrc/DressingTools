@@ -16,6 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.UI.Elements;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor.UIElements;
@@ -82,19 +83,19 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private PopupField<string> _subMenuTypePopup;
         private ObjectField _dtSubMenuObjField;
         private ObjectField _vrcSubMenuObjField;
-        private TextField _itemInfoParameterNameField;
+        private AnimatorParameterTextField _itemInfoParameterNameField;
         private FloatField _itemInfoParameterValueField;
-        private TextField _itemDetailsParameterNameField;
+        private AnimatorParameterTextField _itemDetailsParameterNameField;
         private FloatField _itemDetailsParameterValueField;
-        private TextField _itemDetailsHorizontalParameterField;
-        private TextField _itemDetailsVerticalParameterField;
+        private AnimatorParameterTextField _itemDetailsHorizontalParameterField;
+        private AnimatorParameterTextField _itemDetailsVerticalParameterField;
         private VisualElement _axisPanel;
         private VisualElement _paramsPanel;
-        private TextField _itemDetailsUpParameterField;
-        private TextField _itemDetailsRightParameterField;
-        private TextField _itemDetailsDownParameterField;
-        private TextField _itemDetailsLeftParameterField;
-        private TextField _itemDetailsRadialParameterField;
+        private AnimatorParameterTextField _itemDetailsUpParameterField;
+        private AnimatorParameterTextField _itemDetailsRightParameterField;
+        private AnimatorParameterTextField _itemDetailsDownParameterField;
+        private AnimatorParameterTextField _itemDetailsLeftParameterField;
+        private AnimatorParameterTextField _itemDetailsRadialParameterField;
         private VisualElement _axisUpIcon;
         private ObjectField _axisUpIconObjField;
         private TextField _axisUpLabelField;
@@ -158,7 +159,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             itemTypePopupContainer.Add(_itemTypePopup);
 
-            _itemInfoParameterNameField = Q<TextField>("item-info-parameter-name-field").First();
+            _itemInfoParameterNameField = Q<AnimatorParameterTextField>("item-info-parameter-name-field").First();
             _itemInfoParameterValueField = Q<FloatField>("item-info-parameter-value-field").First();
             _itemInfoParameterNameField.RegisterValueChangedCallback(evt =>
             {
@@ -217,7 +218,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemDetailsContainer = Q<VisualElement>("details-container").First();
             BindFoldoutHeaderAndContainerWithPrefix("details");
 
-            _itemDetailsParameterNameField = Q<TextField>("details-parameter-name-field").First();
+            _itemDetailsParameterNameField = Q<AnimatorParameterTextField>("details-parameter-name-field").First();
             _itemDetailsParameterValueField = Q<FloatField>("details-parameter-value-field").First();
             _itemDetailsParameterNameField.RegisterValueChangedCallback(evt =>
             {
@@ -230,24 +231,24 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 DetailsParameterFieldsChanged?.Invoke();
             });
 
-            _itemDetailsHorizontalParameterField = Q<TextField>("details-horizontal-parameter-text-field").First();
-            _itemDetailsVerticalParameterField = Q<TextField>("details-vertical-parameter-text-field").First();
+            _itemDetailsHorizontalParameterField = Q<AnimatorParameterTextField>("details-horizontal-parameter-text-field").First();
+            _itemDetailsVerticalParameterField = Q<AnimatorParameterTextField>("details-vertical-parameter-text-field").First();
             _itemDetailsHorizontalParameterField.RegisterValueChangedCallback(evt => TwoAxisControllerChanged?.Invoke());
             _itemDetailsVerticalParameterField.RegisterValueChangedCallback(evt => TwoAxisControllerChanged?.Invoke());
 
             _axisPanel = Q<VisualElement>("axis-panel").First();
             _paramsPanel = Q<VisualElement>("params-panel").First();
 
-            _itemDetailsUpParameterField = Q<TextField>("details-up-parameter-text-field").First();
-            _itemDetailsRightParameterField = Q<TextField>("details-right-parameter-text-field").First();
-            _itemDetailsDownParameterField = Q<TextField>("details-down-parameter-text-field").First();
-            _itemDetailsLeftParameterField = Q<TextField>("details-left-parameter-text-field").First();
+            _itemDetailsUpParameterField = Q<AnimatorParameterTextField>("details-up-parameter-text-field").First();
+            _itemDetailsRightParameterField = Q<AnimatorParameterTextField>("details-right-parameter-text-field").First();
+            _itemDetailsDownParameterField = Q<AnimatorParameterTextField>("details-down-parameter-text-field").First();
+            _itemDetailsLeftParameterField = Q<AnimatorParameterTextField>("details-left-parameter-text-field").First();
             _itemDetailsUpParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
             _itemDetailsRightParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
             _itemDetailsDownParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
             _itemDetailsLeftParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
 
-            _itemDetailsRadialParameterField = Q<TextField>("details-radial-parameter-text-field").First();
+            _itemDetailsRadialParameterField = Q<AnimatorParameterTextField>("details-radial-parameter-text-field").First();
             _itemDetailsRadialParameterField.RegisterValueChangedCallback(evt => RadialControllerChanged?.Invoke());
 
             InitAxisLabels();
@@ -465,6 +466,19 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             _itemDetailsParameterNameField.value = ParameterName;
             _itemDetailsParameterValueField.value = ParameterValue;
+        }
+
+        public void SetAnimatorParameterTextFieldAvatarGameObject(GameObject avatarGameObject)
+        {
+            _itemInfoParameterNameField.avatarGameObject = avatarGameObject;
+            _itemDetailsHorizontalParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsVerticalParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsUpParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsRightParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsDownParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsLeftParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsRadialParameterField.avatarGameObject = avatarGameObject;
+            _itemDetailsParameterNameField.avatarGameObject = avatarGameObject;
         }
 
         public override void Repaint()
