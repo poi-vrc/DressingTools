@@ -345,6 +345,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
                 _propGpsFoldout.style.display = DisplayStyle.Flex;
                 _propGpsContainer.style.display = _propGpsFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+
+                _crossCtrlFoldout.style.display = DisplayStyle.Flex;
+                _crossCtrlContainer.style.display = _crossCtrlFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             }
             else if (ControlType == 1)
             {
@@ -360,6 +363,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
                 _propGpsFoldout.style.display = DisplayStyle.Flex;
                 _propGpsContainer.style.display = _propGpsFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+
+                _crossCtrlFoldout.style.display = DisplayStyle.None;
+                _crossCtrlContainer.style.display = DisplayStyle.None;
             }
         }
 
