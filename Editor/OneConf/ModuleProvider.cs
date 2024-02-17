@@ -10,12 +10,8 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.ObjectModel;
-using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
-using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Serialization;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -47,49 +43,5 @@ namespace Chocopoi.DressingTools.OneConf
         /// </summary>
         /// <returns>Empty module config</returns>
         public abstract IModuleConfig NewModuleConfig();
-    }
-
-    internal abstract class CabinetModuleProvider : ModuleProvider
-    {
-        /// <summary>
-        /// Invoke this hook
-        /// </summary>
-        /// <param name="cabCtx">Apply cabinet context</param>
-        /// <param name="modules">Associated cabinet modules</param>
-        /// <param name="isPreview">Whether this is a preview apply</param>
-        /// <returns>Return false to stop continuing execution</returns>
-        public abstract bool Invoke(CabinetContext cabCtx, ReadOnlyCollection<CabinetModule> modules, bool isPreview);
-
-        public override bool Invoke(Context ctx)
-        {
-            var cabCtx = ctx.Extra<CabinetContext>();
-            return Invoke(cabCtx, new ReadOnlyCollection<CabinetModule>(cabCtx.cabinetConfig.FindModules(Identifier)), false);
-        }
-    }
-
-    internal abstract class WearableModuleProvider : ModuleProvider
-    {
-        /// <summary>
-        /// Invoke this hook
-        /// </summary>
-        /// <param name="cabCtx">Apply cabinet context</param>
-        /// <param name="wearCtx">Apply wearable context</param>
-        /// <param name="modules">Associated wearable modules</param>
-        /// <param name="isPreview">Whether this is a preview apply</param>
-        /// <returns>Return false to stop continuing execution</returns>
-        public abstract bool Invoke(CabinetContext cabCtx, WearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview);
-
-        public override bool Invoke(Context ctx)
-        {
-            var cabCtx = ctx.Extra<CabinetContext>();
-            foreach (var wearCtx in cabCtx.wearableContexts.Values)
-            {
-                if (!Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(wearCtx.wearableConfig.FindModules(Identifier)), false))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
     }
 }
