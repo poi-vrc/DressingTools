@@ -26,11 +26,11 @@ https://github.com/poi-vrc/DressingTools/assets/77053052/6cc4f998-321e-4b4b-a99f
 
 [[Play in YouTube]](https://youtu.be/WKYKn1aTLwg)
 
-## API Stability / APIにつて
+## API Stability / APIについて
 
-There is no guarantee on API stability that the semantic versioning has no direct relationship with it currently. A minor update could include breaking changes.
+There is no guarantee on API stability. A minor update could include breaking changes.
 
-現在、SemVerがAPIと関係がないので、API安定性の保証はありません。MinorまたはPatch、破壊的なAPI変更を含む可能性があります。
+現在、API安定性の保証はありません。Minorアップデートに破壊的なAPI変更を含む可能性があります。
 
 ## Licensing
 https://dressingtools.chocopoi.com/docs/extending-dt/licensing
