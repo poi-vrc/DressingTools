@@ -49,7 +49,7 @@
     <ui:VisualElement name="prop-gps-container" class="foldout-container">
         <Style src="SmartControlViewStyles.uss" />
         <ui:VisualElement name="prop-gps-list-container" />
-        <ui:Button text="+ Add" name="prop-gp-add-btn" />
+        <ui:Button text="@inspector.smartcontrol.propertyGroups.btn.add" name="prop-gp-add-btn" />
     </ui:VisualElement>
     <ui:Foldout text="Cross-control Actions (n)" name="cross-ctrl-foldout" class="foldout-header">
         <Style src="SmartControlViewStyles.uss" />

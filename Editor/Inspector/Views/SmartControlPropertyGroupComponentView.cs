@@ -213,7 +213,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             else
             {
                 supported = false;
-                var rightLabel = new Label(t._("inspector.smartcontrol.propertyGroup.component.textField.search"));
+                var rightLabel = new Label(t._("inspector.smartcontrol.propertyGroup.component.label.supportSoon"));
                 rightLabel.AddToClassList("right");
                 field = rightLabel;
             }
