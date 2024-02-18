@@ -127,7 +127,7 @@ namespace Chocopoi.DressingTools.Animations
         {
             if (HasCrossControlCycle(ctrl))
             {
-                Debug.LogError("Cross control cycle detected, skipping generation of this control");
+                _options.context.Report.LogError("SmartControlComposer", "Cross control cycle detected, skipping generation of this control");
                 return;
             }
 
