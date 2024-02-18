@@ -82,6 +82,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnHierachyChanged()
         {
+            if (_view.Target == null)
+            {
+                return;
+            }
             UpdateAnimatorParameterTextFieldAvatarGameObject();
         }
 
