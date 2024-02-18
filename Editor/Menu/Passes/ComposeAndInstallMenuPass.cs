@@ -253,19 +253,18 @@ namespace Chocopoi.DressingTools.Menu.Passes
             {
                 IMenuRepository menuRepo;
 
-#if DT_VRCSDK3A
-                if (miComp.VRCSourceMenu != null)
-                {
-                    // context is not provided because we just want to look into it
-                    menuRepo = new VRCMenuWrapper(miComp.VRCSourceMenu);
-                }
-                else
-#endif
                 if (miComp.TryGetComponent<DTMenuGroup>(out var menuGroup))
                 {
                     // convert them into API form
                     menuRepo = ConvertToMenuGroup(menuGroup, new Stack<DTMenuGroup>());
                 }
+#if DT_VRCSDK3A
+                else if (miComp.VRCSourceMenu != null)
+                {
+                    // context is not provided because we just want to look into it
+                    menuRepo = new VRCMenuWrapper(miComp.VRCSourceMenu);
+                }
+#endif
                 else
                 {
                     continue;
