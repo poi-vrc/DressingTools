@@ -377,7 +377,9 @@ namespace Chocopoi.DressingTools.Animations
                 // }
 
                 GenerateParameterNameIfNeeded(anotherCtrl);
-                state.AddBehaviour(MakeVRCAvatarParameterDriver(anotherCtrl.AnimatorConfig.ParameterName, value.Value));
+                var driver = MakeVRCAvatarParameterDriver(anotherCtrl.AnimatorConfig.ParameterName, value.Value);
+                AssetDatabase.AddObjectToAsset(driver, controller);
+                state.AddBehaviour(driver);
             }
         }
 #endif
