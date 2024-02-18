@@ -309,7 +309,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             // TODO: magic number
             _dtSubMenuObjField.style.display = Type == 2 && SubMenuType == 1 ? DisplayStyle.Flex : DisplayStyle.None;
+#if DT_VRCSDK3A
             _vrcSubMenuObjField.style.display = Type == 2 && SubMenuType == 2 ? DisplayStyle.Flex : DisplayStyle.None;
+#endif
         }
 
         private void UpdateItemDisplay()

@@ -16,6 +16,7 @@
         </ui:Box>
         <ui:Box name="anim-param-driver-container">
             <ui:Label text="@inspector.smartcontrol.driver.animatorParameter" />
+            <ui:VisualElement name="anim-param-helpbox-container" />
             <ui:TextField picking-mode="Ignore" label="@inspector.smartcontrol.driver.animatorParameter.textField.parameterName" binding-path="m_AnimatorConfig.m_ParameterName" />
             <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.defaultValue" name="anim-param-defval-bool-toggle" value="false" />
             <ui:VisualElement name="anim-param-defval-float-container" style="flex-direction: row;">

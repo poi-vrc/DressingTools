@@ -13,6 +13,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Menu;
+using Chocopoi.DressingTools.Inspector.Views;
 using Chocopoi.DressingTools.Localization;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -27,36 +28,23 @@ namespace Chocopoi.DressingTools.Inspector
     internal class DTMenuInstallEditor : Editor
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
+        private MenuInstallView _view;
 
         public override VisualElement CreateInspectorGUI()
         {
-            var rootElement = new VisualElement();
+            return _view;
+        }
 
-            var iconStyleSheet = Resources.Load<StyleSheet>("DTIconStyles");
-            if (!rootElement.styleSheets.Contains(iconStyleSheet))
-            {
-                rootElement.styleSheets.Add(iconStyleSheet);
-            }
+        public void OnEnable()
+        {
+            _view = new MenuInstallView() { Target = (DTMenuInstall)target };
+            _view.OnEnable();
+        }
 
-            var icon = new VisualElement();
-            icon.AddToClassList("dt-inspector-icon");
-            rootElement.Add(icon);
-
-#if DT_VRCSDK3A
-            var vrcSourceMenuObjField = new ObjectField(t._("inspector.menu.install.objectField.sourceVrcMenu"))
-            {
-                objectType = typeof(VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu),
-                bindingPath = "m_VRCSourceMenu"
-            };
-            rootElement.Add(vrcSourceMenuObjField);
-#endif
-            var installPathField = new TextField(t._("inspector.menu.install.textField.installPath"))
-            {
-                bindingPath = "m_InstallPath"
-            };
-            rootElement.Add(installPathField);
-
-            return rootElement;
+        public void OnDisable()
+        {
+            _view?.OnDisable();
+            _view = null;
         }
     }
 }
