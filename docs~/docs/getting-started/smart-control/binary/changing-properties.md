@@ -6,7 +6,7 @@ sidebar_position: 3
 
 ## Guide
 
-In this guide, we will make a toggle in the menu to make Moe's `Big Ear` blendshape changes from 0 to 100.
+In this guide, we will make a toggle in the menu to make Moe's `Big Ear` blendshape changes to 100.
 
 ### 0. Create a menu group and a smart control item
 
@@ -39,6 +39,8 @@ For more details about property groups, [check here](/docs/getting-started/smart
 ### 4. Add the blendshape property
 
 Find the `SkinnedMeshRenderer` component and click on `Blendshapes`. And find the `Big ear` blendshape and add it.
+
+Click the `Blendshapes` button again to hide the results.
 
 ![Pick Object](/img/smartcontrol-chg-prop-4.PNG)
 

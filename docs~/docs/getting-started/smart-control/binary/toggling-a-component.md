@@ -28,7 +28,7 @@ The dropdown box specifies what component to be toggled. In this case, we want i
 
 The checkbox next to the object field specifies the state when this control is active. In this case, it means the object will be turned off.
 
-![Toggle GameObject](/img/smartcontrol-toggle-comp-2.PNG)
+![Toggle Component](/img/smartcontrol-toggle-comp-2.PNG)
 
 ### 3. Done!
 

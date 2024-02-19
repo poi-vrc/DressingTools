@@ -13,7 +13,7 @@ There are currently two systems for automatically creating animations and menus 
 [![Smart Control](/img/where-to-start-smartcontrol.PNG)](/img/where-to-start-smartcontrol.PNG)
 
 :::caution
-Smart controls **do not** setup your outfit! You have to either use [Quick Setup Clothes](http://localhost:3000/docs/getting-started/cabinet/quick-setup-clothes) to **setup without cabinet animations**, or alternative tools to setup up armature merging etc.
+Smart controls **do not** setup your outfit! You have to either use [Quick Setup Clothes](/docs/getting-started/cabinet/quick-setup-clothes) to **setup without cabinet animations**, or alternative tools to setup up armature merging etc.
 :::
 
 Generic component for creating animations to toggle objects or components on and off, or changing blendshape, component, shader properties etc.
