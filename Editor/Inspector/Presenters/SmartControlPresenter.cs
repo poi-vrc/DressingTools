@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Inspector.Views;
@@ -28,6 +29,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public SmartControlPresenter(ISmartControlView view)
         {
             _view = view;
+
+            // TODO: set this from the editor level and move to a common place
+            var prefs = PreferencesUtility.GetPreferences();
+            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
+
             SubscribeEvents();
         }
 
