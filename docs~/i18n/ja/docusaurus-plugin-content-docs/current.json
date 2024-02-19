@@ -4,39 +4,75 @@
     "description": "The label for version current"
   },
   "sidebar.tutorialSidebar.category.Getting Started": {
-    "message": "はじめに"
+    "message": "はじめに",
+    "description": "The label for category Getting Started in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Getting Started.link.generated-index.description": {
-    "message": "数分でDressingToolsを使い始めることができる。"
+    "message": "数分でDressingToolsを使い始めることができる。",
+    "description": "The generated-index page description for category Getting Started in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Guides": {
-    "message": "ガイド"
+    "message": "ガイド",
+    "description": "The label for category Guides in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Guides.link.generated-index.description": {
-    "message": "DressingToolsの機能ガイド"
-  },
-  "sidebar.tutorialSidebar.category.For Creators": {
-    "message": "クリエイター向け"
-  },
-  "sidebar.tutorialSidebar.category.For Creators.link.generated-index.description": {
-    "message": "クリエイター向けの詳細"
+    "message": "DressingToolsの機能ガイド",
+    "description": "The generated-index page description for category Guides in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Technical Design": {
-    "message": "技術設計"
+    "message": "技術設計",
+    "description": "The label for category Technical Design in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Technical Design.link.generated-index.description": {
-    "message": "DressingToolsの技術設計"
+    "message": "DressingToolsの技術設計",
+    "description": "The generated-index page description for category Technical Design in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Extending DressingTools": {
-    "message": "拡張ドレッシングツール"
+    "message": "拡張ドレッシングツール",
+    "description": "The label for category Extending DressingTools in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Extending DressingTools.link.generated-index.description": {
-    "message": "拡張ドレッシングツールの詳細"
+    "message": "拡張ドレッシングツールの詳細",
+    "description": "The generated-index page description for category Extending DressingTools in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Contributing": {
-    "message": "貢献"
+    "message": "貢献",
+    "description": "The label for category Contributing in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.Contributing.link.generated-index.description": {
-    "message": "貢献の詳細"
+    "message": "貢献の詳細",
+    "description": "The generated-index page description for category Contributing in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Smart Control": {
+    "message": "スマートコントロール",
+    "description": "The label for category Smart Control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Smart Control.link.generated-index.description": {
+    "message": "スマートコントロールシステムを始めましょう。",
+    "description": "The generated-index page description for category Smart Control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Binary Control": {
+    "message": "二値",
+    "description": "The label for category Binary Control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Binary Control.link.generated-index.description": {
+    "message": "二値",
+    "description": "The generated-index page description for category Binary Control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Motion Time Control": {
+    "message": "モーションタイム",
+    "description": "The label for category Motion Time Control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Motion Time Control.link.generated-index.description": {
+    "message": "モーションタイム",
+    "description": "The generated-index page description for category Motion Time Control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Cabinet": {
+    "message": "キャビネット",
+    "description": "The label for category Cabinet in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Cabinet.link.generated-index.description": {
+    "message": "キャビネットシステムを始めましょう。",
+    "description": "The generated-index page description for category Cabinet in sidebar tutorialSidebar"
   }
 }
