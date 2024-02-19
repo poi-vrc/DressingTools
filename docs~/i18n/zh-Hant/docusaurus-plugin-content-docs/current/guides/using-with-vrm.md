@@ -47,7 +47,7 @@ Unity 套件管理器中將顯示以下套件：（liltoon 是可選的）
 
 ### 5. 穿你的衣服
 
-像先前指南中所寫的一樣，[建立一個衣櫃](/docs/getting-started/setup-cabinet)和[穿衣服](/docs/getting-started/quick-setup-clothes)。
+像先前指南中所寫的一樣，[建立一個衣櫃](/docs/getting-started/cabinet/setup-cabinet)和[穿衣服](/docs/getting-started/cabinet/quick-setup-clothes)。
 
 :::info
 衣櫃動畫模組不支援 VRM，不會產生任何內容。

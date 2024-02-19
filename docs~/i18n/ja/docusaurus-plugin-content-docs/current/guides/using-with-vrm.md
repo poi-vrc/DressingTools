@@ -46,7 +46,7 @@ Hierarchy 検索を利用して、インポートされていないスクリプ�
 
 ### 5. 着換える
 
-[キャビネットの作成](/docs/getting-started/setup-cabinet)と[服の着せ替え](/docs/getting-started/quick-setup-clothes)は、これまでのガイドに書かれているように、いつも通りに従ってください。
+[キャビネットの作成](/docs/getting-started/cabinet/setup-cabinet)と[服の着せ替え](/docs/getting-started/cabinet/quick-setup-clothes)は、これまでのガイドに書かれているように、いつも通りに従ってください。
 
 :::info
 キャビネットアニメーション モジュールはVRMではサポートされていないから、何も生成されません。

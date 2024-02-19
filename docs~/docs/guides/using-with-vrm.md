@@ -48,7 +48,7 @@ You can make use of the hierarchy search and delete all the missing scripts:
 
 ### 5. Dress your clothes
 
-[Create a cabinet](/docs/getting-started/setup-cabinet) and [dress your clothes](/docs/getting-started/quick-setup-clothes) as usual as written in the previous guides.
+[Create a cabinet](/docs/getting-started/cabinet/setup-cabinet) and [dress your clothes](/docs/getting-started/cabinet/quick-setup-clothes) as usual as written in the previous guides.
 
 :::info
 Cabinet animation module is not supported in VRM and nothing will be generated.

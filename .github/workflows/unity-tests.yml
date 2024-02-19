@@ -3,7 +3,7 @@ name: Unity Tests
 on:
   push:
     paths:
-      - "**.cs"
+      - "**/*.cs"
       - ".github/unity-project/**/*"
       - ".github/workflows/unity-tests.yml"
 
