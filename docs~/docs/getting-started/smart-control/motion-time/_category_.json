@@ -1,0 +1,8 @@
+{
+  "label": "Motion Time Control",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Motion time control."
+  }
+}
