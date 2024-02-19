@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Chocopoi.DressingTools.Components.Animations;
@@ -42,6 +43,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AddObjectToggle += OnAddObjectToggle;
             _view.RemoveObjectToggle += OnRemoveObjectToggle;
             _view.ChangeObjectToggle += OnChangeObjectToggle;
+            _view.ChangeObjectToggleComponentType += OnChangeObjectToggleComponentType;
 
             _view.AddNewPropertyGroup += OnAddNewPropertyGroup;
             _view.RemovePropertyGroup += OnRemovePropertyGroup;
@@ -70,6 +72,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AddObjectToggle -= OnAddObjectToggle;
             _view.RemoveObjectToggle -= OnRemoveObjectToggle;
             _view.ChangeObjectToggle -= OnChangeObjectToggle;
+            _view.ChangeObjectToggleComponentType -= OnChangeObjectToggleComponentType;
 
             _view.AddNewPropertyGroup -= OnAddNewPropertyGroup;
             _view.RemovePropertyGroup -= OnRemovePropertyGroup;
@@ -183,25 +186,33 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
-        private void OnChangeObjectToggle(SmartControlObjectToggleValue value)
+        private void OnChangeObjectToggle(int idx)
         {
-            var index = _view.ObjectToggles.IndexOf(value);
-            if (index != -1)
-            {
-                var objToggle = _view.Target.ObjectToggles[index];
-                objToggle.Target = value.target;
-                objToggle.Enabled = value.enabled;
-                _view.Repaint();
-            }
+            var value = _view.ObjectToggles[idx];
+            var objToggle = _view.Target.ObjectToggles[idx];
+            objToggle.Target = value.target;
+            objToggle.Enabled = value.enabled;
+            GetSameObjectComponentTypes(value.target, value.sameObjectComponentTypes);
+            _view.Repaint();
         }
 
-        private void OnRemoveObjectToggle(SmartControlObjectToggleValue value)
+        private void OnRemoveObjectToggle(int idx)
         {
-            var index = _view.ObjectToggles.IndexOf(value);
-            if (index != -1)
+            var value = _view.ObjectToggles[idx];
+            _view.ObjectToggles.Remove(value);
+            _view.Target.ObjectToggles.RemoveAt(idx);
+            _view.Repaint();
+        }
+
+        private void OnChangeObjectToggleComponentType(int idx, Type type)
+        {
+            var value = _view.ObjectToggles[idx];
+            var objToggle = _view.Target.ObjectToggles[idx];
+
+            if (value.target != null && value.target.TryGetComponent(type, out var comp))
             {
-                _view.ObjectToggles.Remove(value);
-                _view.Target.ObjectToggles.RemoveAt(index);
+                value.target = comp;
+                objToggle.Target = comp;
                 _view.Repaint();
             }
         }
@@ -298,15 +309,37 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
+        private static void GetSameObjectComponentTypes(Component go, List<Type> types)
+        {
+            types.Clear();
+            if (go == null)
+            {
+                return;
+            }
+
+            var comps = go.GetComponents<Component>();
+            foreach (var comp in comps)
+            {
+                var type = comp.GetType();
+                if (!types.Contains(type))
+                {
+                    types.Add(comp.GetType());
+                }
+            }
+        }
+
         private void UpdateObjectToggles()
         {
             _view.ObjectToggles.Clear();
             foreach (var objToggle in _view.Target.ObjectToggles)
             {
+                var types = new List<Type>();
+                GetSameObjectComponentTypes(objToggle.Target, types);
                 _view.ObjectToggles.Add(new SmartControlObjectToggleValue()
                 {
                     target = objToggle.Target,
-                    enabled = objToggle.Enabled
+                    enabled = objToggle.Enabled,
+                    sameObjectComponentTypes = types,
                 });
             }
         }

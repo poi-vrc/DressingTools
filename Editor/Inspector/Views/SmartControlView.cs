@@ -37,8 +37,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public event Action<Component> AddObjectToggle;
         public event Action<DTSmartControl> AddCrossControlValueOnEnabled;
         public event Action<DTSmartControl> AddCrossControlValueOnDisabled;
-        public event Action<SmartControlObjectToggleValue> ChangeObjectToggle;
-        public event Action<SmartControlObjectToggleValue> RemoveObjectToggle;
+        public event Action<int> ChangeObjectToggle;
+        public event Action<int> RemoveObjectToggle;
+        public event Action<int, Type> ChangeObjectToggleComponentType;
         public event Action<SmartControlCrossControlValue> ChangeCrossControlValueOnEnabled;
         public event Action<SmartControlCrossControlValue> ChangeCrossControlValueOnDisabled;
         public event Action<SmartControlCrossControlValue> RemoveCrossControlValueOnEnabled;
@@ -379,8 +380,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
             _objectTogglesListContainer.Clear();
             var copy = new List<SmartControlObjectToggleValue>(ObjectToggles);
-            foreach (var objToggle in copy)
+            for (var i = 0; i < copy.Count; i++)
             {
+                var myIdx = i;
+                var objToggle = copy[i];
+
                 var element = new VisualElement();
                 element.AddToClassList("object-field-entry");
 
@@ -393,9 +397,30 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 objField.RegisterValueChangedCallback((evt) =>
                 {
                     objToggle.target = (Component)objField.value;
-                    ChangeObjectToggle?.Invoke(objToggle);
+                    ChangeObjectToggle?.Invoke(myIdx);
                 });
                 element.Add(objField);
+
+                if (objToggle.sameObjectComponentTypes.Count > 0)
+                {
+                    var compChoices = new List<string>();
+                    var compChoiceIndex = 0;
+                    for (var j = 0; j < objToggle.sameObjectComponentTypes.Count; j++)
+                    {
+                        var compType = objToggle.sameObjectComponentTypes[j];
+                        if (objToggle.target.GetType().Name == compType.Name)
+                        {
+                            compChoiceIndex = j;
+                        }
+                        compChoices.Add(compType.Name);
+                    }
+                    var typePopupField = new PopupField<string>(compChoices, compChoiceIndex);
+                    element.Add(typePopupField);
+                    typePopupField.RegisterValueChangedCallback(evt =>
+                    {
+                        ChangeObjectToggleComponentType?.Invoke(myIdx, objToggle.sameObjectComponentTypes[typePopupField.index]);
+                    });
+                }
 
                 var toggle = new Toggle()
                 {
@@ -404,7 +429,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 toggle.RegisterValueChangedCallback((evt) =>
                 {
                     objToggle.enabled = toggle.value;
-                    ChangeObjectToggle?.Invoke(objToggle);
+                    ChangeObjectToggle?.Invoke(myIdx);
                 });
                 element.Add(toggle);
 
@@ -412,7 +437,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 {
                     text = "x"
                 };
-                removeBtn.clicked += () => RemoveObjectToggle?.Invoke(objToggle);
+                removeBtn.clicked += () => RemoveObjectToggle?.Invoke(myIdx);
                 element.Add(removeBtn);
 
                 _objectTogglesListContainer.Add(element);
