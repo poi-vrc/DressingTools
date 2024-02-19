@@ -14,10 +14,12 @@ using System.Collections.Generic;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Detail.DK.Passes;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
+using Chocopoi.DressingFramework.Logging;
 using Chocopoi.DressingFramework.Menu;
 using Chocopoi.DressingTools.Components.Menu;
 using UnityEngine;
 using MenuItem = Chocopoi.DressingFramework.Menu.MenuItem;
+
 
 #if DT_VRCSDK3A
 using Chocopoi.DressingFramework.Menu.VRChat;
@@ -74,7 +76,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
             return item;
         }
 
-        private static MenuItem ConvertToSubMenuItem(DTMenuItem compItem, Stack<DTMenuGroup> selfRefCheckStack)
+        private static MenuItem ConvertToSubMenuItem(Report report, DTMenuItem compItem, Stack<DTMenuGroup> selfRefCheckStack)
         {
             if (compItem.SubMenuType == DTMenuItem.ItemSubMenuType.Children)
             {
@@ -82,7 +84,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 {
                     Name = compItem.Name,
                     Icon = compItem.Icon,
-                    SubMenu = ConvertChildrenToMenuGroup(compItem.transform, selfRefCheckStack),
+                    SubMenu = ConvertChildrenToMenuGroup(report, compItem.transform, selfRefCheckStack),
                     ControllerOnOpen = GetRespectiveController(compItem.Controller)
                 };
             }
@@ -91,7 +93,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 if (selfRefCheckStack.Contains(compItem.DTSubMenu))
                 {
                     // self-referencing detected, aborting
-                    Debug.LogError("Self referencing sub-menu item detected, aborting");
+                    report.LogError("ComposeAndInstallMenuPass", "Self referencing sub-menu item detected, aborting");
                     return null;
                 }
 
@@ -100,7 +102,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 {
                     Name = compItem.Name,
                     Icon = compItem.Icon,
-                    SubMenu = compItem.DTSubMenu != null ? ConvertToMenuGroup(compItem.DTSubMenu, selfRefCheckStack) : null,
+                    SubMenu = compItem.DTSubMenu != null ? ConvertToMenuGroup(report, compItem.DTSubMenu, selfRefCheckStack) : null,
                     ControllerOnOpen = GetRespectiveController(compItem.Controller)
                 };
             }
@@ -191,7 +193,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
             return item;
         }
 
-        private static MenuItem ConvertToMenuItem(DTMenuItem compItem, Stack<DTMenuGroup> selfRefCheckStack)
+        private static MenuItem ConvertToMenuItem(Report report, DTMenuItem compItem, Stack<DTMenuGroup> selfRefCheckStack)
         {
             MenuItem item = null;
 
@@ -204,7 +206,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
                     item = ConvertToToggleItem(compItem);
                     break;
                 case DTMenuItem.ItemType.SubMenu:
-                    item = ConvertToSubMenuItem(compItem, selfRefCheckStack);
+                    item = ConvertToSubMenuItem(report, compItem, selfRefCheckStack);
                     break;
                 case DTMenuItem.ItemType.TwoAxis:
                     item = ConvertToTwoAxisItem(compItem);
@@ -220,7 +222,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
             return item;
         }
 
-        private static MenuGroup ConvertChildrenToMenuGroup(Transform parent, Stack<DTMenuGroup> selfRefCheckStack)
+        private static MenuGroup ConvertChildrenToMenuGroup(Report report, Transform parent, Stack<DTMenuGroup> selfRefCheckStack)
         {
             var menuGroup = new MenuGroup();
             for (var i = 0; i < parent.transform.childCount; i++)
@@ -228,18 +230,18 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 var child = parent.transform.GetChild(i);
                 if (child.TryGetComponent<DTMenuItem>(out var compItem))
                 {
-                    var menuItem = ConvertToMenuItem(compItem, selfRefCheckStack);
+                    var menuItem = ConvertToMenuItem(report, compItem, selfRefCheckStack);
                     menuGroup.Add(menuItem);
                 }
             }
             return menuGroup;
         }
 
-        private static MenuGroup ConvertToMenuGroup(DTMenuGroup mgComp, Stack<DTMenuGroup> selfRefCheckStack)
+        private static MenuGroup ConvertToMenuGroup(Report report, DTMenuGroup mgComp, Stack<DTMenuGroup> selfRefCheckStack)
         {
             // push this component into the stack for future checks
             selfRefCheckStack.Push(mgComp);
-            var menuGroup = ConvertChildrenToMenuGroup(mgComp.transform, selfRefCheckStack);
+            var menuGroup = ConvertChildrenToMenuGroup(report, mgComp.transform, selfRefCheckStack);
             selfRefCheckStack.Pop();
             return menuGroup;
         }
@@ -256,7 +258,7 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 if (miComp.TryGetComponent<DTMenuGroup>(out var menuGroup))
                 {
                     // convert them into API form
-                    menuRepo = ConvertToMenuGroup(menuGroup, new Stack<DTMenuGroup>());
+                    menuRepo = ConvertToMenuGroup(ctx.Report, menuGroup, new Stack<DTMenuGroup>());
                 }
 #if DT_VRCSDK3A
                 else if (miComp.VRCSourceMenu != null)
