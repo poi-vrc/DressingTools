@@ -21,6 +21,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
     internal class SmartControlObjectToggleValue
     {
         public Component target;
+        public List<Type> sameObjectComponentTypes;
         public bool enabled;
     }
 
@@ -37,8 +38,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
         event Action<Component> AddObjectToggle;
         event Action<DTSmartControl> AddCrossControlValueOnEnabled;
         event Action<DTSmartControl> AddCrossControlValueOnDisabled;
-        event Action<SmartControlObjectToggleValue> ChangeObjectToggle;
-        event Action<SmartControlObjectToggleValue> RemoveObjectToggle;
+        event Action<int> ChangeObjectToggle;
+        event Action<int> RemoveObjectToggle;
+        event Action<int, Type> ChangeObjectToggleComponentType;
         event Action<SmartControlCrossControlValue> ChangeCrossControlValueOnEnabled;
         event Action<SmartControlCrossControlValue> ChangeCrossControlValueOnDisabled;
         event Action<SmartControlCrossControlValue> RemoveCrossControlValueOnEnabled;
