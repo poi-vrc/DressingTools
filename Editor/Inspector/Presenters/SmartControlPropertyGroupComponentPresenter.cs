@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Inspector.Views;
@@ -36,6 +37,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _blendshapes = new Dictionary<string, object>();
             _materialProperties = new Dictionary<string, object>();
             _genericProperties = new Dictionary<string, object>();
+
+            // TODO: set this from the editor level and move to a common place
+            var prefs = PreferencesUtility.GetPreferences();
+            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
+
             SubscribeEvents();
         }
 

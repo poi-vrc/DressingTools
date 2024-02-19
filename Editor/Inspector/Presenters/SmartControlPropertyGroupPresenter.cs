@@ -11,6 +11,7 @@
  */
 
 using Chocopoi.DressingFramework;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Inspector.Views;
@@ -25,6 +26,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public SmartControlPropertyGroupPresenter(ISmartControlPropertyGroupView view)
         {
             _view = view;
+
+            // TODO: set this from the editor level and move to a common place
+            var prefs = PreferencesUtility.GetPreferences();
+            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
+
             SubscribeEvents();
         }
 
