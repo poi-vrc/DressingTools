@@ -1,11 +1,14 @@
 {
   "logo.alt": {
-    "message": "DressingTools 標識"
+    "message": "DressingTools 標識",
+    "description": "The alt text of navbar logo"
   },
   "item.label.Docs": {
-    "message": "說明書"
+    "message": "說明書",
+    "description": "Navbar item with label Docs"
   },
   "item.label.GitHub": {
-    "message": "GitHub"
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
   }
 }
