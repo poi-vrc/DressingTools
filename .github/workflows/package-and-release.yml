@@ -81,7 +81,7 @@ jobs:
           
       - run: find Packages/${{env.dtPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> singleMetaList
   
-      - run: find Packages/${{env.dtPackageName}}/ Packages/${{env.dkPackageName}}/ Packages/${{env.alPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> withDepsMetaList
+      # - run: find Packages/${{env.dtPackageName}}/ Packages/${{env.dkPackageName}}/ Packages/${{env.alPackageName}}/ -name \*.meta -not -path '*/.github/*' -not -path '*/Tests~/*' -not -path '*/Tests/*' >> withDepsMetaList
           
       - name: Create Single UnityPackage
         uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
@@ -89,11 +89,11 @@ jobs:
           package-path: ${{ env.singleUnityPackage }}
           include-files: singleMetaList
 
-      - name: Create With Deps UnityPackage
-        uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
-        with:
-          package-path: ${{ env.unityPackageWithDeps }}
-          include-files: withDepsMetaList
+      # - name: Create With Deps UnityPackage
+      #   uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
+      #   with:
+      #     package-path: ${{ env.unityPackageWithDeps }}
+      #     include-files: withDepsMetaList
           
       # upload artifact
       - uses: actions/upload-artifact@v3
@@ -102,7 +102,7 @@ jobs:
           path: |
             ${{ env.zipFile }}
             ${{ env.singleUnityPackage }}
-            ${{ env.unityPackageWithDeps }}
+            # ${{ env.unityPackageWithDeps }}
             Packages/${{ env.dtPackageName }}/package.json
             
       # create release
@@ -113,5 +113,5 @@ jobs:
           files: |
             ${{ env.zipFile }}
             ${{ env.singleUnityPackage }}
-            ${{ env.unityPackageWithDeps }}
+            # ${{ env.unityPackageWithDeps }}
             Packages/${{ env.dtPackageName }}/package.json
