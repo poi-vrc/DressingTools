@@ -256,7 +256,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             MakeCustomizableToggles(wearableObject, module, out var cstCtrls);
 
             Texture2D icon = null;
-            if (_useThumbnails)
+            if (_useThumbnails && !string.IsNullOrEmpty(config.info.thumbnail))
             {
                 icon = OneConfUtils.GetTextureFromBase64(config.info.thumbnail);
                 icon.Compress(true);
