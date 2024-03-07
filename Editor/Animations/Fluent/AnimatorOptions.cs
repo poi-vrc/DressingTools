@@ -10,25 +10,16 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
 using Chocopoi.DressingFramework;
-using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Animations.Fluent
 {
     internal class AnimatorOptions
     {
-        public enum WriteDefaultsMode
-        {
-            DoNothing = 0,
-            On = 1,
-            Off = 2
-        }
-
         public Transform rootTransform;
         public Context context;
-        public WriteDefaultsMode writeDefaultsMode;
+        public bool writeDefaults;
 
         public AnimatorOptions WithRootTransform(Transform rootTrans)
         {
@@ -42,54 +33,10 @@ namespace Chocopoi.DressingTools.Animations.Fluent
             return this;
         }
 
-        public AnimatorOptions WithWriteDefaultsMode(WriteDefaultsMode newMode)
+        public AnimatorOptions WithWriteDefaults(bool value)
         {
-            writeDefaultsMode = newMode;
+            writeDefaults = value;
             return this;
-        }
-
-        public static WriteDefaultsMode DetectWriteDefaultsMode(AnimatorController controller)
-        {
-            var stack = new Stack<AnimatorStateMachine>();
-
-            foreach (var layer in controller.layers)
-            {
-                stack.Push(layer.stateMachine);
-            }
-
-            var writeDefaultsOn = false;
-            var writeDefaultsOff = false;
-
-            while (stack.Count > 0)
-            {
-                var stateMachine = stack.Pop();
-                foreach (var state in stateMachine.states)
-                {
-                    if (state.state.writeDefaultValues)
-                    {
-                        writeDefaultsOn = true;
-                    }
-                    else
-                    {
-                        writeDefaultsOff = true;
-                    }
-                }
-
-                foreach (var childAnimatorMachine in stateMachine.stateMachines)
-                {
-                    stack.Push(childAnimatorMachine.stateMachine);
-                }
-            }
-
-            if (writeDefaultsOn && writeDefaultsOff)
-            {
-                // the user's write defaults is messed up, do nothing
-                return WriteDefaultsMode.DoNothing;
-            }
-            else
-            {
-                return writeDefaultsOn ? WriteDefaultsMode.On : WriteDefaultsMode.Off;
-            }
         }
     }
 }

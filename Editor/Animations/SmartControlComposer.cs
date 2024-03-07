@@ -294,7 +294,7 @@ namespace Chocopoi.DressingTools.Animations
                                         value = propVal.ValueObjectReference
                                 }};
                                 enabledClip.SetCurve(comp.transform, compType, propVal.Name, enabledFrames);
-                                if (_options.writeDefaultsMode == AnimatorOptions.WriteDefaultsMode.Off)
+                                if (!_options.writeDefaults)
                                 {
                                     var disabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {
                                         time = 0.0f,
@@ -306,7 +306,7 @@ namespace Chocopoi.DressingTools.Animations
                             else if (originalValue is float f)
                             {
                                 enabledClip.SetCurve(comp.transform, compType, propVal.Name, AnimationCurve.Constant(0.0f, 0.0f, propVal.Value));
-                                if (_options.writeDefaultsMode == AnimatorOptions.WriteDefaultsMode.Off)
+                                if (!_options.writeDefaults)
                                 {
                                     disabledClip.SetCurve(comp.transform, compType, propVal.Name, AnimationCurve.Constant(0.0f, 0.0f, f));
                                 }
@@ -397,7 +397,7 @@ namespace Chocopoi.DressingTools.Animations
                 }
 
                 ClipToggle(enabledClip, toggle.Target, toggle.Enabled);
-                if (_options.writeDefaultsMode == AnimatorOptions.WriteDefaultsMode.Off)
+                if (!_options.writeDefaults)
                 {
                     ClipToggle(disabledClip, toggle.Target, GetComponentOrGameObjectOriginalState(toggle.Target));
                 }

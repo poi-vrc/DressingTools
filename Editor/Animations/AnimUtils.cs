@@ -12,7 +12,9 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
+
 #if DT_VRCSDK3A
 using Chocopoi.DressingFramework.Animations.VRChat;
 using VRC.SDK3.Avatars.Components;
@@ -102,6 +104,57 @@ namespace Chocopoi.DressingTools.Animations
             ScanVRCAnimatorParameters(parameters, avatarGameObject);
 #endif
             return parameters;
+        }
+
+        public static void GetWriteDefaultCounts(AnimatorController controller, out int onCount, out int offCount)
+        {
+            var stack = new Stack<AnimatorStateMachine>();
+
+            foreach (var layer in controller.layers)
+            {
+                stack.Push(layer.stateMachine);
+            }
+
+            onCount = 0;
+            offCount = 0;
+
+            while (stack.Count > 0)
+            {
+                var stateMachine = stack.Pop();
+                foreach (var state in stateMachine.states)
+                {
+                    if (state.state.writeDefaultValues)
+                    {
+                        onCount++;
+                    }
+                    else
+                    {
+                        offCount++;
+                    }
+                }
+
+                foreach (var childAnimatorMachine in stateMachine.stateMachines)
+                {
+                    stack.Push(childAnimatorMachine.stateMachine);
+                }
+            }
+
+            if (onCount != 0 && offCount != 0)
+            {
+                Debug.LogWarning($"[DressingTools] Inconsistent write defaults detected with {onCount} on and {offCount} off. Unexpected behaviour might occur. Using the one with more count.");
+            }
+        }
+
+        public static bool DetermineWriteDefaultsByOnOffCounts(int onCount, int offCount)
+        {
+            // default to on if both counts are equal
+            return onCount >= offCount;
+        }
+
+        public static bool DetectWriteDefaults(AnimatorController controller)
+        {
+            GetWriteDefaultCounts(controller, out var onCount, out var offCount);
+            return DetermineWriteDefaultsByOnOffCounts(onCount, offCount);
         }
     }
 }

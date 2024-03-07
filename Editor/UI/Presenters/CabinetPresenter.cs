@@ -144,7 +144,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _cabinetConfig.avatarArmatureName = _view.CabinetAvatarArmatureName;
             _cabinetConfig.groupDynamics = _view.CabinetGroupDynamics;
             _cabinetConfig.groupDynamicsSeparateGameObjects = _view.CabinetGroupDynamicsSeparateGameObjects;
-            _cabinetConfig.animationWriteDefaults = _view.CabinetAnimationWriteDefaults;
+            _cabinetConfig.animationWriteDefaultsMode = (CabinetConfig.WriteDefaultsMode)_view.CabinetAnimationWriteDefaultsMode;
             cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
         }
 
@@ -231,7 +231,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CabinetAvatarArmatureName = _cabinetConfig.avatarArmatureName;
             _view.CabinetGroupDynamics = _cabinetConfig.groupDynamics;
             _view.CabinetGroupDynamicsSeparateGameObjects = _cabinetConfig.groupDynamicsSeparateGameObjects;
-            _view.CabinetAnimationWriteDefaults = _cabinetConfig.animationWriteDefaults;
+            _view.CabinetAnimationWriteDefaultsMode = (int)_cabinetConfig.animationWriteDefaultsMode;
 
             // list cabinet modules
             _view.CabinetModulePreviews.Clear();

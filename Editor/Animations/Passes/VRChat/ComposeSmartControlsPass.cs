@@ -16,9 +16,14 @@ using Chocopoi.DressingFramework.Animations.VRChat;
 using Chocopoi.DressingFramework.Detail.DK.Passes;
 using Chocopoi.DressingFramework.Detail.DK.Passes.VRChat;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
+using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
+using Chocopoi.DressingTools.Components.OneConf;
+using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.Menu.Passes;
+using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Serialization;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 
@@ -27,6 +32,8 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
     // TODO: this currently depends on VRC because we still need to find a way to allow user to supply animator
     internal class ComposeSmartControlsPass : BuildPass
     {
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
+
         public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose)
             .BeforePass<ComposeAndInstallMenuPass>()
             .BeforePass<ApplyVRCExParamsPass>()
@@ -41,15 +48,38 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
                 return true;
             }
 
+            // TODO: tmeporarily use the setting from here, there should be another component storing config later on
+            if (!ctx.AvatarGameObject.TryGetComponent<DTCabinet>(out var cabinetComp) ||
+                !CabinetConfigUtility.TryDeserialize(cabinetComp.configJson, out var config))
+            {
+                // use default config if not exist
+                config = new CabinetConfig();
+            }
+
             // TODO: allow switching to another layer
             var fx = VRCAnimUtils.GetAvatarLayerAnimator(avatarDesc, VRCAvatarDescriptor.AnimLayerType.FX);
             var ctrlComps = ctx.AvatarGameObject.GetComponentsInChildren<DTSmartControl>(true);
+
+            bool writeDefaults;
+            if (config.animationWriteDefaultsMode == CabinetConfig.WriteDefaultsMode.Auto)
+            {
+                AnimUtils.GetWriteDefaultCounts(fx, out var onCount, out var offCount);
+                if (onCount != 0 && offCount != 0)
+                {
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("passes.anims.vrc.composeSmartControls.dialog.msg.inconsistentWriteDefaults", onCount, offCount), t._("common.dialog.btn.ok"));
+                }
+                writeDefaults = AnimUtils.DetermineWriteDefaultsByOnOffCounts(onCount, offCount);
+            }
+            else
+            {
+                writeDefaults = config.animationWriteDefaultsMode == CabinetConfig.WriteDefaultsMode.On;
+            }
 
             var options = new AnimatorOptions()
             {
                 rootTransform = ctx.AvatarGameObject.transform,
                 context = ctx,
-                writeDefaultsMode = AnimatorOptions.DetectWriteDefaultsMode(fx) // TODO: configurable
+                writeDefaults = writeDefaults
             };
 
             // compose into animator layers and clips

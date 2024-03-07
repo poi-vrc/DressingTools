@@ -49,7 +49,6 @@ namespace Chocopoi.DressingTools
             public string defaultArmatureName;
             public bool defaultGroupDynamics;
             public bool defaultGroupDynamicsSeparateDynamics;
-            public bool defaultAnimationWriteDefaults;
 
             public Cabinet()
             {
@@ -61,7 +60,6 @@ namespace Chocopoi.DressingTools
                 defaultArmatureName = "Armature";
                 defaultGroupDynamics = true;
                 defaultGroupDynamicsSeparateDynamics = true;
-                defaultAnimationWriteDefaults = true;
             }
         }
 

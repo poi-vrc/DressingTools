@@ -7,7 +7,6 @@
             <ui:TextField picking-mode="Ignore" label="@settings.editor.cabinet.defaults.textfield.armatureName" name="cabinet-def-armature-name-field" />
             <ui:Toggle label="@settings.editor.cabinet.defaults.toggle.groupDynamics" name="cabinet-def-group-dynamics-toggle" />
             <ui:Toggle label="@settings.editor.cabinet.defaults.toggle.separateDynamics" name="cabinet-def-separate-dynamics-toggle" style="padding-left: 15px;" />
-            <ui:Toggle label="@settings.editor.cabinet.defaults.toggle.animWriteDefaults" name="cabinet-def-anim-write-defs-toggle" />
         </ui:Foldout>
         <ui:Foldout text="@settings.editor.updateChecker.foldout">
             <ui:VisualElement class="readonly-label-container">

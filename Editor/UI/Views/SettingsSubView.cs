@@ -49,7 +49,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public string CabinetDefaultsArmatureName { get; set; }
         public bool CabinetDefaultsGroupDynamics { get; set; }
         public bool CabinetDefaultsSeparateDynamics { get; set; }
-        public bool CabinetDefaultsAnimWriteDefaults { get; set; }
 
         public string UpdaterCurrentVersion { get; set; }
         public bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
@@ -60,7 +59,6 @@ namespace Chocopoi.DressingTools.UI.Views
         private TextField _cabinetDefArmatureNameField;
         private Toggle _cabinetGroupDynamicsToggle;
         private Toggle _cabinetSeparateDynamicsToggle;
-        private Toggle _cabinetAnimWriteDefToggle;
         private Label _updaterCurrentVerLabel;
         private VisualElement _updaterHelpboxContainer;
         private VisualElement _languageHelpboxContainer;
@@ -77,7 +75,6 @@ namespace Chocopoi.DressingTools.UI.Views
             CabinetDefaultsArmatureName = "Armature";
             CabinetDefaultsGroupDynamics = true;
             CabinetDefaultsSeparateDynamics = true;
-            CabinetDefaultsAnimWriteDefaults = true;
 
             UpdaterCurrentVersion = "";
             UpdaterShowHelpboxUpdateNotChecked = true;
@@ -133,12 +130,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 CabinetDefaultsSeparateDynamics = evt.newValue;
                 SettingsChanged?.Invoke();
             });
-            _cabinetAnimWriteDefToggle = Q<Toggle>("cabinet-def-anim-write-defs-toggle").First();
-            _cabinetAnimWriteDefToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
-            {
-                CabinetDefaultsAnimWriteDefaults = evt.newValue;
-                SettingsChanged?.Invoke();
-            });
         }
 
         private void InitUpdateChecker()
@@ -158,7 +149,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _cabinetDefArmatureNameField.value = CabinetDefaultsArmatureName;
             _cabinetGroupDynamicsToggle.value = CabinetDefaultsGroupDynamics;
             _cabinetSeparateDynamicsToggle.value = CabinetDefaultsSeparateDynamics;
-            _cabinetAnimWriteDefToggle.value = CabinetDefaultsAnimWriteDefaults;
         }
 
         private void RepaintUpdateChecker()

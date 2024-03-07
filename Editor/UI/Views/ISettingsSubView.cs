@@ -36,7 +36,6 @@ namespace Chocopoi.DressingTools.UI.Views
         string CabinetDefaultsArmatureName { get; set; }
         bool CabinetDefaultsGroupDynamics { get; set; }
         bool CabinetDefaultsSeparateDynamics { get; set; }
-        bool CabinetDefaultsAnimWriteDefaults { get; set; }
 
         string UpdaterCurrentVersion { get; set; }
         bool UpdaterShowHelpboxUpdateNotChecked { get; set; }

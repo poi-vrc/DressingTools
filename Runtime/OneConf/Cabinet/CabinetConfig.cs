@@ -26,6 +26,13 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
     /// </summary>
     internal class CabinetConfig
     {
+        public enum WriteDefaultsMode
+        {
+            Auto = 0,
+            On = 1,
+            Off = 2
+        }
+
         /// <summary>
         /// Current config version
         /// </summary>
@@ -52,9 +59,9 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
         public bool groupDynamicsSeparateGameObjects;
 
         /// <summary>
-        /// Animation write defaults. Animation-related modules should respect this option
+        /// Animation write defaults mode. Animation-related modules should respect this option
         /// </summary>
-        public bool animationWriteDefaults;
+        public WriteDefaultsMode animationWriteDefaultsMode;
 
         /// <summary>
         /// Cabinet modules
@@ -70,7 +77,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
             avatarArmatureName = "Armature";
             groupDynamics = true;
             groupDynamicsSeparateGameObjects = true;
-            animationWriteDefaults = true;
+            animationWriteDefaultsMode = WriteDefaultsMode.Auto;
             modules = new List<CabinetModule>();
         }
 
