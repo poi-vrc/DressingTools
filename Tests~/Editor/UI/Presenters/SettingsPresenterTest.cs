@@ -48,7 +48,6 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             Assert.AreEqual(prefs.cabinet.defaultArmatureName, view.CabinetDefaultsArmatureName);
             Assert.AreEqual(prefs.cabinet.defaultGroupDynamics, view.CabinetDefaultsGroupDynamics);
             Assert.AreEqual(prefs.cabinet.defaultGroupDynamicsSeparateDynamics, view.CabinetDefaultsSeparateDynamics);
-            Assert.AreEqual(prefs.cabinet.defaultAnimationWriteDefaults, view.CabinetDefaultsAnimWriteDefaults);
         }
 
         private static void AssertUpdateChecker(ISettingsSubView view)

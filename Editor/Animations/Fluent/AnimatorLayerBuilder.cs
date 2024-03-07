@@ -29,20 +29,14 @@ namespace Chocopoi.DressingTools.Animations.Fluent
         public AnimatorStateBuilder NewState(string name)
         {
             var state = _layer.stateMachine.AddState(name);
-            if (_options.writeDefaultsMode != AnimatorOptions.WriteDefaultsMode.DoNothing)
-            {
-                state.writeDefaultValues = _options.writeDefaultsMode == AnimatorOptions.WriteDefaultsMode.On;
-            }
+            state.writeDefaultValues = _options.writeDefaults;
             return new AnimatorStateBuilder(_options, state);
         }
 
         public AnimatorStateBuilder NewState(string name, Vector3 pos)
         {
             var state = _layer.stateMachine.AddState(name, pos);
-            if (_options.writeDefaultsMode != AnimatorOptions.WriteDefaultsMode.DoNothing)
-            {
-                state.writeDefaultValues = _options.writeDefaultsMode == AnimatorOptions.WriteDefaultsMode.On;
-            }
+            state.writeDefaultValues = _options.writeDefaults;
             return new AnimatorStateBuilder(_options, state);
         }
 

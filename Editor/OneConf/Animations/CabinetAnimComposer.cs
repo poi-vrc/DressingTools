@@ -32,16 +32,16 @@ namespace Chocopoi.DressingTools.OneConf.Animations
     internal class CabinetAnimComposer
     {
         private readonly AnimatorController _controller;
-        private readonly AnimatorOptions _options;
+        private readonly Context _ctx;
         private readonly GameObject _avatarObject;
         private readonly MenuGroup _menuGroup;
         private readonly Dictionary<GameObject, List<DTSmartControl>> _ctrls;
         private readonly bool _useThumbnails;
 
-        public CabinetAnimComposer(AnimatorController controller, AnimatorOptions options, GameObject avatarObject, PathRemapper pathRemapper, bool useThumbnails)
+        public CabinetAnimComposer(Context ctx, AnimatorController controller, GameObject avatarObject, bool useThumbnails)
         {
+            _ctx = ctx;
             _controller = controller;
-            _options = options;
             _avatarObject = avatarObject;
             _menuGroup = new MenuGroup();
             _ctrls = new Dictionary<GameObject, List<DTSmartControl>>();
@@ -260,7 +260,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             {
                 icon = OneConfUtils.GetTextureFromBase64(config.info.thumbnail);
                 icon.Compress(true);
-                _options.context.CreateUniqueAsset(icon, $"cpCA_Icon_{config.info.name}_{DKEditorUtils.RandomString(8)}.asset");
+                _ctx.CreateUniqueAsset(icon, $"cpCA_Icon_{config.info.name}_{DKEditorUtils.RandomString(8)}.asset");
             }
 
             if (cstCtrls.Count == 0)
@@ -380,7 +380,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             FillCrossControls();
 
             // write our root menu to context
-            var store = _options.context.Feature<MenuStore>();
+            var store = _ctx.Feature<MenuStore>();
             store.Append(new SubMenuItem()
             {
                 Name = "DT Cabinet", // TODO: allow to rename and add icon

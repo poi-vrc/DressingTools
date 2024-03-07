@@ -107,7 +107,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _prefs.cabinet.defaultArmatureName = _view.CabinetDefaultsArmatureName;
             _prefs.cabinet.defaultGroupDynamics = _view.CabinetDefaultsGroupDynamics;
             _prefs.cabinet.defaultGroupDynamicsSeparateDynamics = _view.CabinetDefaultsSeparateDynamics;
-            _prefs.cabinet.defaultAnimationWriteDefaults = _view.CabinetDefaultsAnimWriteDefaults;
 
             PreferencesUtility.SavePreferences();
         }
@@ -127,7 +126,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CabinetDefaultsArmatureName = _prefs.cabinet.defaultArmatureName;
             _view.CabinetDefaultsGroupDynamics = _prefs.cabinet.defaultGroupDynamics;
             _view.CabinetDefaultsSeparateDynamics = _prefs.cabinet.defaultGroupDynamicsSeparateDynamics;
-            _view.CabinetDefaultsAnimWriteDefaults = _prefs.cabinet.defaultAnimationWriteDefaults;
         }
 
         private void UpdateUpdateCheckerView()

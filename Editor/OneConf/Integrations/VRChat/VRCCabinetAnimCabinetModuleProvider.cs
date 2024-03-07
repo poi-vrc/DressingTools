@@ -70,15 +70,7 @@ namespace Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules
 
             if (wearables.Length > 0)
             {
-                var pathRemapper = cabCtx.dkCtx.Feature<PathRemapper>();
-                var animOptions = new AnimatorOptions()
-                {
-                    rootTransform = cabCtx.dkCtx.AvatarGameObject.transform,
-                    context = cabCtx.dkCtx,
-                    writeDefaultsMode = cabCtx.cabinetConfig.animationWriteDefaults ? AnimatorOptions.WriteDefaultsMode.On : AnimatorOptions.WriteDefaultsMode.Off
-                    // TODO: detection
-                };
-                var cac = new CabinetAnimComposer(fxController, animOptions, cabCtx.dkCtx.AvatarGameObject, pathRemapper, vrcm.cabinetThumbnails);
+                var cac = new CabinetAnimComposer(cabCtx.dkCtx, fxController, cabCtx.dkCtx.AvatarGameObject, vrcm.cabinetThumbnails);
 
                 for (var i = 0; i < wearables.Length; i++)
                 {

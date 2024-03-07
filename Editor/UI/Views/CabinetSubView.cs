@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public string CabinetAvatarArmatureName { get; set; }
         public bool CabinetGroupDynamics { get; set; }
         public bool CabinetGroupDynamicsSeparateGameObjects { get; set; }
-        public bool CabinetAnimationWriteDefaults { get; set; }
+        public int CabinetAnimationWriteDefaultsMode { get; set; }
         public List<CabinetModulePreview> CabinetModulePreviews { get; set; }
         public List<WearablePreview> InstalledWearablePreviews { get; set; }
         public GameObject CreateCabinetAvatarGameObject { get; set; }
@@ -66,7 +66,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private TextField _avatarArmatureNameField;
         private Toggle _groupDynamicsToggle;
         private Toggle _groupDynamicsSeparateGameObjectsToggle;
-        private Toggle _animationWriteDefaultsToggle;
+        private PopupField<string> _animationWriteDefaultsPopup;
         private VisualElement _cabinetModulesContainer;
         private Button[] _displayModeBtns;
         private int _selectedDisplayMode;
@@ -88,6 +88,7 @@ namespace Chocopoi.DressingTools.UI.Views
             InstalledWearablePreviews = new List<WearablePreview>();
 
             CreateCabinetAvatarGameObject = null;
+            CabinetAnimationWriteDefaultsMode = 0;
         }
 
         public void SelectTab(int selectedTab)
@@ -185,12 +186,19 @@ namespace Chocopoi.DressingTools.UI.Views
                 CabinetSettingsChange?.Invoke();
             });
 
-            _animationWriteDefaultsToggle = Q<Toggle>("settings-anim-write-defaults").First();
-            _animationWriteDefaultsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
+            var writeDefaultsPopupContainer = Q<VisualElement>("settings-anim-write-defaults-popup-container").First();
+            var choices = new List<string>() {
+                t._("cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.auto"),
+                t._("cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.on"),
+                t._("cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.off")
+                };
+            _animationWriteDefaultsPopup = new PopupField<string>(t._("cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode"), choices, 0);
+            _animationWriteDefaultsPopup.RegisterValueChangedCallback((evt) =>
             {
-                CabinetAnimationWriteDefaults = evt.newValue;
+                CabinetAnimationWriteDefaultsMode = _animationWriteDefaultsPopup.index;
                 CabinetSettingsChange?.Invoke();
             });
+            writeDefaultsPopupContainer.Add(_animationWriteDefaultsPopup);
         }
 
         private void BindCabinetContentFoldouts()
@@ -358,7 +366,7 @@ namespace Chocopoi.DressingTools.UI.Views
             _avatarArmatureNameField.value = CabinetAvatarArmatureName;
             _groupDynamicsToggle.value = CabinetGroupDynamics;
             _groupDynamicsSeparateGameObjectsToggle.value = CabinetGroupDynamicsSeparateGameObjects;
-            _animationWriteDefaultsToggle.value = CabinetAnimationWriteDefaults;
+            _animationWriteDefaultsPopup.index = CabinetAnimationWriteDefaultsMode;
         }
 
         private void RepaintCabinetContentModules()
