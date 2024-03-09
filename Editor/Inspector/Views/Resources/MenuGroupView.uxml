@@ -1,7 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement class="dt-inspector-icon">
-        <Style src="SmartControlViewStyles.uss" />
-    </ui:VisualElement>
     <ui:VisualElement name="items-container" />
     <ui:VisualElement name="add-btns-container">
         <ui:Button name="add-item-btn" text="@inspector.menu.group.btn.addItem" />

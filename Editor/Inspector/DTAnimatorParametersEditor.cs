@@ -13,9 +13,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Animations;
-using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Inspector.Views;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -25,27 +25,8 @@ namespace Chocopoi.DressingTools.Inspector
     [ExecuteInEditMode]
     [ExcludeFromCodeCoverage]
     [CustomEditor(typeof(DTAnimatorParameters))]
-    internal class DTAnimatorParametersEditor : Editor
+    internal class DTAnimatorParametersEditor : EditorBase
     {
-        private static readonly I18nTranslator t = I18n.ToolTranslator;
-
-        private AnimatorParametersView _view;
-
-        public override VisualElement CreateInspectorGUI()
-        {
-            return _view;
-        }
-
-        public void OnEnable()
-        {
-            _view = new AnimatorParametersView() { Target = (DTAnimatorParameters)target };
-            _view.OnEnable();
-        }
-
-        public void OnDisable()
-        {
-            _view?.OnDisable();
-            _view = null;
-        }
+        public override ElementView CreateView() => new AnimatorParametersView() { Target = (DTAnimatorParameters)target };
     }
 }
