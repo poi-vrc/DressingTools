@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools
 
             var wearable = (DTWearable)target;
 
-            wearable.rootGameObject = (GameObject)EditorGUILayout.ObjectField(t._("wearable.inspector.settings.wearable"), wearable.rootGameObject, typeof(GameObject), true);
+            wearable.RootGameObject = (GameObject)EditorGUILayout.ObjectField(t._("wearable.inspector.settings.wearable"), wearable.RootGameObject, typeof(GameObject), true);
             EditorGUILayout.Separator();
 
             if (GUILayout.Button(t._("common.inspector.btn.openInEditor"), GUILayout.Height(40)))
@@ -50,7 +50,7 @@ namespace Chocopoi.DressingTools
                     var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
                     window.titleContent = new GUIContent(t._("tool.name"));
                     window.Show();
-                    window.StartDressing(cabinet.rootGameObject, wearable.rootGameObject);
+                    window.StartDressing(cabinet.RootGameObject, wearable.RootGameObject);
                 }
                 else
                 {

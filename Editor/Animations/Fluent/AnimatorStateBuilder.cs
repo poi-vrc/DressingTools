@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -45,16 +44,16 @@ namespace Chocopoi.DressingTools.Animations.Fluent
             transition.solo = false;
             transition.conditions = new AnimatorCondition[] { };
 
-            return new AnimatorStateTransitionBuilder(_options, transition);
+            return new AnimatorStateTransitionBuilder(transition);
         }
 
-        public AnimatorStateBuilder WithBehaviours(StateMachineBehaviour[] behaviours)
-        {
-            _state.behaviours = behaviours;
-            return this;
-        }
+        // public AnimatorStateBuilder WithBehaviours(StateMachineBehaviour[] behaviours)
+        // {
+        //     _state.behaviours = behaviours;
+        //     return this;
+        // }
 
-        public AnimatorStateBuilder AddBehaviour(StateMachineBehaviour behaviour)
+        internal AnimatorStateBuilder AddBehaviour(StateMachineBehaviour behaviour)
         {
             var array = new StateMachineBehaviour[_state.behaviours.Length + 1];
             _state.behaviours.CopyTo(array, 0);
@@ -62,6 +61,12 @@ namespace Chocopoi.DressingTools.Animations.Fluent
             _state.behaviours = array;
             return this;
         }
+
+        // public AnimatorStateBuilder AddBehaviour<T>(out T behaviour) where T : StateMachineBehaviour
+        // {
+        //     behaviour = _state.AddStateMachineBehaviour<T>();
+        //     return this;
+        // }
 
         public AnimatorStateBuilder WithCycleOffset(float cycleOffset)
         {

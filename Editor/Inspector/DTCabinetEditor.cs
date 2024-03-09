@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools
 
             var cabinet = (DTCabinet)target;
 
-            cabinet.rootGameObject = (GameObject)EditorGUILayout.ObjectField(t._("cabinet.inspector.settings.avatar"), cabinet.rootGameObject, typeof(GameObject), true);
+            cabinet.RootGameObject = (GameObject)EditorGUILayout.ObjectField(t._("cabinet.inspector.settings.avatar"), cabinet.RootGameObject, typeof(GameObject), true);
             EditorGUILayout.Separator();
 
             if (GUILayout.Button(t._("common.inspector.btn.openInEditor"), GUILayout.Height(40)))

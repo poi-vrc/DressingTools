@@ -72,7 +72,7 @@ namespace Chocopoi.DressingTools.OneConf
             {
                 try
                 {
-                    cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.configJson);
+                    cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.ConfigJson);
                 }
                 catch (System.Exception ex)
                 {
@@ -94,18 +94,18 @@ namespace Chocopoi.DressingTools.OneConf
                 WearableConfig wearableConfig = null;
                 try
                 {
-                    wearableConfig = WearableConfigUtility.Deserialize(wearable.configJson);
+                    wearableConfig = WearableConfigUtility.Deserialize(wearable.ConfigJson);
                 }
                 catch (System.Exception ex)
                 {
                     dkCtx.Report.LogExceptionLocalized(t, LogLabel, ex);
-                    dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.UnableToDeserializeWearableConfig, wearable.rootGameObject.name);
+                    dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.UnableToDeserializeWearableConfig, wearable.RootGameObject.name);
                     return;
                 }
 
                 if (wearableConfig == null)
                 {
-                    dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.UnableToDeserializeWearableConfig, wearable.rootGameObject.name);
+                    dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.UnableToDeserializeWearableConfig, wearable.RootGameObject.name);
                     return;
                 }
 
@@ -122,9 +122,9 @@ namespace Chocopoi.DressingTools.OneConf
 
                 // clone if needed
                 GameObject wearableObj;
-                if (DKEditorUtils.IsGrandParent(dkCtx.AvatarGameObject.transform, wearable.rootGameObject.transform))
+                if (DKEditorUtils.IsGrandParent(dkCtx.AvatarGameObject.transform, wearable.RootGameObject.transform))
                 {
-                    wearableObj = wearable.rootGameObject;
+                    wearableObj = wearable.RootGameObject;
 
                     if (PrefabUtility.GetPrefabAssetType(wearableObj) != PrefabAssetType.NotAPrefab)
                     {
@@ -134,7 +134,7 @@ namespace Chocopoi.DressingTools.OneConf
                 else
                 {
                     // instantiate wearable prefab and parent to avatar
-                    wearableObj = Object.Instantiate(wearable.rootGameObject, dkCtx.AvatarGameObject.transform);
+                    wearableObj = Object.Instantiate(wearable.RootGameObject, dkCtx.AvatarGameObject.transform);
                 }
 
                 var wearCtx = new WearableContext()

@@ -13,16 +13,16 @@
 #if DT_VRCSDK3A
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Chocopoi.DressingFramework.Wearable.Modules;
-using Chocopoi.DressingTools.Api.Integration.VRChat.Wearable.Modules;
-using Chocopoi.DressingTools.Integration.VRChat.Modules;
+using Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules.Integrations.VRChat;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.OneConf.Integrations.VRChat
 {
-    public class VRCMergeAnimLayerWearableModuleProviderTest : EditorTestBase
+    internal class VRCMergeAnimLayerWearableModuleProviderTest : EditorTestBase
     {
         [Test]
         public void DeserializeModuleConfigTest()

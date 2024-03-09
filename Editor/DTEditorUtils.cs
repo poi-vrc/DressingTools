@@ -99,7 +99,7 @@ namespace Chocopoi.DressingTools
                 return;
             }
 
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 Debug.LogError("[DressingTools] Unable to deserialize cabinet config for preview");
                 return;

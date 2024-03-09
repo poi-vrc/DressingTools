@@ -43,12 +43,17 @@ namespace Chocopoi.DressingTools.Animations
 
         private void AddParameterConfig(DTSmartControl ctrl)
         {
-            var animParams = _options.context.Feature<AnimatorParameters>();
-            animParams.AddConfig(new AnimatorParameters.ParameterConfig($"^{Regex.Escape(ctrl.AnimatorConfig.ParameterName)}$")
+            if (!ctrl.TryGetComponent<DTAnimatorParameters>(out var comp))
             {
-                networkSynced = ctrl.AnimatorConfig.NetworkSynced,
-                saved = ctrl.AnimatorConfig.Saved,
-                defaultValue = ctrl.AnimatorConfig.ParameterDefaultValue
+                comp = ctrl.gameObject.AddComponent<DTAnimatorParameters>();
+            }
+
+            comp.Configs.Add(new DTAnimatorParameters.ParameterConfig()
+            {
+                ParameterName = ctrl.AnimatorConfig.ParameterName,
+                NetworkSynced = ctrl.AnimatorConfig.NetworkSynced,
+                Saved = ctrl.AnimatorConfig.Saved,
+                ParameterDefaultValue = ctrl.AnimatorConfig.ParameterDefaultValue
             });
         }
 
@@ -75,12 +80,14 @@ namespace Chocopoi.DressingTools.Animations
 
                 if (menuItem.Type == DTMenuItem.ItemType.Button || menuItem.Type == DTMenuItem.ItemType.Toggle)
                 {
+                    menuItem.Controller.Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter;
                     menuItem.Controller.AnimatorParameterName = ctrl.AnimatorConfig.ParameterName;
                 }
                 else if (menuItem.Type == DTMenuItem.ItemType.Radial)
                 {
                     menuItem.SubControllers = new DTMenuItem.ItemController[] {
                         new DTMenuItem.ItemController() {
+                            Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter,
                             AnimatorParameterName = ctrl.AnimatorConfig.ParameterName,
                             AnimatorParameterValue = 1.0f
                         }
@@ -154,7 +161,7 @@ namespace Chocopoi.DressingTools.Animations
 
             foreach (var go in searchObjs)
             {
-                var comps = go.GetComponentsInChildren<Component>(true);
+                var comps = go.GetComponents<Component>();
                 foreach (var comp in comps)
                 {
                     var compType = comp.GetType();
@@ -276,7 +283,7 @@ namespace Chocopoi.DressingTools.Animations
 
             foreach (var go in searchObjs)
             {
-                var comps = go.GetComponentsInChildren<Component>(true);
+                var comps = go.GetComponents<Component>();
                 foreach (var comp in comps)
                 {
                     var compType = comp.GetType();
@@ -345,12 +352,12 @@ namespace Chocopoi.DressingTools.Animations
             else
             {
                 // unknown
+                Debug.LogWarning($"[DressingTools] [SmartControlComposer] Unsupported component detected {target.GetType().FullName} in {target.name}, defaulting original value as false.");
                 return false;
             }
         }
 
 #if DT_VRCSDK3A
-        // TODO: directly copied from the pass, should move this to a common location to remove code duplication
         private static VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver MakeVRCAvatarParameterDriver(string name, float value)
         {
             var driver = ScriptableObject.CreateInstance<VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver>();
@@ -441,16 +448,18 @@ namespace Chocopoi.DressingTools.Animations
         {
             foreach (var value in values)
             {
-                if (value.Control.ControlType != DTSmartControl.SmartControlControlType.Binary)
+                var anotherCtrl = value.Control;
+
+                if (anotherCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
                 {
                     continue;
                 }
 
-                var anotherValues = value.Value == 1.0f ? ctrl.CrossControlActions.ValueActions.ValuesOnEnable : ctrl.CrossControlActions.ValueActions.ValuesOnDisable;
+                var anotherValues = Mathf.Approximately(value.Value, 1.0f) ? anotherCtrl.CrossControlActions.ValueActions.ValuesOnEnable : anotherCtrl.CrossControlActions.ValueActions.ValuesOnDisable;
 
                 foreach (var anotherValue in anotherValues)
                 {
-                    if (anotherValue.Control == ctrl && anotherValue.Value == 1.0f != enabled)
+                    if (anotherValue.Control == ctrl && Mathf.Approximately(anotherValue.Value, 1.0f) != enabled)
                     {
                         return true;
                     }

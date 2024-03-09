@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
     {
         public static bool AddWearable(this DTCabinet cabinet, WearableConfig wearableConfig, GameObject wearableGameObject)
         {
-            var cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.configJson);
+            var cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.ConfigJson);
             var cabinetWearable = OneConfUtils.GetCabinetWearable(wearableGameObject);
 
             // if not exist, create a new component
@@ -36,24 +36,24 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
                 }
 
                 // parent to avatar if haven't yet
-                if (!DKEditorUtils.IsGrandParent(cabinet.rootGameObject.transform, wearableGameObject.transform))
+                if (!DKEditorUtils.IsGrandParent(cabinet.RootGameObject.transform, wearableGameObject.transform))
                 {
-                    wearableGameObject.transform.SetParent(cabinet.rootGameObject.transform);
+                    wearableGameObject.transform.SetParent(cabinet.RootGameObject.transform);
                 }
 
                 // applying scalings
                 if (!PrefabUtility.IsPartOfAnyPrefab(wearableGameObject))
                 {
-                    wearableConfig.ApplyAvatarConfigTransforms(cabinet.rootGameObject, wearableGameObject);
+                    wearableConfig.ApplyAvatarConfigTransforms(cabinet.RootGameObject, wearableGameObject);
                 }
 
                 // add cabinet wearable component
                 cabinetWearable = wearableGameObject.AddComponent<DTWearable>();
-                cabinetWearable.rootGameObject = wearableGameObject;
+                cabinetWearable.RootGameObject = wearableGameObject;
             }
 
             wearableConfig.info.RefreshUpdatedTime();
-            cabinetWearable.configJson = WearableConfigUtility.Serialize(wearableConfig);
+            cabinetWearable.ConfigJson = WearableConfigUtility.Serialize(wearableConfig);
 
             // TODO: check config valid
 
@@ -61,7 +61,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
             foreach (var handler in handlers)
             {
                 // TODO: dependency graph
-                handler.OnAddWearableToCabinet(cabinetConfig, cabinet.rootGameObject, wearableConfig, wearableGameObject);
+                handler.OnAddWearableToCabinet(cabinetConfig, cabinet.RootGameObject, wearableConfig, wearableGameObject);
             }
 
             return true;
@@ -69,7 +69,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
 
         public static void RemoveWearable(this DTCabinet cabinet, DTWearable wearable)
         {
-            var cabinetWearables = cabinet.rootGameObject.GetComponentsInChildren<DTWearable>();
+            var cabinetWearables = cabinet.RootGameObject.GetComponentsInChildren<DTWearable>();
             foreach (var cabinetWearable in cabinetWearables)
             {
                 if (cabinetWearable == wearable)

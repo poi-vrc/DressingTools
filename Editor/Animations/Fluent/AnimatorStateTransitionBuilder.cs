@@ -17,17 +17,15 @@ namespace Chocopoi.DressingTools.Animations.Fluent
     internal class AnimatorStateTransitionBuilder
     {
         private readonly AnimatorStateTransition _stateTransition;
-        private readonly AnimatorOptions _options;
 
-        public AnimatorStateTransitionBuilder(AnimatorOptions options, AnimatorStateTransition stateTransition)
+        public AnimatorStateTransitionBuilder(AnimatorStateTransition stateTransition)
         {
-            _options = options;
             _stateTransition = stateTransition;
         }
 
-        private AnimatorStateTransitionBuilder AddCondition(AnimatorConditionMode cond, float threshold, string parameterName)
+        private AnimatorStateTransitionBuilder AddCondition(AnimatorConditionMode mode, float threshold, string parameterName)
         {
-            _stateTransition.AddCondition(cond, threshold, parameterName);
+            _stateTransition.AddCondition(mode, threshold, parameterName);
             return this;
         }
 
