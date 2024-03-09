@@ -336,7 +336,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                if (CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
                 {
                     _view.Config.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }
@@ -589,7 +589,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             // cabinet
             var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar);
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 _view.ShowCabinetConfigErrorHelpBox = true;
                 return;

@@ -14,7 +14,6 @@
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Animations.VRChat;
 using Chocopoi.DressingFramework.Detail.DK.Passes;
-using Chocopoi.DressingFramework.Detail.DK.Passes.VRChat;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Animations.Fluent;
@@ -36,9 +35,12 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
 
         public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose)
             .BeforePass<ComposeAndInstallMenuPass>()
-            .BeforePass<ApplyVRCExParamsPass>()
+            .BeforePass<ComposeAnimatorParametersPass>()
             .BeforePass<RemapAnimationsPass>()
             .Build();
+
+        // for mocking in tests
+        internal UI ui = new UnityUI();
 
         public override bool Invoke(Context ctx)
         {
@@ -50,7 +52,7 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
 
             // TODO: tmeporarily use the setting from here, there should be another component storing config later on
             if (!ctx.AvatarGameObject.TryGetComponent<DTCabinet>(out var cabinetComp) ||
-                !CabinetConfigUtility.TryDeserialize(cabinetComp.configJson, out var config))
+                !CabinetConfigUtility.TryDeserialize(cabinetComp.ConfigJson, out var config))
             {
                 // use default config if not exist
                 config = new CabinetConfig();
@@ -66,7 +68,7 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
                 AnimUtils.GetWriteDefaultCounts(fx, out var onCount, out var offCount);
                 if (onCount != 0 && offCount != 0)
                 {
-                    EditorUtility.DisplayDialog(t._("tool.name"), t._("passes.anims.vrc.composeSmartControls.dialog.msg.inconsistentWriteDefaults", onCount, offCount), t._("common.dialog.btn.ok"));
+                    ui.ShowInconsistentWriteDefaultsDialog(onCount, offCount);
                 }
                 writeDefaults = AnimUtils.DetermineWriteDefaultsByOnOffCounts(onCount, offCount);
             }
@@ -92,6 +94,19 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
             EditorUtility.SetDirty(fx);
 
             return true;
+        }
+
+        internal interface UI
+        {
+            void ShowInconsistentWriteDefaultsDialog(int onCount, int offCount);
+        }
+
+        private class UnityUI : UI
+        {
+            public void ShowInconsistentWriteDefaultsDialog(int onCount, int offCount)
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("passes.anims.vrc.composeSmartControls.dialog.msg.inconsistentWriteDefaults", onCount, offCount), t._("common.dialog.btn.ok"));
+            }
         }
     }
 }

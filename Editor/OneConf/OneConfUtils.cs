@@ -51,7 +51,7 @@ namespace Chocopoi.DressingTools.OneConf
             // no matter there are two occurance or not, we return the first found
             foreach (var sceneWearable in wearables)
             {
-                if (sceneWearable.rootGameObject == wearableGameObject)
+                if (sceneWearable.RootGameObject == wearableGameObject)
                 {
                     return sceneWearable;
                 }
@@ -88,7 +88,7 @@ namespace Chocopoi.DressingTools.OneConf
             // no matter there are two occurance or not, we return the first found
             foreach (var cabinet in cabinets)
             {
-                if (cabinet.rootGameObject == avatarGameObject)
+                if (cabinet.RootGameObject == avatarGameObject)
                 {
                     return cabinet;
                 }
@@ -100,9 +100,9 @@ namespace Chocopoi.DressingTools.OneConf
                 var comp = avatarGameObject.AddComponent<DTCabinet>();
 
                 // TODO: read default config, scan for armature names?
-                comp.rootGameObject = avatarGameObject;
+                comp.RootGameObject = avatarGameObject;
                 var config = new CabinetConfig();
-                comp.configJson = JsonConvert.SerializeObject(config);
+                comp.ConfigJson = JsonConvert.SerializeObject(config);
 
                 return comp;
             }
@@ -162,7 +162,7 @@ namespace Chocopoi.DressingTools.OneConf
             }
             else
             {
-                if (CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
                 {
                     wearableConfig.avatarConfig.armatureName = cabinetConfig.avatarArmatureName;
                 }

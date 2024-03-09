@@ -197,7 +197,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             {
                 _view.IsAvatarAssociatedWithCabinet = true;
 
-                if (CabinetConfigUtility.TryDeserialize(_cabinet.configJson, out var cabinetConfig))
+                if (CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out var cabinetConfig))
                 {
                     _view.AvatarArmatureName = cabinetConfig.avatarArmatureName;
                     _view.DresserSettings.avatarArmatureName = cabinetConfig.avatarArmatureName;

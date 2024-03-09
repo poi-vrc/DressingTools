@@ -55,7 +55,7 @@ namespace Chocopoi.DressingTools.Tests
             var cabCtx = new CabinetContext()
             {
                 dkCtx = dkCtx,
-                cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.configJson),
+                cabinetConfig = CabinetConfigUtility.Deserialize(cabinet.ConfigJson),
                 avatarDynamics = OneConfUtils.ScanAvatarOnlyDynamics(avatarObj)
             };
 
@@ -69,7 +69,7 @@ namespace Chocopoi.DressingTools.Tests
 
             var wearCtx = new WearableContext()
             {
-                wearableConfig = WearableConfigUtility.Deserialize(wearableComp.configJson),
+                wearableConfig = WearableConfigUtility.Deserialize(wearableComp.ConfigJson),
                 wearableGameObject = wearableObj,
                 wearableDynamics = DynamicsUtils.ScanDynamics(wearableObj)
             };

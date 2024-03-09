@@ -27,12 +27,15 @@ namespace Chocopoi.DressingTools.Components.OneConf
         /// <summary>
         /// Root GameObject. Set to `null` to use the GameObject holding this component.
         /// </summary>
-        public GameObject rootGameObject;
+        public GameObject RootGameObject { get => rootGameObject != null ? rootGameObject : gameObject; set => rootGameObject = value; }
 
         /// <summary>
         /// Config JSON. This is the same as the property `ConfigJson`.
         /// </summary>
-        public string configJson;
+        public string ConfigJson { get => configJson; set => configJson = value; }
+
+        [SerializeField] private GameObject rootGameObject;
+        [SerializeField] private string configJson;
 
         public DTCabinet()
         {

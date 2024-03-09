@@ -149,7 +149,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             savedPresets.Add(presetName, presetToSave);
 
             // serialize to cabinet
-            _cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
+            _cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
             UpdateView();
         }
 
@@ -165,7 +165,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             presetData.selectedPresetIndex = 0;
 
             // serialize to cabinet
-            _cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
+            _cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
             UpdateView();
         }
 
@@ -687,7 +687,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
-                if (!CabinetConfigUtility.TryDeserialize(_cabinet.configJson, out _cabinetConfig))
+                if (!CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out _cabinetConfig))
                 {
                     Debug.LogError("[DressingTools] [CabinetAnimWearableModuleEditorPresenter] Unable to deserialize cabinet config!");
                 }
@@ -703,7 +703,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                             moduleName = CabinetAnimCabinetModuleConfig.ModuleIdentifier,
                             config = _moduleConfig
                         });
-                        _cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
+                        _cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
                     }
                 }
             }

@@ -89,10 +89,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar, false);
             if (cabinet != null)
             {
-                if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+                if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
                 {
                     Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and creating a new config");
-                    cabinet.configJson = CabinetConfigUtility.Serialize(new CabinetConfig());
+                    cabinet.ConfigJson = CabinetConfigUtility.Serialize(new CabinetConfig());
                 }
 
                 _view.ShowHasCabinetHelpbox = true;
@@ -231,7 +231,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             AddClothesToCabinet(cabinet, targetAvatar, targetWearable);
 
             // run cabinet applier
-            var avatarObj = cabinet.rootGameObject;
+            var avatarObj = cabinet.RootGameObject;
             var ab = new AvatarBuilder(avatarObj);
             var dkReport = (DKReport)ab.Context.Report;
             DKEditorUtils.TrySafeRun("LegacyPresenter", dkReport, () => ab.RunStages());
@@ -247,11 +247,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void AddClothesToCabinet(DTCabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
         {
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and create a new one");
                 cabinetConfig = new CabinetConfig();
-                cabinet.configJson = CabinetConfigUtility.Serialize(cabinetConfig);
+                cabinet.ConfigJson = CabinetConfigUtility.Serialize(cabinetConfig);
             }
 
             // write cabinet config

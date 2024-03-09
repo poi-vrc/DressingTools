@@ -135,7 +135,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
-            cabinet.rootGameObject = _view.CabinetAvatarGameObject;
+            cabinet.RootGameObject = _view.CabinetAvatarGameObject;
 
             if (_cabinetConfig == null)
             {
@@ -145,7 +145,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _cabinetConfig.groupDynamics = _view.CabinetGroupDynamics;
             _cabinetConfig.groupDynamicsSeparateGameObjects = _view.CabinetGroupDynamicsSeparateGameObjects;
             _cabinetConfig.animationWriteDefaultsMode = (CabinetConfig.WriteDefaultsMode)_view.CabinetAnimationWriteDefaultsMode;
-            cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
+            cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
         }
 
         private void OnForceUpdateView()
@@ -189,7 +189,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.AvailableCabinetSelections.Clear();
             for (var i = 0; i < cabinets.Length; i++)
             {
-                _view.AvailableCabinetSelections.Add(cabinets[i].rootGameObject != null ? cabinets[i].rootGameObject.name : t._("cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
+                _view.AvailableCabinetSelections.Add(cabinets[i].RootGameObject != null ? cabinets[i].RootGameObject.name : t._("cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
             }
         }
 
@@ -220,14 +220,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
             // cabinet json is broken, ask user whether to make a new one or not
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out _cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out _cabinetConfig))
             {
                 // TODO: ask user
                 Debug.LogError("[DressingTools] [CabinetPresenter] Unable to deserialize cabinet config!");
                 return;
             }
 
-            _view.CabinetAvatarGameObject = cabinet.rootGameObject;
+            _view.CabinetAvatarGameObject = cabinet.RootGameObject;
             _view.CabinetAvatarArmatureName = _cabinetConfig.avatarArmatureName;
             _view.CabinetGroupDynamics = _cabinetConfig.groupDynamics;
             _view.CabinetGroupDynamicsSeparateGameObjects = _cabinetConfig.groupDynamicsSeparateGameObjects;
@@ -245,17 +245,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 {
                     _cabinetConfig.modules.Remove(cabinetModule);
                     _view.CabinetModulePreviews.Remove(preview);
-                    cabinet.configJson = CabinetConfigUtility.Serialize(_cabinetConfig);
+                    cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
                     _view.Repaint();
                 };
                 _view.CabinetModulePreviews.Add(preview);
             }
 
-            var wearables = OneConfUtils.GetCabinetWearables(cabinet.rootGameObject);
+            var wearables = OneConfUtils.GetCabinetWearables(cabinet.RootGameObject);
 
             foreach (var wearable in wearables)
             {
-                var config = WearableConfigUtility.Deserialize(wearable.configJson);
+                var config = WearableConfigUtility.Deserialize(wearable.ConfigJson);
                 _view.InstalledWearablePreviews.Add(new WearablePreview()
                 {
                     name = config != null ?
@@ -278,7 +278,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     },
                     EditButtonClick = () =>
                     {
-                        _view.StartDressing(cabinet.rootGameObject, wearable.rootGameObject);
+                        _view.StartDressing(cabinet.RootGameObject, wearable.RootGameObject);
                     }
                 });
             }
@@ -310,7 +310,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             var cabinet = cabinets[_view.SelectedCabinetIndex];
-            _view.StartDressing(cabinet.rootGameObject);
+            _view.StartDressing(cabinet.RootGameObject);
         }
     }
 }

@@ -130,7 +130,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
 
             var avatarObj = CreateGameObject("Avatar");
             var cabinet = OneConfUtils.GetAvatarCabinet(avatarObj, true);
-            cabinet.configJson = CabinetConfigUtility.Serialize(new CabinetConfig());
+            cabinet.ConfigJson = CabinetConfigUtility.Serialize(new CabinetConfig());
             mock.SetupProperty(m => m.TargetAvatar, avatarObj);
 
             var wearableObj = CreateGameObject("Wearable");

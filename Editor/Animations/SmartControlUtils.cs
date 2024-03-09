@@ -22,7 +22,10 @@ namespace Chocopoi.DressingTools.Animations
     {
         public static string SuggestRelativePathName<T>(Transform avatarRoot, T comp) where T : Component
         {
-            var relPath = AnimationUtils.GetRelativePath(comp.transform, avatarRoot);
+            var relPath = avatarRoot.transform == comp.transform ?
+                avatarRoot.name :
+                AnimationUtils.GetRelativePath(comp.transform, avatarRoot);
+
             var sameObjComps = comp.GetComponents<T>();
             if (sameObjComps.Length > 1)
             {
@@ -32,6 +35,20 @@ namespace Chocopoi.DressingTools.Animations
             else
             {
                 return relPath;
+            }
+        }
+
+        private static void RecursiveSearch(Transform transform, List<GameObject> excludes, HashSet<GameObject> result)
+        {
+            for (var i = 0; i < transform.childCount; i++)
+            {
+                var child = transform.GetChild(i);
+                if (excludes.Contains(child.gameObject))
+                {
+                    continue;
+                }
+                result.Add(child.gameObject);
+                RecursiveSearch(child, excludes, result);
             }
         }
 
@@ -47,14 +64,7 @@ namespace Chocopoi.DressingTools.Animations
                     // no search transform
                     return searchObjs;
                 }
-                var trans = searchTransform.GetComponentsInChildren<Transform>(true);
-                foreach (var tran in trans)
-                {
-                    if (!includesOrExcludes.Contains(tran.gameObject))
-                    {
-                        searchObjs.Add(tran.gameObject);
-                    }
-                }
+                RecursiveSearch(searchTransform, includesOrExcludes, searchObjs);
             }
             else
             {

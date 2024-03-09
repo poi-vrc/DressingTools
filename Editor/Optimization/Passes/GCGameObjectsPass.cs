@@ -96,10 +96,10 @@ namespace Chocopoi.DressingTools.Optimization.Passes
             }
         }
 
-        private void TraverseGameObjects(GameObject rootGameObject, Func<GameObject, bool> visitFunc)
+        private void TraverseGameObjects(GameObject RootGameObject, Func<GameObject, bool> visitFunc)
         {
             var queue = new Queue<GameObject>();
-            queue.Enqueue(rootGameObject);
+            queue.Enqueue(RootGameObject);
 
             while (queue.Count > 0)
             {
@@ -123,9 +123,9 @@ namespace Chocopoi.DressingTools.Optimization.Passes
             }
         }
 
-        private void ScanReferences(GameObject rootGameObject)
+        private void ScanReferences(GameObject RootGameObject)
         {
-            TraverseGameObjects(rootGameObject, go =>
+            TraverseGameObjects(RootGameObject, go =>
             {
                 // do not remove end bones
                 if (go.name.ToLower().EndsWith("end"))
@@ -138,14 +138,14 @@ namespace Chocopoi.DressingTools.Optimization.Passes
             });
         }
 
-        private void CleanGameObjects(Report report, GameObject rootGameObject)
+        private void CleanGameObjects(Report report, GameObject RootGameObject)
         {
-            TraverseGameObjects(rootGameObject, go =>
+            TraverseGameObjects(RootGameObject, go =>
             {
                 if (!_usefulObjects.Contains(go))
                 {
                     // for debug purposes
-                    report.LogInfo("GCGameObjectsPass", $"GC Destroyed: {AnimationUtils.GetRelativePath(go.transform, rootGameObject.transform)}");
+                    report.LogInfo("GCGameObjectsPass", $"GC Destroyed: {AnimationUtils.GetRelativePath(go.transform, RootGameObject.transform)}");
                     Object.DestroyImmediate(go);
                     return false;
                 }

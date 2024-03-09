@@ -80,7 +80,7 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.unableToLoadCabinetConfig"), t._("common.dialog.btn.ok"));
                 return;
@@ -97,7 +97,7 @@ namespace Chocopoi.DressingTools.UI
             }
 
             var wearableConfig = new WearableConfig();
-            OneConfUtils.PrepareWearableConfig(wearableConfig, cabinet.rootGameObject, wearable);
+            OneConfUtils.PrepareWearableConfig(wearableConfig, cabinet.RootGameObject, wearable);
 
             var armatureName = cabinetConfig.avatarArmatureName;
 
@@ -119,7 +119,7 @@ namespace Chocopoi.DressingTools.UI
 
                 var dresserSettings = new DefaultDresserSettings()
                 {
-                    targetAvatar = cabinet.rootGameObject,
+                    targetAvatar = cabinet.RootGameObject,
                     targetWearable = wearable,
                     dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
                 };
@@ -129,7 +129,7 @@ namespace Chocopoi.DressingTools.UI
 
                 if (report.HasLogType(DressingFramework.Logging.LogType.Error))
                 {
-                    ReportWindow.AddReport(cabinet.rootGameObject.name, report);
+                    ReportWindow.AddReport(cabinet.RootGameObject.name, report);
                     ReportWindow.ShowWindow();
                     EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.defaultDresserHasErrors"), t._("common.dialog.btn.ok"));
                     return;

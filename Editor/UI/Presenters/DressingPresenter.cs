@@ -98,7 +98,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 var cabinetWearable = OneConfUtils.GetCabinetWearable(_view.TargetWearable);
                 if (cabinetWearable != null)
                 {
-                    if (WearableConfigUtility.TryDeserialize(cabinetWearable.configJson, out var config))
+                    if (WearableConfigUtility.TryDeserialize(cabinetWearable.ConfigJson, out var config))
                     {
                         _view.Config = config;
                         _view.SelectedDressingMode = 1;
@@ -134,7 +134,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.configJson, out var cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
             {
                 // TODO: handle deserialization error
                 Debug.Log("[DressingTools] Could not deserialize cabinet config");

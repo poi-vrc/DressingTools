@@ -138,15 +138,15 @@ namespace Chocopoi.DressingTools.Animations
                     stack.Push(childAnimatorMachine.stateMachine);
                 }
             }
-
-            if (onCount != 0 && offCount != 0)
-            {
-                Debug.LogWarning($"[DressingTools] Inconsistent write defaults detected with {onCount} on and {offCount} off. Unexpected behaviour might occur. Using the one with more count.");
-            }
         }
 
         public static bool DetermineWriteDefaultsByOnOffCounts(int onCount, int offCount)
         {
+            if (onCount != 0 && offCount != 0)
+            {
+                Debug.LogWarning($"[DressingTools] Inconsistent write defaults detected with {onCount} on and {offCount} off. Unexpected behaviour might occur. Using the one with more count.");
+            }
+
             // default to on if both counts are equal
             return onCount >= offCount;
         }

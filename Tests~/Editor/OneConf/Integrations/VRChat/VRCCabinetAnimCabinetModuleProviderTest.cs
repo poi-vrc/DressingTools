@@ -13,16 +13,16 @@
 #if DT_VRCSDK3A
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Chocopoi.DressingFramework.Cabinet.Modules;
-using Chocopoi.DressingTools.Api.Integration.VRChat.Cabinet.Modules;
-using Chocopoi.DressingTools.Integration.VRChat.Modules;
+using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Cabinet.Modules.Integrations.VRChat;
+using Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.OneConf.Integrations.VRChat
 {
-    public class VRCCabinetAnimCabinetModuleProviderTest : EditorTestBase
+    internal class VRCCabinetAnimCabinetModuleProviderTest : EditorTestBase
     {
         [Test]
         public void DeserializeModuleConfigTest()

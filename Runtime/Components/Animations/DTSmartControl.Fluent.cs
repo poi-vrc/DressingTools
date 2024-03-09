@@ -47,6 +47,19 @@ namespace Chocopoi.DressingTools.Components.Animations
                 return this;
             }
 
+            public PropertyGroupBuilder WithAvatarWide()
+            {
+                return WithAvatarWideAndIgnore();
+            }
+
+            public PropertyGroupBuilder WithAvatarWideAndIgnore(params GameObject[] gameObjects)
+            {
+                _propGp.SelectionType = PropertyGroup.PropertySelectionType.AvatarWide;
+                _propGp.GameObjects.Clear();
+                _propGp.GameObjects.AddRange(gameObjects);
+                return this;
+            }
+
             public PropertyGroupBuilder ChangeProperty(string name, float value)
             {
                 _propGp.PropertyValues.Add(new PropertyGroup.PropertyValue()
@@ -100,6 +113,11 @@ namespace Chocopoi.DressingTools.Components.Animations
             {
                 _control = control;
                 _control.ControlType = SmartControlControlType.Binary;
+            }
+
+            public BinarySmartControlBuilder Toggle(GameObject gameObject, bool enabled)
+            {
+                return Toggle(gameObject.transform, enabled);
             }
 
             public BinarySmartControlBuilder Toggle(Component component, bool enabled)
