@@ -11,48 +11,19 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Inspector.Views;
-using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Inspector
 {
     [ExecuteInEditMode]
     [ExcludeFromCodeCoverage]
     [CustomEditor(typeof(DTSmartControl))]
-    internal class DTSmartControlEditor : Editor
+    internal class DTSmartControlEditor : EditorBase
     {
-        private static readonly I18nTranslator t = I18n.ToolTranslator;
-
-        private SmartControlView _view;
-
-        public DTSmartControlEditor()
-        {
-        }
-
-        public override VisualElement CreateInspectorGUI()
-        {
-            return _view;
-        }
-
-        public void OnEnable()
-        {
-            _view = new SmartControlView
-            {
-                Target = (DTSmartControl)target
-            };
-            _view.OnEnable();
-        }
-
-        public void OnDisable()
-        {
-            _view?.OnDisable();
-            _view.Target = null;
-            _view = null;
-        }
+        public override ElementView CreateView() => new SmartControlView { Target = (DTSmartControl)target };
     }
 }

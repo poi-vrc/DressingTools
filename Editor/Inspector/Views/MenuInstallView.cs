@@ -54,16 +54,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitVisualTree()
         {
-            var iconStyleSheet = Resources.Load<StyleSheet>("DTIconStyles");
-            if (!styleSheets.Contains(iconStyleSheet))
-            {
-                styleSheets.Add(iconStyleSheet);
-            }
-
-            var icon = new VisualElement();
-            icon.AddToClassList("dt-inspector-icon");
-            Add(icon);
-
             _menuGroupControlledHelpbox = CreateHelpBox(t._("inspector.menu.install.helpbox.menuGroupControlled"), UnityEditor.MessageType.Info);
             Add(_menuGroupControlledHelpbox);
 

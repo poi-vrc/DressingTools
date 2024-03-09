@@ -1,7 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement class="dt-inspector-icon">
-        <Style src="SmartControlViewStyles.uss" />
-    </ui:VisualElement>
     <ui:Foldout text="Driver: Animator Parameter" name="driver-foldout" class="foldout-header">
         <Style src="SmartControlViewStyles.uss" />
     </ui:Foldout>

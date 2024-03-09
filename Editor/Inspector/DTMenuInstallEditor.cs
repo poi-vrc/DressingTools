@@ -11,40 +11,19 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Inspector.Views;
-using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Inspector
 {
     [ExecuteInEditMode]
     [ExcludeFromCodeCoverage]
     [CustomEditor(typeof(DTMenuInstall))]
-    internal class DTMenuInstallEditor : Editor
+    internal class DTMenuInstallEditor : EditorBase
     {
-        private static readonly I18nTranslator t = I18n.ToolTranslator;
-        private MenuInstallView _view;
-
-        public override VisualElement CreateInspectorGUI()
-        {
-            return _view;
-        }
-
-        public void OnEnable()
-        {
-            _view = new MenuInstallView() { Target = (DTMenuInstall)target };
-            _view.OnEnable();
-        }
-
-        public void OnDisable()
-        {
-            _view?.OnDisable();
-            _view = null;
-        }
+        public override ElementView CreateView() => new MenuInstallView() { Target = (DTMenuInstall)target };
     }
 }
