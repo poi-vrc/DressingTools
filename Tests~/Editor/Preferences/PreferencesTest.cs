@@ -55,11 +55,9 @@ namespace Chocopoi.DressingTools.Tests.Prefs
             var prefs = new Preferences();
 
             // reset to defs
-            prefs.app.updateBranch = "abcdefg";
-            prefs.cabinet.defaultArmatureName = "abcdefg";
+            prefs.app.selectedLanguage = "ja";
             prefs.ResetToDefaults();
-            Assert.AreNotEqual("abcdefg", prefs.app.updateBranch);
-            Assert.AreNotEqual("abcdefg", prefs.cabinet.defaultArmatureName);
+            Assert.AreNotEqual("ja", prefs.app.selectedLanguage);
         }
 
         [Test]
@@ -102,7 +100,7 @@ namespace Chocopoi.DressingTools.Tests.Prefs
         public void LoadPrefsTest()
         {
             var prefs = new Preferences();
-            prefs.app.updateBranch = "hi";
+            prefs.app.selectedLanguage = "ja";
             EditorPrefs.SetString(EditorPrefsKey, JsonConvert.SerializeObject(prefs));
             var deserialized = PreferencesUtility.LoadPreferences();
             Assert.AreEqual(JsonConvert.SerializeObject(prefs), JsonConvert.SerializeObject(deserialized));

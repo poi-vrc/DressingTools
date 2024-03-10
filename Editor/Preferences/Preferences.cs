@@ -29,7 +29,6 @@ namespace Chocopoi.DressingTools
         public class App
         {
             public string selectedLanguage;
-            public string updateBranch;
 
             public App()
             {
@@ -39,45 +38,21 @@ namespace Chocopoi.DressingTools
             public void ResetToDefaults()
             {
                 selectedLanguage = I18nManager.DefaultLocale;
-                // TODO: change update branch not to use v2
-                updateBranch = "v2";
-            }
-        }
-
-        public class Cabinet
-        {
-            public string defaultArmatureName;
-            public bool defaultGroupDynamics;
-            public bool defaultGroupDynamicsSeparateDynamics;
-
-            public Cabinet()
-            {
-                ResetToDefaults();
-            }
-
-            public void ResetToDefaults()
-            {
-                defaultArmatureName = "Armature";
-                defaultGroupDynamics = true;
-                defaultGroupDynamicsSeparateDynamics = true;
             }
         }
 
         public SerializationVersion version;
         public App app;
-        public Cabinet cabinet;
 
         public Preferences()
         {
             version = CurrentConfigVersion;
             app = new App();
-            cabinet = new Cabinet();
         }
 
         public void ResetToDefaults()
         {
             app.ResetToDefaults();
-            cabinet.ResetToDefaults();
         }
     }
 }

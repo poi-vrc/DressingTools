@@ -54,7 +54,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.ForceUpdateView += OnForceUpdateView;
             _view.LanguageChanged += OnLanguageChanged;
-            _view.SettingsChanged += OnSettingsChanged;
             _view.UpdaterCheckUpdateButtonClicked += OnUpdaterCheckUpdateButtonClicked;
             _view.ResetToDefaultsButtonClicked += OnResetToDefaultsButtonClicked;
         }
@@ -66,7 +65,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.LanguageChanged -= OnLanguageChanged;
-            _view.SettingsChanged -= OnSettingsChanged;
             _view.UpdaterCheckUpdateButtonClicked -= OnUpdaterCheckUpdateButtonClicked;
             _view.ResetToDefaultsButtonClicked -= OnResetToDefaultsButtonClicked;
         }
@@ -102,15 +100,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Repaint();
         }
 
-        private void OnSettingsChanged()
-        {
-            _prefs.cabinet.defaultArmatureName = _view.CabinetDefaultsArmatureName;
-            _prefs.cabinet.defaultGroupDynamics = _view.CabinetDefaultsGroupDynamics;
-            _prefs.cabinet.defaultGroupDynamicsSeparateDynamics = _view.CabinetDefaultsSeparateDynamics;
-
-            PreferencesUtility.SavePreferences();
-        }
-
         private void UpdateLanguagePopupView()
         {
             var localeIndex = Array.IndexOf(_availableLocales, _prefs.app.selectedLanguage);
@@ -119,13 +108,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 localeIndex = 0;
             }
             _view.LanguageSelected = _view.AvailableLanguageKeys[localeIndex];
-        }
-
-        private void UpdateCabinetDefaultsView()
-        {
-            _view.CabinetDefaultsArmatureName = _prefs.cabinet.defaultArmatureName;
-            _view.CabinetDefaultsGroupDynamics = _prefs.cabinet.defaultGroupDynamics;
-            _view.CabinetDefaultsSeparateDynamics = _prefs.cabinet.defaultGroupDynamicsSeparateDynamics;
         }
 
         private void UpdateUpdateCheckerView()
@@ -137,7 +119,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void UpdateView()
         {
             UpdateLanguagePopupView();
-            UpdateCabinetDefaultsView();
             UpdateUpdateCheckerView();
 
             _view.Repaint();
