@@ -376,6 +376,12 @@ namespace Chocopoi.DressingTools.OneConf.Animations
 
         public void Compose()
         {
+            if (_ctrls.Count == 0)
+            {
+                // do not do anything if we don't have any cabinet anims to generate
+                return;
+            }
+
             // create cross controls to turn off other clothes
             FillCrossControls();
 
