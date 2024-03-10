@@ -36,7 +36,6 @@ namespace Chocopoi.DressingTools.UI.Views
         private const string PopupPlaceholder = "---";
 
         public event Action LanguageChanged;
-        public event Action SettingsChanged;
         public event Action UpdaterCheckUpdateButtonClicked;
         public event Action ResetToDefaultsButtonClicked;
 
@@ -45,10 +44,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public List<string> AvailableLanguageKeys { get; set; }
 
         public string LanguageSelected { get; set; }
-
-        public string CabinetDefaultsArmatureName { get; set; }
-        public bool CabinetDefaultsGroupDynamics { get; set; }
-        public bool CabinetDefaultsSeparateDynamics { get; set; }
 
         public string UpdaterCurrentVersion { get; set; }
         public bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
@@ -71,10 +66,6 @@ namespace Chocopoi.DressingTools.UI.Views
             ShowLanguageReloadWindowHelpbox = false;
 
             LanguageSelected = null;
-
-            CabinetDefaultsArmatureName = "Armature";
-            CabinetDefaultsGroupDynamics = true;
-            CabinetDefaultsSeparateDynamics = true;
 
             UpdaterCurrentVersion = "";
             UpdaterShowHelpboxUpdateNotChecked = true;
@@ -108,30 +99,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _languageHelpboxContainer = Q<VisualElement>("language-helpbox-container").First();
         }
 
-        private void InitCabinetDefaults()
-        {
-            _cabinetDefArmatureNameField = Q<TextField>("cabinet-def-armature-name-field").First();
-            _cabinetDefArmatureNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
-            {
-                var val = _cabinetDefArmatureNameField.value;
-                if (string.IsNullOrEmpty(val)) return;
-                CabinetDefaultsArmatureName = val;
-                SettingsChanged?.Invoke();
-            });
-            _cabinetGroupDynamicsToggle = Q<Toggle>("cabinet-def-group-dynamics-toggle").First();
-            _cabinetGroupDynamicsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
-            {
-                CabinetDefaultsGroupDynamics = evt.newValue;
-                SettingsChanged?.Invoke();
-            });
-            _cabinetSeparateDynamicsToggle = Q<Toggle>("cabinet-def-separate-dynamics-toggle").First();
-            _cabinetSeparateDynamicsToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
-            {
-                CabinetDefaultsSeparateDynamics = evt.newValue;
-                SettingsChanged?.Invoke();
-            });
-        }
-
         private void InitUpdateChecker()
         {
             _updaterCurrentVerLabel = Q<Label>("updater-current-ver-label").First();
@@ -142,13 +109,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
             var resetToDefaultsBtn = Q<Button>("reset-defaults-btn").First();
             resetToDefaultsBtn.clicked += ResetToDefaultsButtonClicked;
-        }
-
-        private void RepaintCabinetDefaults()
-        {
-            _cabinetDefArmatureNameField.value = CabinetDefaultsArmatureName;
-            _cabinetGroupDynamicsToggle.value = CabinetDefaultsGroupDynamics;
-            _cabinetSeparateDynamicsToggle.value = CabinetDefaultsSeparateDynamics;
         }
 
         private void RepaintUpdateChecker()
@@ -171,7 +131,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 _languageHelpboxContainer.Add(CreateHelpBox(t._("settings.editor.helpbox.updateLocaleReloadWindow"), MessageType.Warning));
             }
 
-            RepaintCabinetDefaults();
             RepaintUpdateChecker();
         }
 
@@ -179,7 +138,6 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             InitVisualTree();
             InitLanguagePopup();
-            InitCabinetDefaults();
             InitUpdateChecker();
 
             t.LocalizeElement(this);

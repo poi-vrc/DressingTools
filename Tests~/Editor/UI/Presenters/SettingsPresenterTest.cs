@@ -43,13 +43,6 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             Assert.AreEqual(expectedlangIndex, selectedLangIndex);
         }
 
-        private static void AssertCabinetDefaults(Preferences prefs, ISettingsSubView view)
-        {
-            Assert.AreEqual(prefs.cabinet.defaultArmatureName, view.CabinetDefaultsArmatureName);
-            Assert.AreEqual(prefs.cabinet.defaultGroupDynamics, view.CabinetDefaultsGroupDynamics);
-            Assert.AreEqual(prefs.cabinet.defaultGroupDynamicsSeparateDynamics, view.CabinetDefaultsSeparateDynamics);
-        }
-
         private static void AssertUpdateChecker(ISettingsSubView view)
         {
             Assert.NotNull(UpdateChecker.CurrentVersion);
@@ -61,7 +54,6 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var view = mock.Object;
             var prefs = PreferencesUtility.GetPreferences();
             AssertLanguagePopup(prefs, view);
-            AssertCabinetDefaults(prefs, view);
             AssertUpdateChecker(view);
             mock.Verify(m => m.Repaint(), Times.Once);
         }
@@ -90,14 +82,6 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             mock.SetupProperty(m => m.LanguageSelected, "English");
             mock.Raise(m => m.LanguageChanged += null);
             mock.VerifySet(m => m.ShowLanguageReloadWindowHelpbox = true);
-        }
-
-        [Test]
-        public void SettingsChangedTest()
-        {
-            var mock = SetupMock();
-            mock.Raise(m => m.SettingsChanged += null);
-            // TODO: add some asserts?
         }
 
         [Test]

@@ -23,7 +23,6 @@ namespace Chocopoi.DressingTools.UI.Views
     internal interface ISettingsSubView : IEditorView
     {
         event Action LanguageChanged;
-        event Action SettingsChanged;
         event Action UpdaterCheckUpdateButtonClicked;
         event Action ResetToDefaultsButtonClicked;
 
@@ -32,10 +31,6 @@ namespace Chocopoi.DressingTools.UI.Views
         List<string> AvailableLanguageKeys { get; set; }
 
         string LanguageSelected { get; set; }
-
-        string CabinetDefaultsArmatureName { get; set; }
-        bool CabinetDefaultsGroupDynamics { get; set; }
-        bool CabinetDefaultsSeparateDynamics { get; set; }
 
         string UpdaterCurrentVersion { get; set; }
         bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
