@@ -31,6 +31,7 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
     // TODO: this currently depends on VRC because we still need to find a way to allow user to supply animator
     internal class ComposeSmartControlsPass : BuildPass
     {
+        private const string LogLabel = "SmartControlComposer";
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose)
@@ -66,15 +67,18 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
             if (config.animationWriteDefaultsMode == CabinetConfig.WriteDefaultsMode.Auto)
             {
                 AnimUtils.GetWriteDefaultCounts(fx, out var onCount, out var offCount);
+                ctx.Report.LogInfo(LogLabel, $"Write defaults count: {onCount} on {offCount} off");
                 if (onCount != 0 && offCount != 0)
                 {
                     ui.ShowInconsistentWriteDefaultsDialog(onCount, offCount);
                 }
                 writeDefaults = AnimUtils.DetermineWriteDefaultsByOnOffCounts(onCount, offCount);
+                ctx.Report.LogInfo(LogLabel, $"Detected write defaults {(writeDefaults ? "on" : "off")}");
             }
             else
             {
                 writeDefaults = config.animationWriteDefaultsMode == CabinetConfig.WriteDefaultsMode.On;
+                ctx.Report.LogInfo(LogLabel, $"Explicitly specified to use write defaults {(writeDefaults ? "on" : "off")}");
             }
 
             var options = new AnimatorOptions()

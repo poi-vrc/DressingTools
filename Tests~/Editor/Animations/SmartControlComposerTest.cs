@@ -179,15 +179,18 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             var disabledClip = GetLayerStateClip(0, ac, "Disabled", writeDefaults);
             var enabledClip = GetLayerStateClip(0, ac, "Enabled", writeDefaults);
+            var prepareDisabledClip = GetLayerStateClip(0, ac, "Prepare Disabled", writeDefaults);
+
+            Assert.True(disabledClip.empty);
 
             if (writeDefaults)
             {
-                Assert.True(disabledClip.empty);
+                Assert.True(prepareDisabledClip.empty);
             }
             else
             {
-                Assert.True(HasToggleComponentCurve<Transform>(disabledClip, "B", true));
-                Assert.True(HasToggleComponentCurve<ParentConstraint>(disabledClip, "C", true));
+                Assert.True(HasToggleComponentCurve<Transform>(prepareDisabledClip, "B", true));
+                Assert.True(HasToggleComponentCurve<ParentConstraint>(prepareDisabledClip, "C", true));
             }
             Assert.True(HasToggleComponentCurve<Transform>(enabledClip, "B", false));
             Assert.True(HasToggleComponentCurve<ParentConstraint>(enabledClip, "C", true));
@@ -249,29 +252,32 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             var disabledClip = GetLayerStateClip(0, ac, "Disabled", writeDefaults);
             var enabledClip = GetLayerStateClip(0, ac, "Enabled", writeDefaults);
+            var prepareDisabledClip = GetLayerStateClip(0, ac, "Prepare Disabled", writeDefaults);
+
+            Assert.True(disabledClip.empty);
 
             if (writeDefaults)
             {
-                Assert.True(disabledClip.empty);
+                Assert.True(prepareDisabledClip.empty);
             }
             else
             {
                 // existing values from prefab
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "B/Cube", "blendShape.Key1", 60.0f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "B/Cube", "blendShape.Key1", 60.0f));
 
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "B/Cube", "blendShape.Key2", 50.0f));
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "D/Cube", "blendShape.Key2", 50.0f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "B/Cube", "blendShape.Key2", 50.0f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "D/Cube", "blendShape.Key2", 50.0f));
                 // ignored object
-                Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "C/Cube", "blendShape.Key2", 50.0f));
+                Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "C/Cube", "blendShape.Key2", 50.0f));
 
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "B/Cube", "blendShape.Key3", 40.0f));
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "C/Cube", "blendShape.Key3", 40.0f));
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "D/Cube", "blendShape.Key3", 40.0f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "B/Cube", "blendShape.Key3", 40.0f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "C/Cube", "blendShape.Key3", 40.0f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "D/Cube", "blendShape.Key3", 40.0f));
 
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "B/Cube", "material._Metallic", 0.65f));
-                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "C/Cube", "material._Metallic", 0.65f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "B/Cube", "material._Metallic", 0.65f));
+                Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "C/Cube", "material._Metallic", 0.65f));
                 // avatar-wide ignored
-                Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(disabledClip, "D/Cube", "material._Metallic", 0.65f));
+                Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "D/Cube", "material._Metallic", 0.65f));
             }
             Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "B/Cube", "blendShape.Key1", MagicBlendshapeFloat));
 

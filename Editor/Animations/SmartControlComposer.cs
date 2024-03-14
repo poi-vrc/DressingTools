@@ -142,14 +142,20 @@ namespace Chocopoi.DressingTools.Animations
             var layer = animator.NewLayer(SmartControlUtils.SuggestRelativePathName(_options.context.AvatarGameObject.transform, ctrl));
             var disabledState = layer.NewState("Disabled");
             var enabledState = layer.NewState("Enabled");
+            var prepareDisabledState = layer.NewState("Prepare Disabled");
+
+            // a dummy empty animation
+            disabledState.WithNewAnimation();
 
             layer.WithDefaultState(disabledState);
             disabledState.AddTransition(enabledState)
                 .If(animator.BoolParameter(ctrl.AnimatorConfig.ParameterName));
-            enabledState.AddTransition(disabledState)
+            enabledState.AddTransition(prepareDisabledState)
+                .IfNot(animator.BoolParameter(ctrl.AnimatorConfig.ParameterName));
+            prepareDisabledState.AddTransition(disabledState)
                 .IfNot(animator.BoolParameter(ctrl.AnimatorConfig.ParameterName));
 
-            ComposeBinaryToggles(_controller, disabledState, enabledState, ctrl);
+            ComposeBinaryToggles(_controller, prepareDisabledState, enabledState, ctrl);
         }
 
         private void ComposePropertyGroupFromToValue(AnimationClipBuilder clip, DTSmartControl.PropertyGroup propGp)
