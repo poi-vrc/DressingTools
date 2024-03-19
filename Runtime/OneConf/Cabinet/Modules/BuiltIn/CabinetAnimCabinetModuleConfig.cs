@@ -22,6 +22,8 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn
     /// </summary>
     internal class CabinetAnimCabinetModuleConfig : IModuleConfig
     {
+        public const string DefaultCabinetMenuName = "DT Cabinet";
+
         /// <summary>
         /// Module identifier
         /// </summary>
@@ -30,7 +32,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn
         /// <summary>
         /// Current config version
         /// </summary>
-        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 1, 0);
 
         /// <summary>
         /// Config version
@@ -48,6 +50,31 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn
         public Dictionary<string, CabinetAnimWearableModuleConfig.Preset> savedWearablePresets;
 
         /// <summary>
+        /// Enable cabinet thumbnails to use in toggle icons
+        /// </summary>
+        public bool thumbnails;
+
+        /// <summary>
+        /// Install path for the cabinet menu
+        /// </summary>
+        public string menuInstallPath;
+
+        /// <summary>
+        /// Cabinet menu item name
+        /// </summary>
+        public string menuItemName;
+
+        /// <summary>
+        /// Network synced
+        /// </summary>
+        public bool networkSynced;
+
+        /// <summary>
+        /// Saved
+        /// </summary>
+        public bool saved;
+
+        /// <summary>
         /// Constructs a new cabinet animation cabinet module config
         /// </summary>
         public CabinetAnimCabinetModuleConfig()
@@ -55,6 +82,11 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn
             version = CurrentConfigVersion;
             savedAvatarPresets = new Dictionary<string, CabinetAnimWearableModuleConfig.Preset>();
             savedWearablePresets = new Dictionary<string, CabinetAnimWearableModuleConfig.Preset>();
+            thumbnails = true;
+            menuInstallPath = "";
+            menuItemName = DefaultCabinetMenuName;
+            networkSynced = true;
+            saved = true;
         }
     }
 }

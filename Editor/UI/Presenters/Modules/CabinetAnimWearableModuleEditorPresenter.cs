@@ -622,7 +622,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     name = wearable.name,
                     type = (int)wearable.type,
-                    defaultValue = wearable.defaultValue
+                    defaultValue = wearable.defaultValue,
+                    networkSynced = wearable.networkSynced,
+                    saved = wearable.saved
                 };
 
                 customizableData.removeButtonClickEvent = () =>
@@ -637,6 +639,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                     wearable.name = customizableData.name;
                     wearable.type = (CabinetAnimWearableModuleConfig.CustomizableType)customizableData.type;
                     wearable.defaultValue = customizableData.defaultValue;
+                    wearable.networkSynced = customizableData.networkSynced;
+                    wearable.saved = customizableData.saved;
                 };
 
                 customizableData.addAvatarToggleEvent = () =>

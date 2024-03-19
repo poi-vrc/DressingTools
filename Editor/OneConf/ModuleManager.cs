@@ -54,7 +54,6 @@ namespace Chocopoi.DressingTools.OneConf
             AddWearableModule(new MoveRootWearableModuleProvider());
 
 #if DT_VRCSDK3A
-            AddCabinetModule(new VRCCabinetAnimCabinetModuleProvider());
             AddWearableModule(new VRCMergeAnimLayerWearableModuleProvider());
 #endif
 

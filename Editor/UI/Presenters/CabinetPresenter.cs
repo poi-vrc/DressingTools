@@ -15,11 +15,13 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Cabinet;
+using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
@@ -145,6 +147,24 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _cabinetConfig.groupDynamics = _view.CabinetGroupDynamics;
             _cabinetConfig.groupDynamicsSeparateGameObjects = _view.CabinetGroupDynamicsSeparateGameObjects;
             _cabinetConfig.animationWriteDefaultsMode = (CabinetConfig.WriteDefaultsMode)_view.CabinetAnimationWriteDefaultsMode;
+
+            var cabAnimConfig = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
+            if (cabAnimConfig == null)
+            {
+                cabAnimConfig = new CabinetAnimCabinetModuleConfig();
+                _cabinetConfig.modules.Add(new CabinetModule()
+                {
+                    config = cabAnimConfig,
+                    moduleName = CabinetAnimCabinetModuleConfig.ModuleIdentifier
+                });
+            }
+
+            cabAnimConfig.thumbnails = _view.CabinetUseThumbnailsAsMenuIcons;
+            cabAnimConfig.menuInstallPath = _view.CabinetMenuInstallPath;
+            cabAnimConfig.menuItemName = _view.CabinetMenuItemName;
+            cabAnimConfig.networkSynced = _view.CabinetNetworkSynced;
+            cabAnimConfig.saved = _view.CabinetSaved;
+
             cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
         }
 
@@ -232,24 +252,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CabinetGroupDynamics = _cabinetConfig.groupDynamics;
             _view.CabinetGroupDynamicsSeparateGameObjects = _cabinetConfig.groupDynamicsSeparateGameObjects;
             _view.CabinetAnimationWriteDefaultsMode = (int)_cabinetConfig.animationWriteDefaultsMode;
-
-            // list cabinet modules
-            _view.CabinetModulePreviews.Clear();
-            foreach (var cabinetModule in _cabinetConfig.modules)
-            {
-                var preview = new CabinetModulePreview()
-                {
-                    name = cabinetModule.moduleName,
-                };
-                preview.RemoveButtonClick = () =>
-                {
-                    _cabinetConfig.modules.Remove(cabinetModule);
-                    _view.CabinetModulePreviews.Remove(preview);
-                    cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
-                    _view.Repaint();
-                };
-                _view.CabinetModulePreviews.Add(preview);
-            }
+            UpdateCabinetAnimationConfig();
 
             var wearables = OneConfUtils.GetCabinetWearables(cabinet.RootGameObject);
 
@@ -282,6 +285,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     }
                 });
             }
+        }
+
+        private void UpdateCabinetAnimationConfig()
+        {
+            var cabAnimConfig = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>() ?? new CabinetAnimCabinetModuleConfig();
+            _view.CabinetUseThumbnailsAsMenuIcons = cabAnimConfig.thumbnails;
+            _view.CabinetMenuInstallPath = cabAnimConfig.menuInstallPath;
+            _view.CabinetMenuItemName = cabAnimConfig.menuItemName;
+            _view.CabinetNetworkSynced = cabAnimConfig.networkSynced;
+            _view.CabinetSaved = cabAnimConfig.saved;
         }
 
         private void UpdateView()

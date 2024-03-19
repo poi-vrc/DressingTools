@@ -274,6 +274,9 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                 TextField(t._("modules.wearable.cabinetAnim.editor.label.name"), ref customizable.name, customizable.customizableSettingsChangeEvent);
                 Popup(t._("modules.wearable.cabinetAnim.editor.popup.customizableType"), ref customizable.type, new string[] { t._("modules.wearable.cabinetAnim.editor.popup.customizableType.toggle"), t._("modules.wearable.cabinetAnim.editor.popup.customizableType.blendshape") }, customizable.customizableSettingsChangeEvent);
 
+                Toggle(t._("modules.wearable.cabinetAnim.editor.toggle.networkSynced"), ref customizable.networkSynced, customizable.customizableSettingsChangeEvent);
+                Toggle(t._("modules.wearable.cabinetAnim.editor.toggle.saved"), ref customizable.saved, customizable.customizableSettingsChangeEvent);
+
                 Separator();
 
                 if (customizable.type == 0)

@@ -13,11 +13,10 @@
 using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Menu;
-using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Dynamics.Proxy;
+using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Wearable;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using UnityEditor.Animations;
@@ -31,21 +30,35 @@ namespace Chocopoi.DressingTools.OneConf.Animations
     /// </summary>
     internal class CabinetAnimComposer
     {
+        private class WearableNameCount
+        {
+            public int count;
+            public Dictionary<string, int> customizableCounts;
+
+            public WearableNameCount()
+            {
+                count = 1;
+                customizableCounts = new Dictionary<string, int>();
+            }
+        }
+
         private readonly AnimatorController _controller;
         private readonly Context _ctx;
         private readonly GameObject _avatarObject;
         private readonly MenuGroup _menuGroup;
         private readonly Dictionary<GameObject, List<DTSmartControl>> _ctrls;
-        private readonly bool _useThumbnails;
+        private readonly Dictionary<string, WearableNameCount> _wearableNameCounts;
+        private readonly CabinetAnimCabinetModuleConfig _cabAnimConfig;
 
-        public CabinetAnimComposer(Context ctx, AnimatorController controller, GameObject avatarObject, bool useThumbnails)
+        public CabinetAnimComposer(Context ctx, AnimatorController controller, GameObject avatarObject, CabinetAnimCabinetModuleConfig cabAnimConfig)
         {
             _ctx = ctx;
             _controller = controller;
             _avatarObject = avatarObject;
             _menuGroup = new MenuGroup();
             _ctrls = new Dictionary<GameObject, List<DTSmartControl>>();
-            _useThumbnails = useThumbnails;
+            _wearableNameCounts = new Dictionary<string, WearableNameCount>();
+            _cabAnimConfig = cabAnimConfig;
         }
 
         private Transform GetAvatarTransform(string avatarPath)
@@ -125,11 +138,40 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             }
         }
 
-        private void MakeBasicToggles(GameObject wearableObject, List<IDynamicsProxy> wearableDynamics, CabinetAnimWearableModuleConfig module, out DTSmartControl ctrl)
+        private string MakeUniqueWearableName(string name)
+        {
+            if (!_wearableNameCounts.ContainsKey(name))
+            {
+                _wearableNameCounts[name] = new WearableNameCount();
+                return name;
+            }
+            return $"{name}_{++_wearableNameCounts[name].count}";
+        }
+
+        private string MakeUniqueWearableCustomizableName(string wearableName, string customizableName)
+        {
+            WearableNameCount wearableNameCount;
+            if (!_wearableNameCounts.ContainsKey(wearableName))
+            {
+                _wearableNameCounts[wearableName] = new WearableNameCount();
+            }
+            wearableNameCount = _wearableNameCounts[wearableName];
+
+            if (!wearableNameCount.customizableCounts.ContainsKey(customizableName))
+            {
+                wearableNameCount.customizableCounts[customizableName] = 1;
+                return $"{customizableName}";
+            }
+            return $"{customizableName}_{++wearableNameCount.customizableCounts[customizableName]}";
+        }
+
+        private void MakeBasicToggles(GameObject wearableObject, string uniqueWearableName, List<IDynamicsProxy> wearableDynamics, CabinetAnimWearableModuleConfig module, out DTSmartControl ctrl)
         {
             // TODO: separate into different gameobjects?
             ctrl = wearableObject.AddComponent<DTSmartControl>();
-            ctrl.AnimatorConfig.ParameterName = $"cpCA_{wearableObject.name}_{DKEditorUtils.RandomString(8)}";
+            ctrl.AnimatorConfig.ParameterName = $"cpCA_{uniqueWearableName}";
+            ctrl.AnimatorConfig.NetworkSynced = _cabAnimConfig.networkSynced;
+            ctrl.AnimatorConfig.Saved = _cabAnimConfig.saved;
             var binaryBuilder = ctrl.AsBinary();
 
             MakeAvatarToggles(binaryBuilder, module.avatarAnimationOnWear.toggles);
@@ -143,12 +185,14 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             }
         }
 
-        private void MakeToggleCustomizable(GameObject wearableObject, CabinetAnimWearableModuleConfig.Customizable cst, out DTSmartControl ctrl)
+        private void MakeToggleCustomizable(GameObject wearableObject, string uniqueWearableName, CabinetAnimWearableModuleConfig.Customizable cst, out DTSmartControl ctrl)
         {
             // TODO: separate into different gameobjects?
             // TODO: animator config builder?
             ctrl = wearableObject.AddComponent<DTSmartControl>();
-            ctrl.AnimatorConfig.ParameterName = $"cpCA_{wearableObject.name}_{cst.name}_{DKEditorUtils.RandomString(8)}";
+            ctrl.AnimatorConfig.ParameterName = $"cpCA_{uniqueWearableName}_{MakeUniqueWearableCustomizableName(uniqueWearableName, cst.name)}";
+            ctrl.AnimatorConfig.NetworkSynced = cst.networkSynced;
+            ctrl.AnimatorConfig.Saved = cst.saved;
             var binaryBuilder = ctrl.AsBinary();
 
             MakeAvatarToggles(binaryBuilder, cst.avatarToggles);
@@ -187,10 +231,12 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             return true;
         }
 
-        private void MakeBlendshapeCustomizable(GameObject wearableObject, CabinetAnimWearableModuleConfig.Customizable cst, out DTSmartControl ctrl)
+        private void MakeBlendshapeCustomizable(GameObject wearableObject, string uniqueWearableName, CabinetAnimWearableModuleConfig.Customizable cst, out DTSmartControl ctrl)
         {
             ctrl = wearableObject.AddComponent<DTSmartControl>();
-            ctrl.AnimatorConfig.ParameterName = $"cpCA_{wearableObject.name}_{cst.name}_{DKEditorUtils.RandomString(8)}";
+            ctrl.AnimatorConfig.ParameterName = $"cpCA_{uniqueWearableName}_{MakeUniqueWearableCustomizableName(uniqueWearableName, cst.name)}";
+            ctrl.AnimatorConfig.NetworkSynced = cst.networkSynced;
+            ctrl.AnimatorConfig.Saved = cst.saved;
             var mtBuilder = ctrl.AsMotionTime();
 
             // TODO: animator config builder?
@@ -225,7 +271,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             }
         }
 
-        private void MakeCustomizableToggles(GameObject wearableObject, CabinetAnimWearableModuleConfig module, out Dictionary<CabinetAnimWearableModuleConfig.Customizable, DTSmartControl> ctrls)
+        private void MakeCustomizableToggles(GameObject wearableObject, string uniqueWearableName, CabinetAnimWearableModuleConfig module, out Dictionary<CabinetAnimWearableModuleConfig.Customizable, DTSmartControl> ctrls)
         {
             ctrls = new Dictionary<CabinetAnimWearableModuleConfig.Customizable, DTSmartControl>();
 
@@ -233,12 +279,12 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             {
                 if (cst.type == CabinetAnimWearableModuleConfig.CustomizableType.Toggle)
                 {
-                    MakeToggleCustomizable(wearableObject, cst, out var ctrl);
+                    MakeToggleCustomizable(wearableObject, uniqueWearableName, cst, out var ctrl);
                     ctrls[cst] = ctrl;
                 }
                 else if (cst.type == CabinetAnimWearableModuleConfig.CustomizableType.Blendshape)
                 {
-                    MakeBlendshapeCustomizable(wearableObject, cst, out var ctrl);
+                    MakeBlendshapeCustomizable(wearableObject, uniqueWearableName, cst, out var ctrl);
                     ctrls[cst] = ctrl;
                 }
             }
@@ -252,11 +298,12 @@ namespace Chocopoi.DressingTools.OneConf.Animations
                 return;
             }
 
-            MakeBasicToggles(wearableObject, wearableDynamics, module, out var basicCtrl);
-            MakeCustomizableToggles(wearableObject, module, out var cstCtrls);
+            var uniqueWearableName = MakeUniqueWearableName(string.IsNullOrEmpty(config.info.name) ? wearableObject.name : config.info.name);
+            MakeBasicToggles(wearableObject, uniqueWearableName, wearableDynamics, module, out var basicCtrl);
+            MakeCustomizableToggles(wearableObject, uniqueWearableName, module, out var cstCtrls);
 
             Texture2D icon = null;
-            if (_useThumbnails && !string.IsNullOrEmpty(config.info.thumbnail))
+            if (_cabAnimConfig.thumbnails && !string.IsNullOrEmpty(config.info.thumbnail))
             {
                 icon = OneConfUtils.GetTextureFromBase64(config.info.thumbnail);
                 icon.Compress(true);
@@ -389,10 +436,10 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             var store = _ctx.Feature<MenuStore>();
             store.Append(new SubMenuItem()
             {
-                Name = "DT Cabinet", // TODO: allow to rename and add icon
-                Icon = null,
+                Name = _cabAnimConfig.menuItemName,
+                Icon = null, // TODO: add icon
                 SubMenu = _menuGroup
-            });
+            }, _cabAnimConfig.menuInstallPath);
         }
     }
 }
