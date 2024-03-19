@@ -55,7 +55,6 @@
     "cabinet.editor.createCabinet.btn.back": "戻る",
     "cabinet.editor.cabinetContent.btn.remove": "削除",
     "cabinet.editor.cabinetContent.popup.cabinet": "キャビネット",
-    "cabinet.editor.cabinetContent.settings.label.installedCabinetModules": "インストールされたキャビネットモジュール (WIP)",
     "cabinet.editor.cabinetContent.settings.toggle.groupDynamics": "ダイナミクスをまとめる",
     "cabinet.editor.cabinetContent.toolbar.btn.createCabinet": "キャビネットを作る",
     "cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached": "キャビネット {0} (オブジェクトがありません)",

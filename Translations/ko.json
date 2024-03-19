@@ -6,7 +6,6 @@
     "cabinet.editor.cabinetContent.foldout.settings": "설정",
     "cabinet.editor.cabinetContent.popup.cabinet": "옷장",
     "cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached": "옷장 {0} (게임오브젝트가 없습니다)",
-    "cabinet.editor.cabinetContent.settings.label.installedCabinetModules": "설치된 옷장 모듈(제작중)",
     "cabinet.editor.cabinetContent.settings.textField.avatarArmatureName": "아바타 아마추어 이름",
     "cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode": "쓰기 기본값 모드",
     "cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.auto": "자동",
