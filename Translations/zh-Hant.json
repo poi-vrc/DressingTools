@@ -398,5 +398,14 @@
     "cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.auto": "自動",
     "cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.on": "開啟",
     "cabinet.editor.cabinetContent.settings.popup.animationWriteDefaultsMode.off": "關閉",
-    "passes.anims.vrc.composeSmartControls.dialog.msg.inconsistentWriteDefaults": "偵測到在 FX 層上寫入預設值不一致: 開啟 {0} 和關閉 {1} 。現在會使用數量較多的寫入預設值模式。\n\n此問題可能會嚴重破壞所有動畫，並且可能會出現出乎意料的東西。請修復它們或從設定中明確設定寫入預設模式，來停止此訊息彈出。"
+    "passes.anims.vrc.composeSmartControls.dialog.msg.inconsistentWriteDefaults": "偵測到在 FX 層上寫入預設值不一致: 開啟 {0} 和關閉 {1} 。現在會使用數量較多的寫入預設值模式。\n\n此問題可能會嚴重破壞所有動畫，並且可能會出現出乎意料的東西。請修復它們或從設定中明確設定寫入預設模式，來停止此訊息彈出。",
+    "cabinet.editor.cabinetContent.settings.toggle.resetCustomizablesOnSwitch": "換衣服時重置自定義開關",
+    "cabinet.editor.cabinetContent.settings.textField.menuItemName": "選單項目名稱",
+    "modules.wearable.cabinetAnim.editor.toggle.networkSynced": "網路同步",
+    "modules.wearable.cabinetAnim.editor.toggle.saved": "在不同的世界之間儲存",
+    "cabinet.editor.cabinetContent.settings.toggle.useThumbnailsAsMenuIcons": "使用縮圖作為選單圖示",
+    "cabinet.editor.cabinetContent.settings.toggle.networkSynced": "網路同步",
+    "cabinet.editor.cabinetContent.settings.toggle.saved": "在不同的世界之間儲存",
+    "cabinet.editor.cabinetContent.settings.helpbox.installPathDescription": "選單可以安裝到從根目錄開始的特定相對路徑，以斜線分隔。 （例如 Menu1/Menu2/Menu3）如果留空，則會安裝到根目錄。",
+    "cabinet.editor.cabinetContent.settings.textField.menuInstallPath": "選單安裝路徑"
 }
