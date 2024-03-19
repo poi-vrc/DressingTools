@@ -75,6 +75,11 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn
         public bool saved;
 
         /// <summary>
+        /// Reset customizables when switching to another outfit
+        /// </summary>
+        public bool resetCustomizablesOnSwitch;
+
+        /// <summary>
         /// Constructs a new cabinet animation cabinet module config
         /// </summary>
         public CabinetAnimCabinetModuleConfig()
@@ -87,6 +92,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn
             menuItemName = DefaultCabinetMenuName;
             networkSynced = true;
             saved = true;
+            resetCustomizablesOnSwitch = true;
         }
     }
 }
