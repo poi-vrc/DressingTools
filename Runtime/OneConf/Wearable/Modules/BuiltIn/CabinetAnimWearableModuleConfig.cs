@@ -207,6 +207,16 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn
             public List<BlendshapeValue> wearableBlendshapes;
 
             /// <summary>
+            /// Network synced
+            /// </summary>
+            public bool networkSynced;
+
+            /// <summary>
+            /// Saved
+            /// </summary>
+            public bool saved;
+
+            /// <summary>
             /// Constructs a new customizable
             /// </summary>
             public Customizable()
@@ -217,6 +227,8 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn
                 wearableToggles = new List<Toggle>();
                 avatarBlendshapes = new List<BlendshapeValue>();
                 wearableBlendshapes = new List<BlendshapeValue>();
+                networkSynced = true;
+                saved = true;
             }
         }
 

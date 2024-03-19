@@ -46,7 +46,6 @@ namespace Chocopoi.DressingTools
             RegisterBuildPass(new GCGameObjectsPass());
 
 #if DT_VRCSDK3A
-            RegisterBuildPass(new VRCCabinetAnimCabinetModuleProvider());
             RegisterBuildPass(new VRCMergeAnimLayerWearableModuleProvider());
             RegisterBuildPass(new ComposeSmartControlsPass());
 #endif

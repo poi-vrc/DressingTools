@@ -54,9 +54,13 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool CabinetGroupDynamics { get; set; }
         public bool CabinetGroupDynamicsSeparateGameObjects { get; set; }
         public int CabinetAnimationWriteDefaultsMode { get; set; }
-        public List<CabinetModulePreview> CabinetModulePreviews { get; set; }
+        public bool CabinetUseThumbnailsAsMenuIcons { get; set; }
+        public string CabinetMenuInstallPath { get; set; }
+        public string CabinetMenuItemName { get; set; }
         public List<WearablePreview> InstalledWearablePreviews { get; set; }
         public GameObject CreateCabinetAvatarGameObject { get; set; }
+        public bool CabinetNetworkSynced { get; set; }
+        public bool CabinetSaved { get; set; }
 
         private IMainView _mainView;
         private CabinetPresenter _cabinetPresenter;
@@ -67,13 +71,17 @@ namespace Chocopoi.DressingTools.UI.Views
         private Toggle _groupDynamicsToggle;
         private Toggle _groupDynamicsSeparateGameObjectsToggle;
         private PopupField<string> _animationWriteDefaultsPopup;
-        private VisualElement _cabinetModulesContainer;
         private Button[] _displayModeBtns;
         private int _selectedDisplayMode;
         private VisualElement _createCabinetContainer;
         private ObjectField _createCabinetAvatarObjectField;
         private Button _createCabinetBackBtn;
         private PopupField<string> _cabinetPopup;
+        private Toggle _useThumbnailsToggle;
+        private TextField _installPathField;
+        private TextField _menuItemNameField;
+        private Toggle _cabinetNetworkSyncedToggle;
+        private Toggle _cabinetSavedToggle;
 
         public CabinetSubView(IMainView mainView)
         {
@@ -84,7 +92,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
             ShowCreateCabinetPanel = false;
             AvailableCabinetSelections = new List<string>() { "" };
-            CabinetModulePreviews = new List<CabinetModulePreview>();
             InstalledWearablePreviews = new List<WearablePreview>();
 
             CreateCabinetAvatarGameObject = null;
@@ -155,12 +162,6 @@ namespace Chocopoi.DressingTools.UI.Views
             popupContainer.Add(_cabinetPopup);
         }
 
-        private void InitCabinetContentModules()
-        {
-            // TODO: cabinet module editors
-            _cabinetModulesContainer = Q<VisualElement>("settings-modules-container").First();
-        }
-
         private void InitCabinetContentSettings()
         {
             _avatarArmatureNameField = Q<TextField>("settings-avatar-armature-name").First();
@@ -199,6 +200,44 @@ namespace Chocopoi.DressingTools.UI.Views
                 CabinetSettingsChange?.Invoke();
             });
             writeDefaultsPopupContainer.Add(_animationWriteDefaultsPopup);
+
+            _useThumbnailsToggle = Q<Toggle>("settings-use-thumbnails-toggle").First();
+            _useThumbnailsToggle.RegisterValueChangedCallback((evt) =>
+            {
+                CabinetUseThumbnailsAsMenuIcons = _useThumbnailsToggle.value;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            var installPathHelpboxContainer = Q<VisualElement>("settings-install-path-helpbox-container").First();
+            installPathHelpboxContainer.Add(CreateHelpBox(t._("cabinet.editor.cabinetContent.settings.helpbox.installPathDescription"), MessageType.Info));
+
+            _installPathField = Q<TextField>("settings-menu-install-path-field").First();
+            _installPathField.RegisterValueChangedCallback((evt) =>
+            {
+                CabinetMenuInstallPath = _installPathField.value;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _menuItemNameField = Q<TextField>("settings-menu-item-name-field").First();
+            _menuItemNameField.RegisterValueChangedCallback((evt) =>
+            {
+                CabinetMenuItemName = _menuItemNameField.value;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _cabinetNetworkSyncedToggle = Q<Toggle>("settings-network-synced-toggle").First();
+            _cabinetNetworkSyncedToggle.RegisterValueChangedCallback((evt) =>
+            {
+                CabinetNetworkSynced = _cabinetNetworkSyncedToggle.value;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _cabinetSavedToggle = Q<Toggle>("settings-saved-toggle").First();
+            _cabinetSavedToggle.RegisterValueChangedCallback((evt) =>
+            {
+                CabinetSaved = _cabinetSavedToggle.value;
+                CabinetSettingsChange?.Invoke();
+            });
         }
 
         private void BindCabinetContentFoldouts()
@@ -218,7 +257,6 @@ namespace Chocopoi.DressingTools.UI.Views
             var toolbarCreateCabinetBtn = Q<Button>("toolbar-create-cabinet-btn").First();
             toolbarCreateCabinetBtn.clicked += ToolbarCreateCabinetButtonClick;
 
-            InitCabinetContentModules();
             InitCabinetContentSettings();
             InitCabinetContentPopup();
             BindCabinetContentFoldouts();
@@ -367,36 +405,12 @@ namespace Chocopoi.DressingTools.UI.Views
             _groupDynamicsToggle.value = CabinetGroupDynamics;
             _groupDynamicsSeparateGameObjectsToggle.value = CabinetGroupDynamicsSeparateGameObjects;
             _animationWriteDefaultsPopup.index = CabinetAnimationWriteDefaultsMode;
+            _useThumbnailsToggle.value = CabinetUseThumbnailsAsMenuIcons;
+            _installPathField.value = CabinetMenuInstallPath;
+            _menuItemNameField.value = CabinetMenuItemName;
+            _cabinetNetworkSyncedToggle.value = CabinetNetworkSynced;
+            _cabinetSavedToggle.value = CabinetSaved;
         }
-
-        private void RepaintCabinetContentModules()
-        {
-            _cabinetModulesContainer.Clear();
-            foreach (var preview in CabinetModulePreviews)
-            {
-                // TODO: cabinet module editor
-                var previewContainer = new VisualElement();
-                previewContainer.style.flexWrap = new StyleEnum<Wrap>(Wrap.Wrap);
-                previewContainer.style.flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row);
-                previewContainer.Add(new Label(preview.name));
-
-                var removeBtn = new Button
-                {
-                    text = t._("cabinet.editor.cabinetContent.btn.remove")
-                };
-                removeBtn.clicked += () =>
-                {
-                    if (EditorUtility.DisplayDialog(t._("tool.name"), t._("cabinet.editor.cabinetContent.dialog.msg.removeConfirm"), t._("common.dialog.btn.yes"), t._("common.dialog.btn.no")))
-                    {
-                        preview.RemoveButtonClick.Invoke();
-                    }
-                };
-
-                previewContainer.Add(removeBtn);
-                _cabinetModulesContainer.Add(previewContainer);
-            }
-        }
-
         private void RepaintCabinetContentInstalledWearables()
         {
             // update installed wearable container
@@ -419,7 +433,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _cabinetPopup.index = SelectedCabinetIndex;
 
             RepaintCabinetContentSettings();
-            RepaintCabinetContentModules();
             RepaintCabinetContentInstalledWearables();
         }
 

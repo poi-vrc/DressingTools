@@ -14,10 +14,15 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingTools.OneConf.Animations;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Serialization;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
+#if DT_VRCSDK3A
+using VRC.SDK3.Avatars.Components;
+using Chocopoi.DressingFramework.Animations.VRChat;
+#endif
 
 namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
 {
@@ -45,6 +50,50 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
 
         public override IModuleConfig NewModuleConfig() => new CabinetAnimCabinetModuleConfig();
 
-        public override bool Invoke(CabinetContext cabCtx, ReadOnlyCollection<CabinetModule> modules, bool isPreview) => true;
+#if DT_VRCSDK3A
+        private void InvokeForVRC(CabinetContext cabCtx, CabinetAnimCabinetModuleConfig cabm, VRCAvatarDescriptor avatarDescriptor)
+        {
+            // get the avatar descriptor
+            var fxController = VRCAnimUtils.GetAvatarLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
+
+            // get wearables
+            var wearables = OneConfUtils.GetCabinetWearables(cabCtx.dkCtx.AvatarGameObject);
+
+            var cac = new CabinetAnimComposer(cabCtx.dkCtx, fxController, cabCtx.dkCtx.AvatarGameObject, cabm);
+
+            for (var i = 0; i < wearables.Length; i++)
+            {
+                // obtain the wearable context
+                var wearCtx = cabCtx.wearableContexts[wearables[i]];
+                var config = wearCtx.wearableConfig;
+
+                cac.AddWearable(wearCtx.wearableGameObject, config, wearCtx.wearableDynamics);
+            }
+
+            cac.Compose();
+
+            EditorUtility.SetDirty(fxController);
+        }
+#endif
+
+        public override bool Invoke(CabinetContext cabCtx, ReadOnlyCollection<CabinetModule> modules, bool isPreview)
+        {
+            if (isPreview) return true;
+
+            // obtain module
+            var cabm = modules.Count == 0 ?
+                new CabinetAnimCabinetModuleConfig() :
+                (CabinetAnimCabinetModuleConfig)modules[0].config;
+
+#if DT_VRCSDK3A
+            if (cabCtx.dkCtx.AvatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
+            {
+                InvokeForVRC(cabCtx, cabm, avatarDescriptor);
+                return true;
+            }
+#endif
+
+            return true;
+        }
     }
 }

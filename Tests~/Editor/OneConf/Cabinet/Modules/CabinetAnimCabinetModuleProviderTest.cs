@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Newtonsoft.Json;
@@ -39,11 +42,29 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Cabinet.Modules
             Assert.IsInstanceOf(typeof(CabinetAnimCabinetModuleConfig), provider.NewModuleConfig());
         }
 
+#if DT_VRCSDK3A
         [Test]
         public void InvokeTest()
         {
             var provider = new CabinetAnimCabinetModuleProvider();
-            Assert.True(provider.Invoke(null, null, false));
+            var avatarObj = InstantiateEditorTestPrefab("VRCAvatar.prefab");
+
+            var wearable1Trans = avatarObj.transform.Find("Wearable1");
+            Assert.NotNull(wearable1Trans);
+            var wearable2Trans = avatarObj.transform.Find("Wearable2");
+            Assert.NotNull(wearable2Trans);
+
+            var cabCtx = CreateCabinetContext(avatarObj);
+            CreateWearableContext(cabCtx, wearable1Trans.gameObject);
+            CreateWearableContext(cabCtx, wearable2Trans.gameObject);
+
+            Assert.True(provider.Invoke(
+                cabCtx,
+                new ReadOnlyCollection<CabinetModule>(new List<CabinetModule>()),
+                false), "Provider invoke returned failure");
+
+            // TODO: check content
         }
+#endif
     }
 }

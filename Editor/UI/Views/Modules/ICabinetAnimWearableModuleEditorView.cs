@@ -110,6 +110,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public string name;
         public int type;
         public float defaultValue;
+        public bool networkSynced;
+        public bool saved;
         public Action customizableSettingsChangeEvent;
         public bool foldoutAvatarToggles;
         public List<ToggleData> avatarToggles;
