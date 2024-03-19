@@ -5,7 +5,6 @@
     "cabinet.editor.cabinetContent.displayModes.icons": "圖示",
     "cabinet.editor.cabinetContent.displayModes.list": "清單",
     "cabinet.editor.cabinetContent.foldout.installedWearables": "已安裝的穿戴物品",
-    "cabinet.editor.cabinetContent.settings.label.installedCabinetModules": "已安裝的衣櫃模組（在製作中）",
     "cabinet.editor.cabinetContent.settings.textField.avatarArmatureName": "角色骨架名稱",
     "cabinet.editor.cabinetContent.settings.toggle.groupDynamics": "分組動骨",
     "cabinet.editor.cabinetContent.foldout.settings": "設定",
