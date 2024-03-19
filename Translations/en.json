@@ -18,6 +18,7 @@
     "cabinet.editor.cabinetContent.settings.toggle.useThumbnailsAsMenuIcons": "Use thumbnails as menu icons",
     "cabinet.editor.cabinetContent.settings.toggle.networkSynced": "Network synced",
     "cabinet.editor.cabinetContent.settings.toggle.saved": "Saved",
+    "cabinet.editor.cabinetContent.settings.toggle.resetCustomizablesOnSwitch": "Reset customizables on switch",
     "cabinet.editor.cabinetContent.settings.helpbox.installPathDescription": "The menu can be installed to a specific relative path from the root separated by slashes. (e.g. Menu1/Menu2/Menu3) If it's left empty, it will be installed to the root.",
     "cabinet.editor.cabinetContent.settings.textField.menuInstallPath": "Menu install path",
     "cabinet.editor.cabinetContent.settings.textField.menuItemName": "Menu item name",

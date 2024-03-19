@@ -24,6 +24,7 @@
                 <ui:Toggle label="@cabinet.editor.cabinetContent.settings.toggle.groupDynamicsSeparate" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
                 <ui:VisualElement name="settings-anim-write-defaults-popup-container" />
                 <ui:Toggle label="@cabinet.editor.cabinetContent.settings.toggle.useThumbnailsAsMenuIcons" name="settings-use-thumbnails-toggle" />
+                <ui:Toggle label="@cabinet.editor.cabinetContent.settings.toggle.resetCustomizablesOnSwitch" name="settings-reset-customizables-on-switch-toggle" />
                 <ui:VisualElement name="settings-install-path-helpbox-container" />
                 <ui:TextField picking-mode="Ignore" label="@cabinet.editor.cabinetContent.settings.textField.menuInstallPath" name="settings-menu-install-path-field" />
                 <ui:TextField picking-mode="Ignore" label="@cabinet.editor.cabinetContent.settings.textField.menuItemName" name="settings-menu-item-name-field" />

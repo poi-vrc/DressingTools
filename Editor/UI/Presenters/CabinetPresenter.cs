@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
@@ -141,8 +140,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (_cabinetConfig == null)
             {
-                _cabinetConfig = new CabinetConfig();
+                Debug.LogWarning("[DressingTools] Cabinet config is uninitialized from UI but cabinet settings changed.");
+                return;
             }
+
             _cabinetConfig.avatarArmatureName = _view.CabinetAvatarArmatureName;
             _cabinetConfig.groupDynamics = _view.CabinetGroupDynamics;
             _cabinetConfig.groupDynamicsSeparateGameObjects = _view.CabinetGroupDynamicsSeparateGameObjects;
@@ -164,6 +165,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             cabAnimConfig.menuItemName = _view.CabinetMenuItemName;
             cabAnimConfig.networkSynced = _view.CabinetNetworkSynced;
             cabAnimConfig.saved = _view.CabinetSaved;
+            cabAnimConfig.resetCustomizablesOnSwitch = _view.CabinetResetCustomizablesOnSwitch;
 
             cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
         }
@@ -240,11 +242,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var cabinet = cabinets[_view.SelectedCabinetIndex];
 
             // cabinet json is broken, ask user whether to make a new one or not
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out _cabinetConfig))
+            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out _cabinetConfig) || !_cabinetConfig.IsValid())
             {
-                // TODO: ask user
-                Debug.LogError("[DressingTools] [CabinetPresenter] Unable to deserialize cabinet config!");
-                return;
+                Debug.LogWarning("[DressingTools] [CabinetPresenter] Unable to deserialize cabinet config or invalid configuration! Using new config instead");
+                _cabinetConfig = new CabinetConfig();
+                cabinet.ConfigJson = CabinetConfigUtility.Serialize(_cabinetConfig);
             }
 
             _view.CabinetAvatarGameObject = cabinet.RootGameObject;
@@ -295,6 +297,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CabinetMenuItemName = cabAnimConfig.menuItemName;
             _view.CabinetNetworkSynced = cabAnimConfig.networkSynced;
             _view.CabinetSaved = cabAnimConfig.saved;
+            _view.CabinetResetCustomizablesOnSwitch = cabAnimConfig.resetCustomizablesOnSwitch;
         }
 
         private void UpdateView()

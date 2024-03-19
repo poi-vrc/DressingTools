@@ -61,6 +61,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public GameObject CreateCabinetAvatarGameObject { get; set; }
         public bool CabinetNetworkSynced { get; set; }
         public bool CabinetSaved { get; set; }
+        public bool CabinetResetCustomizablesOnSwitch { get; set; }
 
         private IMainView _mainView;
         private CabinetPresenter _cabinetPresenter;
@@ -78,6 +79,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private Button _createCabinetBackBtn;
         private PopupField<string> _cabinetPopup;
         private Toggle _useThumbnailsToggle;
+        private Toggle _resetCustomizablesOnSwitchToggle;
         private TextField _installPathField;
         private TextField _menuItemNameField;
         private Toggle _cabinetNetworkSyncedToggle;
@@ -205,6 +207,13 @@ namespace Chocopoi.DressingTools.UI.Views
             _useThumbnailsToggle.RegisterValueChangedCallback((evt) =>
             {
                 CabinetUseThumbnailsAsMenuIcons = _useThumbnailsToggle.value;
+                CabinetSettingsChange?.Invoke();
+            });
+
+            _resetCustomizablesOnSwitchToggle = Q<Toggle>("settings-reset-customizables-on-switch-toggle").First();
+            _resetCustomizablesOnSwitchToggle.RegisterValueChangedCallback((evt) =>
+            {
+                CabinetResetCustomizablesOnSwitch = _resetCustomizablesOnSwitchToggle.value;
                 CabinetSettingsChange?.Invoke();
             });
 
@@ -410,6 +419,7 @@ namespace Chocopoi.DressingTools.UI.Views
             _menuItemNameField.value = CabinetMenuItemName;
             _cabinetNetworkSyncedToggle.value = CabinetNetworkSynced;
             _cabinetSavedToggle.value = CabinetSaved;
+            _resetCustomizablesOnSwitchToggle.value = CabinetResetCustomizablesOnSwitch;
         }
         private void RepaintCabinetContentInstalledWearables()
         {

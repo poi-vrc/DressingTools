@@ -384,40 +384,51 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             _ctrls[wearableObject] = list;
         }
 
-        private void FillCrossControls()
+        private void FindAndDisableControls(GameObject wearableObj, DTSmartControl ctrl)
         {
-            // collect all controls first
-            var allCtrls = new List<DTSmartControl>();
-            foreach (var ctrls in _ctrls.Values)
+            var binaryBuilder = ctrl.AsBinary();
+            foreach (var kvp in _ctrls)
             {
-                foreach (var ctrl in ctrls)
+                var anotherObj = kvp.Key;
+                var anotherCtrls = kvp.Value;
+                if (anotherObj == wearableObj)
                 {
-                    if (ctrl.ControlType == DTSmartControl.SmartControlControlType.Binary)
+                    // skip our own collection
+                    continue;
+                }
+
+                if (!_cabAnimConfig.resetCustomizablesOnSwitch)
+                {
+                    // only obtain the first ctrl (basic toggles)
+                    // we expect this is binary already so skipping the check
+                    var anotherCtrl = anotherCtrls[0];
+                    binaryBuilder.CrossControlValueOnEnable(anotherCtrl, 0.0f);
+                    continue;
+                }
+
+                foreach (var anotherCtrl in anotherCtrls)
+                {
+                    if (anotherCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
                     {
-                        allCtrls.Add(ctrl);
+                        continue;
                     }
+                    binaryBuilder.CrossControlValueOnEnable(anotherCtrl, 0.0f);
                 }
             }
+        }
 
-            // iterate through dict to see if they are in the same collection, otherwise switch them off
-            foreach (var ctrl in allCtrls)
+        private void FillCrossControls()
+        {
+            foreach (var kvp in _ctrls)
             {
-                var binaryBuilder = ctrl.AsBinary();
-                foreach (var anotherCtrls in _ctrls.Values)
-                {
-                    if (!anotherCtrls.Contains(ctrl))
-                    {
-                        foreach (var anotherCtrl in anotherCtrls)
-                        {
-                            if (anotherCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
-                            {
-                                continue;
-                            }
+                var wearableObj = kvp.Key;
+                var basicTogglesCtrl = kvp.Value[0];
 
-                            binaryBuilder.CrossControlValueOnEnable(anotherCtrl, 0.0f);
-                        }
-                    }
+                if (basicTogglesCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
+                {
+                    continue;
                 }
+                FindAndDisableControls(wearableObj, basicTogglesCtrl);
             }
         }
 

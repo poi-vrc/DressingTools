@@ -54,6 +54,7 @@ namespace Chocopoi.DressingTools.UI.Views
         bool CabinetGroupDynamicsSeparateGameObjects { get; set; }
         int CabinetAnimationWriteDefaultsMode { get; set; }
         bool CabinetUseThumbnailsAsMenuIcons { get; set; }
+        bool CabinetResetCustomizablesOnSwitch { get; set; }
         string CabinetMenuInstallPath { get; set; }
         string CabinetMenuItemName { get; set; }
         bool CabinetNetworkSynced { get; set; }

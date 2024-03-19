@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingTools.OneConf.Serialization;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.OneConf.Cabinet
 {
@@ -79,6 +80,19 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet
             groupDynamicsSeparateGameObjects = true;
             animationWriteDefaultsMode = WriteDefaultsMode.Auto;
             modules = new List<CabinetModule>();
+        }
+
+        public bool IsValid()
+        {
+            if (version.Major > CurrentConfigVersion.Major)
+            {
+                Debug.LogWarning($"[DressingTools] Incompatibile cabinet config version detected: {version}");
+                return false;
+            }
+
+            bool valid = true;
+            valid &= !string.IsNullOrEmpty(avatarArmatureName.Trim());
+            return valid;
         }
 
         public T FindModuleConfig<T>() where T : IModuleConfig
