@@ -17,6 +17,7 @@ using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingTools.OneConf.Animations;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable.Passes;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 #if DT_VRCSDK3A
@@ -33,7 +34,10 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
         [ExcludeFromCodeCoverage] public override string FriendlyName => "Cabinet Animation";
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
         [ExcludeFromCodeCoverage]
-        public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Generation).Build();
+        public override BuildConstraint Constraint =>
+            InvokeAtStage(BuildStage.Generation)
+                .AfterPass<GroupDynamicsWearablePass>()
+                .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
         {
