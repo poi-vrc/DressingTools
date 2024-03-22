@@ -407,5 +407,12 @@
     "cabinet.editor.cabinetContent.settings.textField.menuInstallPath": "メニューのインストール先",
     "cabinet.editor.cabinetContent.settings.textField.menuItemName": "メニューアイテム名",
     "modules.wearable.cabinetAnim.editor.toggle.networkSynced": "ネットワーク同期",
-    "modules.wearable.cabinetAnim.editor.toggle.saved": "保存される"
+    "modules.wearable.cabinetAnim.editor.toggle.saved": "保存される",
+    "inspector.groupDynamics.toggle.setToCurrentState": "現在コンポーネントの状態に設定する",
+    "inspector.groupDynamics.popup.searchMode": "検索モード",
+    "inspector.groupDynamics.searchMode.componentRoot": "コンポーネントルート",
+    "inspector.groupDynamics.label.includeTransforms": "以下のオブジェクトを含む:",
+    "inspector.groupDynamics.label.excludeTransforms": "以下のオブジェクトを除く:",
+    "inspector.groupDynamics.toggle.separateGameObjects": "異なるオブジェクトに分離する",
+    "inspector.groupDynamics.searchMode.controlRoot": "コントロールルート"
 }
