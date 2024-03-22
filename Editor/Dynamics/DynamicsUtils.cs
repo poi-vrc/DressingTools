@@ -20,9 +20,9 @@ namespace Chocopoi.DressingTools.Dynamics
 {
     internal static class DynamicsUtils
     {
-        public static List<IDynamicsProxy> ScanDynamics(GameObject obj, Func<Component, bool> filterFunc = null)
+        public static List<IDynamics> ScanDynamics(GameObject obj, Func<Component, bool> filterFunc = null)
         {
-            var dynamicsList = new List<IDynamicsProxy>();
+            var dynamicsList = new List<IDynamics>();
 
             // TODO: replace by reading YAML
 
@@ -76,7 +76,7 @@ namespace Chocopoi.DressingTools.Dynamics
             return dynamicsList;
         }
 
-        public static IDynamicsProxy FindDynamicsWithRoot(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
+        public static IDynamics FindDynamicsWithRoot(List<IDynamics> avatarDynamics, Transform dynamicsRoot)
         {
             foreach (var bone in avatarDynamics)
             {
@@ -88,7 +88,7 @@ namespace Chocopoi.DressingTools.Dynamics
             return null;
         }
 
-        public static bool IsDynamicsExists(List<IDynamicsProxy> avatarDynamics, Transform dynamicsRoot)
+        public static bool IsDynamicsExists(List<IDynamics> avatarDynamics, Transform dynamicsRoot)
         {
             return FindDynamicsWithRoot(avatarDynamics, dynamicsRoot) != null;
         }

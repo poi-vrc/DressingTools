@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.Dresser.Default.Hooks
             }
         }
 
-        private static void ProcessBone(DKReport report, DefaultDresserSettings settings, List<IDynamicsProxy> avatarDynamicsList, List<IDynamicsProxy> wearableDynamicsList, int level, Transform avatarBoneParent, Transform clothesBoneParent, List<BoneMapping> boneMappings)
+        private static void ProcessBone(DKReport report, DefaultDresserSettings settings, List<IDynamics> avatarDynamicsList, List<IDynamics> wearableDynamicsList, int level, Transform avatarBoneParent, Transform clothesBoneParent, List<BoneMapping> boneMappings)
         {
             var childs = new List<Transform>();
 

@@ -130,7 +130,7 @@ namespace Chocopoi.DressingTools.OneConf
             return found;
         }
 
-        public static List<IDynamicsProxy> ScanAvatarOnlyDynamics(GameObject avatarRoot)
+        public static List<IDynamics> ScanAvatarOnlyDynamics(GameObject avatarRoot)
         {
             return DynamicsUtils.ScanDynamics(avatarRoot, comp => !IsOriginatedFromAnyWearable(avatarRoot.transform, comp.transform));
         }

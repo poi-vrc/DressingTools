@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="search-mode-popup-container" />
+    <ui:Label text="@inspector.groupDynamics.label.includeTransforms" />
+    <ui:VisualElement name="includes-list-container" />
+    <ui:VisualElement name="includes-add-field-container" class="add-field-container" />
+    <ui:Label text="@inspector.groupDynamics.label.excludeTransforms" />
+    <ui:VisualElement name="excludes-list-container" />
+    <ui:VisualElement name="excludes-add-field-container" class="add-field-container" />
+    <ui:Toggle label="@inspector.groupDynamics.toggle.separateGameObjects" binding-path="m_SeparateGameObjects" value="true" />
+    <ui:Toggle label="@inspector.groupDynamics.toggle.setToCurrentState" binding-path="m_SetToCurrentState" value="true" />
+</ui:UXML>

@@ -21,7 +21,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Chocopoi.DressingTools.Optimization.Passes
+namespace Chocopoi.DressingTools.Passes.Optimization
 {
     internal class GCGameObjectsPass : BuildPass
     {

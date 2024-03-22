@@ -12,7 +12,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Chocopoi.DressingTools.Dynamics.Proxy;
+using Chocopoi.DressingTools.Dynamics;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Newtonsoft.Json;
@@ -41,7 +41,7 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
             Assert.IsInstanceOf(typeof(CabinetAnimWearableModuleConfig), provider.NewModuleConfig());
         }
 
-        private void InvokeProvider(GameObject avatarObj, Transform wearableTrans, bool preview, out List<IDynamicsProxy> wearableDynamics)
+        private void InvokeProvider(GameObject avatarObj, Transform wearableTrans, bool preview, out List<IDynamics> wearableDynamics)
         {
             var provider = new CabinetAnimWearableModuleProvider();
 

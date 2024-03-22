@@ -12,13 +12,13 @@
 
 using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Detail.DK;
-using Chocopoi.DressingTools.Animations.Passes;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
+using Chocopoi.DressingTools.Passes.Animations;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Tests.Animations.Passes
+namespace Chocopoi.DressingTools.Tests.Passes.Animations
 {
     internal class ComposeAnimatorParametersPassTest : EditorTestBase
     {
