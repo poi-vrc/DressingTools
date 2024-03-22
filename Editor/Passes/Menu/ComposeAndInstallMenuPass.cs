@@ -19,13 +19,11 @@ using Chocopoi.DressingFramework.Menu;
 using Chocopoi.DressingTools.Components.Menu;
 using UnityEngine;
 using MenuItem = Chocopoi.DressingFramework.Menu.MenuItem;
-
-
 #if DT_VRCSDK3A
 using Chocopoi.DressingFramework.Menu.VRChat;
 #endif
 
-namespace Chocopoi.DressingTools.Menu.Passes
+namespace Chocopoi.DressingTools.Passes.Menu
 {
     internal class ComposeAndInstallMenuPass : BuildPass
     {
@@ -276,7 +274,6 @@ namespace Chocopoi.DressingTools.Menu.Passes
                 {
                     store.Append(item, miComp.InstallPath);
                 }
-
             }
             return true;
         }

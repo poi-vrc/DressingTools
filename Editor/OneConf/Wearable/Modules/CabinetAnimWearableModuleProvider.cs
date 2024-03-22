@@ -18,12 +18,10 @@ using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
 using Chocopoi.DressingTools.Event;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Serialization;
-using Chocopoi.DressingTools.OneConf.Wearable;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Passes.Modifiers;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -57,6 +55,7 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             InvokeAtStage(BuildStage.Transpose)
                 .AfterPass(ArmatureMappingWearableModuleConfig.ModuleIdentifier, true)
                 .AfterPass(MoveRootWearableModuleConfig.ModuleIdentifier, true)
+                .BeforePass<GroupDynamicsPass>()
                 .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)

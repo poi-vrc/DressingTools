@@ -71,7 +71,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
                 var wearCtx = cabCtx.wearableContexts[wearables[i]];
                 var config = wearCtx.wearableConfig;
 
-                cac.AddWearable(wearCtx.wearableGameObject, config, wearCtx.wearableDynamics);
+                cac.AddWearable(wearCtx.wearableGameObject, config);
             }
 
             cac.Compose();

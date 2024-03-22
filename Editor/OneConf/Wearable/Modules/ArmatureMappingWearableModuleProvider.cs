@@ -133,7 +133,7 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             }
         }
 
-        private static void ApplyIgnoreTransforms(string wearableName, IDynamicsProxy avatarDynamics, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot)
+        private static void ApplyIgnoreTransforms(string wearableName, IDynamics avatarDynamics, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot)
         {
             string name = avatarDynamicsRoot.name + "_DBExcluded";
             var dynBoneChild = avatarDynamicsRoot.Find(name);

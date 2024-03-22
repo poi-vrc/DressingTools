@@ -12,18 +12,18 @@
 
 #if DT_VRCSDK3A
 using Chocopoi.DressingFramework.Detail.DK;
-using Chocopoi.DressingTools.Animations.Passes.VRChat;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.Passes.Animations.VRChat;
 using Moq;
 using NUnit.Framework;
 using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
-namespace Chocopoi.DressingTools.Tests.Animations.Passes
+namespace Chocopoi.DressingTools.Tests.Passes.Animations
 {
     internal class ComposeSmartControlsPassTest : EditorTestBase
     {

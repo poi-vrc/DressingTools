@@ -16,17 +16,19 @@ using Chocopoi.DressingFramework.Animations.VRChat;
 using Chocopoi.DressingFramework.Detail.DK.Passes;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.Menu.Passes;
 using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.Passes.Menu;
+using Chocopoi.DressingTools.Passes.Modifiers;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 
-namespace Chocopoi.DressingTools.Animations.Passes.VRChat
+namespace Chocopoi.DressingTools.Passes.Animations.VRChat
 {
     // TODO: this currently depends on VRC because we still need to find a way to allow user to supply animator
     internal class ComposeSmartControlsPass : BuildPass
@@ -38,6 +40,7 @@ namespace Chocopoi.DressingTools.Animations.Passes.VRChat
             .BeforePass<ComposeAndInstallMenuPass>()
             .BeforePass<ComposeAnimatorParametersPass>()
             .BeforePass<RemapAnimationsPass>()
+            .BeforePass<GroupDynamicsPass>()
             .Build();
 
         // for mocking in tests

@@ -15,10 +15,12 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Menu;
 using Chocopoi.DressingTools.Components.Animations;
+using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Dynamics.Proxy;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Wearable;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.OneConf.Wearable.Passes;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -165,7 +167,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             return $"{customizableName}_{++wearableNameCount.customizableCounts[customizableName]}";
         }
 
-        private void MakeBasicToggles(GameObject wearableObject, string uniqueWearableName, List<IDynamicsProxy> wearableDynamics, CabinetAnimWearableModuleConfig module, out DTSmartControl ctrl)
+        private void MakeBasicToggles(GameObject wearableObject, string uniqueWearableName, CabinetAnimWearableModuleConfig module, out DTSmartControl ctrl)
         {
             // TODO: separate into different gameobjects?
             ctrl = wearableObject.AddComponent<DTSmartControl>();
@@ -179,9 +181,10 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             MakeAvatarBlendshapeToggles(ctrl, binaryBuilder, module.avatarAnimationOnWear.blendshapes);
             MakeWearableBlendshapeToggles(ctrl, binaryBuilder, wearableObject, module.wearableAnimationOnWear.blendshapes);
 
-            foreach (var dynamics in wearableDynamics)
+            var dynamicsContainer = wearableObject.transform.Find(GroupDynamicsWearablePass.DynamicsContainerName);
+            if (dynamicsContainer != null && dynamicsContainer.TryGetComponent<DTGroupDynamics>(out var comp))
             {
-                binaryBuilder.Toggle(dynamics.Component, true);
+                binaryBuilder.Toggle(comp, true);
             }
         }
 
@@ -290,7 +293,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             }
         }
 
-        public void AddWearable(GameObject wearableObject, WearableConfig config, List<IDynamicsProxy> wearableDynamics)
+        public void AddWearable(GameObject wearableObject, WearableConfig config)
         {
             var module = config.FindModuleConfig<CabinetAnimWearableModuleConfig>();
             if (module == null)
@@ -299,7 +302,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
             }
 
             var uniqueWearableName = MakeUniqueWearableName(string.IsNullOrEmpty(config.info.name) ? wearableObject.name : config.info.name);
-            MakeBasicToggles(wearableObject, uniqueWearableName, wearableDynamics, module, out var basicCtrl);
+            MakeBasicToggles(wearableObject, uniqueWearableName, module, out var basicCtrl);
             MakeCustomizableToggles(wearableObject, uniqueWearableName, module, out var cstCtrls);
 
             Texture2D icon = null;

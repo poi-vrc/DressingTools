@@ -13,12 +13,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Dynamics.Proxy
+namespace Chocopoi.DressingTools.Dynamics
 {
     /// <summary>
     /// Dynamics proxy interface
     /// </summary>
-    internal interface IDynamicsProxy
+    internal interface IDynamics
     {
         /// <summary>
         /// The dynamics component

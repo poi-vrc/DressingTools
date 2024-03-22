@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools.OneConf
         /// </summary>
         public Dictionary<DTWearable, WearableContext> wearableContexts;
 
-        public List<IDynamicsProxy> avatarDynamics;
+        public List<IDynamics> avatarDynamics;
 
         public Context dkCtx;
 
@@ -184,7 +184,7 @@ namespace Chocopoi.DressingTools.OneConf
         /// <summary>
         /// Scanned wearable dynamics
         /// </summary>
-        public List<IDynamicsProxy> wearableDynamics;
+        public List<IDynamics> wearableDynamics;
 
         private readonly string _randomString;
 

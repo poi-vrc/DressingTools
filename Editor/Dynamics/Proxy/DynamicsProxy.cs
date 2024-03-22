@@ -18,7 +18,7 @@ namespace Chocopoi.DressingTools.Dynamics.Proxy
     /// <summary>
     /// Abstract dynamics proxy base class
     /// </summary>
-    internal abstract class DynamicsProxy : IDynamicsProxy
+    internal abstract class DynamicsProxy : IDynamics
     {
         public Component Component { get; set; }
         public Transform Transform => Component.transform;

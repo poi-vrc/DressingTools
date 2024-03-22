@@ -87,8 +87,23 @@ namespace Chocopoi.DressingTools.Inspector
             container.Add(_languagePopup);
         }
 
+        private void CleanUp()
+        {
+            if (_view != null)
+            {
+                _view.OnDisable();
+                if (_viewContainer != null && _viewContainer.Contains(_view))
+                {
+                    _viewContainer.Remove(_view);
+                }
+                _view = null;
+            }
+        }
+
         public override VisualElement CreateInspectorGUI()
         {
+            CleanUp();
+
             var rootElement = new VisualElement();
             AddIcon(rootElement);
 
@@ -102,20 +117,19 @@ namespace Chocopoi.DressingTools.Inspector
 
         private void CreateNewView()
         {
-            if (_view != null)
-            {
-                _view.OnDisable();
-                _viewContainer.Remove(_view);
-            }
+            CleanUp();
+
             _view = CreateView();
             _viewContainer.Add(_view);
             _view.OnEnable();
+            _view.Bind(new SerializedObject(target));
         }
 
         public abstract ElementView CreateView();
 
         public void OnDisable()
         {
+            _view?.Unbind();
             _view?.OnDisable();
             _view = null;
         }

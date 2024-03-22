@@ -17,14 +17,13 @@ using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
-using Chocopoi.DressingTools.Menu.Passes;
+using Chocopoi.DressingTools.Passes.Menu;
 using UnityEngine;
-
 #if DT_VRCSDK3A
 using Chocopoi.DressingFramework.Detail.DK.Passes.VRChat;
 #endif
 
-namespace Chocopoi.DressingTools.Animations.Passes
+namespace Chocopoi.DressingTools.Passes.Animations
 {
     internal class ComposeAnimatorParametersPass : BuildPass
     {

@@ -10,60 +10,21 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
-using Chocopoi.DressingTools.Dynamics.Proxy;
+using Chocopoi.DressingTools.Components.Modifiers;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.OneConf.Wearable.Passes
 {
     internal class GroupDynamicsWearablePass : WearablePass
     {
-        private const string DynamicsContainerName = "DT_Dynamics";
+        public const string DynamicsContainerName = "DT_Dynamics";
 
         public override string FriendlyName => "Group Dynamics";
 
-        // we actually shouldn't do any changes in generation stage, but for now we have to do it like this
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Generation)
                 .Build();
-
-        private void CopyDynamicsToContainer(IDynamicsProxy dynamics, GameObject dynamicsContainer)
-        {
-            // in our PhysBoneProxy, we return the current transform if rootTransform is null
-            // so if we move it away, the controlling transform will be incorrect. so we are
-            // setting the transform again here.
-            if (dynamics is PhysBoneProxy physBoneProxy && physBoneProxy.RootTransform == dynamics.Transform)
-            {
-                physBoneProxy.RootTransform = dynamics.Transform;
-            }
-
-            // copy to dynamics container
-            var newComp = DKEditorUtils.CopyComponent(dynamics.Component, dynamicsContainer);
-
-            // destroy the original one
-            Object.DestroyImmediate(dynamics.Component);
-
-            // set the component in our proxy to the new component
-            dynamics.Component = newComp;
-        }
-
-        private T GetOneFromCollection<T>(ICollection<T> collection)
-        {
-            if (collection.Count <= 0)
-            {
-                return default;
-            }
-
-            foreach (var elem in collection)
-            {
-                return elem;
-            }
-
-            return default;
-        }
 
         public override bool Invoke(CabinetContext cabCtx, WearableContext wearCtx)
         {
@@ -81,47 +42,19 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Passes
                 dynamicsContainer = obj.transform;
             }
 
-            if (cabCtx.cabinetConfig.groupDynamicsSeparateGameObjects)
+            var comp = dynamicsContainer.gameObject.AddComponent<DTGroupDynamics>();
+            comp.SearchMode = DTGroupDynamics.DynamicsSearchMode.ControlRoot;
+            comp.SeparateGameObjects = cabCtx.cabinetConfig.groupDynamicsSeparateGameObjects;
+            comp.SetToCurrentState = false;
+            comp.enabled = false;
+
+            foreach (var dynamics in wearCtx.wearableDynamics)
             {
-                // group them in separate GameObjects
-                var addedNames = new Dictionary<string, int>();
-                foreach (var dynamics in wearCtx.wearableDynamics)
+                foreach (var rootTransform in dynamics.RootTransforms)
                 {
-                    var firstRootTransform = GetOneFromCollection(dynamics.RootTransforms);
-                    if (firstRootTransform == null)
-                    {
-                        // use the current transform instead if null
-                        firstRootTransform = dynamics.Transform;
-                    }
-                    var name = firstRootTransform.name;
-
-                    // we might occur cases with dynamics' bone name are the same
-                    if (!addedNames.TryGetValue(name, out int count))
-                    {
-                        count = 0;
-                    }
-
-                    // we don't add suffix for the first occurance
-                    var containerName = count == 0 ? name : string.Format("{0}_{1}", name, count);
-                    var container = new GameObject(containerName);
-                    container.transform.SetParent(dynamicsContainer);
-
-                    CopyDynamicsToContainer(dynamics, container);
-
-                    addedNames[name] = ++count;
+                    comp.IncludeTransforms.Add(rootTransform);
                 }
             }
-            else
-            {
-                // we just group them into a single GameObject
-                foreach (var dynamics in wearCtx.wearableDynamics)
-                {
-                    CopyDynamicsToContainer(dynamics, dynamicsContainer.gameObject);
-                }
-            }
-
-            var pathRemapper = cabCtx.dkCtx.Feature<PathRemapper>();
-            pathRemapper.InvalidateCache();
 
             return true;
         }

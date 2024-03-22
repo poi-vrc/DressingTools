@@ -12,16 +12,17 @@
 
 using Chocopoi.DressingFramework.Extensibility;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
-using Chocopoi.DressingTools.Animations.Passes;
-using Chocopoi.DressingTools.Menu.Passes;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Passes;
-using Chocopoi.DressingTools.Optimization.Passes;
+using Chocopoi.DressingTools.Passes.Animations;
+using Chocopoi.DressingTools.Passes.Menu;
+using Chocopoi.DressingTools.Passes.Modifiers;
+using Chocopoi.DressingTools.Passes.Optimization;
 
 #if DT_VRCSDK3A
+using Chocopoi.DressingTools.Passes.Animations.VRChat;
 using Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules;
-using Chocopoi.DressingTools.Animations.Passes.VRChat;
 #endif
 
 namespace Chocopoi.DressingTools
@@ -42,6 +43,7 @@ namespace Chocopoi.DressingTools
 
             RegisterBuildPass(new ComposeAndInstallMenuPass());
             RegisterBuildPass(new ComposeAnimatorParametersPass());
+            RegisterBuildPass(new GroupDynamicsPass());
             RegisterBuildPass(new GroupDynamicsWearablePass());
             RegisterBuildPass(new GCGameObjectsPass());
 
