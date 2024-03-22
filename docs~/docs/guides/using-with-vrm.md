@@ -2,23 +2,27 @@
 sidebar_position: 2
 ---
 
-# Using with VRM
+# Using with VRM0
 
-You can use DressingTools to dress clothes in a UniVRM-only project.
+You can use DressingTools to dress clothes in a UniVRM-only (VRM0) project.
 
-:::info
-This feature is experimental. Integrated build, VRM spring bones and physics will be supported soon.
+:::danger
+This feature is experimental and not fully tested. Please expect bugs and unknown behaviours.
+
+Since VRM is not the main focus right now, support for VRM is currently feature-lacking. Integrated build, VRM spring bones and physics will be supported soon.
+
+This documentation could also be outdated.
 :::
 
 ## Guide
 
-### 1. Prepare a UniVRM project
+### 1. Prepare a UniVRM (VRM0) project
 
 Follow the instructions from the [official project](https://github.com/vrm-c/UniVRM#installation) for installing UniVRM. It is tested using Unity 2022.3 with no issues.
 
 ### 2. Install DressingTools
 
-You are **unable to install DressingTools through VCC** if you want to use UniVRM. Follow the instructions from the [installation guide](/docs/getting-started/installation#via-unitypackage)
+If you want to use DressingTools outside VCC supported Unity versions, follow the instructions from the [installation guide](/docs/getting-started/installation#via-unitypackage)
 to install with the only three available ways listed below:
 
 - Via .unitypackage
@@ -34,7 +38,7 @@ You will have the following packages shown in the Unity package manager: (liltoo
 You might also need to install shaders (i.e. UTS, poiyomi, liltoon) to let your avatar and clothes to be shown in the editor,
 although they will be swapped out by UniVRM soon.
 
-### 4. Remove all missing scripts
+### 4. Remove all missing scripts and convert to use VRM dynamics
 
 Missing scripts are an extreme headache especially when dealing with Non-VRChat platforms.
 
