@@ -407,5 +407,12 @@
     "cabinet.editor.cabinetContent.settings.toggle.networkSynced": "網路同步",
     "cabinet.editor.cabinetContent.settings.toggle.saved": "在不同的世界之間儲存",
     "cabinet.editor.cabinetContent.settings.helpbox.installPathDescription": "選單可以安裝到從根目錄開始的特定相對路徑，以斜線分隔。 （例如 Menu1/Menu2/Menu3）如果留空，則會安裝到根目錄。",
-    "cabinet.editor.cabinetContent.settings.textField.menuInstallPath": "選單安裝路徑"
+    "cabinet.editor.cabinetContent.settings.textField.menuInstallPath": "選單安裝路徑",
+    "inspector.groupDynamics.toggle.separateGameObjects": "分開成不同的 GameObject",
+    "inspector.groupDynamics.toggle.setToCurrentState": "設定為目前元件的狀態",
+    "inspector.groupDynamics.popup.searchMode": "搜尋模式",
+    "inspector.groupDynamics.searchMode.componentRoot": "元件的根部",
+    "inspector.groupDynamics.searchMode.controlRoot": "控制的根部",
+    "inspector.groupDynamics.label.includeTransforms": "包括這些物件：",
+    "inspector.groupDynamics.label.excludeTransforms": "排除這些物件："
 }
