@@ -398,7 +398,6 @@
     "inspector.smartcontrol.driver.vrcPhysBone.popup.source.angle": "Angle",
     "inspector.smartcontrol.driver.vrcPhysBone.popup.source.stretch": "Stretch",
     "inspector.smartcontrol.driver.vrcPhysBone.popup.source.squish": "Squish",
-    "inspector.smartcontrol.driver.vrcPhysBone.fixedValue": "Fixed Value",
     "inspector.smartcontrol.foldout.control": "Control: {0}",
     "inspector.smartcontrol.control.popup.controlType": "Type",
     "inspector.smartcontrol.control.controlType.binary": "Binary",
