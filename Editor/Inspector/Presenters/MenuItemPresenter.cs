@@ -28,11 +28,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public MenuItemPresenter(IMenuItemView view)
         {
             _view = view;
-
-            // TODO: set this from the editor level and move to a common place
-            var prefs = PreferencesUtility.GetPreferences();
-            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
-
             SubscribeEvents();
         }
 

@@ -347,7 +347,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
                 foreach (var kvp in cstCtrls)
                 {
                     var cstCtrl = kvp.Value;
-                    if (cstCtrl.ControlType == DTSmartControl.SmartControlControlType.Binary)
+                    if (cstCtrl.ControlType == DTSmartControl.SCControlType.Binary)
                     {
                         wearableMenu.Add(new ToggleItem()
                         {
@@ -360,7 +360,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
                             }
                         });
                     }
-                    else if (cstCtrl.ControlType == DTSmartControl.SmartControlControlType.MotionTime)
+                    else if (cstCtrl.ControlType == DTSmartControl.SCControlType.MotionTime)
                     {
                         wearableMenu.Add(new RadialItem()
                         {
@@ -411,7 +411,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
 
                 foreach (var anotherCtrl in anotherCtrls)
                 {
-                    if (anotherCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
+                    if (anotherCtrl.ControlType != DTSmartControl.SCControlType.Binary)
                     {
                         continue;
                     }
@@ -427,7 +427,7 @@ namespace Chocopoi.DressingTools.OneConf.Animations
                 var wearableObj = kvp.Key;
                 var basicTogglesCtrl = kvp.Value[0];
 
-                if (basicTogglesCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
+                if (basicTogglesCtrl.ControlType != DTSmartControl.SCControlType.Binary)
                 {
                     continue;
                 }

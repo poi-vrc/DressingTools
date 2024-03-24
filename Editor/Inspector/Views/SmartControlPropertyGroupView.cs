@@ -171,6 +171,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _selectionObjsContainer.Clear();
             for (var i = 0; i < SelectionGameObjects.Count; i++)
             {
+                var myIdx = i;
                 var go = SelectionGameObjects[i];
                 var elem = new VisualElement();
                 elem.AddToClassList("object-field-entry");
@@ -180,7 +181,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                     objectType = typeof(GameObject),
                     value = go
                 };
-                objField.RegisterValueChangedCallback((evt) => ChangeGameObject?.Invoke(i, go));
+                objField.RegisterValueChangedCallback((evt) => ChangeGameObject?.Invoke(myIdx, (GameObject)objField.value));
                 elem.Add(objField);
 
                 var removeBtn = new Button()

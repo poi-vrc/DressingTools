@@ -66,7 +66,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
                 var a = CreateGameObject("A", root.transform);
                 var menuItem = a.AddComponent<DTMenuItem>();
                 var ctrl = a.AddComponent<DTSmartControl>();
-                ctrl.DriverType = DTSmartControl.SmartControlDriverType.MenuItem;
+                ctrl.DriverType = DTSmartControl.SCDriverType.MenuItem;
                 ctrl.MenuItemDriverConfig.ItemType = DTMenuItem.ItemType.Button;
 
                 composer.Compose(ctrl);
@@ -81,7 +81,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
                 var b = CreateGameObject("B", root.transform);
                 var menuItem = b.AddComponent<DTMenuItem>();
                 var ctrl = b.AddComponent<DTSmartControl>();
-                ctrl.DriverType = DTSmartControl.SmartControlDriverType.MenuItem;
+                ctrl.DriverType = DTSmartControl.SCDriverType.MenuItem;
                 ctrl.MenuItemDriverConfig.ItemType = DTMenuItem.ItemType.Radial;
 
                 composer.Compose(ctrl);
@@ -96,13 +96,129 @@ namespace Chocopoi.DressingTools.Tests.Animations
             {
                 var z = CreateGameObject("Z", root.transform);
                 var ctrl = z.AddComponent<DTSmartControl>();
-                ctrl.DriverType = DTSmartControl.SmartControlDriverType.MenuItem;
+                ctrl.DriverType = DTSmartControl.SCDriverType.MenuItem;
 
                 composer.Compose(ctrl);
 
                 Assert.True(z.TryGetComponent<DTMenuItem>(out _));
             }
         }
+
+#if DT_VRCSDK3A
+        [Test]
+        public void VRCPhysBoneDriver_GeneratePrefixTest()
+        {
+            SetupEnv(out var root, out var options, out var ac);
+
+            var composer = new SmartControlComposer(options, ac);
+
+            var obj = CreateGameObject("A", root.transform);
+            var ctrl = obj.AddComponent<DTSmartControl>();
+            ctrl.DriverType = DTSmartControl.SCDriverType.VRCPhysBone;
+            ctrl.VRCPhysBoneDriverConfig.Condition = DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.Grabbed;
+            ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.None;
+
+            composer.Compose(ctrl);
+
+            Assert.True(string.IsNullOrEmpty(ctrl.AnimatorConfig.ParameterName));
+            Assert.False(string.IsNullOrEmpty(ctrl.VRCPhysBoneDriverConfig.ParameterPrefix));
+        }
+
+        [Test]
+        public void VRCPhysBoneDriver_SrcNone_CondGrabbedOrPosedTest()
+        {
+            SetupEnv(out var root, out var options, out var ac);
+
+            var composer = new SmartControlComposer(options, ac);
+
+            var obj = CreateGameObject("A", root.transform);
+            var pb = obj.AddComponent<VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone>();
+            var ctrl = obj.AddComponent<DTSmartControl>();
+            ctrl.DriverType = DTSmartControl.SCDriverType.VRCPhysBone;
+            ctrl.VRCPhysBoneDriverConfig.VRCPhysBone = pb;
+            ctrl.VRCPhysBoneDriverConfig.Condition = DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.GrabbedOrPosed;
+            ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.None;
+
+            composer.Compose(ctrl);
+
+            var disabledState = GetLayerState(0, ac, "Disabled", options.writeDefaults);
+            // two separate transitions with one condition
+            Assert.AreEqual(2, disabledState.transitions.Length);
+            Assert.AreEqual(1, disabledState.transitions[0].conditions.Length);
+            Assert.True(disabledState.transitions[0].conditions[0].mode == AnimatorConditionMode.If);
+            Assert.AreEqual(1, disabledState.transitions[1].conditions.Length);
+            Assert.True(disabledState.transitions[1].conditions[0].mode == AnimatorConditionMode.If);
+
+            var enabledState = GetLayerState(0, ac, "Enabled", options.writeDefaults);
+            // one transition with two conditions
+            Assert.AreEqual(1, enabledState.transitions.Length);
+            Assert.AreEqual(2, enabledState.transitions[0].conditions.Length);
+            Assert.True(enabledState.transitions[0].conditions[0].mode == AnimatorConditionMode.IfNot);
+            Assert.True(enabledState.transitions[0].conditions[1].mode == AnimatorConditionMode.IfNot);
+
+            var prepareDisabledState = GetLayerState(0, ac, "Prepare Disabled", options.writeDefaults);
+            // one transition with two conditions
+            Assert.AreEqual(1, prepareDisabledState.transitions.Length);
+            Assert.AreEqual(2, prepareDisabledState.transitions[0].conditions.Length);
+            Assert.True(prepareDisabledState.transitions[0].conditions[0].mode == AnimatorConditionMode.IfNot);
+            Assert.True(prepareDisabledState.transitions[0].conditions[1].mode == AnimatorConditionMode.IfNot);
+        }
+
+        [Test]
+        public void VRCPhysBoneDriver_SrcAngle_CondNoneTest()
+        {
+            SetupEnv(out var root, out var options, out var ac);
+
+            var composer = new SmartControlComposer(options, ac);
+
+            var obj = CreateGameObject("A", root.transform);
+            var pb = obj.AddComponent<VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone>();
+            var ctrl = obj.AddComponent<DTSmartControl>();
+            ctrl.DriverType = DTSmartControl.SCDriverType.VRCPhysBone;
+            ctrl.VRCPhysBoneDriverConfig.VRCPhysBone = pb;
+            ctrl.VRCPhysBoneDriverConfig.Condition = DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.None;
+            ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Angle;
+
+            composer.Compose(ctrl);
+
+            var motionTimeState = GetLayerState(0, ac, "Motion Time", options.writeDefaults);
+            Assert.AreEqual(motionTimeState.timeParameter, $"{pb.parameter}_Angle");
+        }
+
+        [Test]
+        public void VRCPhysBoneDriver_SrcAngle_CondGrabbedOrPosedTest()
+        {
+            SetupEnv(out var root, out var options, out var ac);
+
+            var composer = new SmartControlComposer(options, ac);
+
+            var obj = CreateGameObject("A", root.transform);
+            var pb = obj.AddComponent<VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone>();
+            var ctrl = obj.AddComponent<DTSmartControl>();
+            ctrl.DriverType = DTSmartControl.SCDriverType.VRCPhysBone;
+            ctrl.VRCPhysBoneDriverConfig.VRCPhysBone = pb;
+            ctrl.VRCPhysBoneDriverConfig.Condition = DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.GrabbedOrPosed;
+            ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Angle;
+
+            composer.Compose(ctrl);
+
+            var disabledState = GetLayerState(0, ac, "Disabled", options.writeDefaults);
+            // two separate transitions with one condition
+            Assert.AreEqual(2, disabledState.transitions.Length);
+            Assert.AreEqual(1, disabledState.transitions[0].conditions.Length);
+            Assert.True(disabledState.transitions[0].conditions[0].mode == AnimatorConditionMode.If);
+            Assert.AreEqual(1, disabledState.transitions[1].conditions.Length);
+            Assert.True(disabledState.transitions[1].conditions[0].mode == AnimatorConditionMode.If);
+
+            var motionTimeState = GetLayerState(0, ac, "Motion Time", options.writeDefaults);
+            Assert.AreEqual(motionTimeState.timeParameter, $"{pb.parameter}_Angle");
+            // one transition with two conditions
+            Assert.AreEqual(1, motionTimeState.transitions.Length);
+            Assert.AreEqual(2, motionTimeState.transitions[0].conditions.Length);
+            Assert.True(motionTimeState.transitions[0].conditions[0].mode == AnimatorConditionMode.IfNot);
+            Assert.True(motionTimeState.transitions[0].conditions[1].mode == AnimatorConditionMode.IfNot);
+        }
+#endif
 
         [Test]
         public void AddParameterConfigTest()
@@ -168,7 +284,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             var comp = c.AddComponent<ParentConstraint>();
 
             var ctrl = a.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             ctrl.AsBinary()
                 .Toggle(b, false)
@@ -226,7 +342,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             cubeD.name = "Cube";
 
             var ctrl = a.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             ctrl.AsBinary()
                 .AddPropertyGroup(ctrl.NewPropertyGroup()
@@ -326,7 +442,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             cubeB.name = "Cube";
 
             var ctrl = a.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             var magicFromValue = 25.0f;
             var magicToValue = 75.0f;
@@ -366,10 +482,10 @@ namespace Chocopoi.DressingTools.Tests.Animations
             SetupEnv(out var root, out var options, out var ac);
 
             var ctrl1 = root.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             var ctrl2 = root.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             ctrl1.AsBinary()
                 .CrossControlValueOnEnable(ctrl2, 0.0f)
@@ -408,10 +524,10 @@ namespace Chocopoi.DressingTools.Tests.Animations
             SetupEnv(out var root, out var options, out var ac);
 
             var ctrl1 = root.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             var ctrl2 = root.AddComponent<DTSmartControl>()
-                .WithDriverType(DTSmartControl.SmartControlDriverType.AnimatorParameter);
+                .WithDriverType(DTSmartControl.SCDriverType.AnimatorParameter);
 
             ctrl1.AsBinary()
                 .CrossControlValueOnEnable(ctrl2, 0.0f);

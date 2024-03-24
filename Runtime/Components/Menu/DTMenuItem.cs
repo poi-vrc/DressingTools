@@ -18,7 +18,7 @@ namespace Chocopoi.DressingTools.Components.Menu
     /// <summary>
     /// DT Menu Item
     /// </summary>
-    [AddComponentMenu("DressingTools/DT Menu Item (Beta)")]
+    [AddComponentMenu("DressingTools/DT Menu Item")]
     internal class DTMenuItem : DTBaseComponent
     {
         public enum ItemType

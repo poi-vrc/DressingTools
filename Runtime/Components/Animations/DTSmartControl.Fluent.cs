@@ -112,7 +112,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             internal BinarySmartControlBuilder(DTSmartControl control)
             {
                 _control = control;
-                _control.ControlType = SmartControlControlType.Binary;
+                _control.ControlType = SCControlType.Binary;
             }
 
             public BinarySmartControlBuilder Toggle(GameObject gameObject, bool enabled)
@@ -133,7 +133,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             // TODO
             internal BinarySmartControlBuilder CrossControlValueOnEnable(DTSmartControl control, float value)
             {
-                _control.CrossControlActions.ValueActions.ValuesOnEnable.Add(new SmartControlCrossControlActions.ControlValueActions.ControlValue()
+                _control.CrossControlActions.ValueActions.ValuesOnEnable.Add(new SCCrossControlActions.ControlValueActions.ControlValue()
                 {
                     Control = control,
                     Value = value
@@ -144,7 +144,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             // TODO
             internal BinarySmartControlBuilder CrossControlValueOnDisable(DTSmartControl control, float value)
             {
-                _control.CrossControlActions.ValueActions.ValuesOnDisable.Add(new SmartControlCrossControlActions.ControlValueActions.ControlValue()
+                _control.CrossControlActions.ValueActions.ValuesOnDisable.Add(new SCCrossControlActions.ControlValueActions.ControlValue()
                 {
                     Control = control,
                     Value = value
@@ -171,7 +171,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             internal MotionTimeSmartControlBuilder(DTSmartControl control)
             {
                 _control = control;
-                _control.ControlType = SmartControlControlType.MotionTime;
+                _control.ControlType = SCControlType.MotionTime;
             }
 
             public MotionTimeSmartControlBuilder AddPropertyGroup(PropertyGroupBuilder propGpBuilder)
@@ -186,13 +186,13 @@ namespace Chocopoi.DressingTools.Components.Animations
             }
         }
 
-        public DTSmartControl WithDriverType(SmartControlDriverType driverType)
+        public DTSmartControl WithDriverType(SCDriverType driverType)
         {
             DriverType = driverType;
             return this;
         }
 
-        public DTSmartControl WithAnimationConfig(SmartControlAnimatorConfig animatorConfig)
+        public DTSmartControl WithAnimationConfig(SCAnimatorConfig animatorConfig)
         {
             AnimatorConfig = animatorConfig;
             return this;

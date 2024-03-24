@@ -35,6 +35,12 @@ namespace Chocopoi.DressingTools.Inspector
         private ElementView _view;
         private PopupField<string> _languagePopup;
 
+        public EditorBase()
+        {
+            var prefs = PreferencesUtility.GetPreferences();
+            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
+        }
+
         private static void AddIcon(VisualElement elem)
         {
             var iconStyleSheet = Resources.Load<StyleSheet>("DTIconStyles");

@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
@@ -29,6 +28,11 @@ namespace Chocopoi.DressingTools.Animations
         private const string BlendshapePropertyPrefix = "blendShape.";
         private const string MaterialsArrayPrefix = "materials[";
         private const string MaterialPrefix = "material";
+        private const string VRCPhysBoneIsGrabbedSuffix = "_IsGrabbed";
+        private const string VRCPhysBoneIsPosedSuffix = "_IsPosed";
+        private const string VRCPhysBoneAngleSuffix = "_Angle";
+        private const string VRCPhysBoneStretchSuffix = "_Stretch";
+        private const string VRCPhysBoneSquishSuffix = "_Squish";
 
         private readonly HashSet<DTSmartControl> _controls;
         private readonly AnimatorOptions _options;
@@ -66,37 +70,142 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private void HandleDriver(DTSmartControl ctrl)
+        private void HandleDriverMenuItem(DTSmartControl ctrl)
         {
-            if (ctrl.DriverType == DTSmartControl.SmartControlDriverType.MenuItem)
+            if (!ctrl.TryGetComponent<DTMenuItem>(out var menuItem))
             {
-                if (!ctrl.TryGetComponent<DTMenuItem>(out var menuItem))
-                {
-                    menuItem = ctrl.gameObject.AddComponent<DTMenuItem>();
-                }
+                menuItem = ctrl.gameObject.AddComponent<DTMenuItem>();
+            }
 
-                menuItem.Type = ctrl.MenuItemDriverConfig.ItemType;
-                menuItem.Icon = ctrl.MenuItemDriverConfig.ItemIcon;
+            menuItem.Type = ctrl.MenuItemDriverConfig.ItemType;
+            menuItem.Icon = ctrl.MenuItemDriverConfig.ItemIcon;
 
-                if (menuItem.Type == DTMenuItem.ItemType.Button || menuItem.Type == DTMenuItem.ItemType.Toggle)
-                {
-                    menuItem.Controller.Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter;
-                    menuItem.Controller.AnimatorParameterName = ctrl.AnimatorConfig.ParameterName;
-                }
-                else if (menuItem.Type == DTMenuItem.ItemType.Radial)
-                {
-                    menuItem.SubControllers = new DTMenuItem.ItemController[] {
+            if (menuItem.Type == DTMenuItem.ItemType.Button || menuItem.Type == DTMenuItem.ItemType.Toggle)
+            {
+                ctrl.ControlType = DTSmartControl.SCControlType.Binary;
+                menuItem.Controller.Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter;
+                menuItem.Controller.AnimatorParameterName = ctrl.AnimatorConfig.ParameterName;
+            }
+            else if (menuItem.Type == DTMenuItem.ItemType.Radial)
+            {
+                ctrl.ControlType = DTSmartControl.SCControlType.MotionTime;
+                menuItem.SubControllers = new DTMenuItem.ItemController[] {
                         new DTMenuItem.ItemController() {
                             Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter,
                             AnimatorParameterName = ctrl.AnimatorConfig.ParameterName,
                             AnimatorParameterValue = 1.0f
                         }
                     };
-                }
-                else
+            }
+            else
+            {
+                _options.context.Report.LogWarn("SmartControlComposer", "Unsupported menu item type");
+            }
+        }
+
+        private string VRCPhysBoneDataSourceToParam(string prefix, DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource source)
+        {
+            if (source == DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Angle)
+            {
+                return prefix + VRCPhysBoneAngleSuffix;
+            }
+            else if (source == DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Stretch)
+            {
+                return prefix + VRCPhysBoneStretchSuffix;
+            }
+            else if (source == DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Squish)
+            {
+                return prefix + VRCPhysBoneSquishSuffix;
+            }
+            return null;
+        }
+
+        private List<string> VRCPhysBoneConditionToParams(string prefix, DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition cond)
+        {
+            var list = new List<string>();
+            if (cond == DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.Grabbed ||
+                cond == DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.GrabbedOrPosed)
+            {
+                list.Add(prefix + VRCPhysBoneIsGrabbedSuffix);
+            }
+            if (cond == DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.Posed ||
+                cond == DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.GrabbedOrPosed)
+            {
+                list.Add(prefix + VRCPhysBoneIsPosedSuffix);
+            }
+            return list;
+        }
+
+#if DT_VRCSDK3A
+        private void HandleDriverVRCPhysBone(DTSmartControl ctrl)
+        {
+            var config = ctrl.VRCPhysBoneDriverConfig;
+            if (config.Condition == DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition.None &&
+                config.Source == DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.None)
+            {
+                _options.context.Report.LogWarn("SmartControlComposer", "SmartControl VRC PhysBone driver has no condition and source, ignoring: " + ctrl.name);
+                return;
+            }
+
+            // we don't use this config
+            ctrl.AnimatorConfig.ParameterName = null;
+
+            // prepare prefix
+            if (string.IsNullOrEmpty(config.ParameterPrefix))
+            {
+                config.ParameterPrefix = SmartControlUtils.SuggestRelativePathName(_options.context.AvatarGameObject.transform, ctrl);
+            }
+
+            if (config.VRCPhysBone == null)
+            {
+                _options.context.Report.LogWarn("SmartControlComposer", "SmartControl no VRCPhysBone provided, ignoring: " + ctrl.name);
+                return;
+            }
+            config.VRCPhysBone.parameter = config.ParameterPrefix;
+
+            if (config.Source == DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.None)
+            {
+                // direct condition to binary
+                ctrl.ControlType = DTSmartControl.SCControlType.Binary;
+                ComposeBinary(ctrl, VRCPhysBoneConditionToParams(config.ParameterPrefix, config.Condition));
+            }
+            else
+            {
+                ctrl.ControlType = DTSmartControl.SCControlType.MotionTime;
+                ComposeMotionTime(ctrl, VRCPhysBoneDataSourceToParam(config.ParameterPrefix, config.Source), VRCPhysBoneConditionToParams(config.ParameterPrefix, config.Condition));
+            }
+        }
+#endif
+
+        private void HandleDriver(DTSmartControl ctrl)
+        {
+            if (ctrl.DriverType == DTSmartControl.SCDriverType.AnimatorParameter ||
+                ctrl.DriverType == DTSmartControl.SCDriverType.MenuItem)
+            {
+                GenerateParameterNameIfNeeded(ctrl);
+                AddParameterConfig(ctrl);
+
+                if (ctrl.DriverType == DTSmartControl.SCDriverType.MenuItem)
                 {
-                    _options.context.Report.LogWarn("SmartControlComposer", "Unsupported menu item type");
+                    HandleDriverMenuItem(ctrl);
                 }
+
+                if (ctrl.ControlType == DTSmartControl.SCControlType.Binary)
+                {
+                    ComposeBinary(ctrl, new List<string>() { ctrl.AnimatorConfig.ParameterName });
+                }
+                else if (ctrl.ControlType == DTSmartControl.SCControlType.MotionTime)
+                {
+                    ComposeMotionTime(ctrl, ctrl.AnimatorConfig.ParameterName, new List<string>());
+                }
+            }
+            else if (ctrl.DriverType == DTSmartControl.SCDriverType.VRCPhysBone)
+            {
+#if DT_VRCSDK3A
+                HandleDriverVRCPhysBone(ctrl);
+#else
+                _options.context.Report.LogWarn("SmartControlComposer", "VRCSDK not imported, skipping VRCPhysBone SmartControl composition: " + ctrl.name);
+#endif
             }
         }
 
@@ -114,23 +223,12 @@ namespace Chocopoi.DressingTools.Animations
             //     return;
             // }
 
-            GenerateParameterNameIfNeeded(ctrl);
             HandleDriver(ctrl);
-            AddParameterConfig(ctrl);
-
-            if (ctrl.ControlType == DTSmartControl.SmartControlControlType.Binary)
-            {
-                ComposeBinary(ctrl);
-            }
-            else if (ctrl.ControlType == DTSmartControl.SmartControlControlType.MotionTime)
-            {
-                ComposeMotionTime(ctrl);
-            }
 
             // EditorUtility.SetDirty(ctrl.Controller);
         }
 
-        private void ComposeBinary(DTSmartControl ctrl)
+        private void ComposeBinary(DTSmartControl ctrl, List<string> conditionalParams)
         {
             if (HasCrossControlCycle(ctrl))
             {
@@ -148,12 +246,18 @@ namespace Chocopoi.DressingTools.Animations
             disabledState.WithNewAnimation();
 
             layer.WithDefaultState(disabledState);
-            disabledState.AddTransition(enabledState)
-                .If(animator.BoolParameter(ctrl.AnimatorConfig.ParameterName));
-            enabledState.AddTransition(prepareDisabledState)
-                .IfNot(animator.BoolParameter(ctrl.AnimatorConfig.ParameterName));
-            prepareDisabledState.AddTransition(disabledState)
-                .IfNot(animator.BoolParameter(ctrl.AnimatorConfig.ParameterName));
+            conditionalParams.ForEach(cp =>
+            {
+                // work as OR
+                disabledState.AddTransition(enabledState)
+                    .If(animator.BoolParameter(cp));
+            });
+
+            var enabledToPrepareDisabled = enabledState.AddTransition(prepareDisabledState);
+            conditionalParams.ForEach(cp => enabledToPrepareDisabled.IfNot(animator.BoolParameter(cp)));
+
+            var prepareDisabledToDisabled = prepareDisabledState.AddTransition(disabledState);
+            conditionalParams.ForEach(cp => prepareDisabledToDisabled.IfNot(animator.BoolParameter(cp)));
 
             ComposeBinaryToggles(_controller, prepareDisabledState, enabledState, ctrl);
         }
@@ -343,7 +447,7 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private static bool GetComponentOrGameObjectOriginalState(Component target)
+        private bool GetComponentOrGameObjectOriginalState(Component target)
         {
             // as we are sharing the Component type for both components and GameObjects
             // we would want to get the activeSelf of GameObject instead
@@ -358,7 +462,7 @@ namespace Chocopoi.DressingTools.Animations
             else
             {
                 // unknown
-                Debug.LogWarning($"[DressingTools] [SmartControlComposer] Unsupported component detected {target.GetType().FullName} in {target.name}, defaulting original value as false.");
+                _options.context.Report.LogWarn("SmartControlComposer", "Unsupported component detected {target.GetType().FullName} in {target.name}, defaulting original value as false.");
                 return false;
             }
         }
@@ -376,11 +480,17 @@ namespace Chocopoi.DressingTools.Animations
             return driver;
         }
 
-        private void ComposeCrossControlValueActions(AnimatorController controller, AnimatorStateBuilder state, List<DTSmartControl.SmartControlCrossControlActions.ControlValueActions.ControlValue> values)
+        private void ComposeCrossControlValueActions(AnimatorController controller, AnimatorStateBuilder state, List<DTSmartControl.SCCrossControlActions.ControlValueActions.ControlValue> values)
         {
             foreach (var value in values)
             {
                 var anotherCtrl = value.Control;
+
+                if (anotherCtrl.DriverType != DTSmartControl.SCDriverType.AnimatorParameter &&
+                    anotherCtrl.DriverType != DTSmartControl.SCDriverType.MenuItem)
+                {
+                    continue;
+                }
 
                 // TODO
                 // if (anotherCtrl.Controller != controller)
@@ -428,19 +538,40 @@ namespace Chocopoi.DressingTools.Animations
 #endif
         }
 
-        private void ComposeMotionTime(DTSmartControl ctrl)
+        private void ComposeMotionTime(DTSmartControl ctrl, string floatParameter, List<string> conditionalParams)
         {
             var animator = new AnimatorBuilder(_options, _controller);
             var layer = animator.NewLayer(SmartControlUtils.SuggestRelativePathName(_options.context.AvatarGameObject.transform, ctrl));
-            var state = layer.NewState("Motion Time")
-                                .WithMotionTime(animator.FloatParameter(ctrl.AnimatorConfig.ParameterName));
-            layer.WithDefaultState(state);
 
-            var clip = state.WithNewAnimation();
+            var motionTimeState = layer.NewState("Motion Time")
+                                .WithMotionTime(animator.FloatParameter(floatParameter));
+            var clip = motionTimeState.WithNewAnimation();
 
             foreach (var propGp in ctrl.PropertyGroups)
             {
                 ComposePropertyGroupFromToValue(clip, propGp);
+            }
+
+            if (conditionalParams.Count == 0)
+            {
+                layer.WithDefaultState(motionTimeState);
+            }
+            else
+            {
+                var disabledState = layer.NewState("Disabled");
+                disabledState.WithNewAnimation();
+                conditionalParams.ForEach(cp =>
+                {
+                    // we want this to work as OR
+                    disabledState.AddTransition(motionTimeState)
+                        .If(animator.BoolParameter(cp));
+                });
+
+                var motionTimeToEnabled = motionTimeState.AddTransition(disabledState);
+                // require both parameters (AND) are not
+                conditionalParams.ForEach(cp => motionTimeToEnabled.IfNot(animator.BoolParameter(cp)));
+
+                layer.WithDefaultState(disabledState);
             }
         }
 
@@ -450,13 +581,19 @@ namespace Chocopoi.DressingTools.Animations
                 HasCrossControlCycleValueGroup(ctrl, ctrl.CrossControlActions.ValueActions.ValuesOnDisable, false);
         }
 
-        private bool HasCrossControlCycleValueGroup(DTSmartControl ctrl, List<DTSmartControl.SmartControlCrossControlActions.ControlValueActions.ControlValue> values, bool enabled)
+        private bool HasCrossControlCycleValueGroup(DTSmartControl ctrl, List<DTSmartControl.SCCrossControlActions.ControlValueActions.ControlValue> values, bool enabled)
         {
             foreach (var value in values)
             {
                 var anotherCtrl = value.Control;
 
-                if (anotherCtrl.ControlType != DTSmartControl.SmartControlControlType.Binary)
+                if (anotherCtrl.DriverType != DTSmartControl.SCDriverType.AnimatorParameter &&
+                    anotherCtrl.DriverType != DTSmartControl.SCDriverType.MenuItem)
+                {
+                    continue;
+                }
+
+                if (anotherCtrl.ControlType != DTSmartControl.SCControlType.Binary)
                 {
                     continue;
                 }

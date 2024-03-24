@@ -17,7 +17,7 @@ namespace Chocopoi.DressingTools.Components.Menu
     /// <summary>
     /// DT Menu Group
     /// </summary>
-    [AddComponentMenu("DressingTools/DT Menu Group (Beta)")]
+    [AddComponentMenu("DressingTools/DT Menu Group")]
     internal class DTMenuGroup : DTBaseComponent
     {
         public DTMenuGroup()

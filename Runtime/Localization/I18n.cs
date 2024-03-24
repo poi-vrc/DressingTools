@@ -31,6 +31,11 @@ namespace Chocopoi.DressingTools.Localization
                 return translator;
             }
         }
+
+        public static void ReloadTranslations()
+        {
+            ToolTranslator.LoadTranslations(TranslationsFolder);
+        }
     }
 }
 
