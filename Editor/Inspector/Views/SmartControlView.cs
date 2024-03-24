@@ -458,6 +458,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 _driverMenuItemContainer.style.display = DisplayStyle.Flex;
                 _driverAnimParamContainer.style.display = DisplayStyle.Flex;
                 _controlTypePopupContainer.SetEnabled(false);
+                UpdateMenuItemTypeDisplay();
             }
             else if (DriverType == 2)
             {
