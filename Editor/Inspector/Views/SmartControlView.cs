@@ -47,6 +47,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public event Action AddNewPropertyGroup;
         public event Action<DTSmartControl.PropertyGroup> RemovePropertyGroup;
         public event Action MenuItemConfigChanged;
+        public event Action VRCPhysBoneConfigChanged;
 
         public DTSmartControl Target { get; set; }
         public int DriverType { get => _driverTypePopup.index; set => _driverTypePopup.index = value; }
@@ -66,6 +67,12 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public string MenuItemName { get => _driverMenuItemNameField.value; set => _driverMenuItemNameField.value = value; }
         public Texture2D MenuItemIcon { get => (Texture2D)_driverMenuItemIconObjField.value; set => _driverMenuItemIconObjField.value = value; }
         public int MenuItemType { get => _driverMenuItemPopup.index; set => _driverMenuItemPopup.index = value; }
+
+#if DT_VRCSDK3A
+        public VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone VRCPhysBone { get => (VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone)_driverVRCPhysBoneObjField.value; set => _driverVRCPhysBoneObjField.value = value; }
+#endif
+        public int VRCPhysBoneCondition { get => _driverVRCPhysBoneConditionPopup.index; set => _driverVRCPhysBoneConditionPopup.index = value; }
+        public int VRCPhysBoneSource { get => _driverVRCPhysBoneSourcePopup.index; set => _driverVRCPhysBoneSourcePopup.index = value; }
 
         public List<SmartControlObjectToggleValue> ObjectToggles { get; set; }
         public List<SmartControlCrossControlValue> CrossControlValuesOnEnabled { get; set; }
@@ -108,6 +115,12 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private ObjectField _driverMenuItemIconObjField;
         private TextField _driverMenuItemNameField;
         private PopupField<string> _driverMenuItemPopup;
+        private VisualElement _driverVRCPhysBoneContainer;
+        private VisualElement _objFieldHelpboxContainer;
+        private ObjectField _driverVRCPhysBoneObjField;
+        private PopupField<string> _driverVRCPhysBoneConditionPopup;
+        private PopupField<string> _driverVRCPhysBoneSourcePopup;
+        private VisualElement _condSrcHelpboxContainer;
 
         public SmartControlView()
         {
@@ -128,6 +141,20 @@ namespace Chocopoi.DressingTools.Inspector.Views
             {
                 styleSheets.Add(styleSheet);
             }
+        }
+
+        private void UpdateMenuItemTypeDisplay()
+        {
+            if (MenuItemType == 0 || MenuItemType == 1)
+            {
+                ControlType = 0; // binary
+            }
+            else if (MenuItemType == 2)
+            {
+                ControlType = 1; // motion time
+            }
+            RepaintControlType();
+            ControlTypeChanged?.Invoke();
         }
 
         private void InitDriverMenuItem()
@@ -155,6 +182,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _driverMenuItemPopup = new PopupField<string>(t._("inspector.smartcontrol.driver.menuItem.popup.itemType"), choices, 0);
             _driverMenuItemPopup.RegisterValueChangedCallback(evt =>
             {
+                UpdateMenuItemTypeDisplay();
                 MenuItemConfigChanged?.Invoke();
             });
             popupContainer.Add(_driverMenuItemPopup);
@@ -188,6 +216,98 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _driverAnimParamDefaultValueFloatContainer.style.display = DisplayStyle.None;
         }
 
+        private void UpdateDriverVRCPhysBoneDisplay()
+        {
+#if DT_VRCSDK3A
+            UpdateDriverVRCPhysBoneObjHelpboxDisplay();
+#endif
+
+            _condSrcHelpboxContainer.style.display = VRCPhysBoneCondition == 0 && VRCPhysBoneSource == 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _controlTypePopupContainer.SetEnabled(false);
+
+            if (VRCPhysBoneSource == 0)
+            {
+                // none source use binary
+                ControlType = 0;
+            }
+            else
+            {
+                ControlType = 1;
+            }
+            RepaintControlType();
+            ControlTypeChanged?.Invoke();
+        }
+
+#if DT_VRCSDK3A
+        private void UpdateDriverVRCPhysBoneObjHelpboxDisplay()
+        {
+            _objFieldHelpboxContainer.style.display = VRCPhysBone == null ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+#endif
+
+        private void InitDriverVRCPhysBone()
+        {
+            _driverVRCPhysBoneContainer = Q<VisualElement>("vrcphysbone-driver-container").First();
+
+            _objFieldHelpboxContainer = Q<VisualElement>("vrcphysbone-obj-field-helpbox-container").First();
+            _objFieldHelpboxContainer.style.display = DisplayStyle.None;
+            _objFieldHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.emptyPhysbone"), MessageType.Error));
+
+            var objFieldContainer = Q<VisualElement>("vrcphysbone-obj-field-container").First();
+#if DT_VRCSDK3A
+            _driverVRCPhysBoneObjField = new ObjectField(t._("inspector.smartcontrol.driver.vrcPhysBone.objField.physBone"))
+            {
+                objectType = typeof(VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone)
+            };
+            _driverVRCPhysBoneObjField.RegisterValueChangedCallback(evt =>
+            {
+                UpdateDriverVRCPhysBoneObjHelpboxDisplay();
+                VRCPhysBoneConfigChanged?.Invoke();
+            });
+            objFieldContainer.Add(_driverVRCPhysBoneObjField);
+#else
+            objFieldContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.vrcsdkNotDetected"), MessageType.Error));
+#endif
+
+            var paramHelpboxContainer = Q<VisualElement>("vrcphysbone-parameter-prefix-helpbox-container").First();
+            paramHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.emptyParameterPrefixAutoGenerated"), MessageType.Info));
+
+            _condSrcHelpboxContainer = Q<VisualElement>("vrcphysbone-condition-source-helpbox-container").First();
+            _condSrcHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.noneCondNoneSrc"), MessageType.Error));
+
+            var conditionChoices = new List<string>()
+            {
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition.none"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition.grabbed"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition.posed"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition.grabbedOrPosed")
+            };
+            var conditionPopupContainer = Q<VisualElement>("vrcphysbone-condition-popup-container").First();
+            _driverVRCPhysBoneConditionPopup = new PopupField<string>(t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition"), conditionChoices, 0);
+            _driverVRCPhysBoneConditionPopup.RegisterValueChangedCallback(evt =>
+            {
+                UpdateDriverVRCPhysBoneDisplay();
+                VRCPhysBoneConfigChanged?.Invoke();
+            });
+            conditionPopupContainer.Add(_driverVRCPhysBoneConditionPopup);
+
+            var sourceChoices = new List<string>()
+            {
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source.none"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source.angle"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source.stretch"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source.squish")
+            };
+            var sourcePopupContainer = Q<VisualElement>("vrcphysbone-source-popup-container").First();
+            _driverVRCPhysBoneSourcePopup = new PopupField<string>(t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source"), sourceChoices, 0);
+            _driverVRCPhysBoneSourcePopup.RegisterValueChangedCallback(evt =>
+            {
+                UpdateDriverVRCPhysBoneDisplay();
+                VRCPhysBoneConfigChanged?.Invoke();
+            });
+            sourcePopupContainer.Add(_driverVRCPhysBoneSourcePopup);
+        }
+
         private void InitDriverFoldout()
         {
             _driverFoldout = Q<Foldout>("driver-foldout").First();
@@ -198,7 +318,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
             helpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.animatorParameter.helpbox.emptyParameterAutoGenerated"), MessageType.Info));
 
             _driverTypePopupContainer = Q<VisualElement>("driver-type-popup-container").First();
-            var choices = new List<string>() { t._("inspector.smartcontrol.driver.animatorParameter"), t._("inspector.smartcontrol.driver.menuItem") };
+            var choices = new List<string>() {
+                t._("inspector.smartcontrol.driver.animatorParameter"),
+                t._("inspector.smartcontrol.driver.menuItem"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone") };
             _driverTypePopup = new PopupField<string>(t._("inspector.smartcontrol.driver.popup.driverType"), choices, 0);
             _driverTypePopup.RegisterValueChangedCallback((evt) =>
             {
@@ -209,6 +332,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
             InitDriverMenuItem();
             InitDriverAnimParam();
+            InitDriverVRCPhysBone();
         }
 
         private void InitControlFoldout()
@@ -320,26 +444,40 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             _driverMenuItemContainer.style.display = DisplayStyle.None;
             _driverAnimParamContainer.style.display = DisplayStyle.None;
+            _driverVRCPhysBoneContainer.style.display = DisplayStyle.None;
 
             if (DriverType == 0)
             {
                 // animator parameter
                 _driverAnimParamContainer.style.display = DisplayStyle.Flex;
+                _controlTypePopupContainer.SetEnabled(true);
             }
             else if (DriverType == 1)
             {
                 // menu item
                 _driverMenuItemContainer.style.display = DisplayStyle.Flex;
                 _driverAnimParamContainer.style.display = DisplayStyle.Flex;
+                _controlTypePopupContainer.SetEnabled(false);
             }
+            else if (DriverType == 2)
+            {
+                // vrc physbone
+                _driverVRCPhysBoneContainer.style.display = DisplayStyle.Flex;
+                UpdateDriverVRCPhysBoneDisplay();
+            }
+        }
+
+        private void SetAnimParamDefaultValueDisplayBool(bool useBool)
+        {
+            _driverAnimParamDefaultValueBoolToggle.style.display = useBool ? DisplayStyle.Flex : DisplayStyle.None;
+            _driverAnimParamDefaultValueFloatContainer.style.display = useBool ? DisplayStyle.None : DisplayStyle.None;
         }
 
         private void RepaintControlType()
         {
             if (ControlType == 0)
             {
-                _driverAnimParamDefaultValueBoolToggle.style.display = DisplayStyle.Flex;
-                _driverAnimParamDefaultValueFloatContainer.style.display = DisplayStyle.None;
+                SetAnimParamDefaultValueDisplayBool(true);
 
                 _controlBinaryContainer.style.display = DisplayStyle.Flex;
                 _controlMotionTimeContainer.style.display = DisplayStyle.None;
@@ -356,8 +494,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             }
             else if (ControlType == 1)
             {
-                _driverAnimParamDefaultValueBoolToggle.style.display = DisplayStyle.None;
-                _driverAnimParamDefaultValueFloatContainer.style.display = DisplayStyle.Flex;
+                SetAnimParamDefaultValueDisplayBool(false);
 
                 _controlBinaryContainer.style.display = DisplayStyle.None;
                 _controlMotionTimeContainer.style.display = DisplayStyle.Flex;

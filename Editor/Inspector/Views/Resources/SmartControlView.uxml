@@ -23,6 +23,16 @@
             <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.toggle.networkSynced" binding-path="m_AnimatorConfig.m_NetworkSynced" value="true" />
             <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.toggle.saved" binding-path="m_AnimatorConfig.m_Saved" value="true" />
         </ui:Box>
+        <ui:Box name="vrcphysbone-driver-container">
+            <ui:Label text="@inspector.smartcontrol.driver.vrcPhysBone" />
+            <ui:VisualElement name="vrcphysbone-obj-field-helpbox-container" />
+            <ui:VisualElement name="vrcphysbone-obj-field-container" />
+            <ui:VisualElement name="vrcphysbone-parameter-prefix-helpbox-container" />
+            <ui:TextField picking-mode="Ignore" name="vrcphysbone-parameter-prefix-field" label="@inspector.smartcontrol.driver.vrcPhysBone.textField.parameterPrefix" binding-path="m_VRCPhysBoneDriverConfig.m_ParameterPrefix" />
+            <ui:VisualElement name="vrcphysbone-condition-source-helpbox-container" />
+            <ui:VisualElement name="vrcphysbone-condition-popup-container" />
+            <ui:VisualElement name="vrcphysbone-source-popup-container" />
+        </ui:Box>
     </ui:VisualElement>
     <ui:Foldout text="Control: Binary" name="control-foldout" class="foldout-header">
         <Style src="SmartControlViewStyles.uss" />

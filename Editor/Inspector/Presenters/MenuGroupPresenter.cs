@@ -27,11 +27,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public MenuGroupPresenter(IMenuGroupView view)
         {
             _view = view;
-
-            // TODO: set this from the editor level and move to a common place
-            var prefs = PreferencesUtility.GetPreferences();
-            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
-
             SubscribeEvents();
         }
 
@@ -76,7 +71,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             var obj = new GameObject($"SmartControl{_view.Target.transform.childCount + 1}");
             var sc = obj.AddComponent<DTSmartControl>();
-            sc.DriverType = DTSmartControl.SmartControlDriverType.MenuItem;
+            sc.DriverType = DTSmartControl.SCDriverType.MenuItem;
             obj.transform.SetParent(_view.Target.transform);
             Selection.activeGameObject = obj;
             _view.Repaint();

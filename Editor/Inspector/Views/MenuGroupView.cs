@@ -128,7 +128,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 var sc = trans.GetComponent<DTSmartControl>();
                 var menuItem = trans.GetComponent<DTMenuItem>();
 
-                var useSc = sc != null && sc.DriverType == DTSmartControl.SmartControlDriverType.MenuItem;
+                var useSc = sc != null && sc.DriverType == DTSmartControl.SCDriverType.MenuItem;
                 Component comp;
                 if (useSc)
                 {

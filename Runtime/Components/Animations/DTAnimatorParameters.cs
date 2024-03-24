@@ -21,7 +21,7 @@ namespace Chocopoi.DressingTools.Components.Animations
     /// 
     /// A component to set network synced, saved configuration of animator parameters.
     /// </summary>
-    [AddComponentMenu("DressingTools/DT Animator Parameters (Beta)")]
+    [AddComponentMenu("DressingTools/DT Animator Parameters")]
     internal class DTAnimatorParameters : DTBaseComponent
     {
         [Serializable]

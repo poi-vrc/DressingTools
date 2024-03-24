@@ -26,11 +26,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public SmartControlPropertyGroupPresenter(ISmartControlPropertyGroupView view)
         {
             _view = view;
-
-            // TODO: set this from the editor level and move to a common place
-            var prefs = PreferencesUtility.GetPreferences();
-            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
-
             SubscribeEvents();
         }
 
@@ -59,6 +54,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.Target.GameObjects[index] = go;
             _view.SelectionGameObjects[index] = go;
+            if (_view.SelectionType == 0)
+            {
+                // if in normal mode, set this as the pick from transform
+                _view.PickFromTransform = go.transform;
+                SearchComponents();
+                _view.Repaint();
+            }
         }
 
         private void OnSettingsChanged()
@@ -73,6 +75,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.Target.GameObjects.Add(go);
             _view.SelectionGameObjects.Add(go);
+            SuggestPickFromTransform();
             SearchComponents();
             _view.Repaint();
         }
@@ -81,6 +84,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.Target.GameObjects.Remove(go);
             _view.SelectionGameObjects.Remove(go);
+            SuggestPickFromTransform();
             SearchComponents();
             _view.Repaint();
         }
@@ -116,11 +120,25 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Repaint();
         }
 
+        private void SuggestPickFromTransform(bool mustSet = false)
+        {
+            if (_view.SelectionType == 0 && _view.SelectionGameObjects.Count > 0)
+            {
+                // only suggest if in normal mode, otherwise it's meaningless
+                _view.PickFromTransform = _view.SelectionGameObjects[_view.SelectionGameObjects.Count - 1].transform;
+            }
+            else if (mustSet)
+            {
+                // only set if it's a must
+                _view.PickFromTransform = _view.Target.SearchTransform;
+            }
+        }
+
         private void OnLoad()
         {
             UpdateView();
 
-            _view.PickFromTransform = _view.Target.SearchTransform;
+            SuggestPickFromTransform(true);
             SearchComponents();
             _view.Repaint();
         }

@@ -32,6 +32,12 @@ namespace Chocopoi.DressingTools.UI
 
         private MainView _view;
 
+        [MenuItem("Tools/chocopoi/Reload Translations", false, 0)]
+        public static void ReloadTranslations()
+        {
+            I18n.ReloadTranslations();
+        }
+
         [MenuItem("Tools/chocopoi/DressingTools", false, 0)]
         public static void ShowWindow()
         {

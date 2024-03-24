@@ -29,11 +29,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public SmartControlPresenter(ISmartControlView view)
         {
             _view = view;
-
-            // TODO: set this from the editor level and move to a common place
-            var prefs = PreferencesUtility.GetPreferences();
-            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
-
             SubscribeEvents();
         }
 
@@ -64,6 +59,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.RemoveCrossControlValueOnDisabled += OnRemoveCrossControlValueOnDisabled;
 
             _view.MenuItemConfigChanged += OnMenuItemConfigChanged;
+            _view.VRCPhysBoneConfigChanged += OnVRCPhysBoneConfigChanged;
         }
 
         private void UnsubscribeEvents()
@@ -93,6 +89,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.RemoveCrossControlValueOnDisabled -= OnRemoveCrossControlValueOnDisabled;
 
             _view.MenuItemConfigChanged -= OnMenuItemConfigChanged;
+            _view.VRCPhysBoneConfigChanged -= OnVRCPhysBoneConfigChanged;
         }
 
         private void OnMenuItemConfigChanged()
@@ -100,7 +97,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Target.name = _view.MenuItemName;
             _view.Target.MenuItemDriverConfig.ItemIcon = _view.MenuItemIcon;
 
-            if (_view.Target.ControlType == DTSmartControl.SmartControlControlType.Binary &&
+            if (_view.Target.ControlType == DTSmartControl.SCControlType.Binary &&
                 _view.MenuItemType == 2)
             {
                 // force radial to toggle
@@ -126,6 +123,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 menuItem.Icon = _view.Target.MenuItemDriverConfig.ItemIcon;
                 menuItem.Type = _view.Target.MenuItemDriverConfig.ItemType;
             }
+        }
+
+        private void OnVRCPhysBoneConfigChanged()
+        {
+#if DT_VRCSDK3A
+            // if VRCSDK not exist, do not do anything
+            _view.Target.VRCPhysBoneDriverConfig.VRCPhysBone = _view.VRCPhysBone;
+#endif
+            _view.Target.VRCPhysBoneDriverConfig.Condition = (DTSmartControl.SCVRCPhysBoneDriverConfig.PhysBoneCondition)_view.VRCPhysBoneCondition;
+            _view.Target.VRCPhysBoneDriverConfig.Source = (DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource)_view.VRCPhysBoneSource;
         }
 
         private void OnRemovePropertyGroup(DTSmartControl.PropertyGroup propGp)
@@ -233,12 +240,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             AddCrossControlValueIfNotExist(_view.Target.CrossControlActions.ValueActions.ValuesOnEnable, control);
         }
 
-        private void AddCrossControlValueIfNotExist(List<DTSmartControl.SmartControlCrossControlActions.ControlValueActions.ControlValue> values, DTSmartControl control)
+        private void AddCrossControlValueIfNotExist(List<DTSmartControl.SCCrossControlActions.ControlValueActions.ControlValue> values, DTSmartControl control)
         {
             // we invert the state here for user convenience
             if (values.Where(value => value.Control == control).FirstOrDefault() == null)
             {
-                values.Add(new DTSmartControl.SmartControlCrossControlActions.ControlValueActions.ControlValue()
+                values.Add(new DTSmartControl.SCCrossControlActions.ControlValueActions.ControlValue()
                 {
                     Control = control,
                     Value = control.AnimatorConfig.ParameterDefaultValue
@@ -285,11 +292,39 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
+        private int DriverTypeToIndex(DTSmartControl.SCDriverType type)
+        {
+            switch (type)
+            {
+                case DTSmartControl.SCDriverType.MenuItem:
+                    return 1;
+                case DTSmartControl.SCDriverType.VRCPhysBone:
+                    return 2;
+                default:
+                case DTSmartControl.SCDriverType.AnimatorParameter:
+                    return 0;
+            }
+        }
+
+        private DTSmartControl.SCDriverType IndexToDriverType(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return DTSmartControl.SCDriverType.MenuItem;
+                case 2:
+                    return DTSmartControl.SCDriverType.VRCPhysBone;
+                default:
+                case 0:
+                    return DTSmartControl.SCDriverType.AnimatorParameter;
+            }
+        }
+
         private void OnDriverChanged()
         {
             // TODO: other driver types
             Undo.RecordObject(_view.Target, "Driver Changed");
-            _view.Target.DriverType = (DTSmartControl.SmartControlDriverType)_view.DriverType;
+            _view.Target.DriverType = IndexToDriverType(_view.DriverType);
             _view.Repaint();
         }
 
@@ -302,10 +337,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnControlTypeChanged()
         {
             Undo.RecordObject(_view.Target, "Control Type Changed");
-            _view.Target.ControlType = (DTSmartControl.SmartControlControlType)_view.ControlType;
+            _view.Target.ControlType = (DTSmartControl.SCControlType)_view.ControlType;
 
-            if (_view.Target.ControlType == DTSmartControl.SmartControlControlType.Binary &&
-                _view.Target.DriverType == DTSmartControl.SmartControlDriverType.MenuItem &&
+            if (_view.Target.ControlType == DTSmartControl.SCControlType.Binary &&
+                _view.Target.DriverType == DTSmartControl.SCDriverType.MenuItem &&
                 _view.Target.MenuItemDriverConfig.ItemType != DTMenuItem.ItemType.Button &&
                 _view.Target.MenuItemDriverConfig.ItemType != DTMenuItem.ItemType.Toggle)
             {
@@ -356,7 +391,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.PropertyGroups.AddRange(_view.Target.PropertyGroups);
         }
 
-        private void UpdateCrossControlValuesSection(List<SmartControlCrossControlValue> uiValues, List<DTSmartControl.SmartControlCrossControlActions.ControlValueActions.ControlValue> compValues)
+        private void UpdateCrossControlValuesSection(List<SmartControlCrossControlValue> uiValues, List<DTSmartControl.SCCrossControlActions.ControlValueActions.ControlValue> compValues)
         {
             uiValues.Clear();
             foreach (var compValue in compValues)
@@ -399,10 +434,20 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
+        private void UpdateDriverVRCPhysBone()
+        {
+#if DT_VRCSDK3A
+            _view.VRCPhysBone = _view.Target.VRCPhysBoneDriverConfig.VRCPhysBone;
+#endif
+            _view.VRCPhysBoneCondition = (int)_view.Target.VRCPhysBoneDriverConfig.Condition;
+            _view.VRCPhysBoneSource = (int)_view.Target.VRCPhysBoneDriverConfig.Source;
+        }
+
         private void UpdateDrivers()
         {
-            _view.DriverType = (int)_view.Target.DriverType;
+            _view.DriverType = DriverTypeToIndex(_view.Target.DriverType);
             UpdateDriverMenuItem();
+            UpdateDriverVRCPhysBone();
         }
 
         private void UpdateView()

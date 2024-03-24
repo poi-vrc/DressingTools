@@ -48,6 +48,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         event Action AddNewPropertyGroup;
         event Action<DTSmartControl.PropertyGroup> RemovePropertyGroup;
         event Action MenuItemConfigChanged;
+        event Action VRCPhysBoneConfigChanged;
 
         List<SmartControlObjectToggleValue> ObjectToggles { get; set; }
         List<SmartControlCrossControlValue> CrossControlValuesOnEnabled { get; set; }
@@ -61,5 +62,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
         string MenuItemName { get; set; }
         Texture2D MenuItemIcon { get; set; }
         int MenuItemType { get; set; }
+
+#if DT_VRCSDK3A
+        VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone VRCPhysBone { get; set; }
+#endif
+        int VRCPhysBoneCondition { get; set; }
+        int VRCPhysBoneSource { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace Chocopoi.DressingTools.Components.Menu
     /// <summary>
     /// DT Menu Install
     /// </summary>
-    [AddComponentMenu("DressingTools/DT Menu Install (Beta)")]
+    [AddComponentMenu("DressingTools/DT Menu Install")]
     internal class DTMenuInstall : DTBaseComponent
     {
 #if DT_VRCSDK3A

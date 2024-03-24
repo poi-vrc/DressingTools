@@ -24,13 +24,18 @@ namespace Chocopoi.DressingTools.Components.Animations
     /// An experimental, general-purpose component to generate animator layers and animations
     /// which are then driven by specific features.
     /// </summary>
-    [AddComponentMenu("DressingTools/DT Smart Control (Beta)")]
+    [AddComponentMenu("DressingTools/DT Smart Control")]
     internal partial class DTSmartControl : DTBaseComponent
     {
-        public enum SmartControlDriverType
+        public enum SCDriverType
         {
+            // 0-99: internal drivers
             AnimatorParameter = 0,
-            MenuItem = 1
+            MenuItem = 1,
+
+            // 100: reserved
+            // 101-199: vrc platform drivers
+            VRCPhysBone = 101,
         }
 
         [Serializable]
@@ -94,14 +99,14 @@ namespace Chocopoi.DressingTools.Components.Animations
             }
         }
 
-        public enum SmartControlControlType
+        public enum SCControlType
         {
             Binary = 0,
             MotionTime = 1
         }
 
         [Serializable]
-        public class SmartControlCrossControlActions
+        public class SCCrossControlActions
         {
             [Serializable]
             public class ControlValueActions
@@ -139,14 +144,14 @@ namespace Chocopoi.DressingTools.Components.Animations
 
             [SerializeField] private ControlValueActions m_ValueActions;
 
-            public SmartControlCrossControlActions()
+            public SCCrossControlActions()
             {
                 m_ValueActions = new ControlValueActions();
             }
         }
 
         [Serializable]
-        public class SmartControlAnimatorConfig
+        public class SCAnimatorConfig
         {
             public string ParameterName { get => m_ParameterName; set => m_ParameterName = value; }
             public float ParameterDefaultValue { get => m_ParameterDefaultValue; set => m_ParameterDefaultValue = value; }
@@ -158,7 +163,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             [SerializeField] private bool m_NetworkSynced;
             [SerializeField] private bool m_Saved;
 
-            public SmartControlAnimatorConfig()
+            public SCAnimatorConfig()
             {
                 m_ParameterName = "";
                 m_ParameterDefaultValue = 0.0f;
@@ -168,7 +173,7 @@ namespace Chocopoi.DressingTools.Components.Animations
         }
 
         [Serializable]
-        public class SmartControlMenuItemDriverConfig
+        public class SCMenuItemDriverConfig
         {
             public Texture2D ItemIcon { get => m_ItemIcon; set => m_ItemIcon = value; }
             public DTMenuItem.ItemType ItemType { get => m_ItemType; set => m_ItemType = value; }
@@ -176,38 +181,85 @@ namespace Chocopoi.DressingTools.Components.Animations
             [SerializeField] private Texture2D m_ItemIcon;
             [SerializeField] private DTMenuItem.ItemType m_ItemType;
 
-            public SmartControlMenuItemDriverConfig()
+            public SCMenuItemDriverConfig()
             {
                 m_ItemIcon = null;
                 m_ItemType = DTMenuItem.ItemType.Toggle;
             }
         }
 
-        public SmartControlDriverType DriverType { get => m_DriverType; set => m_DriverType = value; }
-        public SmartControlControlType ControlType { get => m_ControlType; set => m_ControlType = value; }
-        public SmartControlAnimatorConfig AnimatorConfig { get => m_AnimatorConfig; set => m_AnimatorConfig = value; }
-        public SmartControlMenuItemDriverConfig MenuItemDriverConfig { get => m_MenuItemDriverConfig; set => m_MenuItemDriverConfig = value; }
+        [Serializable]
+        public class SCVRCPhysBoneDriverConfig
+        {
+            public enum PhysBoneCondition
+            {
+                None = 0,
+                Grabbed = 1,
+                Posed = 2,
+                GrabbedOrPosed = 3,
+            }
+
+            public enum DataSource
+            {
+                None = 0,
+                Angle = 1,
+                Stretch = 2,
+                Squish = 3,
+            }
+
+#if DT_VRCSDK3A
+            public VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone VRCPhysBone { get => m_VRCPhysBone; set => m_VRCPhysBone = value; }
+#endif
+            public string ParameterPrefix { get => m_ParameterPrefix; set => m_ParameterPrefix = value; }
+            public PhysBoneCondition Condition { get => m_Condition; set => m_Condition = value; }
+            public DataSource Source { get => m_Source; set => m_Source = value; }
+
+#if DT_VRCSDK3A
+            [SerializeField] private VRC.SDK3.Dynamics.PhysBone.Components.VRCPhysBone m_VRCPhysBone;
+#else
+            [SerializeField] private Component m_VRCPhysBone;
+#endif
+            [SerializeField] private string m_ParameterPrefix;
+            [SerializeField] private PhysBoneCondition m_Condition;
+            [SerializeField] private DataSource m_Source;
+
+            public SCVRCPhysBoneDriverConfig()
+            {
+                m_VRCPhysBone = null;
+                m_ParameterPrefix = "";
+                m_Condition = PhysBoneCondition.Grabbed;
+                m_Source = DataSource.None;
+            }
+        }
+
+        public SCDriverType DriverType { get => m_DriverType; set => m_DriverType = value; }
+        public SCControlType ControlType { get => m_ControlType; set => m_ControlType = value; }
+        public SCAnimatorConfig AnimatorConfig { get => m_AnimatorConfig; set => m_AnimatorConfig = value; }
+        public SCMenuItemDriverConfig MenuItemDriverConfig { get => m_MenuItemDriverConfig; set => m_MenuItemDriverConfig = value; }
+        public SCVRCPhysBoneDriverConfig VRCPhysBoneDriverConfig { get => m_VRCPhysBoneDriverConfig; set => m_VRCPhysBoneDriverConfig = value; }
         public List<ObjectToggle> ObjectToggles { get => m_ObjectToggles; set => m_ObjectToggles = value; }
         public List<PropertyGroup> PropertyGroups { get => m_PropertyGroups; set => m_PropertyGroups = value; }
-        public SmartControlCrossControlActions CrossControlActions { get => m_CrossControlActions; set => m_CrossControlActions = value; }
+        public SCCrossControlActions CrossControlActions { get => m_CrossControlActions; set => m_CrossControlActions = value; }
 
-        [SerializeField] private SmartControlDriverType m_DriverType;
-        [SerializeField] private SmartControlControlType m_ControlType;
-        [SerializeField] private SmartControlAnimatorConfig m_AnimatorConfig;
-        [SerializeField] private SmartControlMenuItemDriverConfig m_MenuItemDriverConfig;
+        [SerializeField] private SCDriverType m_DriverType;
+        [SerializeField] private SCControlType m_ControlType;
+        [SerializeField] private SCAnimatorConfig m_AnimatorConfig;
+        [SerializeField] private SCMenuItemDriverConfig m_MenuItemDriverConfig;
+        [SerializeField] private SCVRCPhysBoneDriverConfig m_VRCPhysBoneDriverConfig;
         [SerializeField] private List<ObjectToggle> m_ObjectToggles;
         [SerializeField] private List<PropertyGroup> m_PropertyGroups;
-        [SerializeField] private SmartControlCrossControlActions m_CrossControlActions;
+        [SerializeField] private SCCrossControlActions m_CrossControlActions;
 
         public DTSmartControl()
         {
-            m_DriverType = SmartControlDriverType.AnimatorParameter;
-            m_ControlType = SmartControlControlType.Binary;
-            m_AnimatorConfig = new SmartControlAnimatorConfig();
-            m_MenuItemDriverConfig = new SmartControlMenuItemDriverConfig();
+            m_DriverType = SCDriverType.AnimatorParameter;
+            m_ControlType = SCControlType.Binary;
+            m_AnimatorConfig = new SCAnimatorConfig();
+            m_MenuItemDriverConfig = new SCMenuItemDriverConfig();
+            m_VRCPhysBoneDriverConfig = new SCVRCPhysBoneDriverConfig();
             m_ObjectToggles = new List<ObjectToggle>();
             m_PropertyGroups = new List<PropertyGroup>();
-            m_CrossControlActions = new SmartControlCrossControlActions();
+            m_CrossControlActions = new SCCrossControlActions();
         }
     }
 }

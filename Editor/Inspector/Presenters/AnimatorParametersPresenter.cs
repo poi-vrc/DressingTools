@@ -33,11 +33,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view = view;
             _parameters = new Dictionary<string, AnimatorControllerParameterType>();
-
-            // TODO: set this from the editor level and move to a common place
-            var prefs = PreferencesUtility.GetPreferences();
-            I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
-
             SubscribeEvents();
         }
 
