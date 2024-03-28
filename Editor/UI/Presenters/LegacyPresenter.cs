@@ -19,23 +19,18 @@ using System.Collections.Generic;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Components.Generic;
-using Chocopoi.DressingTools.Components.OneConf;
+using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Serialization;
-using Chocopoi.DressingTools.OneConf.Wearable;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Passes;
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UI.Views.Modules;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-using AvatarBuilder = Chocopoi.DressingFramework.Detail.DK.AvatarBuilder;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
@@ -111,7 +106,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.ClothesArmatureObjectName = "Armature";
             }
 
-            GenerateMappings();
+            GenerateMappings(out _, out _);
         }
 
         private void OnRenameClothesNameButtonClick()
@@ -124,27 +119,60 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnConfigChange()
         {
-            GenerateMappings();
+            GenerateMappings(out _, out _);
         }
 
-        private DresserSettings GetDresserSettings()
+        private bool VerifySettings()
         {
-            return new DefaultDresserSettings()
+            // TODO: update these logs
+            if (_view.TargetAvatar == null || _view.TargetClothes == null)
             {
-                targetAvatar = _view.TargetAvatar,
-                targetWearable = _view.TargetClothes,
-                dynamicsOption = (DefaultDresserDynamicsOption)_view.DynamicsOption,
-                avatarArmatureName = _view.AvatarArmatureObjectName,
-                wearableArmatureName = _view.ClothesArmatureObjectName
-            };
+                Debug.LogError("Target avatar or clothes is null");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(_view.ClothesArmatureObjectName))
+            {
+                Debug.LogError("Clothes armature object name is empty");
+                return false;
+            }
+
+            var sourceArmature = _view.TargetClothes.transform.Find(_view.ClothesArmatureObjectName);
+
+            if (sourceArmature == null)
+            {
+                Debug.LogError("Target clothes armature not found.");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(_view.AvatarArmatureObjectName))
+            {
+                Debug.LogError("Avatar armature object name is empty.");
+                return false;
+            }
+
+            return true;
         }
 
-        private List<BoneMapping> GenerateMappings()
+        private void GenerateMappings(out List<ObjectMapping> objectMappings, out List<ITag> tags)
         {
-            var dresserSettings = GetDresserSettings();
-            _report = DefaultDresser.Execute(dresserSettings, out var boneMappings);
+            if (!VerifySettings())
+            {
+                objectMappings = null;
+                tags = null;
+                return;
+            }
+
+            _report = new DKReport();
+            var sourceArmature = _view.TargetClothes.transform.Find(_view.ClothesArmatureObjectName);
+            var dresserSettings = new DefaultDresserSettings()
+            {
+                DynamicsOption = (DefaultDresserSettings.DynamicsOptions)_view.DynamicsOption,
+                SourceArmature = sourceArmature,
+                TargetArmaturePath = _view.AvatarArmatureObjectName,
+            };
+            DefaultDresser.Execute(_report, _view.TargetAvatar, dresserSettings, out objectMappings, out tags);
             UpdateReportViewData();
-            return boneMappings;
         }
 
         private void CleanUpPreviewObjects()
@@ -181,19 +209,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
             targetAvatar.transform.position = newAvatarPosition;
 
             // if clothes is not inside avatar, we instantiate a new copy
-            GameObject targetWearable;
+            GameObject targetClothes;
             if (!DKEditorUtils.IsGrandParent(_view.TargetAvatar.transform, _view.TargetClothes.transform))
             {
-                targetWearable = Object.Instantiate(_view.TargetClothes);
+                targetClothes = Object.Instantiate(_view.TargetClothes);
 
-                var newClothesPosition = targetWearable.transform.position;
+                var newClothesPosition = targetClothes.transform.position;
                 newClothesPosition.x -= 20;
-                targetWearable.transform.position = newClothesPosition;
+                targetClothes.transform.position = newClothesPosition;
             }
             else
             {
                 // otherwise, we find the inner wearable and use it
-                targetWearable = targetAvatar.transform.Find(_view.TargetClothes.name).gameObject;
+                targetClothes = targetAvatar.transform.Find(_view.TargetClothes.name).gameObject;
             }
 
             //add animation controller
@@ -206,80 +234,68 @@ namespace Chocopoi.DressingTools.UI.Presenters
             targetAvatar.AddComponent<DummyFocusSceneViewScript>();
 
             // parent to avatar
-            targetWearable.name = _view.TargetClothes.name;
-            targetWearable.transform.SetParent(targetAvatar.transform);
-
-            if (targetWearable.TryGetComponent<DTWearable>(out var existingComp))
-            {
-                if (!_view.ShowExistingWearableConfigIgnoreConfirmDialog())
-                {
-                    return;
-                }
-
-                Object.DestroyImmediate(existingComp);
-            }
+            targetClothes.name = _view.TargetClothes.name;
+            targetClothes.transform.SetParent(targetAvatar.transform);
 
             // dry run to see if can generate first
-            if (GenerateMappings() == null)
+            GenerateMappings(out var objectMappings, out var tags);
+            if (objectMappings == null || tags == null)
             {
                 Debug.LogError("[DressingToolsLegacy] No mappings generated in dry run, aborting");
                 return;
             }
 
-            // create a cabinet or use existing
-            var cabinet = OneConfUtils.GetAvatarCabinet(targetAvatar, true);
-            AddClothesToCabinet(cabinet, targetAvatar, targetWearable);
-
-            // run cabinet applier
-            var avatarObj = cabinet.RootGameObject;
-            var ab = new AvatarBuilder(avatarObj);
-            var dkReport = (DKReport)ab.Context.Report;
-            DKEditorUtils.TrySafeRun("LegacyPresenter", dkReport, () => ab.RunStages());
-            ReportWindow.AddReport(avatarObj.name, dkReport);
-            if (dkReport.HasLogType(DressingFramework.Logging.LogType.Error))
-            {
-                ReportWindow.ShowWindow();
-            }
+            WriteChanges(targetAvatar, targetClothes);
 
             Selection.activeGameObject = targetAvatar;
             SceneView.FrameLastActiveSceneView();
         }
 
-        private void AddClothesToCabinet(DTCabinet cabinet, GameObject targetAvatar, GameObject targetWearable)
+        private void WriteChanges(GameObject targetAvatar, GameObject targetClothes)
         {
-            if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out var cabinetConfig))
+            if (!VerifySettings())
             {
-                Debug.LogWarning("[DressingToolsLegacy] Unable to deserialize cabinet config, ignoring and create a new one");
-                cabinetConfig = new CabinetConfig();
-                cabinet.ConfigJson = CabinetConfigUtility.Serialize(cabinetConfig);
+                return;
             }
 
-            // write cabinet config
-            cabinetConfig.groupDynamics = _view.GroupDynamics;
-            cabinetConfig.groupDynamicsSeparateGameObjects = _view.GroupDynamicsSeparateGameObjects;
+            var sourceArmature = targetClothes.transform.Find(_view.ClothesArmatureObjectName);
 
-            // create a wearable config
-            var wearableConfig = new WearableConfig();
-            OneConfUtils.PrepareWearableConfig(wearableConfig, targetAvatar, targetWearable);
-            wearableConfig.modules.Add(new WearableModule()
+            var ca = new ComponentApplier(targetAvatar);
+
+            if (_view.GroupDynamics)
             {
-                moduleName = ArmatureMappingWearableModuleConfig.ModuleIdentifier,
-                config = new ArmatureMappingWearableModuleConfig()
+                var groupContainer = new GameObject("DT_Dynamics");
+                groupContainer.transform.SetParent(targetClothes.transform);
+
+                var groupDynComp = groupContainer.AddComponent<DTGroupDynamics>();
+                groupDynComp.SearchMode = DTGroupDynamics.DynamicsSearchMode.ControlRoot;
+                groupDynComp.IncludeTransforms.Add(targetClothes.transform);
+                groupDynComp.enabled = false;
+                groupDynComp.SetToCurrentState = true;
+                groupDynComp.SeparateGameObjects = _view.GroupDynamicsSeparateGameObjects;
+
+                if (!ca.Apply(groupDynComp, true))
                 {
-                    dresserName = DefaultDresser.GetType().FullName,
-                    wearableArmatureName = _view.ClothesArmatureObjectName,
-                    boneMappingMode = BoneMappingMode.Auto,
-                    boneMappings = null,
-                    serializedDresserConfig = JsonConvert.SerializeObject(GetDresserSettings()),
-                    removeExistingPrefixSuffix = _view.RemoveExistingPrefixSuffix,
-                    groupBones = _view.GroupBones
+                    Debug.LogError("[DressingTools] Error applying group dynamics component");
+                    return;
                 }
-            });
+            }
 
-            // add the wearable config to the preview avatar
-            if (!cabinet.AddWearable(wearableConfig, targetWearable))
+            var armMapComp = targetClothes.AddComponent<DTArmatureMapping>();
+            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Default;
+            armMapComp.DresserDefaultConfig.DynamicsOption = (DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions)_view.DynamicsOption;
+            armMapComp.Mode = DTArmatureMapping.MappingMode.Auto;
+            armMapComp.SourceArmature = sourceArmature;
+            armMapComp.TargetArmaturePath = _view.AvatarArmatureObjectName;
+            armMapComp.GroupBones = _view.GroupBones;
+            armMapComp.Prefix = "";
+            armMapComp.Suffix = $" ({targetClothes.name})";
+            armMapComp.PreventDuplicateNames = false;
+
+            if (!ca.Apply(armMapComp, true))
             {
-                Debug.LogWarning("[DressingToolsLegacy] Unable to add cabinet wearable to dummy avatar");
+                Debug.LogError("[DressingTools] Error applying armature mapping component");
+                return;
             }
         }
 
@@ -301,7 +317,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void OnDressNowButtonClick()
         {
             // dry run to see if can generate first
-            if (GenerateMappings() == null)
+            GenerateMappings(out var objectMappings, out var tags);
+            if (objectMappings == null || tags == null)
             {
                 return;
             }
@@ -311,11 +328,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var cabinet = OneConfUtils.GetAvatarCabinet(_view.TargetAvatar, true);
-            AddClothesToCabinet(cabinet, _view.TargetAvatar, _view.TargetClothes);
-            Selection.activeGameObject = _view.TargetAvatar;
-            SceneView.FrameLastActiveSceneView();
-
+            WriteChanges(_view.TargetAvatar, _view.TargetClothes);
 
             // reset
             _view.TargetClothes = null;
