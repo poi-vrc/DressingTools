@@ -18,6 +18,7 @@ using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Event;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
@@ -26,6 +27,7 @@ using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.OneConf.Wearable;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Passes.Modifiers;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -53,6 +55,7 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
 
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Transpose)
+                .BeforePass<BlendshapeSyncPass>()
                 .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
@@ -70,6 +73,7 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
 
         public override IModuleConfig NewModuleConfig() => new BlendshapeSyncWearableModuleConfig();
 
+        // TODO: remove this function
         private static void FollowBlendshapeSyncValues(GameObject avatarGameObject, GameObject wearableGameObject, WearableModule module)
         {
             var bsm = (BlendshapeSyncWearableModuleConfig)module.config;
@@ -124,19 +128,6 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             }
         }
 
-        private static List<BlendshapeSyncWearableModuleConfig.BlendshapeSync> FindBlendshapeSyncs(EditorCurveBinding curveBinding, List<BlendshapeSyncWearableModuleConfig.BlendshapeSync> blendshapeSyncs)
-        {
-            var list = new List<BlendshapeSyncWearableModuleConfig.BlendshapeSync>();
-            foreach (var blendshapeSync in blendshapeSyncs)
-            {
-                if (curveBinding.path == blendshapeSync.avatarPath && curveBinding.propertyName == "blendShape." + blendshapeSync.avatarBlendshapeName)
-                {
-                    list.Add(blendshapeSync);
-                }
-            }
-            return list;
-        }
-
         public override bool Invoke(CabinetContext cabCtx, WearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
         {
             if (modules.Count == 0) return true;
@@ -149,32 +140,23 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             }
 
             var bsm = (BlendshapeSyncWearableModuleConfig)modules[0].config;
-
-            // TODO: implement partial boundaries and inverts
-            var animStore = cabCtx.dkCtx.Feature<AnimationStore>();
-
-            foreach (var clipContainer in animStore.Clips)
+            var comp = wearCtx.wearableGameObject.AddComponent<DTBlendshapeSync>();
+            foreach (var bs in bsm.blendshapeSyncs)
             {
-                var oldClip = clipContainer.newClip != null ? clipContainer.newClip : clipContainer.originalClip;
-                var newClip = DTEditorUtils.CopyClip(oldClip);
-                var modified = false;
-
-                var curveBindings = AnimationUtility.GetCurveBindings(oldClip);
-                foreach (var curveBinding in curveBindings)
+                var wearableSmrObj = wearCtx.wearableGameObject.transform.Find(bs.wearablePath);
+                if (wearableSmrObj == null ||
+                    !wearableSmrObj.TryGetComponent<SkinnedMeshRenderer>(out var wearableSmr))
                 {
-                    var blendshapeSyncs = FindBlendshapeSyncs(curveBinding, bsm.blendshapeSyncs);
-                    foreach (var blendshapeSync in blendshapeSyncs)
-                    {
-                        var basePath = AnimationUtils.GetRelativePath(wearCtx.wearableGameObject.transform, cabCtx.dkCtx.AvatarGameObject.transform);
-                        newClip.SetCurve(basePath + "/" + blendshapeSync.wearablePath, curveBinding.type, "blendShape." + blendshapeSync.wearableBlendshapeName, AnimationUtility.GetEditorCurve(oldClip, curveBinding));
-                        modified = true;
-                    }
+                    continue;
                 }
 
-                if (modified)
+                comp.Entries.Add(new DTBlendshapeSync.Entry()
                 {
-                    clipContainer.newClip = newClip;
-                }
+                    SourcePath = bs.avatarPath,
+                    SourceBlendshape = bs.avatarBlendshapeName,
+                    DestinationSkinnedMeshRenderer = wearableSmr,
+                    DestinationBlendshape = bs.wearableBlendshapeName
+                });
             }
 
             return true;

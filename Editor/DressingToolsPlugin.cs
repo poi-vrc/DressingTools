@@ -19,7 +19,6 @@ using Chocopoi.DressingTools.Passes.Animations;
 using Chocopoi.DressingTools.Passes.Menu;
 using Chocopoi.DressingTools.Passes.Modifiers;
 using Chocopoi.DressingTools.Passes.Optimization;
-
 #if DT_VRCSDK3A
 using Chocopoi.DressingTools.Passes.Animations.VRChat;
 using Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules;
@@ -41,9 +40,16 @@ namespace Chocopoi.DressingTools
             RegisterBuildPass(new CabinetAnimWearableModuleProvider());
             RegisterBuildPass(new MoveRootWearableModuleProvider());
 
+            RegisterBuildPass(new BlendshapeSyncPass());
+            RegisterBuildPass(new ArmatureMappingPass());
+            RegisterBuildPass(new CopyDynamicsPass());
+            RegisterBuildPass(new GroupDynamicsPass());
+            RegisterBuildPass(new IgnoreDynamicsPass());
+            RegisterBuildPass(new MoveRootPass());
+            RegisterBuildPass(new ObjectMappingPass());
+
             RegisterBuildPass(new ComposeAndInstallMenuPass());
             RegisterBuildPass(new ComposeAnimatorParametersPass());
-            RegisterBuildPass(new GroupDynamicsPass());
             RegisterBuildPass(new GroupDynamicsWearablePass());
             RegisterBuildPass(new GCGameObjectsPass());
 
