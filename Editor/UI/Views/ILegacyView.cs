@@ -40,10 +40,11 @@ namespace Chocopoi.DressingTools.UI.Views
         bool GroupBones { get; set; }
         bool GroupDynamics { get; set; }
         bool GroupDynamicsSeparateGameObjects { get; set; }
-        bool RemoveExistingPrefixSuffix { get; set; }
+        string Prefix { get; set; }
+        string Suffix { get; set; }
+        bool PreventDuplicateNames { get; set; }
         int DynamicsOption { get; set; }
         ReportData ReportData { get; set; }
-        bool ShowHasCabinetHelpbox { get; set; }
 
         bool ShowExistingWearableConfigIgnoreConfirmDialog();
         bool ShowDressConfirmDialog();

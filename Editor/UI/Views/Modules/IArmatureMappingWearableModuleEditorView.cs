@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 
 namespace Chocopoi.DressingTools.UI.Views.Modules
 {
@@ -45,13 +45,14 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         event Action ViewEditMappingsButtonClick;
 
         ReportData DresserReportData { get; set; }
-        DresserSettings DresserSettings { get; set; }
+        ArmatureMappingWearableModuleProvider.DefaultDresserSettings DresserSettings { get; set; }
         string[] AvailableDresserKeys { get; set; }
         int SelectedMappingMode { get; set; }
         int SelectedDresserIndex { get; set; }
         bool IsAvatarAssociatedWithCabinet { get; set; }
         bool IsLoadCabinetConfigError { get; set; }
         string AvatarArmatureName { get; set; }
+        string WearableArmatureName { get; set; }
         bool RemoveExistingPrefixSuffix { get; set; }
         bool GroupBones { get; set; }
 

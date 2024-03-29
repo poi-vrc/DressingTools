@@ -27,9 +27,9 @@ using Object = UnityEngine.Object;
 
 namespace Chocopoi.DressingTools.Passes.Modifiers
 {
+    [ComponentPassFor(typeof(DTGroupDynamics))]
     internal class GroupDynamicsPass : ComponentPass
     {
-        public override Type ComponentType => typeof(DTGroupDynamics);
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Transpose)
                 .Build();
@@ -119,21 +119,6 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             dynamics.Component = newComp;
         }
 
-        private static T GetOneFromCollection<T>(ICollection<T> collection)
-        {
-            if (collection.Count <= 0)
-            {
-                return default;
-            }
-
-            foreach (var elem in collection)
-            {
-                return elem;
-            }
-
-            return default;
-        }
-
         private static void GroupDynamics(DTGroupDynamics comp, List<IDynamics> list)
         {
             // set them to the current state of the component
@@ -154,7 +139,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 var addedNames = new Dictionary<string, int>();
                 foreach (var dynamics in list)
                 {
-                    var firstRootTransform = GetOneFromCollection(dynamics.RootTransforms);
+                    var firstRootTransform = dynamics.RootTransforms.FirstOrDefault();
                     if (firstRootTransform == null)
                     {
                         // use the current transform instead if null
@@ -188,40 +173,13 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             }
         }
 
-        private static AnimationClip CopyClip(AnimationClip oldClip)
-        {
-            var newClip = new AnimationClip()
-            {
-                name = oldClip.name,
-                legacy = oldClip.legacy,
-                frameRate = oldClip.frameRate,
-                localBounds = oldClip.localBounds,
-                wrapMode = oldClip.wrapMode
-            };
-            AnimationUtility.SetAnimationClipSettings(newClip, AnimationUtility.GetAnimationClipSettings(oldClip));
-
-            var curveBindings = AnimationUtility.GetCurveBindings(oldClip);
-            foreach (var curveBinding in curveBindings)
-            {
-                newClip.SetCurve(curveBinding.path, curveBinding.type, curveBinding.propertyName, AnimationUtility.GetEditorCurve(oldClip, curveBinding));
-            }
-
-            var objRefBindings = AnimationUtility.GetObjectReferenceCurveBindings(oldClip);
-            foreach (var objRefBinding in objRefBindings)
-            {
-                AnimationUtility.SetObjectReferenceCurve(newClip, objRefBinding, AnimationUtility.GetObjectReferenceCurve(oldClip, objRefBinding));
-            }
-
-            return newClip;
-        }
-
         private static void ModifyAnimations(Context ctx, Dictionary<DTGroupDynamics, List<IDynamics>> groups)
         {
             var store = ctx.Feature<AnimationStore>();
             foreach (var clipContainer in store.Clips)
             {
                 var oldClip = clipContainer.newClip == null ? clipContainer.originalClip : clipContainer.newClip;
-                var newClip = CopyClip(oldClip);
+                var newClip = DTEditorUtils.CopyClip(oldClip);
                 var modified = false;
 
                 var bindings = AnimationUtility.GetCurveBindings(oldClip).Where(b => b.propertyName == "m_Enabled" && b.type == typeof(DTGroupDynamics)).ToList();
@@ -291,9 +249,10 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             return true;
         }
 
-        protected override bool Invoke(Context ctx, DTBaseComponent component)
+        public override bool Invoke(Context ctx, DTBaseComponent component, out List<DTBaseComponent> generatedComponents)
         {
-            if (!(component is DTGroupDynamics comp)) return false;
+            generatedComponents = new List<DTBaseComponent>();
+            var comp = (DTGroupDynamics)component;
 
             var allDynamics = DynamicsUtils.ScanDynamics(ctx.AvatarGameObject);
             var list = GetGroup(allDynamics, comp);

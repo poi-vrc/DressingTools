@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 chocopoi
+ * Copyright (c) 2024 chocopoi
  * 
  * This file is part of DressingTools.
  * 
@@ -11,8 +11,8 @@
  */
 
 using System.Collections.Generic;
-using Chocopoi.DressingFramework.Detail.DK.Logging;
-using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingFramework.Logging;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Dresser
 {
@@ -21,30 +21,6 @@ namespace Chocopoi.DressingTools.Dresser
     /// </summary>
     internal interface IDresser
     {
-        /// <summary>
-        /// Human-readable friendly name of this dresser
-        /// </summary>
-        string FriendlyName { get; }
-
-        /// <summary>
-        /// Deserialize settings JSON (This API will be changed soon)
-        /// </summary>
-        /// <param name="serializedJson">Serialized JSON</param>
-        /// <returns>Abstracted dresser settings</returns>
-        DresserSettings DeserializeSettings(string serializedJson);
-
-        /// <summary>
-        /// Create new dresser settings
-        /// </summary>
-        /// <returns>New dresser settings</returns>
-        DresserSettings NewSettings();
-
-        /// <summary>
-        /// Execute with provided settings and output bone mappings
-        /// </summary>
-        /// <param name="settings">Dresser settings, must be compatible with the dresser</param>
-        /// <param name="boneMappings">Output bone mappings, `null` if error or no mappings can be generated</param>
-        /// <returns>Report during bone mapping generation</returns>
-        DKReport Execute(DresserSettings settings, out List<BoneMapping> boneMappings);
+        void Execute(Report report, GameObject avatarGameObject, IDresserSettings dresserSettings, out List<ObjectMapping> objectMappings, out List<ITag> tags);
     }
 }

@@ -11,6 +11,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingTools.Components;
@@ -19,8 +21,26 @@ namespace Chocopoi.DressingTools.Passes
 {
     internal abstract class ComponentPass : BuildPass
     {
-        public abstract Type ComponentType { get; }
+        public Type ComponentType { get => GetType().GetCustomAttribute<ComponentPassFor>()?.Type; }
 
-        protected abstract bool Invoke(Context ctx, DTBaseComponent component);
+        public override bool Invoke(Context ctx)
+        {
+            if (!ComponentType.IsSubclassOf(typeof(DTBaseComponent)))
+            {
+                ctx.Report.LogError("ComponentPass", $"{ComponentType.FullName} is not a subclass of DTBaseComponent");
+                return false;
+            }
+            var comps = ctx.AvatarGameObject.GetComponentsInChildren(ComponentType, true);
+            foreach (var comp in comps)
+            {
+                if (!Invoke(ctx, (DTBaseComponent)comp, out _))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public abstract bool Invoke(Context ctx, DTBaseComponent component, out List<DTBaseComponent> generatedComponents);
     }
 }

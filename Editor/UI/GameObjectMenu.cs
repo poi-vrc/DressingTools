@@ -19,7 +19,6 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.OneConf;
-using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
@@ -117,15 +116,16 @@ namespace Chocopoi.DressingTools.UI
                     // TODO: show message
                 }
 
-                var dresserSettings = new DefaultDresserSettings()
+                var dresser = new DefaultDresser();
+                var settings = new DefaultDresserSettings()
                 {
-                    targetAvatar = cabinet.RootGameObject,
-                    targetWearable = wearable,
-                    dynamicsOption = DefaultDresserDynamicsOption.RemoveDynamicsAndUseParentConstraint
+                    SourceArmature = armature,
+                    TargetArmaturePath = armatureName,
+                    DynamicsOption = DefaultDresserSettings.DynamicsOptions.Auto
                 };
 
-                var dresser = new DefaultDresser();
-                var report = dresser.Execute(dresserSettings, out _);
+                var report = new DKReport();
+                dresser.Execute(report, cabinet.gameObject, settings, out _, out _);
 
                 if (report.HasLogType(DressingFramework.Logging.LogType.Error))
                 {
@@ -135,13 +135,18 @@ namespace Chocopoi.DressingTools.UI
                     return;
                 }
 
+                var oldDresserSettings = new ArmatureMappingWearableModuleProvider.DefaultDresserSettings()
+                {
+                    dynamicsOption = ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.Auto
+                };
+
                 var armatureMappingModule = new ArmatureMappingWearableModuleConfig
                 {
                     dresserName = typeof(DefaultDresser).FullName,
                     wearableArmatureName = armature.name,
                     boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,
-                    serializedDresserConfig = JsonConvert.SerializeObject(dresserSettings),
+                    serializedDresserConfig = JsonConvert.SerializeObject(oldDresserSettings),
                     removeExistingPrefixSuffix = true,
                     groupBones = true
                 };
