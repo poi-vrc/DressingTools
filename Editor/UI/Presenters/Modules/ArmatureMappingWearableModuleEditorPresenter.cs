@@ -21,11 +21,13 @@ using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Dresser.Tags;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Passes.Modifiers;
 using Chocopoi.DressingTools.UI.Views.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -141,6 +143,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 {
                     boneMapping.mappingType = BoneMappingType.ParentConstraint;
                 }
+                else if (objectMapping.Type == ObjectMapping.MappingType.IgnoreTransform)
+                {
+                    boneMapping.mappingType = BoneMappingType.IgnoreTransform;
+                }
 
                 output.Add(boneMapping);
             }
@@ -152,6 +158,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                     avatarBonePath = tag.TargetPath,
                     wearableBonePath = AnimationUtils.GetRelativePath(tag.SourceTransform.transform, wearableRoot)
                 };
+
+                if (tag is CopyDynamicsTag)
+                {
+                    boneMapping.mappingType = BoneMappingType.CopyDynamics;
+                }
+
                 output.Add(boneMapping);
             }
             return output;
