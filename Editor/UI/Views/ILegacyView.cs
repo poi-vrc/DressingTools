@@ -25,7 +25,6 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         event Action TargetAvatarOrWearableChange;
         event Action RenameClothesNameButtonClick;
-        event Action ConfigChange;
         event Action CheckAndPreviewButtonClick;
         event Action TestNowButtonClick;
         event Action DressNowButtonClick;
