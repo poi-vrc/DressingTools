@@ -55,7 +55,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.ForceUpdateView += OnForceUpdateView;
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
             _view.RenameClothesNameButtonClick += OnRenameClothesNameButtonClick;
-            _view.ConfigChange += OnConfigChange;
             _view.CheckAndPreviewButtonClick += OnCheckAndPreviewButtonClick;
             _view.TestNowButtonClick += OnTestNowButtonClick;
             _view.DressNowButtonClick += OnDressNowButtonClick;
@@ -69,7 +68,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
             _view.RenameClothesNameButtonClick -= OnRenameClothesNameButtonClick;
-            _view.ConfigChange -= OnConfigChange;
             _view.CheckAndPreviewButtonClick -= OnCheckAndPreviewButtonClick;
             _view.TestNowButtonClick -= OnTestNowButtonClick;
             _view.DressNowButtonClick -= OnDressNowButtonClick;
@@ -99,23 +97,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
-        private void OnConfigChange()
-        {
-            GenerateMappings(out _, out _);
-        }
-
         private bool VerifySettings()
         {
             // TODO: update these logs
             if (_view.TargetAvatar == null || _view.TargetClothes == null)
             {
-                Debug.LogError("Target avatar or clothes is null");
                 return false;
             }
 
             if (string.IsNullOrEmpty(_view.ClothesArmatureObjectName))
             {
-                Debug.LogError("Clothes armature object name is empty");
                 return false;
             }
 
@@ -123,13 +114,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             if (sourceArmature == null)
             {
-                Debug.LogError("Target clothes armature not found.");
                 return false;
             }
 
             if (string.IsNullOrEmpty(_view.AvatarArmatureObjectName))
             {
-                Debug.LogError("Avatar armature object name is empty.");
                 return false;
             }
 

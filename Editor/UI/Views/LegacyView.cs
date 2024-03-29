@@ -33,7 +33,6 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public event Action TargetAvatarOrWearableChange;
         public event Action RenameClothesNameButtonClick;
-        public event Action ConfigChange;
         public event Action CheckAndPreviewButtonClick;
         public event Action TestNowButtonClick;
         public event Action DressNowButtonClick;
@@ -182,12 +181,12 @@ namespace Chocopoi.DressingTools.UI.Views
             }
             EndHorizontal();
 
-            ToggleLeft(t._("legacy.editor.toggle.useCustomArmatureNames"), ref _useCustomArmatureNames, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.useCustomArmatureNames"), ref _useCustomArmatureNames);
             BeginDisabled(!_useCustomArmatureNames);
             {
                 EditorGUI.indentLevel += 1;
-                DelayedTextField(t._("legacy.editor.textField.avatarArmatureName"), ref _avatarArmatureObjectName, ConfigChange);
-                DelayedTextField(t._("legacy.editor.textField.clothesArmatureName"), ref _clothesArmatureObjectName, ConfigChange);
+                DelayedTextField(t._("legacy.editor.textField.avatarArmatureName"), ref _avatarArmatureObjectName);
+                DelayedTextField(t._("legacy.editor.textField.clothesArmatureName"), ref _clothesArmatureObjectName);
                 EditorGUI.indentLevel -= 1;
             }
             EndDisabled();
@@ -217,10 +216,10 @@ namespace Chocopoi.DressingTools.UI.Views
 
             Separator();
 
-            ToggleLeft(t._("legacy.editor.toggle.groupBones"), ref _groupBones, ConfigChange);
-            ToggleLeft(t._("legacy.editor.toggle.groupDynamics"), ref _groupDynamics, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.groupBones"), ref _groupBones);
+            ToggleLeft(t._("legacy.editor.toggle.groupDynamics"), ref _groupDynamics);
             EditorGUI.indentLevel += 1;
-            ToggleLeft(t._("legacy.editor.toggle.groupDynamicsSeparateGameObjects"), ref _groupDynamicsSeparateGameObjects, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.groupDynamicsSeparateGameObjects"), ref _groupDynamicsSeparateGameObjects);
             EditorGUI.indentLevel -= 1;
             EndDisabled();
 
@@ -228,9 +227,9 @@ namespace Chocopoi.DressingTools.UI.Views
 
             Label(t._("legacy.editor.label.prefixesAndSuffixes"), EditorStyles.boldLabel);
 
-            TextField(t._("legacy.editor.textField.prefix"), ref _prefix, ConfigChange);
-            TextField(t._("legacy.editor.textField.suffix"), ref _suffix, ConfigChange);
-            ToggleLeft(t._("legacy.editor.toggle.preventDuplicateNames"), ref _preventDuplicateNames, ConfigChange);
+            TextField(t._("legacy.editor.textField.prefix"), ref _prefix);
+            TextField(t._("legacy.editor.textField.suffix"), ref _suffix);
+            ToggleLeft(t._("legacy.editor.toggle.preventDuplicateNames"), ref _preventDuplicateNames);
 
             HorizontalLine();
 
