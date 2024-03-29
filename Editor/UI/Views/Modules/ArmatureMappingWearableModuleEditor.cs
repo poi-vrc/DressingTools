@@ -38,7 +38,6 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public event Action ViewEditMappingsButtonClick;
 
         public ReportData DresserReportData { get; set; }
-        public DresserSettings DresserSettings { get; set; }
         public string[] AvailableDresserKeys { get; set; }
         public int SelectedMappingMode { get => _selectedMappingMode; set => _selectedMappingMode = value; }
         public int SelectedDresserIndex { get => _selectedDresserIndex; set => _selectedDresserIndex = value; }
@@ -47,12 +46,15 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public string AvatarArmatureName { get => _avatarArmatureName; set => _avatarArmatureName = value; }
         public bool RemoveExistingPrefixSuffix { get => _removeExistingPrefixSuffix; set => _removeExistingPrefixSuffix = value; }
         public bool GroupBones { get => _groupBones; set => _groupBones = value; }
+        public ArmatureMappingWearableModuleProvider.DefaultDresserSettings DresserSettings { get; set; }
+        public string WearableArmatureName { get => _wearableArmatureName; set => _wearableArmatureName = value; }
 
         private ArmatureMappingWearableModuleEditorPresenter _presenter;
         private IWearableModuleEditorViewParent _parentView;
         private int _selectedMappingMode;
         private int _selectedDresserIndex;
         private string _avatarArmatureName;
+        private string _wearableArmatureName;
         private bool _foldoutDresserReportLogEntries;
         private bool _removeExistingPrefixSuffix;
         private bool _groupBones;
@@ -63,6 +65,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
             _presenter = new ArmatureMappingWearableModuleEditorPresenter(this, parentView, (ArmatureMappingWearableModuleConfig)target);
             _selectedDresserIndex = 0;
             _avatarArmatureName = null;
+            _wearableArmatureName = null;
             _foldoutDresserReportLogEntries = true;
             _groupBones = true;
             _removeExistingPrefixSuffix = true;
@@ -164,6 +167,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
                     DelayedTextField(t._("modules.wearable.armatureMapping.editor.textField.avatarArmatureName"), ref _avatarArmatureName, ModuleSettingsChange);
                 }
                 EndDisabled();
+                DelayedTextField(t._("modules.wearable.armatureMapping.editor.textField.wearableArmatureName"), ref _wearableArmatureName, ModuleSettingsChange);
 
                 // TODO: the current way to draw dresser settings is not in MVP pattern
                 if (DresserSettings != null)

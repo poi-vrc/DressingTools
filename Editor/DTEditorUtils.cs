@@ -121,30 +121,8 @@ namespace Chocopoi.DressingTools
 
             var providers = ModuleManager.Instance.GetAllWearableModuleProviders();
 
-            // build graph
-            var graph = new DependencyGraph<string>();
             foreach (var provider in providers)
             {
-                graph.Add(provider.Identifier, provider.Constraint);
-            }
-
-            var t = I18n.ToolTranslator;
-            if (!graph.IsResolved())
-            {
-                EditorUtility.DisplayDialog(t._("tool.name"), t._("preview.dialog.msg.unresolvedDependencies"), t._("common.dialog.btn.ok"));
-                return;
-            }
-
-            var topOrder = graph.Sort();
-            if (topOrder == null)
-            {
-                EditorUtility.DisplayDialog(t._("tool.name"), t._("preview.dialog.msg.cyclicDependencies"), t._("common.dialog.btn.ok"));
-                return;
-            }
-
-            foreach (var identifier in topOrder)
-            {
-                var provider = GetWearableModuleProviderByIdentifier(providers, identifier);
                 if (!provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(newWearableConfig.FindModules(provider.Identifier)), true))
                 {
                     Debug.LogError("[DressingTools] Error applying wearable in preview!");

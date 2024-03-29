@@ -12,11 +12,14 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
 {
@@ -40,6 +43,20 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
             Assert.IsInstanceOf(typeof(ArmatureMappingWearableModuleConfig), provider.NewModuleConfig());
         }
 
+        private static void PrintMappingsAndTags(List<DTObjectMapping.Mapping> mappings, List<DTArmatureMapping.Tag> tags)
+        {
+            Debug.Log("Mappings:");
+            foreach (var mapping in mappings)
+            {
+                Debug.Log(mapping);
+            }
+            Debug.Log("Tags:");
+            foreach (var tag in tags)
+            {
+                Debug.Log(tag);
+            }
+        }
+
         [Test]
         public void MapAutoTest()
         {
@@ -52,6 +69,8 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
             var avatarObj = InstantiateEditorTestPrefab("DTTest_MapAutoAvatar.prefab");
             var wearableTrans = avatarObj.transform.Find("Wearable");
             Assert.NotNull(wearableTrans);
+            var wearableArmature = avatarObj.transform.Find("Wearable/Armature");
+            Assert.NotNull(wearableArmature);
 
             var cabCtx = CreateCabinetContext(avatarObj);
             var wearCtx = CreateWearableContext(cabCtx, wearableTrans.gameObject);
@@ -62,8 +81,14 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
                 config = amm
             }}), false));
 
-            Assert.NotNull(avatarObj.transform.Find("Armature/Hips/Hips_DT"));
-            Assert.NotNull(avatarObj.transform.Find("Armature/Hips/MyBone/MyBone_DT"));
+            Assert.True(wearableTrans.TryGetComponent<DTArmatureMapping>(out var comp));
+            Assert.AreEqual(DTArmatureMapping.MappingMode.Auto, comp.Mode);
+            Assert.AreEqual(DTArmatureMapping.DresserTypes.Default, comp.DresserType);
+            Assert.AreEqual("Armature", comp.TargetArmaturePath);
+            Assert.AreEqual(wearableArmature, comp.SourceArmature);
+            Assert.AreEqual(DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserDefaultConfig.DynamicsOption);
+            Assert.AreEqual(0, comp.Mappings.Count);
+            Assert.AreEqual(0, comp.Tags.Count);
         }
 
         [Test]
@@ -78,6 +103,10 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
             var avatarObj = InstantiateEditorTestPrefab("DTTest_MapOverrideAvatar.prefab");
             var wearableTrans = avatarObj.transform.Find("Wearable");
             Assert.NotNull(wearableTrans);
+            var wearableArmature = avatarObj.transform.Find("Wearable/Armature");
+            Assert.NotNull(wearableArmature);
+            var wearableMyBone = avatarObj.transform.Find("Wearable/Armature/Hips/MyBone");
+            Assert.NotNull(wearableMyBone);
 
             var cabCtx = CreateCabinetContext(avatarObj);
             var wearCtx = CreateWearableContext(cabCtx, wearableTrans.gameObject);
@@ -88,8 +117,26 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
                 config = amm
             }}), false));
 
-            Assert.NotNull(avatarObj.transform.Find("Armature/Hips/Hips_DT"));
-            Assert.Null(avatarObj.transform.Find("Armature/Hips/MyBone/MyBone_DT"));
+            Assert.True(wearableTrans.TryGetComponent<DTArmatureMapping>(out var comp));
+            Assert.AreEqual(DTArmatureMapping.MappingMode.Override, comp.Mode);
+            Assert.AreEqual(DTArmatureMapping.DresserTypes.Default, comp.DresserType);
+            Assert.AreEqual("Armature", comp.TargetArmaturePath);
+            Assert.AreEqual(wearableArmature, comp.SourceArmature);
+            Assert.AreEqual(DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserDefaultConfig.DynamicsOption);
+            PrintMappingsAndTags(comp.Mappings, comp.Tags);
+            Assert.AreEqual(1, comp.Mappings.Count);
+            Assert.AreEqual(1, comp.Tags.Count);
+            Assert.True(comp.Mappings
+                .Where(m =>
+                    m.Type == DTObjectMapping.Mapping.MappingType.DoNothing &&
+                    m.SourceTransform == wearableMyBone &&
+                    m.TargetPath == "Armature/Hips/MyBone")
+                .Count() == 1);
+            Assert.True(comp.Tags
+                .Where(t =>
+                    t.Type == DTArmatureMapping.Tag.TagType.DoNothing &&
+                    t.SourceTransform == wearableMyBone)
+                .Count() == 1);
         }
 
         [Test]
@@ -100,6 +147,16 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
             var avatarObj = InstantiateEditorTestPrefab("DTTest_MapManualAvatar.prefab");
             var wearableTrans = avatarObj.transform.Find("Wearable");
             Assert.NotNull(wearableTrans);
+            var wearableArmature = avatarObj.transform.Find("Wearable/Armature");
+            Assert.NotNull(wearableArmature);
+            var wearableHips = avatarObj.transform.Find("Wearable/Armature/Hips");
+            Assert.NotNull(wearableHips);
+            var wearableMyBone = avatarObj.transform.Find("Wearable/Armature/Hips/MyBone");
+            Assert.NotNull(wearableMyBone);
+            var wearableMyDynBone = avatarObj.transform.Find("Wearable/Armature/Hips/MyDynBone");
+            Assert.NotNull(wearableMyDynBone);
+            var wearableMyAnotherDynBone = avatarObj.transform.Find("Wearable/Armature/Hips/MyAnotherDynBone");
+            Assert.NotNull(wearableMyAnotherDynBone);
 
             var cabCtx = CreateCabinetContext(avatarObj);
             var wearCtx = CreateWearableContext(cabCtx, wearableTrans.gameObject);
@@ -110,10 +167,44 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
                 config = amm
             }}), false));
 
-            Assert.NotNull(avatarObj.transform.Find("Armature/Hips/Hips_DT"));
-            Assert.Null(avatarObj.transform.Find("Armature/Hips/MyBone/MyBone_DT"));
-            Assert.NotNull(avatarObj.transform.Find("Armature/Hips/MyDynBone/MyDynBone_DT"));
-            Assert.NotNull(avatarObj.transform.Find("Armature/Hips/MyAnotherDynBone/MyAnotherDynBone_DT"));
+            Assert.True(wearableTrans.TryGetComponent<DTArmatureMapping>(out var comp));
+            Assert.AreEqual(DTArmatureMapping.MappingMode.Manual, comp.Mode);
+            Assert.AreEqual(DTArmatureMapping.DresserTypes.Default, comp.DresserType);
+            Assert.AreEqual("Armature", comp.TargetArmaturePath);
+            Assert.AreEqual(wearableArmature, comp.SourceArmature);
+            Assert.AreEqual(DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserDefaultConfig.DynamicsOption);
+            PrintMappingsAndTags(comp.Mappings, comp.Tags);
+            Assert.AreEqual(4, comp.Mappings.Count);
+            Assert.AreEqual(1, comp.Tags.Count);
+            Assert.True(comp.Mappings
+                .Where(m =>
+                    m.Type == DTObjectMapping.Mapping.MappingType.MoveToBone &&
+                    m.SourceTransform == wearableHips &&
+                    m.TargetPath == "Armature/Hips")
+                .Count() == 1);
+            Assert.True(comp.Mappings
+                .Where(m =>
+                    m.Type == DTObjectMapping.Mapping.MappingType.DoNothing &&
+                    m.SourceTransform == wearableMyBone &&
+                    m.TargetPath == "Armature/Hips/MyBone")
+                .Count() == 1);
+            Assert.True(comp.Mappings
+                .Where(m =>
+                    m.Type == DTObjectMapping.Mapping.MappingType.MoveToBone &&
+                    m.SourceTransform == wearableMyDynBone &&
+                    m.TargetPath == "Armature/Hips/MyDynBone")
+                .Count() == 1);
+            Assert.True(comp.Mappings
+                .Where(m =>
+                    m.Type == DTObjectMapping.Mapping.MappingType.MoveToBone &&
+                    m.SourceTransform == wearableMyAnotherDynBone &&
+                    m.TargetPath == "Armature/Hips/MyAnotherDynBone")
+                .Count() == 1);
+            Assert.True(comp.Tags
+                .Where(t =>
+                    t.Type == DTArmatureMapping.Tag.TagType.DoNothing &&
+                    t.SourceTransform == wearableMyBone)
+                .Count() == 1);
         }
     }
 }

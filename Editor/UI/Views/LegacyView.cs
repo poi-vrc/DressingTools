@@ -48,10 +48,11 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool GroupBones { get => _groupBones; set => _groupBones = value; }
         public bool GroupDynamics { get => _groupDynamics; set => _groupDynamics = value; }
         public bool GroupDynamicsSeparateGameObjects { get => _groupDynamicsSeparateGameObjects; set => _groupDynamicsSeparateGameObjects = value; }
-        public bool RemoveExistingPrefixSuffix { get => _removeExistingPrefixSuffix; set => _removeExistingPrefixSuffix = value; }
+        public string Prefix { get => _prefix; set => _prefix = value; }
+        public string Suffix { get => _suffix; set => _suffix = value; }
+        public bool PreventDuplicateNames { get => _preventDuplicateNames; set => _preventDuplicateNames = value; }
         public int DynamicsOption { get => _dynamicsOption; set => _dynamicsOption = value; }
         public ReportData ReportData { get => _reportData; set => _reportData = value; }
-        public bool ShowHasCabinetHelpbox { get; set; }
 
         private LegacyPresenter _presenter;
         private int _selectedMode;
@@ -66,7 +67,9 @@ namespace Chocopoi.DressingTools.UI.Views
         private bool _groupBones;
         private bool _groupDynamics;
         private bool _groupDynamicsSeparateGameObjects;
-        private bool _removeExistingPrefixSuffix;
+        private string _prefix;
+        private string _suffix;
+        private bool _preventDuplicateNames;
         private int _dynamicsOption;
         private ReportData _reportData;
 
@@ -86,7 +89,9 @@ namespace Chocopoi.DressingTools.UI.Views
             _groupBones = true;
             _groupDynamics = true;
             _groupDynamicsSeparateGameObjects = true;
-            _removeExistingPrefixSuffix = true;
+            _prefix = "";
+            _suffix = "";
+            _preventDuplicateNames = true;
             _dynamicsOption = 0;
             _reportData = null;
         }
@@ -181,15 +186,7 @@ namespace Chocopoi.DressingTools.UI.Views
             BeginDisabled(!_useCustomArmatureNames);
             {
                 EditorGUI.indentLevel += 1;
-                if (ShowHasCabinetHelpbox)
-                {
-                    HelpBox(t._("legacy.editor.helpbox.avatarAttachedToCabinet"), MessageType.Info);
-                }
-                BeginDisabled(ShowHasCabinetHelpbox);
-                {
-                    DelayedTextField(t._("legacy.editor.textField.avatarArmatureName"), ref _avatarArmatureObjectName, ConfigChange);
-                }
-                EndDisabled();
+                DelayedTextField(t._("legacy.editor.textField.avatarArmatureName"), ref _avatarArmatureObjectName, ConfigChange);
                 DelayedTextField(t._("legacy.editor.textField.clothesArmatureName"), ref _clothesArmatureObjectName, ConfigChange);
                 EditorGUI.indentLevel -= 1;
             }
@@ -221,29 +218,19 @@ namespace Chocopoi.DressingTools.UI.Views
             Separator();
 
             ToggleLeft(t._("legacy.editor.toggle.groupBones"), ref _groupBones, ConfigChange);
-            if (ShowHasCabinetHelpbox)
-            {
-                HelpBox(t._("legacy.editor.helpbox.avatarAttachedToCabinet"), MessageType.Info);
-            }
-            BeginDisabled(ShowHasCabinetHelpbox);
-            {
-                ToggleLeft(t._("legacy.editor.toggle.groupDynamics"), ref _groupDynamics, ConfigChange);
-                BeginDisabled(!_groupDynamics);
-                {
-                    EditorGUI.indentLevel += 1;
-                    ToggleLeft(t._("legacy.editor.toggle.groupDynamicsSeparateGameObjects"), ref _groupDynamicsSeparateGameObjects, ConfigChange);
-                    EditorGUI.indentLevel -= 1;
-                }
-                EndDisabled();
-            }
+            ToggleLeft(t._("legacy.editor.toggle.groupDynamics"), ref _groupDynamics, ConfigChange);
+            EditorGUI.indentLevel += 1;
+            ToggleLeft(t._("legacy.editor.toggle.groupDynamicsSeparateGameObjects"), ref _groupDynamicsSeparateGameObjects, ConfigChange);
+            EditorGUI.indentLevel -= 1;
             EndDisabled();
 
             HorizontalLine();
 
             Label(t._("legacy.editor.label.prefixesAndSuffixes"), EditorStyles.boldLabel);
-            HelpBox(t._("legacy.editor.label.prefixesAndSuffixesAutoGenAndHandled"), MessageType.Info);
 
-            ToggleLeft(t._("legacy.editor.toggle.removeExistingPrefixesAndSuffixes"), ref _removeExistingPrefixSuffix, ConfigChange);
+            TextField(t._("legacy.editor.textField.prefix"), ref _prefix, ConfigChange);
+            TextField(t._("legacy.editor.textField.suffix"), ref _suffix, ConfigChange);
+            ToggleLeft(t._("legacy.editor.toggle.preventDuplicateNames"), ref _preventDuplicateNames, ConfigChange);
 
             HorizontalLine();
 
@@ -252,6 +239,7 @@ namespace Chocopoi.DressingTools.UI.Views
             Separator();
 
             Popup(ref _dynamicsOption, new string[] {
+                t._("legacy.editor.popup.dynamicsOption.auto"),
                 t._("legacy.editor.popup.dynamicsOption.removeDynamicsAndAddParentConstraint"),
                 t._("legacy.editor.popup.dynamicsOption.keepDynamicsAndAddParentConstraintIfNeeded"),
                 t._("legacy.editor.popup.dynamicsOption.removeDynamicsAndAddIgnoreTransform"),

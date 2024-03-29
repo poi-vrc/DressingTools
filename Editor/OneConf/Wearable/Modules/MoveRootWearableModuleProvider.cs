@@ -15,11 +15,13 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
+using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
+using Chocopoi.DressingTools.Passes.Modifiers;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 
@@ -40,7 +42,11 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
         [ExcludeFromCodeCoverage] public override string Identifier => MoveRootWearableModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.moveRoot.friendlyName");
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
-        [ExcludeFromCodeCoverage] public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose).Build();
+        [ExcludeFromCodeCoverage]
+        public override BuildConstraint Constraint =>
+            InvokeAtStage(BuildStage.Transpose)
+                .BeforePass<MoveRootPass>()
+                .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
         {
@@ -62,24 +68,8 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             if (modules.Count == 0) return true;
 
             var mrm = (MoveRootWearableModuleConfig)modules[0].config;
-
-            if (mrm.avatarPath == null || mrm.avatarPath == "")
-            {
-                cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.AvatarPathEmpty);
-                return false;
-            }
-
-            // find avatar object
-            var avatarObj = cabCtx.dkCtx.AvatarGameObject.transform.Find(mrm.avatarPath);
-
-            if (avatarObj == null)
-            {
-                cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.AvatarPathNotFound);
-                return false;
-            }
-
-            // set to parent
-            wearCtx.wearableGameObject.transform.SetParent(avatarObj);
+            var comp = wearCtx.wearableGameObject.AddComponent<DTMoveRoot>();
+            comp.DestinationPath = mrm.avatarPath;
 
             return true;
         }

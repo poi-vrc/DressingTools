@@ -12,13 +12,12 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Chocopoi.DressingFramework.Animations;
+using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
@@ -48,53 +47,29 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
         {
             var provider = new BlendshapeSyncWearableModuleProvider();
 
-            var originalAnim = LoadEditorTestAsset<AnimationClip>("DTTest_BlendshapeSyncAnim.anim");
-
             var avatarObj = InstantiateEditorTestPrefab("DTTest_BlendshapeSyncAvatar.prefab");
             var wearableTrans = avatarObj.transform.Find("Wearable");
             Assert.NotNull(wearableTrans);
-
             var cabCtx = CreateCabinetContext(avatarObj);
-            var animStore = cabCtx.dkCtx.Feature<AnimationStore>();
-            animStore.RegisterClip(originalAnim, (AnimationClip clip) => { });
-            Assert.AreEqual(1, animStore.Clips.Count);
-
             var wearCtx = CreateWearableContext(cabCtx, wearableTrans.gameObject);
             var bsm = wearCtx.wearableConfig.FindModuleConfig<BlendshapeSyncWearableModuleConfig>();
             Assert.NotNull(bsm);
+
+            var wearableBlendshapeCube = wearableTrans.Find("WearableBlendshapeCube");
+            Assert.NotNull(wearableBlendshapeCube);
+            Assert.True(wearableBlendshapeCube.TryGetComponent<SkinnedMeshRenderer>(out var wearableSmr));
 
             Assert.True(provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(new List<WearableModule>() { new WearableModule() {
                 moduleName = BlendshapeSyncWearableModuleConfig.ModuleIdentifier,
                 config = bsm
             }}), false));
 
-            var originalCurveBindings = AnimationUtility.GetCurveBindings(originalAnim);
-            Assert.AreEqual(1, originalCurveBindings.Length);
-            var originalCurveBinding = originalCurveBindings[0];
-            var originalCurve = AnimationUtility.GetEditorCurve(originalAnim, originalCurveBinding);
-
-            var newClip = animStore.Clips[0].newClip;
-            Assert.NotNull(newClip);
-            var newClipCurveBindings = AnimationUtility.GetCurveBindings(newClip);
-            Assert.AreEqual(2, newClipCurveBindings.Length);
-
-            var expectedPaths = new string[] { "AvatarBlendshapeCube", "Wearable/WearableBlendshapeCube" };
-
-            // assert curve bindings
-            foreach (var curveBinding in newClipCurveBindings)
-            {
-                var found = false;
-                foreach (var path in expectedPaths)
-                {
-                    if (path == curveBinding.path)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                Assert.True(found, "Curve bindings contain unexpected paths");
-                Assert.AreEqual(originalCurve, AnimationUtility.GetEditorCurve(newClip, curveBinding), "Expected new clip curve bindings should be then same as original clip");
-            }
+            Assert.True(wearableTrans.TryGetComponent<DTBlendshapeSync>(out var comp));
+            Assert.AreEqual(1, comp.Entries.Count);
+            Assert.AreEqual("AvatarBlendshapeCube", comp.Entries[0].SourcePath);
+            Assert.AreEqual("SomeKey", comp.Entries[0].SourceBlendshape);
+            Assert.AreEqual(wearableSmr, comp.Entries[0].DestinationSkinnedMeshRenderer);
+            Assert.AreEqual("SomeKey", comp.Entries[0].DestinationBlendshape);
         }
     }
 }

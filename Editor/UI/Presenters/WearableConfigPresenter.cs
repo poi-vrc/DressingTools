@@ -21,8 +21,6 @@ using System.IO;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Serialization;
@@ -41,6 +39,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class WearableConfigPresenter
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
+        private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Default.DefaultDresser";
 
         private List<WearableModuleProvider> s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
@@ -623,11 +622,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
                 var config = new ArmatureMappingWearableModuleConfig()
                 {
-                    dresserName = typeof(DefaultDresser).FullName,
+                    dresserName = OldDresserClassName,
                     wearableArmatureName = armatureName,
                     boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,
-                    serializedDresserConfig = JsonConvert.SerializeObject(new DefaultDresserSettings()),
+                    serializedDresserConfig = JsonConvert.SerializeObject(new ArmatureMappingWearableModuleProvider.DefaultDresserSettings()),
                     removeExistingPrefixSuffix = true,
                     groupBones = true
                 };

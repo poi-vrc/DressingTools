@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Newtonsoft.Json;
@@ -53,15 +54,13 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
             var wearCtx = CreateWearableContext(cabCtx, wearableTrans.gameObject);
             var mrm = wearCtx.wearableConfig.FindModuleConfig<MoveRootWearableModuleConfig>();
 
-            var targetPathTrans = avatarObj.transform.Find(mrm.avatarPath);
-            Assert.NotNull(targetPathTrans);
-
             Assert.True(provider.Invoke(cabCtx, wearCtx, new ReadOnlyCollection<WearableModule>(new List<WearableModule>() { new WearableModule() {
                 moduleName = MoveRootWearableModuleConfig.ModuleIdentifier,
                 config = mrm
             }}), false));
 
-            Assert.AreEqual(targetPathTrans, wearableTrans.transform.parent);
+            Assert.True(wearableTrans.TryGetComponent<DTMoveRoot>(out var comp));
+            Assert.AreEqual(mrm.avatarPath, comp.DestinationPath);
         }
     }
 }

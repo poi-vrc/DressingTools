@@ -16,23 +16,28 @@
  */
 
 using System.Collections.Generic;
+using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Dresser;
 using Chocopoi.DressingTools.Dresser.Default;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Serialization;
+using Chocopoi.DressingTools.OneConf.Wearable.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
 using Chocopoi.DressingTools.UI.Views.Modules;
 using Newtonsoft.Json;
 using UnityEditor;
+using UnityEngine;
 using LogType = Chocopoi.DressingFramework.Logging.LogType;
 
 namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class ArmatureMappingWearableModuleEditorPresenter
     {
+        private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Default.DefaultDresser";
+
         private IArmatureMappingWearableModuleEditorView _view;
         private IWearableModuleEditorViewParent _parentView;
         private ArmatureMappingWearableModuleConfig _module;
@@ -116,12 +121,93 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
+        private static List<BoneMapping> ConvertToOldMappings(Transform wearableRoot, List<ObjectMapping> objectMappings, List<ITag> tags)
+        {
+            // TODO: this is temporary for later migration to Object Mappings + Tags
+            var output = new List<BoneMapping>();
+            foreach (var objectMapping in objectMappings)
+            {
+                var boneMapping = new BoneMapping
+                {
+                    avatarBonePath = objectMapping.TargetPath,
+                    wearableBonePath = AnimationUtils.GetRelativePath(objectMapping.SourceTransform.transform, wearableRoot)
+                };
+
+                if (objectMapping.Type == ObjectMapping.MappingType.MoveToBone)
+                {
+                    boneMapping.mappingType = BoneMappingType.MoveToBone;
+                }
+                else if (objectMapping.Type == ObjectMapping.MappingType.ParentConstraint)
+                {
+                    boneMapping.mappingType = BoneMappingType.ParentConstraint;
+                }
+
+                output.Add(boneMapping);
+            }
+
+            foreach (var tag in tags)
+            {
+                var boneMapping = new BoneMapping()
+                {
+                    avatarBonePath = tag.TargetPath,
+                    wearableBonePath = AnimationUtils.GetRelativePath(tag.SourceTransform.transform, wearableRoot)
+                };
+                output.Add(boneMapping);
+            }
+            return output;
+        }
+
+        private static DefaultDresserSettings.DynamicsOptions ConvertToNewDynamicsOption(ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions dynamicsOptions)
+        {
+            if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint)
+            {
+                return DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
+            }
+            else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary)
+            {
+                return DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
+            }
+            else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.IgnoreTransform)
+            {
+                return DefaultDresserSettings.DynamicsOptions.IgnoreTransform;
+            }
+            else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.CopyDynamics)
+            {
+                return DefaultDresserSettings.DynamicsOptions.CopyDynamics;
+            }
+            else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.IgnoreAll)
+            {
+                return DefaultDresserSettings.DynamicsOptions.IgnoreAll;
+            }
+            else
+            {
+                return DefaultDresserSettings.DynamicsOptions.Auto;
+            }
+        }
+
         private void GenerateDresserMappings()
         {
-            // execute dresser
-            var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
-            _dresserReport = dresser.Execute(_view.DresserSettings, out var generatedMappings);
-            UpdateMappingEditorView(generatedMappings);
+            if (_parentView.TargetWearable == null || string.IsNullOrEmpty(_view.WearableArmatureName))
+            {
+                return;
+            }
+
+            var wearableArmature = OneConfUtils.GuessArmature(_parentView.TargetWearable, _view.WearableArmatureName);
+
+            // execute default dresser (dresser selection is ignored now)
+            var dresser = new DefaultDresser();
+            var settings = new DefaultDresserSettings()
+            {
+                SourceArmature = wearableArmature,
+                TargetArmaturePath = _view.AvatarArmatureName,
+                DynamicsOption = ConvertToNewDynamicsOption(_view.DresserSettings.dynamicsOption)
+            };
+            _dresserReport = new DKReport();
+            dresser.Execute(_dresserReport, _parentView.TargetAvatar, settings, out var objectMappings, out var tags);
+
+            // TODO: this is temporary for later migration to Object Mappings + Tags
+            var oldObjectMappings = ConvertToOldMappings(_parentView.TargetWearable.transform, objectMappings, tags);
+            UpdateMappingEditorView(oldObjectMappings);
 
             ApplySettings();
             UpdateDresserReport();
@@ -129,11 +215,10 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void InitializeDresserSettings()
         {
-            var dresser = DresserRegistry.GetDresserByName(_view.AvailableDresserKeys != null ? _view.AvailableDresserKeys[_view.SelectedDresserIndex] : "Default Dresser");
-            _view.DresserSettings = dresser.DeserializeSettings(_module.serializedDresserConfig ?? "{}");
+            _view.DresserSettings = JsonConvert.DeserializeObject<ArmatureMappingWearableModuleProvider.DefaultDresserSettings>(_module.serializedDresserConfig ?? "{}");
             if (_view.DresserSettings == null)
             {
-                _view.DresserSettings = dresser.NewSettings();
+                _view.DresserSettings = new ArmatureMappingWearableModuleProvider.DefaultDresserSettings();
             }
         }
 
@@ -177,21 +262,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             }
         }
 
-        private void CheckCorrectDresserSettingsType()
-        {
-            var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
-
-            // reinitialize dresser settings if not correct type
-            if (dresser is DefaultDresser && !(_view.DresserSettings is DefaultDresserSettings))
-            {
-                InitializeDresserSettings();
-            }
-        }
-
         private void UpdateDresserSettings()
         {
-            _view.DresserSettings.targetAvatar = _parentView.TargetAvatar;
-            _view.DresserSettings.targetWearable = _parentView.TargetWearable;
             _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar);
             if (_cabinet != null)
             {
@@ -200,7 +272,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 if (CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out var cabinetConfig))
                 {
                     _view.AvatarArmatureName = cabinetConfig.avatarArmatureName;
-                    _view.DresserSettings.avatarArmatureName = cabinetConfig.avatarArmatureName;
                     _view.IsLoadCabinetConfigError = false;
                 }
                 else
@@ -212,6 +283,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             {
                 _view.IsAvatarAssociatedWithCabinet = false;
             }
+            _view.WearableArmatureName = _view.AvatarArmatureName;
         }
 
         private void OnForceUpdateView()
@@ -226,13 +298,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnDresserChange()
         {
-            CheckCorrectDresserSettingsType();
             GenerateDresserMappings();
         }
 
         private void OnModuleSettingsChange()
         {
-            _view.DresserSettings.avatarArmatureName = _view.AvatarArmatureName;
             _module.groupBones = _view.GroupBones;
             _module.removeExistingPrefixSuffix = _view.RemoveExistingPrefixSuffix;
             GenerateDresserMappings();
@@ -260,17 +330,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view.SelectedMappingMode = (int)_module.boneMappingMode;
 
             // list all available dressers
-            _view.AvailableDresserKeys = DresserRegistry.GetAvailableDresserKeys();
-            _view.SelectedDresserIndex = DresserRegistry.GetDresserKeyIndexByTypeName(_module.dresserName);
-            if (_view.SelectedDresserIndex == -1)
-            {
-                _view.SelectedDresserIndex = 0;
-            }
+            _view.AvailableDresserKeys = new string[] { "Default" };
+            _view.SelectedDresserIndex = 0;
 
             _view.GroupBones = _module.groupBones;
             _view.RemoveExistingPrefixSuffix = _module.removeExistingPrefixSuffix;
 
-            CheckCorrectDresserSettingsType();
             UpdateDresserSettings();
             UpdateDresserReport();
             UpdateMappingEditorView(DTMappingEditorWindow.Data.generatedBoneMappings);
@@ -288,14 +353,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void ApplySettings()
         {
-            var dresser = DresserRegistry.GetDresserByIndex(_view.SelectedDresserIndex);
-            _module.dresserName = dresser.GetType().FullName;
-
-            // copy wearable armature name from dresser settings and serialize dresser settings
-            if (_view.DresserSettings != null)
-            {
-                _module.wearableArmatureName = _view.DresserSettings.wearableArmatureName;
-            }
+            _module.dresserName = OldDresserClassName;
             _module.serializedDresserConfig = JsonConvert.SerializeObject(_view.DresserSettings);
 
             // update values from mapping editor container

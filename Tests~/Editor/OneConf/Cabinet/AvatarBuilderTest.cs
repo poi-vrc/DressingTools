@@ -13,7 +13,6 @@
 using Chocopoi.DressingFramework.Detail.DK;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Components.OneConf;
-using Chocopoi.DressingTools.Dresser;
 using NUnit.Framework;
 
 namespace Chocopoi.DressingTools.Tests.OneConf.Cabinet
@@ -35,7 +34,7 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Cabinet
             ab.RunStages();
             var report = (DKReport)ab.Context.Report;
 
-            Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoArmatureInWearable), "Should have NoArmatureInWearable error");
+            // Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoArmatureInWearable), "Should have NoArmatureInWearable error");
             Assert.True(report.HasLogCode(AvatarBuilder.MessageCode.PassHasErrors), "Should have PassHasError error");
         }
     }

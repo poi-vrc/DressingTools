@@ -13,339 +13,123 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Animations;
-using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dynamics;
-using Chocopoi.DressingTools.Dynamics.Proxy;
+using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn.ArmatureMapping;
+using Chocopoi.DressingTools.Passes.Modifiers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
 {
     [InitializeOnLoad]
     internal class ArmatureMappingWearableModuleProvider : WearableModuleProvider
     {
-        private static readonly I18nTranslator t = I18n.ToolTranslator;
-        public static class MessageCode
+        public class DefaultDresserSettings
         {
-            // Error
-            public const string DresserHasErrors = "modules.wearable.armatureMapping.msgCode.error.dresserHasErrors";
-            public const string CannotCreateParentConstraintWithExisting = "modules.wearable.armatureMapping.msgCode.error.cannotCreateParentConstraintWithExisting";
-            public const string AvatarBonePathNotFound = "modules.wearable.armatureMapping.msgCode.error.avatarBonePathNotFound";
-            public const string MappingGenerationHasErrors = "modules.wearable.armatureMapping.msgCode.error.mappingGenerationHasErrors";
-            public const string ApplyingBoneMappingHasErrors = "modules.wearable.armatureMapping.msgCode.error.applyingBoneMappingHasErrors";
+            public enum DynamicsOptions
+            {
+                RemoveDynamicsAndUseParentConstraint = 0,
+                KeepDynamicsAndUseParentConstraintIfNecessary = 1,
+                IgnoreTransform = 2,
+                CopyDynamics = 3,
+                IgnoreAll = 4,
+                Auto = 5,
+            }
+
+            public DynamicsOptions dynamicsOption;
+
+            public DefaultDresserSettings()
+            {
+                // default settings
+                dynamicsOption = DynamicsOptions.Auto;
+            }
+
+            private static int DynamicsOptionToUI(DynamicsOptions dynamicsOptions)
+            {
+                switch (dynamicsOptions)
+                {
+                    case DynamicsOptions.RemoveDynamicsAndUseParentConstraint:
+                        return 1;
+                    case DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary:
+                        return 2;
+                    case DynamicsOptions.IgnoreTransform:
+                        return 3;
+                    case DynamicsOptions.CopyDynamics:
+                        return 4;
+                    case DynamicsOptions.IgnoreAll:
+                        return 5;
+                    default:
+                    case DynamicsOptions.Auto:
+                        return 0;
+                }
+            }
+
+            private static DynamicsOptions UIToDynamicsOption(int index)
+            {
+                switch (index)
+                {
+                    case 1:
+                        return DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
+                    case 2:
+                        return DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
+                    case 3:
+                        return DynamicsOptions.IgnoreTransform;
+                    case 4:
+                        return DynamicsOptions.CopyDynamics;
+                    case 5:
+                        return DynamicsOptions.IgnoreAll;
+                    default:
+                    case 0:
+                        return DynamicsOptions.Auto;
+                }
+            }
+
+            [ExcludeFromCodeCoverage]
+            public bool DrawEditorGUI()
+            {
+                var modified = false;
+
+                // Dynamics Option
+                var newDynamicsOption = UIToDynamicsOption(EditorGUILayout.Popup(t._("dressers.default.settings.dynamicsOptionPopup.label"), DynamicsOptionToUI(dynamicsOption), new string[] {
+                        t._("dressers.default.settings.dynamicsOptionPopup.auto"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddParentConstraint"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.keepDynamicsAndAddParentConstraintIfNeeded"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddIgnoreTransform"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.copyAvatarDynamicsData"),
+                        t._("dressers.default.settings.dynamicsOptionPopup.ignoreAllDynamics")
+                    }));
+
+                modified |= dynamicsOption != newDynamicsOption;
+                dynamicsOption = newDynamicsOption;
+
+                return modified;
+            }
         }
 
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
         private const string LogLabel = "ArmatureModule";
 
         [ExcludeFromCodeCoverage] public override string Identifier => ArmatureMappingWearableModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => t._("modules.wearable.armatureMapping.friendlyName");
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;
-        [ExcludeFromCodeCoverage] public override BuildConstraint Constraint => InvokeAtStage(BuildStage.Transpose).Build();
+        [ExcludeFromCodeCoverage]
+        public override BuildConstraint Constraint =>
+            InvokeAtStage(BuildStage.Transpose)
+                .BeforePass<ArmatureMappingPass>()
+                .Build();
 
-        private static bool GenerateMappings(CabinetContext cabCtx, WearableContext wearCtx, ArmatureMappingWearableModuleConfig moduleConfig, string wearableName, out List<BoneMapping> resultantBoneMappings)
+        private static DefaultDresserSettings DeserializeDefaultDresserSettings(string serializedJson)
         {
-            if (moduleConfig.boneMappingMode != BoneMappingMode.Manual)
-            {
-                // execute dresser
-                var dresser = DresserRegistry.GetDresserByTypeName(moduleConfig.dresserName);
-                var dresserSettings = dresser.DeserializeSettings(moduleConfig.serializedDresserConfig);
-                if (dresserSettings == null)
-                {
-                    // fallback to become a empty
-                    dresserSettings = dresser.NewSettings();
-                }
-                dresserSettings.targetAvatar = cabCtx.dkCtx.AvatarGameObject;
-                dresserSettings.targetWearable = wearCtx.wearableGameObject;
-                dresserSettings.avatarArmatureName = cabCtx.cabinetConfig.avatarArmatureName;
-                dresserSettings.wearableArmatureName = moduleConfig.wearableArmatureName;
-
-                var dresserReport = dresser.Execute(dresserSettings, out resultantBoneMappings);
-                // TODO: do not do this
-                ((DKReport)cabCtx.dkCtx.Report).AppendReport(dresserReport);
-
-                // abort on error
-                if (dresserReport.HasLogType(DressingFramework.Logging.LogType.Error))
-                {
-                    cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.DresserHasErrors, wearableName);
-                    return false;
-                }
-
-                // handle bone overrides
-                if (moduleConfig.boneMappingMode == BoneMappingMode.Override)
-                {
-                    OneConfUtils.HandleBoneMappingOverrides(resultantBoneMappings, moduleConfig.boneMappings);
-                }
-            }
-            else
-            {
-                // full manual
-                resultantBoneMappings = new List<BoneMapping>(moduleConfig.boneMappings);
-            }
-            return true;
+            return JsonConvert.DeserializeObject<DefaultDresserSettings>(serializedJson);
         }
-
-        private static BoneMapping GetBoneMappingByWearableBonePath(List<BoneMapping> boneMappings, string wearableBonePath)
-        {
-            foreach (var mapping in boneMappings)
-            {
-                if (mapping.wearableBonePath == wearableBonePath)
-                {
-                    return mapping;
-                }
-            }
-            return null;
-        }
-
-        private static void RemoveExistingPrefixSuffix(Transform wearableChild)
-        {
-            // check if there is a prefix
-            if (wearableChild.name.StartsWith("("))
-            {
-                //find the first closing bracket
-                int prefixBracketEnd = wearableChild.name.IndexOf(")");
-                if (prefixBracketEnd != -1 && prefixBracketEnd != wearableChild.name.Length - 1) //remove it if there is
-                {
-                    wearableChild.name = wearableChild.name.Substring(prefixBracketEnd + 1).Trim();
-                }
-            }
-
-            // check if there is a suffix
-            if (wearableChild.name.EndsWith(")"))
-            {
-                //find the first closing bracket
-                int suffixBracketStart = wearableChild.name.LastIndexOf("(");
-                if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
-                {
-                    wearableChild.name = wearableChild.name.Substring(0, suffixBracketStart).Trim();
-                }
-            }
-        }
-
-        private static void ApplyIgnoreTransforms(string wearableName, IDynamics avatarDynamics, Transform avatarDynamicsRoot, Transform wearableDynamicsRoot)
-        {
-            string name = avatarDynamicsRoot.name + "_DBExcluded";
-            var dynBoneChild = avatarDynamicsRoot.Find(name);
-
-            if (dynBoneChild == null)
-            {
-                var obj = new GameObject(name);
-                obj.transform.SetParent(avatarDynamicsRoot);
-                dynBoneChild = obj.transform;
-            }
-
-            // check if it is excluded
-
-            if (avatarDynamics != null && !avatarDynamics.IgnoreTransforms.Contains(dynBoneChild))
-            {
-                avatarDynamics.IgnoreTransforms.Add(dynBoneChild);
-            }
-
-            wearableDynamicsRoot.name = string.Format("{0} ({1})", wearableDynamicsRoot.name, wearableName);
-            wearableDynamicsRoot.SetParent(dynBoneChild);
-
-            // scan for other child bones
-
-            var childs = new List<Transform>();
-
-            for (int i = 0; i < wearableDynamicsRoot.childCount; i++)
-            {
-                childs.Add(wearableDynamicsRoot.GetChild(i));
-            }
-
-            foreach (var child in childs)
-            {
-                var avatarTrans = avatarDynamicsRoot.Find(child.name);
-                if (avatarTrans != null)
-                {
-                    // continue to add IgnoreTransform if having matching avatar bone
-                    ApplyIgnoreTransforms(wearableName, avatarDynamics, avatarTrans, child);
-                }
-            }
-        }
-
-        private static bool ApplyBoneMappings(CabinetContext cabCtx, WearableContext wearCtx, PathRemapper pathRemapper, ArmatureMappingWearableModuleConfig moduleConfig, string wearableName, List<BoneMapping> boneMappings, Transform avatarRoot, Transform wearableRoot, Transform wearableBoneParent, string previousPath)
-        {
-            var wearableChilds = new List<Transform>();
-
-            for (int i = 0; i < wearableBoneParent.childCount; i++)
-            {
-                wearableChilds.Add(wearableBoneParent.GetChild(i));
-            }
-
-            foreach (var wearableChild in wearableChilds)
-            {
-                // we have to backup the boneName here for constructing a path later
-                var boneName = wearableChild.name;
-                var path = previousPath + boneName;
-                var mapping = GetBoneMappingByWearableBonePath(boneMappings, path);
-
-                if (moduleConfig.removeExistingPrefixSuffix)
-                {
-                    RemoveExistingPrefixSuffix(wearableChild);
-                }
-
-                if (mapping != null)
-                {
-                    var avatarBone = avatarRoot.Find(mapping.avatarBonePath);
-
-                    if (avatarBone != null)
-                    {
-                        var avatarBoneDynamics = DynamicsUtils.FindDynamicsWithRoot(cabCtx.avatarDynamics, avatarBone);
-                        var wearableBoneDynamics = DynamicsUtils.FindDynamicsWithRoot(wearCtx.wearableDynamics, wearableChild);
-
-                        pathRemapper.TagContainerBone(wearableChild.gameObject);
-
-                        if (mapping.mappingType == BoneMappingType.MoveToBone)
-                        {
-                            Transform wearableBoneContainer = null;
-
-                            if (moduleConfig.groupBones)
-                            {
-                                // group bones in a {boneName}_DT container
-                                string name = avatarBone.name + "_DT";
-                                wearableBoneContainer = avatarBone.Find(name);
-                                if (wearableBoneContainer == null)
-                                {
-                                    // create container if not exist
-                                    var obj = new GameObject(name);
-                                    obj.transform.SetParent(avatarBone);
-                                    wearableBoneContainer = obj.transform;
-                                }
-                                pathRemapper.TagContainerBone(wearableBoneContainer.gameObject);
-                            }
-                            else
-                            {
-                                wearableBoneContainer = avatarBone;
-                            }
-
-                            wearableChild.SetParent(wearableBoneContainer);
-                            // TODO: handle custom prefixes?
-                            wearableChild.name = string.Format("{0} ({1})", wearableChild.name, wearableName);
-                        }
-                        else if (mapping.mappingType == BoneMappingType.ParentConstraint)
-                        {
-                            if (wearableBoneDynamics != null)
-                            {
-                                // remove wearable dynamics if exist
-                                Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
-                            }
-
-                            // add parent constraint
-
-                            var comp = wearableChild.gameObject.AddComponent<ParentConstraint>();
-
-                            if (comp != null)
-                            {
-                                comp.constraintActive = true;
-
-                                var source = new ConstraintSource
-                                {
-                                    sourceTransform = avatarBone,
-                                    weight = 1
-                                };
-                                comp.AddSource(source);
-                            }
-                            else
-                            {
-                                cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.CannotCreateParentConstraintWithExisting, mapping.avatarBonePath, mapping.wearableBonePath);
-                                return false;
-                            }
-                        }
-                        else if (mapping.mappingType == BoneMappingType.IgnoreTransform)
-                        {
-                            if (wearableBoneDynamics != null)
-                            {
-                                // remove wearable dynamics if exist
-                                Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
-                            }
-
-                            ApplyIgnoreTransforms(wearableName, avatarBoneDynamics, avatarBone, wearableChild);
-                        }
-                        else if (mapping.mappingType == BoneMappingType.CopyDynamics)
-                        {
-                            if (wearableBoneDynamics != null)
-                            {
-                                // remove wearable dynamics if exist
-                                Object.DestroyImmediate(wearableBoneDynamics.Component);
-                                wearCtx.wearableDynamics.Remove(wearableBoneDynamics);
-                            }
-
-                            // copy component with reflection
-                            var comp = DKEditorUtils.CopyComponent(avatarBoneDynamics.Component, wearableChild.gameObject);
-
-                            // set root transform
-                            if (avatarBoneDynamics is DynamicBoneProxy)
-                            {
-                                new DynamicBoneProxy(comp)
-                                {
-                                    RootTransform = wearableChild
-                                };
-                            }
-                            else if (avatarBoneDynamics is PhysBoneProxy)
-                            {
-                                new PhysBoneProxy(comp)
-                                {
-                                    RootTransform = wearableChild
-                                };
-                            }
-                        }
-                    }
-                    else
-                    {
-                        cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.AvatarBonePathNotFound, mapping.avatarBonePath);
-                        return false;
-                    }
-                }
-
-                ApplyBoneMappings(cabCtx, wearCtx, pathRemapper, moduleConfig, wearableName, boneMappings, avatarRoot, wearableRoot, wearableChild, previousPath + boneName + "/");
-            }
-
-            return true;
-        }
-
-        public override bool Invoke(CabinetContext cabCtx, WearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
-        {
-            if (isPreview) return true;
-
-            if (modules.Count == 0)
-            {
-                return true;
-            }
-
-            var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)modules[0].config;
-
-            if (!GenerateMappings(cabCtx, wearCtx, armatureMappingConfig, wearCtx.wearableConfig.info.name, out var boneMappings))
-            {
-                cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.MappingGenerationHasErrors);
-                return false;
-            }
-
-            var generatedName = string.Format("{0}-{1}", wearCtx.wearableConfig.info.name, DKEditorUtils.RandomString(16));
-            var pathRemapper = cabCtx.dkCtx.Feature<PathRemapper>();
-
-            if (!ApplyBoneMappings(cabCtx, wearCtx, pathRemapper, armatureMappingConfig, generatedName, boneMappings, cabCtx.dkCtx.AvatarGameObject.transform, wearCtx.wearableGameObject.transform, wearCtx.wearableGameObject.transform, ""))
-            {
-                cabCtx.dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.ApplyingBoneMappingHasErrors);
-                return false;
-            }
-
-            return true;
-        }
-
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
         {
             // TODO: do schema check
@@ -360,5 +144,163 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
         }
 
         public override IModuleConfig NewModuleConfig() => new ArmatureMappingWearableModuleConfig();
+
+        private static DTArmatureMapping.MappingMode ConvertToNewMappingMode(BoneMappingMode boneMappingMode)
+        {
+            if (boneMappingMode == BoneMappingMode.Override)
+            {
+                return DTArmatureMapping.MappingMode.Override;
+            }
+            else if (boneMappingMode == BoneMappingMode.Manual)
+            {
+                return DTArmatureMapping.MappingMode.Manual;
+            }
+            else
+            {
+                return DTArmatureMapping.MappingMode.Auto;
+            }
+        }
+
+        private static void ConvertToNewMappings(Transform wearableRoot, List<BoneMapping> boneMappings, List<DTObjectMapping.Mapping> objectMappings, List<DTArmatureMapping.Tag> tags)
+        {
+            if (boneMappings == null)
+            {
+                objectMappings.Clear();
+                tags.Clear();
+                return;
+            }
+
+            foreach (var boneMapping in boneMappings)
+            {
+                if (string.IsNullOrEmpty(boneMapping.avatarBonePath) ||
+                    string.IsNullOrEmpty(boneMapping.wearableBonePath))
+                {
+                    continue;
+                }
+                var sourceTransform = wearableRoot.Find(boneMapping.wearableBonePath);
+
+                if (boneMapping.mappingType == BoneMappingType.DoNothing)
+                {
+                    // for now we can only do this, add DoNothing in both
+                    objectMappings.Add(new DTObjectMapping.Mapping()
+                    {
+                        Type = DTObjectMapping.Mapping.MappingType.DoNothing,
+                        SourceTransform = sourceTransform,
+                        TargetPath = boneMapping.avatarBonePath
+                    });
+                    tags.Add(new DTArmatureMapping.Tag()
+                    {
+                        Type = DTArmatureMapping.Tag.TagType.DoNothing,
+                        SourceTransform = sourceTransform
+                    });
+                }
+                else if (boneMapping.mappingType == BoneMappingType.MoveToBone)
+                {
+                    objectMappings.Add(new DTObjectMapping.Mapping()
+                    {
+                        Type = DTObjectMapping.Mapping.MappingType.MoveToBone,
+                        SourceTransform = sourceTransform,
+                        TargetPath = boneMapping.avatarBonePath
+                    });
+                }
+                else if (boneMapping.mappingType == BoneMappingType.ParentConstraint)
+                {
+                    objectMappings.Add(new DTObjectMapping.Mapping()
+                    {
+                        Type = DTObjectMapping.Mapping.MappingType.ParentConstraint,
+                        SourceTransform = sourceTransform,
+                        TargetPath = boneMapping.avatarBonePath
+                    });
+                }
+                else if (boneMapping.mappingType == BoneMappingType.IgnoreTransform)
+                {
+                    tags.Add(new DTArmatureMapping.Tag()
+                    {
+                        Type = DTArmatureMapping.Tag.TagType.IgnoreTransform,
+                        SourceTransform = sourceTransform,
+                        TargetPath = boneMapping.avatarBonePath
+                    });
+                }
+                else if (boneMapping.mappingType == BoneMappingType.CopyDynamics)
+                {
+                    var tag = new DTArmatureMapping.Tag
+                    {
+                        Type = DTArmatureMapping.Tag.TagType.CopyDynamics,
+                        SourceTransform = sourceTransform,
+                        TargetPath = boneMapping.avatarBonePath
+                    };
+                    tags.Add(tag);
+                }
+            }
+        }
+
+        private static DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions ConvertToNewDynamicsOption(DefaultDresserSettings.DynamicsOptions dynamicsOptions)
+        {
+            if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint)
+            {
+                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
+            }
+            else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary)
+            {
+                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
+            }
+            else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.IgnoreTransform)
+            {
+                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.IgnoreTransform;
+            }
+            else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.CopyDynamics)
+            {
+                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.CopyDynamics;
+            }
+            else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.IgnoreAll)
+            {
+                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.IgnoreAll;
+            }
+            else
+            {
+                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.Auto;
+            }
+        }
+
+        public override bool Invoke(CabinetContext cabCtx, WearableContext wearCtx, ReadOnlyCollection<WearableModule> modules, bool isPreview)
+        {
+            if (isPreview) return true;
+
+            if (modules.Count == 0)
+            {
+                return true;
+            }
+
+            var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)modules[0].config;
+
+            var wearableArmature = wearCtx.wearableGameObject.transform.Find(armatureMappingConfig.wearableArmatureName);
+            if (wearableArmature == null)
+            {
+                cabCtx.dkCtx.Report.LogError(LogLabel, $"Could not find wearable armature: {armatureMappingConfig.wearableArmatureName}");
+                return false;
+            }
+
+            var comp = wearCtx.wearableGameObject.AddComponent<DTArmatureMapping>();
+            comp.TargetArmaturePath = cabCtx.cabinetConfig.avatarArmatureName;
+            comp.SourceArmature = wearableArmature;
+            comp.Mode = ConvertToNewMappingMode(armatureMappingConfig.boneMappingMode);
+            ConvertToNewMappings(
+                wearCtx.wearableGameObject.transform,
+                armatureMappingConfig.boneMappings,
+                comp.Mappings,
+                comp.Tags);
+            comp.GroupBones = armatureMappingConfig.groupBones;
+            comp.Prefix = "";
+            comp.Suffix = $" ({wearCtx.wearableConfig.info.name})";
+            comp.PreventDuplicateNames = true;
+            // removeExistingPrefixSuffix is ignored for now
+
+            // TODO: for now we ignore dresserName and default all to default dresser
+            comp.DresserType = DTArmatureMapping.DresserTypes.Default;
+            var defaultDresserSettings = DeserializeDefaultDresserSettings(armatureMappingConfig.serializedDresserConfig) ?? new DefaultDresserSettings();
+            comp.DresserDefaultConfig.DynamicsOption = ConvertToNewDynamicsOption(defaultDresserSettings.dynamicsOption);
+
+            return true;
+        }
     }
 }
