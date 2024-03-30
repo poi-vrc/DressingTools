@@ -295,7 +295,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             {
                 _view.IsAvatarAssociatedWithCabinet = false;
             }
-            _view.WearableArmatureName = _view.AvatarArmatureName;
         }
 
         private void OnForceUpdateView()
@@ -347,6 +346,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             _view.GroupBones = _module.groupBones;
             _view.RemoveExistingPrefixSuffix = _module.removeExistingPrefixSuffix;
+            _view.WearableArmatureName = _module.wearableArmatureName;
 
             UpdateDresserSettings();
             UpdateDresserReport();
@@ -366,6 +366,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private void ApplySettings()
         {
             _module.dresserName = OldDresserClassName;
+            _module.wearableArmatureName = _view.WearableArmatureName;
             _module.serializedDresserConfig = JsonConvert.SerializeObject(_view.DresserSettings);
 
             // update values from mapping editor container

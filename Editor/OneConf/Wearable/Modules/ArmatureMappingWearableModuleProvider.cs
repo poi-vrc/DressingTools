@@ -273,7 +273,10 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
 
             var armatureMappingConfig = (ArmatureMappingWearableModuleConfig)modules[0].config;
 
-            var wearableArmature = wearCtx.wearableGameObject.transform.Find(armatureMappingConfig.wearableArmatureName);
+            var wearableArmature = OneConfUtils.GuessArmature(wearCtx.wearableGameObject,
+                string.IsNullOrEmpty(armatureMappingConfig.wearableArmatureName) ?
+                cabCtx.cabinetConfig.avatarArmatureName :
+                armatureMappingConfig.wearableArmatureName);
             if (wearableArmature == null)
             {
                 cabCtx.dkCtx.Report.LogError(LogLabel, $"Could not find wearable armature: {armatureMappingConfig.wearableArmatureName}");
