@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
 using Chocopoi.DressingTools.Inspector.Views;
@@ -59,6 +58,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.RemoveCrossControlValueOnDisabled += OnRemoveCrossControlValueOnDisabled;
 
             _view.MenuItemConfigChanged += OnMenuItemConfigChanged;
+            _view.ParameterSlotConfigChanged += OnParameterSlotConfigChanged;
             _view.VRCPhysBoneConfigChanged += OnVRCPhysBoneConfigChanged;
         }
 
@@ -89,7 +89,19 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.RemoveCrossControlValueOnDisabled -= OnRemoveCrossControlValueOnDisabled;
 
             _view.MenuItemConfigChanged -= OnMenuItemConfigChanged;
+            _view.ParameterSlotConfigChanged -= OnParameterSlotConfigChanged;
             _view.VRCPhysBoneConfigChanged -= OnVRCPhysBoneConfigChanged;
+        }
+
+        private void OnParameterSlotConfigChanged()
+        {
+            _view.Target.ParameterSlotConfig.ParameterSlot = _view.ParameterSlot;
+            _view.ShowParameterSlotNotAssignedHelpbox = _view.ParameterSlot == null;
+            _view.Target.ParameterSlotConfig.GenerateMenuItem = _view.ParamSlotGenerateMenuItem;
+            _view.Target.name = _view.ParamSlotMenuItemName;
+            _view.Target.ParameterSlotConfig.MenuItemIcon = _view.ParamSlotMenuItemIcon;
+            _view.Target.ParameterSlotConfig.MenuItemType = (DTMenuItem.ItemType)_view.ParamSlotMenuItemType;
+            _view.Repaint();
         }
 
         private void OnMenuItemConfigChanged()
@@ -298,8 +310,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 case DTSmartControl.SCDriverType.MenuItem:
                     return 1;
-                case DTSmartControl.SCDriverType.VRCPhysBone:
+                case DTSmartControl.SCDriverType.ParameterSlot:
                     return 2;
+                case DTSmartControl.SCDriverType.VRCPhysBone:
+                    return 3;
                 default:
                 case DTSmartControl.SCDriverType.AnimatorParameter:
                     return 0;
@@ -313,6 +327,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 case 1:
                     return DTSmartControl.SCDriverType.MenuItem;
                 case 2:
+                    return DTSmartControl.SCDriverType.ParameterSlot;
+                case 3:
                     return DTSmartControl.SCDriverType.VRCPhysBone;
                 default:
                 case 0:
@@ -434,6 +450,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
+        private void UpdateDriverParamSlot()
+        {
+            _view.ParameterSlot = _view.Target.ParameterSlotConfig.ParameterSlot;
+            _view.ShowParameterSlotNotAssignedHelpbox = _view.ParameterSlot == null;
+            _view.ParamSlotGenerateMenuItem = _view.Target.ParameterSlotConfig.GenerateMenuItem;
+            _view.ParamSlotMenuItemName = _view.Target.name;
+            _view.ParamSlotMenuItemIcon = _view.Target.ParameterSlotConfig.MenuItemIcon;
+            _view.ParamSlotMenuItemType = (int)_view.Target.ParameterSlotConfig.MenuItemType;
+        }
+
         private void UpdateDriverVRCPhysBone()
         {
 #if DT_VRCSDK3A
@@ -447,6 +473,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.DriverType = DriverTypeToIndex(_view.Target.DriverType);
             UpdateDriverMenuItem();
+            UpdateDriverParamSlot();
             UpdateDriverVRCPhysBone();
         }
 

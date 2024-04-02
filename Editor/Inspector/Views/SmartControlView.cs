@@ -48,6 +48,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public event Action<DTSmartControl.PropertyGroup> RemovePropertyGroup;
         public event Action MenuItemConfigChanged;
         public event Action VRCPhysBoneConfigChanged;
+        public event Action ParameterSlotConfigChanged;
 
         public DTSmartControl Target { get; set; }
         public int DriverType { get => _driverTypePopup.index; set => _driverTypePopup.index = value; }
@@ -73,6 +74,12 @@ namespace Chocopoi.DressingTools.Inspector.Views
 #endif
         public int VRCPhysBoneCondition { get => _driverVRCPhysBoneConditionPopup.index; set => _driverVRCPhysBoneConditionPopup.index = value; }
         public int VRCPhysBoneSource { get => _driverVRCPhysBoneSourcePopup.index; set => _driverVRCPhysBoneSourcePopup.index = value; }
+        public DTParameterSlot ParameterSlot { get => (DTParameterSlot)_driverParamSlotObjField.value; set => _driverParamSlotObjField.value = value; }
+        public bool ShowParameterSlotNotAssignedHelpbox { get; set; }
+        public bool ParamSlotGenerateMenuItem { get => _driverParamSlotGenerateMenuItemToggle.value; set => _driverParamSlotGenerateMenuItemToggle.value = value; }
+        public string ParamSlotMenuItemName { get => _driverParamSlotMenuItemNameField.value; set => _driverParamSlotMenuItemNameField.value = value; }
+        public Texture2D ParamSlotMenuItemIcon { get => (Texture2D)_driverParamSlotMenuItemIconObjField.value; set => _driverParamSlotMenuItemIconObjField.value = value; }
+        public int ParamSlotMenuItemType { get => _driverParamSlotMenuItemPopup.index; set => _driverParamSlotMenuItemPopup.index = value; }
 
         public List<SmartControlObjectToggleValue> ObjectToggles { get; set; }
         public List<SmartControlCrossControlValue> CrossControlValuesOnEnabled { get; set; }
@@ -121,6 +128,16 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private PopupField<string> _driverVRCPhysBoneConditionPopup;
         private PopupField<string> _driverVRCPhysBoneSourcePopup;
         private VisualElement _condSrcHelpboxContainer;
+        private VisualElement _driverParamSlotNotAssignedHelpboxContainer;
+        private ObjectField _driverParamSlotObjField;
+        private ObjectField _driverParamSlotMenuItemIconObjField;
+        private PopupField<string> _driverParamSlotMenuItemPopup;
+        private VisualElement _driverParamSlotContainer;
+        private VisualElement _driverParamSlotViewContainer;
+        private ElementView _driverParamSlotView;
+        private Toggle _driverParamSlotGenerateMenuItemToggle;
+        private Box _driverParamSlotMenuItemBox;
+        private TextField _driverParamSlotMenuItemNameField;
 
         public SmartControlView()
         {
@@ -128,6 +145,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             CrossControlValuesOnEnabled = new List<SmartControlCrossControlValue>();
             CrossControlValuesOnDisabled = new List<SmartControlCrossControlValue>();
             PropertyGroups = new List<DTSmartControl.PropertyGroup>();
+            _driverParamSlotView = null;
 
             _presenter = new SmartControlPresenter(this);
         }
@@ -178,7 +196,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
             iconObjFieldContainer.Add(_driverMenuItemIconObjField);
 
             var popupContainer = Q<VisualElement>("menu-item-type-popup-container").First();
-            var choices = new List<string>() { t._("inspector.smartcontrol.driver.menuItem.itemType.button"), t._("inspector.smartcontrol.driver.menuItem.itemType.toggle"), t._("inspector.smartcontrol.driver.menuItem.itemType.radial") };
+            var choices = new List<string>() {
+                t._("inspector.smartcontrol.driver.menuItem.itemType.button"),
+                t._("inspector.smartcontrol.driver.menuItem.itemType.toggle"),
+                t._("inspector.smartcontrol.driver.menuItem.itemType.radial")
+                };
             _driverMenuItemPopup = new PopupField<string>(t._("inspector.smartcontrol.driver.menuItem.popup.itemType"), choices, 0);
             _driverMenuItemPopup.RegisterValueChangedCallback(evt =>
             {
@@ -214,6 +236,68 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
             _driverAnimParamDefaultValueBoolToggle.style.display = DisplayStyle.None;
             _driverAnimParamDefaultValueFloatContainer.style.display = DisplayStyle.None;
+        }
+
+        private void InitDriverParameterSlot()
+        {
+            _driverParamSlotContainer = Q<VisualElement>("parameter-slot-driver-container").First();
+
+            var descHelpboxContainer = Q<VisualElement>("parameter-slot-description-helpbox-container").First();
+            descHelpboxContainer.Add(CreateHelpBox(t._("inspector.parameterSlot.helpbox.description"), MessageType.Info));
+
+            _driverParamSlotNotAssignedHelpboxContainer = Q<VisualElement>("parameter-slot-not-assigned-helpbox-container").First();
+            _driverParamSlotNotAssignedHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.parameterSlot.helpbox.notAssigned"), MessageType.Error));
+
+            var objFieldContainer = Q<VisualElement>("parameter-slot-obj-field-container").First();
+            _driverParamSlotObjField = new ObjectField(t._("inspector.smartcontrol.driver.parameterSlot.objField.parameterSlot"))
+            {
+                objectType = typeof(DTParameterSlot)
+            };
+            _driverParamSlotObjField.RegisterValueChangedCallback(evt =>
+            {
+                ParameterSlotConfigChanged?.Invoke();
+            });
+            objFieldContainer.Add(_driverParamSlotObjField);
+
+            _driverParamSlotGenerateMenuItemToggle = Q<Toggle>("parameter-slot-generate-menu-item-toggle").First();
+            _driverParamSlotGenerateMenuItemToggle.RegisterValueChangedCallback(evt =>
+            {
+                UpdateParamSlot();
+                ParameterSlotConfigChanged?.Invoke();
+            });
+
+            _driverParamSlotMenuItemBox = Q<Box>("parameter-slot-menu-item-box").First();
+
+            _driverParamSlotMenuItemNameField = Q<TextField>("parameter-slot-menu-item-name-field").First();
+            _driverParamSlotMenuItemNameField.RegisterValueChangedCallback(evt =>
+            {
+                ParameterSlotConfigChanged?.Invoke();
+            });
+
+            var iconObjFieldContainer = Q<VisualElement>("parameter-slot-menu-icon-obj-field-container").First();
+            _driverParamSlotMenuItemIconObjField = new ObjectField(t._("inspector.smartcontrol.driver.parameterSlot.objectField.menuItemIcon"))
+            {
+                objectType = typeof(Texture2D)
+            };
+            _driverParamSlotMenuItemIconObjField.RegisterValueChangedCallback(evt =>
+            {
+                ParameterSlotConfigChanged?.Invoke();
+            });
+            iconObjFieldContainer.Add(_driverParamSlotMenuItemIconObjField);
+
+            var popupContainer = Q<VisualElement>("parameter-slot-menu-item-type-popup-container").First();
+            var choices = new List<string>() {
+                t._("inspector.smartcontrol.driver.parameterSlot.menuItemType.button"),
+                t._("inspector.smartcontrol.driver.parameterSlot.menuItemType.toggle")
+                };
+            _driverParamSlotMenuItemPopup = new PopupField<string>(t._("inspector.smartcontrol.driver.parameterSlot.popup.menuItemType"), choices, 0);
+            _driverParamSlotMenuItemPopup.RegisterValueChangedCallback(evt =>
+            {
+                ParameterSlotConfigChanged?.Invoke();
+            });
+            popupContainer.Add(_driverParamSlotMenuItemPopup);
+
+            _driverParamSlotViewContainer = Q<VisualElement>("parameter-slot-view-container").First();
         }
 
         private void UpdateDriverVRCPhysBoneDisplay()
@@ -321,7 +405,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
             var choices = new List<string>() {
                 t._("inspector.smartcontrol.driver.animatorParameter"),
                 t._("inspector.smartcontrol.driver.menuItem"),
-                t._("inspector.smartcontrol.driver.vrcPhysBone") };
+                t._("inspector.smartcontrol.driver.parameterSlot"),
+                t._("inspector.smartcontrol.driver.vrcPhysBone")
+                };
             _driverTypePopup = new PopupField<string>(t._("inspector.smartcontrol.driver.popup.driverType"), choices, 0);
             _driverTypePopup.RegisterValueChangedCallback((evt) =>
             {
@@ -332,6 +418,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
             InitDriverMenuItem();
             InitDriverAnimParam();
+            InitDriverParameterSlot();
             InitDriverVRCPhysBone();
         }
 
@@ -445,6 +532,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _driverMenuItemContainer.style.display = DisplayStyle.None;
             _driverAnimParamContainer.style.display = DisplayStyle.None;
             _driverVRCPhysBoneContainer.style.display = DisplayStyle.None;
+            _driverParamSlotContainer.style.display = DisplayStyle.None;
 
             if (DriverType == 0)
             {
@@ -462,9 +550,41 @@ namespace Chocopoi.DressingTools.Inspector.Views
             }
             else if (DriverType == 2)
             {
+                // parameter slot
+                _driverParamSlotContainer.style.display = DisplayStyle.Flex;
+                _controlTypePopupContainer.SetEnabled(false);
+                UpdateParamSlot();
+            }
+            else if (DriverType == 3)
+            {
                 // vrc physbone
                 _driverVRCPhysBoneContainer.style.display = DisplayStyle.Flex;
                 UpdateDriverVRCPhysBoneDisplay();
+            }
+        }
+
+        private void UpdateParamSlot()
+        {
+            _driverParamSlotMenuItemBox.style.display = _driverParamSlotGenerateMenuItemToggle.value ? DisplayStyle.Flex : DisplayStyle.None;
+            _driverParamSlotNotAssignedHelpboxContainer.style.display = ShowParameterSlotNotAssignedHelpbox ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (_driverParamSlotView != null)
+            {
+                _driverParamSlotView.Unbind();
+                _driverParamSlotView.OnDisable();
+                if (_driverParamSlotViewContainer.Contains(_driverParamSlotView))
+                {
+                    _driverParamSlotViewContainer.Remove(_driverParamSlotView);
+                }
+            }
+            _driverParamSlotViewContainer.Clear();
+
+            if (ParameterSlot != null)
+            {
+                _driverParamSlotView = new ParameterSlotView(Target) { Target = ParameterSlot };
+                _driverParamSlotView.Bind(new SerializedObject(ParameterSlot));
+                _driverParamSlotViewContainer.Add(_driverParamSlotView);
+                _driverParamSlotView.OnEnable();
             }
         }
 

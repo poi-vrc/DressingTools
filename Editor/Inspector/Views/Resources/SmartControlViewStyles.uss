@@ -44,3 +44,9 @@
     -unity-font-style: bold;
     margin-bottom: 8px;
 }
+
+#parameter-slot-menu-item-box {
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}

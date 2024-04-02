@@ -21,7 +21,7 @@ namespace Chocopoi.DressingTools.Components.Animations
     /// <summary>
     /// DT Smart Control
     /// 
-    /// An experimental, general-purpose component to generate animator layers and animations
+    /// A general-purpose component to generate animator layers and animations
     /// which are then driven by specific features.
     /// </summary>
     [AddComponentMenu("DressingTools/DT Smart Control")]
@@ -32,6 +32,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             // 0-99: internal drivers
             AnimatorParameter = 0,
             MenuItem = 1,
+            ParameterSlot = 2,
 
             // 100: reserved
             // 101-199: vrc platform drivers
@@ -232,11 +233,37 @@ namespace Chocopoi.DressingTools.Components.Animations
             }
         }
 
+        [Serializable]
+        public class SCParameterSlotConfig
+        {
+            public DTParameterSlot ParameterSlot { get => m_ParameterSlot; set => m_ParameterSlot = value; }
+            public float MappedValue { get => m_MappedValue; set => m_MappedValue = value; }
+            public bool GenerateMenuItem { get => m_GenerateMenuItem; set => m_GenerateMenuItem = value; }
+            public Texture2D MenuItemIcon { get => m_MenuItemIcon; set => m_MenuItemIcon = value; }
+            public DTMenuItem.ItemType MenuItemType { get => m_MenuItemType; set => m_MenuItemType = value; }
+
+            [SerializeField] private DTParameterSlot m_ParameterSlot;
+            [SerializeField] private float m_MappedValue;
+            [SerializeField] private bool m_GenerateMenuItem;
+            [SerializeField] private Texture2D m_MenuItemIcon;
+            [SerializeField] private DTMenuItem.ItemType m_MenuItemType;
+
+            public SCParameterSlotConfig()
+            {
+                m_ParameterSlot = null;
+                m_MappedValue = 0.0f;
+                m_GenerateMenuItem = false;
+                m_MenuItemIcon = null;
+                m_MenuItemType = DTMenuItem.ItemType.Toggle;
+            }
+        }
+
         public SCDriverType DriverType { get => m_DriverType; set => m_DriverType = value; }
         public SCControlType ControlType { get => m_ControlType; set => m_ControlType = value; }
         public SCAnimatorConfig AnimatorConfig { get => m_AnimatorConfig; set => m_AnimatorConfig = value; }
         public SCMenuItemDriverConfig MenuItemDriverConfig { get => m_MenuItemDriverConfig; set => m_MenuItemDriverConfig = value; }
         public SCVRCPhysBoneDriverConfig VRCPhysBoneDriverConfig { get => m_VRCPhysBoneDriverConfig; set => m_VRCPhysBoneDriverConfig = value; }
+        public SCParameterSlotConfig ParameterSlotConfig { get => m_ParameterSlotConfig; set => m_ParameterSlotConfig = value; }
         public List<ObjectToggle> ObjectToggles { get => m_ObjectToggles; set => m_ObjectToggles = value; }
         public List<PropertyGroup> PropertyGroups { get => m_PropertyGroups; set => m_PropertyGroups = value; }
         public SCCrossControlActions CrossControlActions { get => m_CrossControlActions; set => m_CrossControlActions = value; }
@@ -246,6 +273,7 @@ namespace Chocopoi.DressingTools.Components.Animations
         [SerializeField] private SCAnimatorConfig m_AnimatorConfig;
         [SerializeField] private SCMenuItemDriverConfig m_MenuItemDriverConfig;
         [SerializeField] private SCVRCPhysBoneDriverConfig m_VRCPhysBoneDriverConfig;
+        [SerializeField] private SCParameterSlotConfig m_ParameterSlotConfig;
         [SerializeField] private List<ObjectToggle> m_ObjectToggles;
         [SerializeField] private List<PropertyGroup> m_PropertyGroups;
         [SerializeField] private SCCrossControlActions m_CrossControlActions;
@@ -257,6 +285,7 @@ namespace Chocopoi.DressingTools.Components.Animations
             m_AnimatorConfig = new SCAnimatorConfig();
             m_MenuItemDriverConfig = new SCMenuItemDriverConfig();
             m_VRCPhysBoneDriverConfig = new SCVRCPhysBoneDriverConfig();
+            m_ParameterSlotConfig = new SCParameterSlotConfig();
             m_ObjectToggles = new List<ObjectToggle>();
             m_PropertyGroups = new List<PropertyGroup>();
             m_CrossControlActions = new SCCrossControlActions();
