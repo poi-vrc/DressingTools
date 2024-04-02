@@ -12,6 +12,7 @@
 
 using System.Linq;
 using Chocopoi.DressingTools.Animations;
+using Chocopoi.DressingTools.Animations.Fluent;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Components.Menu;
 using NUnit.Framework;
@@ -102,6 +103,82 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
                 Assert.True(z.TryGetComponent<DTMenuItem>(out _));
             }
+        }
+
+        private void AssertParameterSlotState(AnimatorController ac, AnimatorOptions options, DTParameterSlot slot, DTSmartControl sc)
+        {
+            var entryState = GetLayerState(0, ac, "Entry", options.writeDefaults);
+            Assert.AreEqual(3, entryState.transitions.Length);
+            Assert.True(entryState.transitions.Where(t =>
+                t.conditions.Where(c =>
+                    c.parameter == slot.ParameterName &&
+                    c.mode == AnimatorConditionMode.Equals &&
+                    c.threshold == sc.ParameterSlotConfig.MappedValue
+                ).Count() == 1
+            ).Count() == 1);
+
+            var enabledState = GetLayerState(0, ac, $"{sc.name} Enabled", options.writeDefaults);
+            Assert.AreEqual(1, enabledState.transitions.Length);
+            Assert.True(enabledState.transitions.Where(t =>
+                t.conditions.Where(c =>
+                    c.parameter == slot.ParameterName &&
+                    c.mode == AnimatorConditionMode.NotEqual &&
+                    c.threshold == sc.ParameterSlotConfig.MappedValue
+                ).Count() == 1
+            ).Count() == 1);
+
+            var prepareDisabledState = GetLayerState(0, ac, $"{sc.name} Prepare Disabled", options.writeDefaults);
+            Assert.AreEqual(1, prepareDisabledState.transitions.Length);
+            Assert.True(prepareDisabledState.transitions.Where(t =>
+                t.conditions.Where(c =>
+                    c.parameter == slot.ParameterName &&
+                    c.mode == AnimatorConditionMode.NotEqual &&
+                    c.threshold == sc.ParameterSlotConfig.MappedValue
+                ).Count() == 1
+            ).Count() == 1);
+        }
+
+        [Test]
+        public void ParameterSlotDriverTest()
+        {
+            SetupEnv(out var root, out var options, out var ac);
+
+            var composer = new SmartControlComposer(options, ac);
+
+            var slotGo = CreateGameObject("Slot", root.transform);
+            var slot = slotGo.AddComponent<DTParameterSlot>();
+
+            var sc1Go = CreateGameObject("SC1", root.transform);
+            var sc1 = sc1Go.AddComponent<DTSmartControl>();
+            sc1.DriverType = DTSmartControl.SCDriverType.ParameterSlot;
+            sc1.ParameterSlotConfig.ParameterSlot = slot;
+            sc1.ParameterSlotConfig.MappedValue = 0;
+            sc1.ParameterSlotConfig.GenerateMenuItem = false;
+
+            var sc2Go = CreateGameObject("SC2", root.transform);
+            var sc2 = sc2Go.AddComponent<DTSmartControl>();
+            sc2.DriverType = DTSmartControl.SCDriverType.ParameterSlot;
+            sc2.ParameterSlotConfig.ParameterSlot = slot;
+            sc2.ParameterSlotConfig.MappedValue = 1;
+            sc2.ParameterSlotConfig.GenerateMenuItem = true;
+
+            var sc3Go = CreateGameObject("SC3", root.transform);
+            var sc3 = sc3Go.AddComponent<DTSmartControl>();
+            sc3.DriverType = DTSmartControl.SCDriverType.ParameterSlot;
+            sc3.ParameterSlotConfig.ParameterSlot = slot;
+            sc3.ParameterSlotConfig.MappedValue = 2;
+
+            composer.Compose(sc1);
+            composer.Compose(sc2);
+            composer.Compose(sc3);
+
+            Assert.False(sc1Go.TryGetComponent<DTMenuItem>(out _));
+            Assert.True(sc2Go.TryGetComponent<DTMenuItem>(out _));
+            Assert.False(sc3Go.TryGetComponent<DTMenuItem>(out _));
+
+            AssertParameterSlotState(ac, options, slot, sc1);
+            AssertParameterSlotState(ac, options, slot, sc2);
+            AssertParameterSlotState(ac, options, slot, sc3);
         }
 
 #if DT_VRCSDK3A

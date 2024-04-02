@@ -35,6 +35,7 @@ namespace Chocopoi.DressingTools.Animations
         private const string VRCPhysBoneSquishSuffix = "_Squish";
 
         private readonly HashSet<DTSmartControl> _controls;
+        private readonly Dictionary<DTParameterSlot, Tuple<AnimatorLayerBuilder, AnimatorStateBuilder>> _parameterSlotLayers;
         private readonly AnimatorOptions _options;
         private readonly AnimatorController _controller;
 
@@ -43,21 +44,22 @@ namespace Chocopoi.DressingTools.Animations
             _options = options;
             _controller = controller;
             _controls = new HashSet<DTSmartControl>();
+            _parameterSlotLayers = new Dictionary<DTParameterSlot, Tuple<AnimatorLayerBuilder, AnimatorStateBuilder>>();
         }
 
-        private void AddParameterConfig(DTSmartControl ctrl)
+        private void AddParameterConfig(Transform transform, string parameterName, float defaultValue, bool networkSynced, bool saved)
         {
-            if (!ctrl.TryGetComponent<DTAnimatorParameters>(out var comp))
+            if (!transform.TryGetComponent<DTAnimatorParameters>(out var comp))
             {
-                comp = ctrl.gameObject.AddComponent<DTAnimatorParameters>();
+                comp = transform.gameObject.AddComponent<DTAnimatorParameters>();
             }
 
             comp.Configs.Add(new DTAnimatorParameters.ParameterConfig()
             {
-                ParameterName = ctrl.AnimatorConfig.ParameterName,
-                NetworkSynced = ctrl.AnimatorConfig.NetworkSynced,
-                Saved = ctrl.AnimatorConfig.Saved,
-                ParameterDefaultValue = ctrl.AnimatorConfig.ParameterDefaultValue
+                ParameterName = parameterName,
+                NetworkSynced = networkSynced,
+                Saved = saved,
+                ParameterDefaultValue = defaultValue
             });
         }
 
@@ -101,6 +103,107 @@ namespace Chocopoi.DressingTools.Animations
             {
                 _options.context.Report.LogWarn("SmartControlComposer", "Unsupported menu item type");
             }
+        }
+
+        private Tuple<AnimatorLayerBuilder, AnimatorStateBuilder> PrepareOrGetParameterSlotLayer(DTParameterSlot parameterSlot)
+        {
+            if (_parameterSlotLayers.ContainsKey(parameterSlot))
+            {
+                return _parameterSlotLayers[parameterSlot];
+            }
+
+            // generate parameter name
+            var newName = SmartControlUtils.SuggestRelativePathName(_options.context.AvatarGameObject.transform, parameterSlot);
+            if (string.IsNullOrEmpty(parameterSlot.ParameterName))
+            {
+                parameterSlot.ParameterName = newName;
+            }
+
+            AddParameterConfig(
+                parameterSlot.transform,
+                parameterSlot.ParameterName,
+                parameterSlot.ParameterDefaultValue,
+                parameterSlot.NetworkSynced,
+                parameterSlot.Saved);
+
+            var animator = new AnimatorBuilder(_options, _controller);
+            var layer = animator.NewLayer(newName);
+
+            // entry state
+            var entryState = layer.NewState("Entry");
+            entryState.WithNewAnimation(); // dummy empty animation
+            layer.WithDefaultState(entryState);
+
+            if (parameterSlot.ValueType == DTParameterSlot.ParameterValueType.Int)
+            {
+                animator.IntParameter(parameterSlot.ParameterName, (int)parameterSlot.ParameterDefaultValue);
+            }
+            else if (parameterSlot.ValueType == DTParameterSlot.ParameterValueType.Float)
+            {
+                animator.FloatParameter(parameterSlot.ParameterName, parameterSlot.ParameterDefaultValue);
+            }
+
+            return _parameterSlotLayers[parameterSlot] = new Tuple<AnimatorLayerBuilder, AnimatorStateBuilder>(layer, entryState);
+        }
+
+        private void HandleDriverParameterSlot(DTSmartControl ctrl)
+        {
+            var parameterSlot = ctrl.ParameterSlotConfig.ParameterSlot;
+            if (parameterSlot == null)
+            {
+                _options.context.Report.LogWarn("SmartControlComposer", "SmartControl has no parameter slot assigned, skipping");
+                return;
+            }
+
+            // prepare and get value slot anystate layer
+            var tuple = PrepareOrGetParameterSlotLayer(parameterSlot);
+            var layer = tuple.Item1;
+            var entryState = tuple.Item2;
+
+            // generate menu item
+            if (ctrl.ParameterSlotConfig.GenerateMenuItem)
+            {
+                if (!ctrl.TryGetComponent<DTMenuItem>(out var menuItem))
+                {
+                    menuItem = ctrl.gameObject.AddComponent<DTMenuItem>();
+                }
+
+                menuItem.Type = ctrl.ParameterSlotConfig.MenuItemType;
+                menuItem.Icon = ctrl.ParameterSlotConfig.MenuItemIcon;
+
+                if (menuItem.Type == DTMenuItem.ItemType.Button || menuItem.Type == DTMenuItem.ItemType.Toggle)
+                {
+                    menuItem.Controller.Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter;
+                    menuItem.Controller.AnimatorParameterName = ctrl.ParameterSlotConfig.ParameterSlot.ParameterName;
+                    menuItem.Controller.AnimatorParameterValue = ctrl.ParameterSlotConfig.MappedValue;
+                }
+                else
+                {
+                    _options.context.Report.LogWarn("SmartControlComposer", "Unsupported menu item type for parameter slot");
+                }
+            }
+
+            // set to binary control mode
+            ctrl.ControlType = DTSmartControl.SCControlType.Binary;
+
+            // check for cycle
+            if (HasCrossControlCycle(ctrl))
+            {
+                _options.context.Report.LogError("SmartControlComposer", "Cross control cycle detected, skipping generation of this control");
+                return;
+            }
+
+            var enabledState = layer.NewState($"{ctrl.name} Enabled");
+            var prepareDisabledState = layer.NewState($"{ctrl.name} Prepare Disabled");
+
+            entryState.AddTransition(enabledState)
+                .Equals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
+            enabledState.AddTransition(prepareDisabledState)
+                .NotEquals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
+            prepareDisabledState.AddTransition(entryState)
+                .NotEquals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
+
+            ComposeBinaryToggles(_controller, prepareDisabledState, enabledState, ctrl);
         }
 
         private string VRCPhysBoneDataSourceToParam(string prefix, DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource source)
@@ -183,7 +286,12 @@ namespace Chocopoi.DressingTools.Animations
                 ctrl.DriverType == DTSmartControl.SCDriverType.MenuItem)
             {
                 GenerateParameterNameIfNeeded(ctrl);
-                AddParameterConfig(ctrl);
+                AddParameterConfig(
+                    ctrl.transform,
+                    ctrl.AnimatorConfig.ParameterName,
+                    ctrl.AnimatorConfig.ParameterDefaultValue,
+                    ctrl.AnimatorConfig.NetworkSynced,
+                    ctrl.AnimatorConfig.Saved);
 
                 if (ctrl.DriverType == DTSmartControl.SCDriverType.MenuItem)
                 {
@@ -198,6 +306,10 @@ namespace Chocopoi.DressingTools.Animations
                 {
                     ComposeMotionTime(ctrl, ctrl.AnimatorConfig.ParameterName, new List<string>());
                 }
+            }
+            else if (ctrl.DriverType == DTSmartControl.SCDriverType.ParameterSlot)
+            {
+                HandleDriverParameterSlot(ctrl);
             }
             else if (ctrl.DriverType == DTSmartControl.SCDriverType.VRCPhysBone)
             {

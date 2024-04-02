@@ -23,6 +23,19 @@
             <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.toggle.networkSynced" binding-path="m_AnimatorConfig.m_NetworkSynced" value="true" />
             <ui:Toggle label="@inspector.smartcontrol.driver.animatorParameter.toggle.saved" binding-path="m_AnimatorConfig.m_Saved" value="true" />
         </ui:Box>
+        <ui:Box name="parameter-slot-driver-container">
+            <ui:Label text="@inspector.smartcontrol.driver.parameterSlot" />
+            <ui:VisualElement name="parameter-slot-description-helpbox-container" />
+            <ui:VisualElement name="parameter-slot-not-assigned-helpbox-container" />
+            <ui:VisualElement name="parameter-slot-obj-field-container" />
+            <ui:Toggle label="@inspector.smartcontrol.driver.parameterSlot.toggle.generateMenuItem" name="parameter-slot-generate-menu-item-toggle" value="false" />
+            <ui:Box name="parameter-slot-menu-item-box">
+                <ui:TextField picking-mode="Ignore" name="parameter-slot-menu-item-name-field" label="@inspector.smartcontrol.driver.parameterSlot.textField.menuItemName" />
+                <ui:VisualElement name="parameter-slot-menu-icon-obj-field-container" />
+                <ui:VisualElement name="parameter-slot-menu-item-type-popup-container" />
+            </ui:Box>
+            <ui:VisualElement name="parameter-slot-view-container" />
+        </ui:Box>
         <ui:Box name="vrcphysbone-driver-container">
             <ui:Label text="@inspector.smartcontrol.driver.vrcPhysBone" />
             <ui:VisualElement name="vrcphysbone-obj-field-helpbox-container" />

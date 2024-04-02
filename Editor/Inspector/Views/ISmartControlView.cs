@@ -49,6 +49,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         event Action<DTSmartControl.PropertyGroup> RemovePropertyGroup;
         event Action MenuItemConfigChanged;
         event Action VRCPhysBoneConfigChanged;
+        event Action ParameterSlotConfigChanged;
 
         List<SmartControlObjectToggleValue> ObjectToggles { get; set; }
         List<SmartControlCrossControlValue> CrossControlValuesOnEnabled { get; set; }
@@ -68,5 +69,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
 #endif
         int VRCPhysBoneCondition { get; set; }
         int VRCPhysBoneSource { get; set; }
+        DTParameterSlot ParameterSlot { get; set; }
+        bool ShowParameterSlotNotAssignedHelpbox { get; set; }
+        bool ParamSlotGenerateMenuItem { get; set; }
+        string ParamSlotMenuItemName { get; set; }
+        Texture2D ParamSlotMenuItemIcon { get; set; }
+        int ParamSlotMenuItemType { get; set; }
     }
 }

@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="description-helpbox-container" />
+    <ui:TextField picking-mode="Ignore" name="parameter-name-field" label="@inspector.parameterSlot.textField.parameterName" binding-path="m_ParameterName" />
+    <ui:VisualElement name="value-type-popup-container" />
+    <uie:FloatField picking-mode="Ignore" value="0" text="0" label="@inspector.parameterSlot.field.parameterDefVal" name="parameter-defval-float-field" />
+    <uie:IntegerField picking-mode="Ignore" value="0" text="0" label="@inspector.parameterSlot.field.parameterDefVal" name="parameter-defval-int-field" />
+    <ui:Toggle label="@inspector.parameterSlot.toggle.networkSynced" binding-path="m_NetworkSynced" value="true" />
+    <ui:Toggle label="@inspector.parameterSlot.toggle.saved" binding-path="m_Saved" value="true" />
+    <ui:Box name="mappings-box">
+        <ui:Label text="@inspector.parameterSlot.label.mappings" />
+        <ui:VisualElement name="mappings-helpbox-container" />
+        <ui:VisualElement name="mappings-container" />
+        <ui:VisualElement name="mappings-add-field-container" />
+    </ui:Box>
+</ui:UXML>

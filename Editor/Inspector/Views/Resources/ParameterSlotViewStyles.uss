@@ -1,3 +1,13 @@
+#mappings-box {
+    padding: 8px;
+    margin-top: 8px;
+}
+
+#mappings-box > Label {
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
 .add-field-container {
     flex-direction: row;
 }
@@ -19,9 +29,5 @@
 }
 
 .object-field-entry FloatField {
-    width: 36px;
-}
-
-.object-field-entry IntegerField {
     width: 36px;
 }
