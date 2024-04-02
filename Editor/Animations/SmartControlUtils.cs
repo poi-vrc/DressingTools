@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Chocopoi.DressingTools.Animations
 {
@@ -80,7 +81,7 @@ namespace Chocopoi.DressingTools.Animations
             return searchObjs;
         }
 
-        public static object GetShaderProperty(Material material, int i)
+        public static bool TryGetShaderProperty(Material material, int i, out Type valType, out object val)
         {
             var shader = material.shader;
             var type = shader.GetPropertyType(i);
@@ -91,70 +92,106 @@ namespace Chocopoi.DressingTools.Animations
             {
                 case UnityEngine.Rendering.ShaderPropertyType.Float:
                 case UnityEngine.Rendering.ShaderPropertyType.Range:
-                    return material.GetFloat(name);
+                    valType = typeof(float);
+                    val = material.GetFloat(name);
+                    return true;
                 case UnityEngine.Rendering.ShaderPropertyType.Vector:
-                    return material.GetVector(name);
+                    valType = typeof(Vector4);
+                    val = material.GetVector(name);
+                    return true;
                 case UnityEngine.Rendering.ShaderPropertyType.Color:
-                    return material.GetColor(name);
+                    valType = typeof(Color);
+                    val = material.GetColor(name);
+                    return true;
+                case UnityEngine.Rendering.ShaderPropertyType.Texture:
+                    valType = typeof(Texture);
+                    val = material.GetTexture(name);
+                    return true;
             }
 
-            return null;
+            valType = null;
+            val = null;
+            return false;
         }
 
-        public static object GetSerializedPropertyValue(SerializedProperty prop)
+        public static bool TryGetSerializedPropertyValue(SerializedProperty prop, out Type type, out object value)
         {
             if (prop.propertyType == SerializedPropertyType.Integer)
             {
-                return prop.intValue;
+                type = typeof(int);
+                value = prop.intValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Boolean)
             {
-                return prop.boolValue;
+                type = typeof(bool);
+                value = prop.boolValue;
+                return true;
             }
             if (prop.propertyType == SerializedPropertyType.Float)
             {
-                return prop.floatValue;
+                type = typeof(float);
+                value = prop.floatValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Color)
             {
-                return prop.colorValue;
+                type = typeof(Color);
+                value = prop.colorValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.ObjectReference)
             {
-                return prop.objectReferenceValue;
+                type = typeof(Object);
+                value = prop.objectReferenceValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector2)
             {
-                return prop.vector2Value;
+                type = typeof(Vector2);
+                value = prop.vector2Value;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector2Int)
             {
-                return prop.vector2IntValue;
+                type = typeof(Vector2Int);
+                value = prop.vector2IntValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector3)
             {
-                return prop.vector3Value;
+                type = typeof(Vector3);
+                value = prop.vector3Value;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector3Int)
             {
-                return prop.vector3IntValue;
+                type = typeof(Vector3Int);
+                value = prop.vector3IntValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector4)
             {
-                return prop.vector4Value;
+                type = typeof(Vector4);
+                value = prop.vector4Value;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Quaternion)
             {
-                return prop.quaternionValue;
+                type = typeof(Quaternion);
+                value = prop.quaternionValue;
+                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.ExposedReference)
             {
-                return prop.exposedReferenceValue;
+                type = typeof(Object);
+                value = prop.exposedReferenceValue;
+                return true;
             }
-            else
-            {
-                return null;
-            }
+
+            type = null;
+            value = null;
+            return false;
         }
     }
 }

@@ -391,9 +391,9 @@ namespace Chocopoi.DressingTools.Animations
                     // if (propGp.PropertyValues.TryGetValue(compType.FullName, out var propVal))
                     foreach (var propVal in propGp.PropertyValues)
                     {
-                        if (TryGetComponentProperty(comp, propVal.Name, out var val))
+                        if (TryGetComponentProperty(comp, propVal.Name, out var type, out _))
                         {
-                            if (!(val is float))
+                            if (type != typeof(float))
                             {
                                 continue;
                             }
@@ -426,8 +426,9 @@ namespace Chocopoi.DressingTools.Animations
             return false;
         }
 
-        private static bool TryGetMaterialProperty(Renderer rr, string propertyName, out object value)
+        private static bool TryGetMaterialProperty(Renderer rr, string propertyName, out Type type, out object value)
         {
+            type = null;
             value = null;
 
             var propertyNameStartIndex = -1;
@@ -468,30 +469,40 @@ namespace Chocopoi.DressingTools.Animations
                 return false;
             }
 
-            value = SmartControlUtils.GetShaderProperty(material, shaderPropertyIndex);
+            if (!SmartControlUtils.TryGetShaderProperty(material, shaderPropertyIndex, out type, out value))
+            {
+                return false;
+            }
+
             return true;
         }
 
-        private static bool TryGetComponentProperty(Component comp, string propertyName, out object value)
+        private static bool TryGetComponentProperty(Component comp, string propertyName, out Type type, out object value)
         {
             if (comp is SkinnedMeshRenderer smr && propertyName.StartsWith(BlendshapePropertyPrefix))
             {
+                type = typeof(float);
                 return TryGetBlendshapeProperty(smr, propertyName, out value);
             }
 
             if (comp is Renderer rr && propertyName.StartsWith(MaterialPrefix))
             {
-                return TryGetMaterialProperty(rr, propertyName, out value);
+                return TryGetMaterialProperty(rr, propertyName, out type, out value);
             }
 
             var so = new SerializedObject(comp);
             var prop = so.FindProperty(propertyName);
             if (prop == null)
             {
+                type = null;
                 value = null;
                 return false;
             }
-            value = SmartControlUtils.GetSerializedPropertyValue(prop);
+
+            if (!SmartControlUtils.TryGetSerializedPropertyValue(prop, out type, out value))
+            {
+                return false;
+            }
 
             return true;
         }
@@ -513,11 +524,12 @@ namespace Chocopoi.DressingTools.Animations
                     // if (propGp.PropertyValues.TryGetValue(compType.FullName, out var propVal))
                     foreach (var propVal in propGp.PropertyValues)
                     {
-                        if (TryGetComponentProperty(comp, propVal.Name, out var originalValue))
+                        if (TryGetComponentProperty(comp, propVal.Name, out var type, out var originalValue))
                         {
                             // TODO: customizable curve by values
-                            if (propVal.ValueObjectReference != null && originalValue is Object obj)
+                            if (propVal.ValueObjectReference != null && type.IsSubclassOf(typeof(Object)))
                             {
+                                var obj = (Object)originalValue;
                                 var enabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {
                                         time = 0.0f,
                                         value = propVal.ValueObjectReference
@@ -532,8 +544,9 @@ namespace Chocopoi.DressingTools.Animations
                                     disabledClip.SetCurve(comp.transform, compType, propVal.Name, disabledFrames);
                                 }
                             }
-                            else if (originalValue is float f)
+                            else if (type == typeof(float))
                             {
+                                var f = (float)originalValue;
                                 enabledClip.SetCurve(comp.transform, compType, propVal.Name, AnimationCurve.Constant(0.0f, 0.0f, propVal.Value));
                                 if (!_options.writeDefaults)
                                 {

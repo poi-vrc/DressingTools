@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Animations;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Inspector.Views;
@@ -27,16 +26,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class SmartControlPropertyGroupComponentPresenter
     {
         private readonly ISmartControlPropertyGroupComponentView _view;
-        private readonly Dictionary<string, object> _blendshapes;
-        private readonly Dictionary<string, object> _materialProperties;
-        private readonly Dictionary<string, object> _genericProperties;
+        private readonly Dictionary<string, Tuple<Type, object>> _blendshapes;
+        private readonly Dictionary<string, Tuple<Type, object>> _materialProperties;
+        private readonly Dictionary<string, Tuple<Type, object>> _genericProperties;
 
         public SmartControlPropertyGroupComponentPresenter(ISmartControlPropertyGroupComponentView view)
         {
             _view = view;
-            _blendshapes = new Dictionary<string, object>();
-            _materialProperties = new Dictionary<string, object>();
-            _genericProperties = new Dictionary<string, object>();
+            _blendshapes = new Dictionary<string, Tuple<Type, object>>();
+            _materialProperties = new Dictionary<string, Tuple<Type, object>>();
+            _genericProperties = new Dictionary<string, Tuple<Type, object>>();
             SubscribeEvents();
         }
 
@@ -104,12 +103,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateMaterialShaderProperties(Material material, string path)
         {
-            ForEachShaderProperty(material, (name, val) =>
+            _view.Properties[path] = new SmartControlComponentViewPropertyValue()
+            {
+                type = typeof(Material),
+                value = material
+            };
+            ForEachShaderProperty(material, (name, type, val) =>
             {
                 // the val here is used for determining type only
                 var shaderPath = $"{path}.{name}";
-                var type = val.GetType();
-                if (val is Object)
+                if (type.IsSubclassOf(typeof(Object)))
                 {
                     var propVal = GetPropertyValue(shaderPath);
                     if (propVal == null)
@@ -143,9 +146,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     var newObj = Activator.CreateInstance(type);
                     var foundAll = true;
 
-                    ForEachPublicField(val, (fieldName, fieldVal) =>
+                    ForEachPublicField(val, (fieldName, fieldType, fieldVal) =>
                     {
-                        if (!(fieldVal is float))
+                        if (fieldType != typeof(float))
                         {
                             return;
                         }
@@ -211,7 +214,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateGenericProperties()
         {
-            ForEachSerializedObjectProperty(_view.TargetComponent, (path, val) =>
+            ForEachSerializedObjectProperty(_view.TargetComponent, (path, type, val) =>
             {
                 var propVal = GetPropertyValue(path);
                 if (propVal == null)
@@ -220,7 +223,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 }
                 _view.Properties.Add(path, new SmartControlComponentViewPropertyValue()
                 {
-                    type = val.GetType(),
+                    type = type,
                     value = val
                 });
             });
@@ -260,12 +263,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
-        private static void ForEachPublicField(object obj, Action<string, object> func)
+        private static void ForEachPublicField(object obj, Action<string, Type, object> func)
         {
             var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.SetField);
             foreach (var field in fields)
             {
-                func(field.Name, field.GetValue(obj));
+                func(field.Name, field.FieldType, field.GetValue(obj));
             }
         }
 
@@ -323,10 +326,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             else
             {
-                ForEachPublicField(value, (fieldName, fieldVal) =>
+                ForEachPublicField(value, (fieldName, fieldType, fieldVal) =>
                 {
-                    if (!(fieldVal is float f)) return;
-                    SetOrAddTargetPropertyValue($"{name}.{fieldName}", f, null);
+                    if (fieldType != typeof(float)) return;
+                    SetOrAddTargetPropertyValue($"{name}.{fieldName}", (float)fieldVal, null);
                 });
             }
         }
@@ -359,17 +362,21 @@ namespace Chocopoi.DressingTools.UI.Presenters
             PerformSearch();
         }
 
-        private static bool CheckIfHasExistingProperty(List<string> existingNames, string name, object value)
+        private static bool CheckIfHasExistingProperty(List<string> existingNames, string name, Type type, object value)
         {
-            var type = value.GetType();
-            if (type == typeof(Object) || type.IsPrimitive)
+            if (type.IsSubclassOf(typeof(Object)) || type.IsPrimitive)
             {
                 return existingNames.Contains(name);
             }
             else
             {
+                if (value == null)
+                {
+                    Debug.LogWarning($"{name} has null value");
+                    return false;
+                }
                 var foundAll = true;
-                ForEachPublicField(value, (fieldName, fieldVal) =>
+                ForEachPublicField(value, (fieldName, fieldType, fieldVal) =>
                 {
                     foundAll &= existingNames.Contains($"{name}.{fieldName}");
                 });
@@ -422,7 +429,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.SearchResults.Clear();
 
-            Dictionary<string, object> source;
+            Dictionary<string, Tuple<Type, object>> source;
             if (_view.SearchResultMode == SmartControlComponentViewResultMode.Blendshapes)
             {
                 source = _blendshapes;
@@ -446,16 +453,16 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 existingPropertyNames.Add(propVal.Name);
             }
-            results.RemoveAll(kvp => CheckIfHasExistingProperty(existingPropertyNames, kvp.Key, kvp.Value));
+            results.RemoveAll(kvp => CheckIfHasExistingProperty(existingPropertyNames, kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
             if (_view.ControlType == 1)
             {
                 // for motion time, remove all non-float properties
-                results.RemoveAll(kvp => kvp.Value.GetType() != typeof(float));
+                results.RemoveAll(kvp => kvp.Value.Item1 != typeof(float));
             }
 
             if (!string.IsNullOrEmpty(_view.SearchQuery))
             {
-                var editDistances = new Dictionary<KeyValuePair<string, object>, int>();
+                var editDistances = new Dictionary<KeyValuePair<string, Tuple<Type, object>>, int>();
                 foreach (var kvp in source)
                 {
                     editDistances[kvp] = CalculateLevenshteinDistance(kvp.Key, _view.SearchQuery);
@@ -489,12 +496,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 var name = smr.sharedMesh.GetBlendShapeName(i);
                 var value = smr.GetBlendShapeWeight(i);
-                _blendshapes[$"blendShape.{name}"] = value;
+                _blendshapes[$"blendShape.{name}"] = new Tuple<Type, object>(typeof(float), value);
             }
             _view.HasBlendshapes = _blendshapes.Count > 0;
         }
 
-        private static void ForEachSerializedObjectProperty(Object obj, Action<string, object> func)
+        private static void ForEachSerializedObjectProperty(Object obj, Action<string, Type, object> func)
         {
             var so = new SerializedObject(obj);
             so.Update();
@@ -502,41 +509,39 @@ namespace Chocopoi.DressingTools.UI.Presenters
             prop.NextVisible(enterChildren: true);
             while (prop.NextVisible(enterChildren: false))
             {
-                object value = SmartControlUtils.GetSerializedPropertyValue(prop);
-                if (value == null)
+                if (!SmartControlUtils.TryGetSerializedPropertyValue(prop, out var type, out var value))
                 {
                     continue;
                 }
-                func(prop.propertyPath, value);
+                func(prop.propertyPath, type, value);
             }
         }
 
-        private static void ForEachShaderProperty(Material material, Action<string, object> func)
+        private static void ForEachShaderProperty(Material material, Action<string, Type, object> func)
         {
             var shader = material.shader;
             var len = shader.GetPropertyCount();
             for (var i = 0; i < len; i++)
             {
                 var name = shader.GetPropertyName(i);
-                var val = SmartControlUtils.GetShaderProperty(material, i);
-                if (val == null)
+                if (!SmartControlUtils.TryGetShaderProperty(material, i, out var type, out var val))
                 {
                     continue;
                 }
-                func(name, val);
+                func(name, type, val);
             }
         }
 
         private void SearchMaterial(Material material, string prefix)
         {
-            _materialProperties[prefix] = material;
-            ForEachShaderProperty(material, (name, val) =>
+            _materialProperties[prefix] = new Tuple<Type, object>(typeof(Material), material);
+            ForEachShaderProperty(material, (name, type, val) =>
             {
-                _materialProperties[$"{prefix}.{name}"] = val;
+                _materialProperties[$"{prefix}.{name}"] = new Tuple<Type, object>(type, val);
             });
-            ForEachSerializedObjectProperty(material, (path, val) =>
+            ForEachSerializedObjectProperty(material, (path, type, val) =>
             {
-                _materialProperties[$"{prefix}.{path}"] = val;
+                _materialProperties[$"{prefix}.{path}"] = new Tuple<Type, object>(type, val);
             });
         }
 
@@ -556,9 +561,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void SearchGenericProperties(Component comp)
         {
-            ForEachSerializedObjectProperty(comp, (path, val) =>
+            ForEachSerializedObjectProperty(comp, (path, type, val) =>
             {
-                _genericProperties[path] = val;
+                _genericProperties[path] = new Tuple<Type, object>(type, val);
             });
             _view.HasGenericProperties = _genericProperties.Count > 0;
         }

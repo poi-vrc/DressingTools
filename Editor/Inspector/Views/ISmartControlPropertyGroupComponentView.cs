@@ -47,7 +47,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         Component TargetComponent { get; set; }
         List<DTSmartControl.PropertyGroup.PropertyValue> TargetPropertyValues { get; set; }
-        List<KeyValuePair<string, object>> SearchResults { get; set; }
+        List<KeyValuePair<string, Tuple<Type, object>>> SearchResults { get; set; }
         SmartControlComponentViewResultMode SearchResultMode { get; set; }
         Dictionary<string, SmartControlComponentViewPropertyValue> Properties { get; set; }
         string SearchQuery { get; set; }

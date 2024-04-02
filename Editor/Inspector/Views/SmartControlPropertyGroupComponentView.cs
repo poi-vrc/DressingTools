@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         public Component TargetComponent { get; set; }
         public List<DTSmartControl.PropertyGroup.PropertyValue> TargetPropertyValues { get; set; }
-        public List<KeyValuePair<string, object>> SearchResults { get; set; }
+        public List<KeyValuePair<string, Tuple<Type, object>>> SearchResults { get; set; }
         public SmartControlComponentViewResultMode SearchResultMode { get; set; }
         public Dictionary<string, SmartControlComponentViewPropertyValue> Properties { get; set; }
         public string SearchQuery { get => _searchField.value; set => _searchField.value = value; }
@@ -65,7 +65,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _parentView = parentView;
             TargetComponent = targetComponent;
             TargetPropertyValues = propertyValues;
-            SearchResults = new List<KeyValuePair<string, object>>();
+            SearchResults = new List<KeyValuePair<string, Tuple<Type, object>>>();
             SearchResultMode = SmartControlComponentViewResultMode.None;
             Properties = new Dictionary<string, SmartControlComponentViewPropertyValue>();
             DisplayAllResults = false;
@@ -182,8 +182,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
             base.OnDisable();
         }
 
-        private VisualElement MakeAddEntry(string name, object value, Action onAdd)
+        private VisualElement MakeAddEntry(string name, Type type, object value, Action onAdd)
         {
+            Debug.Log($"{name} {type} {value}");
             var elem = new VisualElement();
 
             elem.AddToClassList("property-entry");
@@ -194,21 +195,25 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
             var supported = true;
             VisualElement field;
-            if (value is float f)
+            if (type == typeof(float))
             {
-                field = new FloatField() { value = f };
+                field = new FloatField() { value = (float)value };
             }
-            else if (value is bool b)
+            else if (type == typeof(bool))
             {
-                field = new Toggle() { value = b };
+                field = new Toggle() { value = (bool)value };
             }
-            else if (value is Color c)
+            else if (type == typeof(Color))
             {
-                field = new ColorField() { value = c };
+                field = new ColorField() { value = (Color)value };
             }
-            else if (value is Object o)
+            else if (type.IsSubclassOf(typeof(Object)))
             {
-                field = new ObjectField() { value = o };
+                field = new ObjectField()
+                {
+                    objectType = type,
+                    value = (Object)value
+                };
             }
             else
             {
@@ -254,14 +259,14 @@ namespace Chocopoi.DressingTools.Inspector.Views
             {
                 foreach (var kvp in SearchResults)
                 {
-                    _searchResultContainer.Add(MakeAddEntry(kvp.Key, kvp.Value, () => AddProperty?.Invoke(kvp.Key, kvp.Value)));
+                    _searchResultContainer.Add(MakeAddEntry(kvp.Key, kvp.Value.Item1, kvp.Value.Item2, () => AddProperty?.Invoke(kvp.Key, kvp.Value)));
                 }
             }
 
             UpdateActiveResultMode();
         }
 
-        private VisualElement MakePropertyEntry(string name, object value, Action<object> onChange, Action onRemove)
+        private VisualElement MakePropertyEntry(string name, Type type, object value, Action<object> onChange, Action onRemove)
         {
             var elem = new VisualElement();
 
@@ -271,31 +276,35 @@ namespace Chocopoi.DressingTools.Inspector.Views
             propertyLabel.AddToClassList("name");
             elem.Add(propertyLabel);
 
-            if (value is float f)
+            if (type == typeof(float))
             {
                 var field = new FloatField()
                 {
-                    value = f,
+                    value = (float)value,
                     isDelayed = true
                 };
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
                 elem.Add(field);
             }
-            else if (value is bool b)
+            else if (type == typeof(bool))
             {
-                var toggle = new Toggle() { value = b };
+                var toggle = new Toggle() { value = (bool)value };
                 toggle.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
                 elem.Add(toggle);
             }
-            else if (value is Color c)
+            else if (type == typeof(Color))
             {
-                var field = new ColorField() { value = c };
+                var field = new ColorField() { value = (Color)value };
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
                 elem.Add(field);
             }
-            else if (value is Object o)
+            else if (type.IsSubclassOf(typeof(Object)))
             {
-                var field = new ObjectField() { value = o };
+                var field = new ObjectField()
+                {
+                    objectType = type,
+                    value = (Object)value
+                };
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
                 elem.Add(field);
             }
@@ -382,7 +391,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 }
                 else
                 {
-                    _propertiesContainer.Add(MakePropertyEntry(kvp.Key, propVal.value, (newVal) => ChangeProperty?.Invoke(kvp.Key, newVal), () => RemoveProperty?.Invoke(kvp.Key)));
+                    _propertiesContainer.Add(MakePropertyEntry(kvp.Key, propVal.type, propVal.value, (newVal) => ChangeProperty?.Invoke(kvp.Key, newVal), () => RemoveProperty?.Invoke(kvp.Key)));
                 }
             }
         }
