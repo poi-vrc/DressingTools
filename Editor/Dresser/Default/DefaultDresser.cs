@@ -52,7 +52,7 @@ namespace Chocopoi.DressingTools.Dresser.Default
             {
                 if (components[i] == null)
                 {
-                    report.LogErrorLocalized(t, LogLabel, errorCode, AnimationUtils.GetRelativePath(gameObject.transform));
+                    report.LogErrorLocalized(t, LogLabel, errorCode, gameObject.transform.parent == null ? gameObject.name : AnimationUtils.GetRelativePath(gameObject.transform));
                     return false;
                 }
             }
