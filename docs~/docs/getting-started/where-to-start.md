@@ -10,6 +10,8 @@ There are currently two systems for automatically creating animations and menus 
 
 ## 1. Smart Control
 
+*Since 2.3.0*
+
 [![Smart Control](/img/where-to-start-smartcontrol.PNG)](/img/where-to-start-smartcontrol.PNG)
 
 :::caution
