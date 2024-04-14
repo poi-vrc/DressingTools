@@ -10,6 +10,8 @@ sidebar_position: 2
 
 ## 1. 智能控制 (Smart Control)
 
+*自 2.3.0*
+
 [![Smart Control](/img/where-to-start-smartcontrol.PNG)](/img/where-to-start-smartcontrol.PNG)
 
 :::caution

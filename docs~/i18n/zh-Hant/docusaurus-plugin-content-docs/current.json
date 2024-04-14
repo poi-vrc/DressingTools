@@ -74,5 +74,13 @@
   "sidebar.tutorialSidebar.category.Cabinet.link.generated-index.description": {
     "message": "熟悉使用衣櫃系統系統。",
     "description": "The generated-index page description for category Cabinet in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Components": {
+    "message": "元件",
+    "description": "The label for category Components in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Components.link.generated-index.description": {
+    "message": "元件的詳細。",
+    "description": "The generated-index page description for category Components in sidebar tutorialSidebar"
   }
 }

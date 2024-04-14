@@ -40,34 +40,4 @@ This creates an animation with its play time controlled by a float parameter.
 
 ## Drivers
 
-Driver means how you want this smart control to be driven by which mechanism. There are two types of driver and more will be added in the future.
-
-### Menu item as driver
-
-![Menu Item Driver](/img/smartcontrol-basics-driver-menuitem.PNG)
-
-If the animator parameter name is left empty, it will be automatically generated on build.
-
-There are some limitations that each menu item type supports:
-
-|             | Button | Toggle | Radial | Two-axis | Four-axis | Sub-menu |
-|-------------|--------|--------|--------|----------|-----------|----------|
-| Binary      | ✅     | ✅    | ❌     | ❌      | ❌        | ❌      | 
-| Motion Time | ✅*    | ✅*   | ✅     | 🚧      | 🚧        | ❌      | 
-
-✅: Supported, ❌: Unsupported 🚧: Support Planned
-
-*The menu item directly writes 0 or 1 to the motion time float parameter without any immediate values.
-
-### Animator parameter as driver
-
-If the animator parameter name is left empty, it will be automatically generated on build.
-
-|             | Float  | Int    | Bool   | Others   |
-|-------------|--------|--------|--------|----------|
-| Binary      | ❌     | ❌    | ✅     | ❌      |
-| Motion Time | ✅     | ✅*   | ❌     | ❌      |
-
-✅: Supported, ❌: Unsupported
-
-*Using motion time with data types other than float implies that only the value 0 or 1 will be effective to the control.
+Please refer to the next part of the documentation.

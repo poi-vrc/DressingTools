@@ -74,5 +74,13 @@
   "sidebar.tutorialSidebar.category.Cabinet.link.generated-index.description": {
     "message": "キャビネットシステムを始めましょう。",
     "description": "The generated-index page description for category Cabinet in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Components": {
+    "message": "コンポーネント",
+    "description": "The label for category Components in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Components.link.generated-index.description": {
+    "message": "コンポーネントの詳細。",
+    "description": "The generated-index page description for category Components in sidebar tutorialSidebar"
   }
 }
