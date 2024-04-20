@@ -224,7 +224,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 object obj = null;
                 if (type.IsPrimitive)
                 {
-                    obj = propVal.Value;
+                    obj = FloatToPrimitiveType(type, propVal.Value);
                 }
                 else if (type == typeof(Object) || type.IsSubclassOf(typeof(Object)))
                 {
@@ -269,6 +269,22 @@ namespace Chocopoi.DressingTools.UI.Presenters
             else
             {
                 return 0.0f;
+            }
+        }
+
+        private object FloatToPrimitiveType(Type type, float value)
+        {
+            if (type == typeof(int))
+            {
+                return (int)value;
+            }
+            else if (type == typeof(bool))
+            {
+                return Mathf.Approximately(value, 1.0f);
+            }
+            else
+            {
+                return value;
             }
         }
 
