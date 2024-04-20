@@ -14,7 +14,6 @@ using Chocopoi.DressingFramework.Extensibility;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules;
-using Chocopoi.DressingTools.OneConf.Wearable.Passes;
 using Chocopoi.DressingTools.Passes.Animations;
 using Chocopoi.DressingTools.Passes.Menu;
 using Chocopoi.DressingTools.Passes.Modifiers;
@@ -44,13 +43,14 @@ namespace Chocopoi.DressingTools
             RegisterBuildPass(new ArmatureMappingPass());
             RegisterBuildPass(new CopyDynamicsPass());
             RegisterBuildPass(new GroupDynamicsPass());
+            RegisterBuildPass(new GroupDynamicsModifyAnimPass());
             RegisterBuildPass(new IgnoreDynamicsPass());
             RegisterBuildPass(new MoveRootPass());
             RegisterBuildPass(new ObjectMappingPass());
+            RegisterBuildPass(new WardrobePass());
 
             RegisterBuildPass(new ComposeAndInstallMenuPass());
             RegisterBuildPass(new ComposeAnimatorParametersPass());
-            RegisterBuildPass(new GroupDynamicsWearablePass());
             RegisterBuildPass(new GCGameObjectsPass());
 
 #if DT_VRCSDK3A

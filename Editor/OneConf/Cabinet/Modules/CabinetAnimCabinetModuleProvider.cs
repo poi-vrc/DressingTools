@@ -10,20 +10,18 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingFramework.Serialization;
-using Chocopoi.DressingTools.OneConf.Animations;
 using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
 using Chocopoi.DressingTools.OneConf.Serialization;
-using Chocopoi.DressingTools.OneConf.Wearable.Passes;
+using Chocopoi.DressingTools.OneConf.Wearable;
+using Chocopoi.DressingTools.Passes.Modifiers;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
-#if DT_VRCSDK3A
-using VRC.SDK3.Avatars.Components;
-using Chocopoi.DressingFramework.Animations.VRChat;
-#endif
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
 {
@@ -36,7 +34,7 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
         [ExcludeFromCodeCoverage]
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Generation)
-                .AfterPass<GroupDynamicsWearablePass>()
+                .BeforePass<WardrobePass>()
                 .Build();
 
         public override IModuleConfig DeserializeModuleConfig(JObject jObject)
@@ -54,49 +52,16 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
 
         public override IModuleConfig NewModuleConfig() => new CabinetAnimCabinetModuleConfig();
 
-#if DT_VRCSDK3A
-        private void InvokeForVRC(CabinetContext cabCtx, CabinetAnimCabinetModuleConfig cabm, VRCAvatarDescriptor avatarDescriptor)
-        {
-            // get the avatar descriptor
-            var fxController = VRCAnimUtils.GetAvatarLayerAnimator(avatarDescriptor, VRCAvatarDescriptor.AnimLayerType.FX);
-
-            // get wearables
-            var wearables = OneConfUtils.GetCabinetWearables(cabCtx.dkCtx.AvatarGameObject);
-
-            var cac = new CabinetAnimComposer(cabCtx.dkCtx, fxController, cabCtx.dkCtx.AvatarGameObject, cabm);
-
-            for (var i = 0; i < wearables.Length; i++)
-            {
-                // obtain the wearable context
-                var wearCtx = cabCtx.wearableContexts[wearables[i]];
-                var config = wearCtx.wearableConfig;
-
-                cac.AddWearable(wearCtx.wearableGameObject, config);
-            }
-
-            cac.Compose();
-
-            EditorUtility.SetDirty(fxController);
-        }
-#endif
-
         public override bool Invoke(CabinetContext cabCtx, ReadOnlyCollection<CabinetModule> modules, bool isPreview)
         {
             if (isPreview) return true;
-
-            // obtain module
-            var cabm = modules.Count == 0 ?
-                new CabinetAnimCabinetModuleConfig() :
-                (CabinetAnimCabinetModuleConfig)modules[0].config;
-
-#if DT_VRCSDK3A
-            if (cabCtx.dkCtx.AvatarGameObject.TryGetComponent<VRCAvatarDescriptor>(out var avatarDescriptor))
+            var wearConfs = new Dictionary<GameObject, WearableConfig>();
+            foreach (var kvp in cabCtx.wearableContexts)
             {
-                InvokeForVRC(cabCtx, cabm, avatarDescriptor);
-                return true;
+                wearConfs[kvp.Key.RootGameObject] = kvp.Value.wearableConfig;
             }
-#endif
-
+            var converter = new CabinetAnimConverter(cabCtx.dkCtx, cabCtx.dkCtx.AvatarGameObject, cabCtx.cabinetConfig, wearConfs);
+            converter.Convert();
             return true;
         }
     }

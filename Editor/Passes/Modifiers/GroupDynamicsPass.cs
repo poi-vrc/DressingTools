@@ -10,18 +10,14 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
-using Chocopoi.DressingFramework.Animations;
 using Chocopoi.DressingFramework.Extensibility.Sequencing;
 using Chocopoi.DressingTools.Components;
 using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Dynamics;
 using Chocopoi.DressingTools.Dynamics.Proxy;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -32,6 +28,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
     {
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Transpose)
+                .BeforePass<GroupDynamicsModifyAnimPass>()
                 .Build();
 
         private static bool IsIncluded(ICollection<Transform> rootTransforms, List<Transform> includedTransforms, List<Transform> excludedTransforms)
@@ -173,65 +170,11 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             }
         }
 
-        private static void ModifyAnimations(Context ctx, Dictionary<DTGroupDynamics, List<IDynamics>> groups)
-        {
-            var store = ctx.Feature<AnimationStore>();
-            foreach (var clipContainer in store.Clips)
-            {
-                var oldClip = clipContainer.newClip == null ? clipContainer.originalClip : clipContainer.newClip;
-                var newClip = DTEditorUtils.CopyClip(oldClip);
-                var modified = false;
-
-                var bindings = AnimationUtility.GetCurveBindings(oldClip).Where(b => b.propertyName == "m_Enabled" && b.type == typeof(DTGroupDynamics)).ToList();
-                if (bindings.Count == 0)
-                {
-                    continue;
-                }
-
-                foreach (var oldBinding in bindings)
-                {
-                    var compTransform = ctx.AvatarGameObject.transform.Find(oldBinding.path);
-                    if (compTransform == null || !compTransform.TryGetComponent<DTGroupDynamics>(out var comp))
-                    {
-                        Debug.LogWarning("[DressingTools] An animation contains binding to DTGroupDynamics but it cannot be found, ignoring: " + oldBinding.path);
-                        modified = true;
-                        AnimationUtility.SetEditorCurve(newClip, oldBinding, null);
-                        continue;
-                    }
-
-                    if (!groups.ContainsKey(comp))
-                    {
-                        continue;
-                    }
-
-                    // replace with our dynamics components
-                    var curve = AnimationUtility.GetEditorCurve(oldClip, oldBinding);
-                    var list = groups[comp];
-                    foreach (var dynamics in list)
-                    {
-                        var newBinding = new EditorCurveBinding()
-                        {
-                            type = dynamics.Component.GetType(),
-                            propertyName = "m_Enabled",
-                            path = AnimationUtils.GetRelativePath(dynamics.Transform, ctx.AvatarGameObject.transform)
-                        };
-                        AnimationUtility.SetEditorCurve(newClip, newBinding, curve);
-                    }
-
-                    // mark as modified and remove the group dynamics component curve
-                    modified = true;
-                    AnimationUtility.SetEditorCurve(newClip, oldBinding, null);
-                }
-
-                if (modified)
-                {
-                    clipContainer.newClip = newClip;
-                }
-            }
-        }
-
         public override bool Invoke(Context ctx)
         {
+            var dtCtx = ctx.Extra<DressingToolsContext>();
+            dtCtx.DynamicsGroups.Clear();
+
             var groups = GetGroups(ctx.AvatarGameObject);
             if (groups.Count == 0)
             {
@@ -240,11 +183,9 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
 
             foreach (var group in groups)
             {
+                dtCtx.DynamicsGroups[group.Key] = group.Value;
                 GroupDynamics(group.Key, group.Value);
             }
-
-            // modify animations to contain our groups
-            ModifyAnimations(ctx, groups);
 
             return true;
         }
@@ -258,8 +199,8 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             var list = GetGroup(allDynamics, comp);
             GroupDynamics(comp, list);
 
-            var groups = new Dictionary<DTGroupDynamics, List<IDynamics>>() { { comp, list } };
-            ModifyAnimations(ctx, groups);
+            // TODO: Modify animations for component apply
+            // ModifyAnimations(ctx, groups);
 
             return true;
         }
