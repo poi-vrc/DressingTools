@@ -184,7 +184,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private VisualElement MakeAddEntry(string name, Type type, object value, Action onAdd)
         {
-            Debug.Log($"{name} {type} {value}");
             var elem = new VisualElement();
 
             elem.AddToClassList("property-entry");
@@ -259,7 +258,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             {
                 foreach (var kvp in SearchResults)
                 {
-                    _searchResultContainer.Add(MakeAddEntry(kvp.Key, kvp.Value.Item1, kvp.Value.Item2, () => AddProperty?.Invoke(kvp.Key, kvp.Value)));
+                    _searchResultContainer.Add(MakeAddEntry(kvp.Key, kvp.Value.Item1, kvp.Value.Item2, () => AddProperty?.Invoke(kvp.Key, kvp.Value.Item2)));
                 }
             }
 
@@ -298,7 +297,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
                 elem.Add(field);
             }
-            else if (type.IsSubclassOf(typeof(Object)))
+            else if (type == typeof(Object) || type.IsSubclassOf(typeof(Object)))
             {
                 var field = new ObjectField()
                 {

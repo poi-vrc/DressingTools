@@ -527,7 +527,7 @@ namespace Chocopoi.DressingTools.Animations
                         if (TryGetComponentProperty(comp, propVal.Name, out var type, out var originalValue))
                         {
                             // TODO: customizable curve by values
-                            if (propVal.ValueObjectReference != null && type.IsSubclassOf(typeof(Object)))
+                            if (propVal.ValueObjectReference != null && (type == typeof(Object) || type.IsSubclassOf(typeof(Object))))
                             {
                                 var obj = (Object)originalValue;
                                 var enabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {

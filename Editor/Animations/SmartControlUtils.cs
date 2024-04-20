@@ -142,7 +142,7 @@ namespace Chocopoi.DressingTools.Animations
             }
             else if (prop.propertyType == SerializedPropertyType.ObjectReference)
             {
-                type = typeof(Object);
+                type = prop.objectReferenceValue != null ? prop.objectReferenceValue.GetType() : typeof(Object);
                 value = prop.objectReferenceValue;
                 return true;
             }
@@ -184,7 +184,7 @@ namespace Chocopoi.DressingTools.Animations
             }
             else if (prop.propertyType == SerializedPropertyType.ExposedReference)
             {
-                type = typeof(Object);
+                type = prop.exposedReferenceValue != null ? prop.exposedReferenceValue.GetType() : typeof(Object);
                 value = prop.exposedReferenceValue;
                 return true;
             }
