@@ -33,6 +33,8 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
 
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Transpose)
+                // need to let it group first, or the search will be wrong if we move something
+                .AfterPass<GroupDynamicsPass>()
                 .Build();
 
         public override bool Invoke(Context ctx, DTBaseComponent component, out List<DTBaseComponent> generatedComponents)

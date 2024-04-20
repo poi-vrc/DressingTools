@@ -33,6 +33,8 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
 
         public override BuildConstraint Constraint =>
             InvokeAtStage(BuildStage.Transpose)
+                // need to let it group first, or the search will be wrong if we move something
+                .AfterPass<GroupDynamicsPass>()
                 .Build();
 
         private static void RemoveExistingPrefixSuffix(Transform trans)
