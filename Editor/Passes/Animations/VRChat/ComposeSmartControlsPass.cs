@@ -41,6 +41,7 @@ namespace Chocopoi.DressingTools.Passes.Animations.VRChat
             .BeforePass<ComposeAnimatorParametersPass>()
             .BeforePass<RemapAnimationsPass>()
             .BeforePass<GroupDynamicsPass>()
+            .BeforePass<GroupDynamicsModifyAnimPass>()
             .Build();
 
         // for mocking in tests
