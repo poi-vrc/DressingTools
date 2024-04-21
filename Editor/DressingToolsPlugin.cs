@@ -44,6 +44,7 @@ namespace Chocopoi.DressingTools
             RegisterBuildPass(new ArmatureMappingPass());
             RegisterBuildPass(new CopyDynamicsPass());
             RegisterBuildPass(new GroupDynamicsPass());
+            RegisterBuildPass(new GroupDynamicsModifyAnimPass());
             RegisterBuildPass(new IgnoreDynamicsPass());
             RegisterBuildPass(new MoveRootPass());
             RegisterBuildPass(new ObjectMappingPass());
