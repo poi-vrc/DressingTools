@@ -22,7 +22,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
     {
         public Component target;
         public List<Type> sameObjectComponentTypes;
-        public bool enabled;
+        public bool currentEnabled;
+        public bool setToEnabled;
     }
 
     internal class SmartControlCrossControlValue

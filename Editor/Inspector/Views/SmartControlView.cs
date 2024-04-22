@@ -16,6 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.UI.Elements;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
@@ -106,7 +107,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private VisualElement _objectTogglesContainer;
         private VisualElement _crossCtrlValuesOnEnabledContainer;
         private VisualElement _crossCtrlValuesOnEnabledAddFieldContainer;
-        private VisualElement _objectTogglesListContainer;
+        private TableView _objectTogglesTable;
+        private TableView.TableModel _objectTogglesTableModel;
         private VisualElement _objectTogglesAddFieldContainer;
         private Foldout _propGpsFoldout;
         private VisualElement _propGpsContainer;
@@ -468,7 +470,15 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _objectTogglesContainer = Q<VisualElement>("object-toggles-container").First();
             BindFoldoutHeaderAndContainerWithPrefix("object-toggles");
 
-            _objectTogglesListContainer = Q<VisualElement>("object-toggles-list-container").First();
+            var objectTogglesListContainer = Q<VisualElement>("object-toggles-list-container").First();
+            _objectTogglesTableModel = new TableView.TableModel(new string[] {
+                t._("inspector.smartcontrol.objectToggles.column.object"),
+                t._("inspector.smartcontrol.objectToggles.column.current"),
+                t._("inspector.smartcontrol.objectToggles.column.setTo"),
+                ""
+            });
+            _objectTogglesTable = new TableView(_objectTogglesTableModel);
+            objectTogglesListContainer.Add(_objectTogglesTable);
             _objectTogglesAddFieldContainer = Q<VisualElement>("object-toggles-add-field-container").First();
             MakeAddField<Component>(_objectTogglesAddFieldContainer, (comp) => AddObjectToggle?.Invoke(comp));
         }
@@ -636,15 +646,25 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             _objectTogglesFoldout.text = t._("inspector.smartcontrol.foldout.objectToggles", ObjectToggles.Count);
 
-            _objectTogglesListContainer.Clear();
+            _objectTogglesTableModel.Clear();
             var copy = new List<SmartControlObjectToggleValue>(ObjectToggles);
             for (var i = 0; i < copy.Count; i++)
             {
                 var myIdx = i;
                 var objToggle = copy[i];
 
-                var element = new VisualElement();
-                element.AddToClassList("object-field-entry");
+                var nowToggle = new Toggle()
+                {
+                    value = objToggle.currentEnabled
+                };
+                nowToggle.RegisterValueChangedCallback((evt) =>
+                {
+                    objToggle.currentEnabled = nowToggle.value;
+                    ChangeObjectToggle?.Invoke(myIdx);
+                });
+
+                var objFieldContainer = new VisualElement();
+                objFieldContainer.AddToClassList("obj-field-container");
 
                 // TODO: check duplicate entries
                 var objField = new ObjectField()
@@ -657,7 +677,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                     objToggle.target = (Component)objField.value;
                     ChangeObjectToggle?.Invoke(myIdx);
                 });
-                element.Add(objField);
+                objFieldContainer.Add(objField);
 
                 if (objToggle.sameObjectComponentTypes.Count > 0)
                 {
@@ -673,33 +693,32 @@ namespace Chocopoi.DressingTools.Inspector.Views
                         compChoices.Add(compType.Name);
                     }
                     var typePopupField = new PopupField<string>(compChoices, compChoiceIndex);
-                    element.Add(typePopupField);
+                    objFieldContainer.Add(typePopupField);
                     typePopupField.RegisterValueChangedCallback(evt =>
                     {
                         ChangeObjectToggleComponentType?.Invoke(myIdx, objToggle.sameObjectComponentTypes[typePopupField.index]);
                     });
                 }
 
-                var toggle = new Toggle()
+                var setToToggle = new Toggle()
                 {
-                    value = objToggle.enabled
+                    value = objToggle.setToEnabled
                 };
-                toggle.RegisterValueChangedCallback((evt) =>
+                setToToggle.RegisterValueChangedCallback((evt) =>
                 {
-                    objToggle.enabled = toggle.value;
+                    objToggle.setToEnabled = setToToggle.value;
                     ChangeObjectToggle?.Invoke(myIdx);
                 });
-                element.Add(toggle);
 
                 var removeBtn = new Button()
                 {
                     text = "x"
                 };
                 removeBtn.clicked += () => RemoveObjectToggle?.Invoke(myIdx);
-                element.Add(removeBtn);
 
-                _objectTogglesListContainer.Add(element);
+                _objectTogglesTableModel.AddRow(objFieldContainer, nowToggle, setToToggle, removeBtn);
             }
+            _objectTogglesTable.Repaint();
         }
 
         private int RepaintCrossControlValuesSection(VisualElement valuesContainer, List<SmartControlCrossControlValue> values, Action<SmartControlCrossControlValue> onChange, Action<SmartControlCrossControlValue> onRemove)

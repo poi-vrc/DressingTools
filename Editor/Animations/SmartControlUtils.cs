@@ -21,6 +21,9 @@ namespace Chocopoi.DressingTools.Animations
 {
     internal static class SmartControlUtils
     {
+        private const string MaterialArrayPrefix = "materials[";
+        private const string SingleMaterialPrefix = "material.";
+
         public static string SuggestRelativePathName<T>(Transform avatarRoot, T comp) where T : Component
         {
             var relPath = avatarRoot.transform == comp.transform ?
@@ -81,6 +84,78 @@ namespace Chocopoi.DressingTools.Animations
             return searchObjs;
         }
 
+        public static bool TrySetBlendshapeProperty(SkinnedMeshRenderer smr, string path, float val)
+        {
+            if (!path.StartsWith("blendShape."))
+            {
+                return false;
+            }
+
+            var name = path.Substring("blendShape.".Length);
+            var idx = smr.sharedMesh.GetBlendShapeIndex(name);
+            if (idx < 0)
+            {
+                return false;
+            }
+
+            smr.SetBlendShapeWeight(idx, val);
+            return true;
+        }
+
+        public static bool TrySetShaderProperty(Material[] materials, string path, Type type, object val)
+        {
+            var materialIdx = 0;
+            var propertyNameIdx = SingleMaterialPrefix.Length;
+            if (path.StartsWith(MaterialArrayPrefix))
+            {
+                var start = path.IndexOf("[") + 1;
+                var end = path.IndexOf("]");
+                if (start < 0 || end < 0)
+                {
+                    return false;
+                }
+                if (!int.TryParse(path.Substring(start, end - start), out materialIdx))
+                {
+                    return false;
+                }
+                propertyNameIdx = end + 1;
+            }
+            else if (!path.StartsWith(SingleMaterialPrefix))
+            {
+                return false;
+            }
+
+            if (propertyNameIdx >= path.Length)
+            {
+                return false;
+            }
+
+            var material = materials[materialIdx];
+            var name = path.Substring(propertyNameIdx);
+
+            if (type == typeof(float))
+            {
+                material.SetFloat(name, (float)val);
+            }
+            else if (type == typeof(Vector4))
+            {
+                material.SetVector(name, (Vector4)val);
+            }
+            else if (type == typeof(Color))
+            {
+                material.SetColor(name, (Color)val);
+            }
+            else if (type == typeof(Texture) || type.IsSubclassOf(typeof(Texture)))
+            {
+                material.SetTexture(name, (Texture)val);
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
         public static bool TryGetShaderProperty(Material material, int i, out Type valType, out object val)
         {
             var shader = material.shader;
@@ -120,78 +195,126 @@ namespace Chocopoi.DressingTools.Animations
             {
                 type = typeof(int);
                 value = prop.intValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Boolean)
             {
                 type = typeof(bool);
                 value = prop.boolValue;
-                return true;
             }
             if (prop.propertyType == SerializedPropertyType.Float)
             {
                 type = typeof(float);
                 value = prop.floatValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Color)
             {
                 type = typeof(Color);
                 value = prop.colorValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.ObjectReference)
             {
                 type = prop.objectReferenceValue != null ? prop.objectReferenceValue.GetType() : typeof(Object);
                 value = prop.objectReferenceValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector2)
             {
                 type = typeof(Vector2);
                 value = prop.vector2Value;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector2Int)
             {
                 type = typeof(Vector2Int);
                 value = prop.vector2IntValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector3)
             {
                 type = typeof(Vector3);
                 value = prop.vector3Value;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector3Int)
             {
                 type = typeof(Vector3Int);
                 value = prop.vector3IntValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Vector4)
             {
                 type = typeof(Vector4);
                 value = prop.vector4Value;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.Quaternion)
             {
                 type = typeof(Quaternion);
                 value = prop.quaternionValue;
-                return true;
             }
             else if (prop.propertyType == SerializedPropertyType.ExposedReference)
             {
                 type = prop.exposedReferenceValue != null ? prop.exposedReferenceValue.GetType() : typeof(Object);
                 value = prop.exposedReferenceValue;
-                return true;
             }
+            else
+            {
+                type = null;
+                value = null;
+                return false;
+            }
+            return true;
+        }
 
-            type = null;
-            value = null;
-            return false;
+        public static bool TryWriteSerializedPropertyValue(SerializedProperty prop, Type type, object val)
+        {
+            if (prop.propertyType == SerializedPropertyType.Integer && type == typeof(int))
+            {
+                prop.intValue = val == null ? 0 : (int)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Boolean && type == typeof(bool))
+            {
+                prop.boolValue = val != null && (bool)val;
+            }
+            if (prop.propertyType == SerializedPropertyType.Float && type == typeof(float))
+            {
+                prop.floatValue = val == null ? 0f : (float)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Color && type == typeof(Color))
+            {
+                prop.colorValue = val == null ? Color.black : (Color)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.ObjectReference && (type == typeof(Object) || type.IsSubclassOf(typeof(Object))))
+            {
+                prop.objectReferenceValue = (Object)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Vector2 && type == typeof(Vector2))
+            {
+                prop.vector2Value = val == null ? Vector2.zero : (Vector2)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Vector2Int && type == typeof(Vector2Int))
+            {
+                prop.vector2IntValue = val == null ? Vector2Int.zero : (Vector2Int)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Vector3 && type == typeof(Vector3))
+            {
+                prop.vector3Value = val == null ? Vector3.zero : (Vector3)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Vector3Int && type == typeof(Vector3Int))
+            {
+                prop.vector3IntValue = val == null ? Vector3Int.zero : (Vector3Int)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Vector4 && type == typeof(Vector4))
+            {
+                prop.vector4Value = val == null ? Vector4.zero : (Vector4)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.Quaternion && type == typeof(Quaternion))
+            {
+                prop.quaternionValue = val == null ? Quaternion.identity : (Quaternion)val;
+            }
+            else if (prop.propertyType == SerializedPropertyType.ExposedReference && (type == typeof(Object) || type.IsSubclassOf(typeof(Object))))
+            {
+                prop.exposedReferenceValue = (Object)val;
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
