@@ -216,7 +216,18 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var value = _view.ObjectToggles[idx];
             var objToggle = _view.Target.ObjectToggles[idx];
             objToggle.Target = value.target;
-            objToggle.Enabled = value.enabled;
+            objToggle.Enabled = value.setToEnabled;
+            if (objToggle.Target != null)
+            {
+                if (objToggle.Target is Transform)
+                {
+                    objToggle.Target.gameObject.SetActive(value.currentEnabled);
+                }
+                else if (objToggle.Target is Behaviour b)
+                {
+                    b.enabled = value.currentEnabled;
+                }
+            }
             GetSameObjectComponentTypes(value.target, value.sameObjectComponentTypes);
             _view.Repaint();
         }
@@ -377,6 +388,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var comps = go.GetComponents<Component>();
             foreach (var comp in comps)
             {
+                if (!(comp is Transform || comp is Behaviour))
+                {
+                    continue;
+                }
                 var type = comp.GetType();
                 if (!types.Contains(type))
                 {
@@ -392,10 +407,20 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 var types = new List<Type>();
                 GetSameObjectComponentTypes(objToggle.Target, types);
+                var nowEnabled = false;
+                if (objToggle.Target is Transform)
+                {
+                    nowEnabled = objToggle.Target.gameObject.activeSelf;
+                }
+                else if (objToggle.Target is Behaviour b)
+                {
+                    nowEnabled = b.enabled;
+                }
                 _view.ObjectToggles.Add(new SmartControlObjectToggleValue()
                 {
                     target = objToggle.Target,
-                    enabled = objToggle.Enabled,
+                    setToEnabled = objToggle.Enabled,
+                    currentEnabled = nowEnabled,
                     sameObjectComponentTypes = types,
                 });
             }

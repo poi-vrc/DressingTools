@@ -36,10 +36,6 @@
     flex-grow: 1;
 }
 
-.property-entry Label.right {
-    -unity-text-align: middle-right;
-}
-
 .property-entry TextField {
     flex-grow: 1;
 }
@@ -49,6 +45,43 @@
 }
 
 .property-entry ColorField {
+    width: 36px;
+}
+
+.property-entry Label.right {
+    -unity-text-align: middle-right;
+}
+
+TableView .table-view-header {
+    -unity-font-style: bold-and-italic;
+    margin-bottom: 4px;
+}
+
+TableView > .table-view-col-0 {
+    flex-grow: 1;
+}
+
+TableView > .table-view-col-1 {
+    align-items: center;
+}
+
+TableView > .table-view-col-2 {
+    align-items: center;
+}
+
+.table-view-col-2 .set-container {
+    flex-direction: row;
+}
+
+.set-container TextField {
+    flex-grow: 1;
+}
+
+.set-container FloatField {
+    width: 36px;
+}
+
+.set-container ColorField {
     width: 36px;
 }
 

@@ -16,6 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.Animations;
 using Chocopoi.DressingTools.Localization;
+using Chocopoi.DressingTools.UI.Elements;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor.UIElements;
@@ -34,9 +35,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public event Action ControlTypeChanged { add => _parentView.ControlTypeChanged += value; remove => _parentView.ControlTypeChanged -= value; }
         public event Action SearchResultModeChange;
         public event Action SearchQueryChange;
-        public event Action<string, object> AddProperty;
+        public event Action<string, Type, object> AddProperty;
         public event Action<string> RemoveProperty;
-        public event Action<string, object> ChangeProperty;
+        public event Action<string, Type, object> ChangeCurrentProperty;
+        public event Action<string, Type, object> ChangeSetToProperty;
         public event Action<string, float, float> ChangePropertyFromToValue;
         public int ControlType { get => _parentView.ControlType; set => _parentView.ControlType = value; }
 
@@ -58,7 +60,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private ToolbarButton _genericBtn;
         private TextField _searchField;
         private VisualElement _searchResultContainer;
-        private VisualElement _propertiesContainer;
+        private TableView.TableModel _propertiesTableModel;
+        private TableView _propertiesTable;
 
         public SmartControlPropertyGroupComponentView(ISmartControlPropertyGroupComponentViewParent parentView, Component targetComponent, List<DTSmartControl.PropertyGroup.PropertyValue> propertyValues)
         {
@@ -112,7 +115,15 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _searchField = Q<TextField>("search-field").First();
             _searchField.RegisterValueChangedCallback((evt) => SearchQueryChange?.Invoke());
             _searchResultContainer = Q<VisualElement>("search-result-container").First();
-            _propertiesContainer = Q<VisualElement>("properties-container").First();
+            var propertiesContainer = Q<VisualElement>("properties-container").First();
+            _propertiesTableModel = new TableView.TableModel(new string[] {
+                t._("inspector.smartcontrol.propertyGroups.column.property"),
+                t._("inspector.smartcontrol.propertyGroups.column.current"),
+                t._("inspector.smartcontrol.propertyGroups.column.setTo"),
+                ""
+            });
+            _propertiesTable = new TableView(_propertiesTableModel);
+            propertiesContainer.Add(_propertiesTable);
         }
 
         private void SetResultModeOrNoMode(SmartControlComponentViewResultMode wantedMode)
@@ -258,23 +269,15 @@ namespace Chocopoi.DressingTools.Inspector.Views
             {
                 foreach (var kvp in SearchResults)
                 {
-                    _searchResultContainer.Add(MakeAddEntry(kvp.Key, kvp.Value.Item1, kvp.Value.Item2, () => AddProperty?.Invoke(kvp.Key, kvp.Value.Item2)));
+                    _searchResultContainer.Add(MakeAddEntry(kvp.Key, kvp.Value.Item1, kvp.Value.Item2, () => AddProperty?.Invoke(kvp.Key, kvp.Value.Item1, kvp.Value.Item2)));
                 }
             }
 
             UpdateActiveResultMode();
         }
 
-        private VisualElement MakePropertyEntry(string name, Type type, object value, Action<object> onChange, Action onRemove)
+        private VisualElement CreateRespectiveControlForType(Type type, object value, Action<object> onChange)
         {
-            var elem = new VisualElement();
-
-            elem.AddToClassList("property-entry");
-
-            var propertyLabel = new Label(name);
-            propertyLabel.AddToClassList("name");
-            elem.Add(propertyLabel);
-
             if (type == typeof(float))
             {
                 var field = new FloatField()
@@ -283,19 +286,19 @@ namespace Chocopoi.DressingTools.Inspector.Views
                     isDelayed = true
                 };
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
-                elem.Add(field);
+                return field;
             }
             else if (type == typeof(bool))
             {
                 var toggle = new Toggle() { value = (bool)value };
                 toggle.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
-                elem.Add(toggle);
+                return toggle;
             }
             else if (type == typeof(Color))
             {
                 var field = new ColorField() { value = (Color)value };
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
-                elem.Add(field);
+                return field;
             }
             else if (type == typeof(Object) || type.IsSubclassOf(typeof(Object)))
             {
@@ -305,70 +308,82 @@ namespace Chocopoi.DressingTools.Inspector.Views
                     value = (Object)value
                 };
                 field.RegisterValueChangedCallback((evt) => onChange?.Invoke(evt.newValue));
-                elem.Add(field);
+                return field;
             }
-
-            elem.Add(new Button(onRemove) { text = "x" });
-
-            return elem;
+            return new Label("Incompatible");
         }
 
-        private VisualElement MakeIncompatiblePropertyEntry(string name, Action onRemove)
+        private void AddPropertyEntry(string name, Type type, object currentValue, object setToValue, Action<object> onCurrentValueChange, Action<object> onSetToValueChange, Action onRemove)
         {
-            var elem = new VisualElement();
+            var currentContainer = new VisualElement();
+            currentContainer.AddToClassList("set-container");
+            currentContainer.Add(CreateRespectiveControlForType(type, currentValue, onCurrentValueChange));
 
-            elem.AddToClassList("property-entry");
+            var setToContainer = new VisualElement();
+            setToContainer.AddToClassList("set-container");
+            setToContainer.Add(CreateRespectiveControlForType(type, setToValue, onSetToValueChange));
 
-            var propertyLabel = new Label(name);
-            propertyLabel.AddToClassList("name");
-            elem.Add(propertyLabel);
-
-            elem.Add(new Label(t._("inspector.smartcontrol.propertyGroup.component.label.incompatible")));
-
-            elem.Add(new Button(onRemove) { text = "x" });
-
-            return elem;
+            _propertiesTableModel.AddRow(
+                new Label(name),
+                currentContainer,
+                setToContainer,
+                new Button(onRemove) { text = "x" });
         }
 
-        private VisualElement MakeFromToFloatValueEntry(string name, float fromValue, float toValue, Action<float, float> onChange, Action onRemove)
+        private void AddIncompatiblePropertyEntry(string name, Action onRemove)
         {
-            var elem = new VisualElement();
+            _propertiesTableModel.AddRow(
+                new Label(name),
+                new VisualElement(),
+                new Label(t._("inspector.smartcontrol.propertyGroup.component.label.incompatible")),
+                new Button(onRemove) { text = "x" });
+        }
 
-            elem.AddToClassList("property-entry");
+        private void AddFromToFloatValueEntry(string name, float currentValue, float fromValue, float toValue, Action<float> onCurrentValueChange, Action<float, float> onFromToValueChange, Action onRemove)
+        {
+            var currentContainer = new VisualElement();
+            currentContainer.AddToClassList("set-container");
+            var currentField = new FloatField()
+            {
+                value = currentValue,
+                isDelayed = true
+            };
+            currentField.RegisterValueChangedCallback(evt => onCurrentValueChange?.Invoke(evt.newValue));
+            currentContainer.Add(currentField);
 
-            var propertyLabel = new Label(name);
-            propertyLabel.AddToClassList("name");
-            elem.Add(propertyLabel);
-
-            elem.Add(new Label(t._("inspector.smartcontrol.propertyGroup.component.label.from")));
+            var setContainer = new VisualElement();
+            setContainer.AddToClassList("set-container");
+            setContainer.Add(new Label(t._("inspector.smartcontrol.propertyGroup.component.label.from")));
 
             var fromField = new FloatField()
             {
                 value = fromValue,
                 isDelayed = true
             };
-            elem.Add(fromField);
+            setContainer.Add(fromField);
 
-            elem.Add(new Label(t._("inspector.smartcontrol.propertyGroup.component.label.to")));
+            setContainer.Add(new Label(t._("inspector.smartcontrol.propertyGroup.component.label.to")));
 
             var toField = new FloatField
             {
                 value = toValue,
                 isDelayed = true
             };
-            elem.Add(toField);
+            setContainer.Add(toField);
 
-            fromField.RegisterValueChangedCallback(evt => onChange?.Invoke(fromField.value, toField.value));
-            toField.RegisterValueChangedCallback(evt => onChange?.Invoke(fromField.value, toField.value));
+            fromField.RegisterValueChangedCallback(evt => onFromToValueChange?.Invoke(fromField.value, toField.value));
+            toField.RegisterValueChangedCallback(evt => onFromToValueChange?.Invoke(fromField.value, toField.value));
 
-            elem.Add(new Button(onRemove) { text = "x" });
-
-            return elem;
+            _propertiesTableModel.AddRow(
+                new Label(name),
+                new VisualElement(),
+                setContainer,
+                new Button(onRemove) { text = "x" });
         }
 
         private void RepaintProperties()
         {
-            _propertiesContainer.Clear();
+            _propertiesTableModel.Clear();
             var copy = new List<KeyValuePair<string, SmartControlComponentViewPropertyValue>>(Properties);
             foreach (var kvp in copy)
             {
@@ -377,22 +392,25 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 {
                     if (propVal.type != typeof(float))
                     {
-                        _propertiesContainer.Add(MakeIncompatiblePropertyEntry(kvp.Key, () => RemoveProperty?.Invoke(kvp.Key)));
+                        AddIncompatiblePropertyEntry(kvp.Key, () => RemoveProperty?.Invoke(kvp.Key));
                         continue;
                     }
-                    _propertiesContainer.Add(MakeFromToFloatValueEntry(kvp.Key, propVal.fromValue, propVal.toValue, (fromVal, toVal) =>
-                    {
-                        ChangePropertyFromToValue?.Invoke(kvp.Key, fromVal, toVal);
-                    }, () =>
-                    {
-                        RemoveProperty?.Invoke(kvp.Key);
-                    }));
+                    AddFromToFloatValueEntry(kvp.Key, (float)propVal.currentValue, propVal.fromValue, propVal.toValue,
+                        (currVal) => ChangeCurrentProperty?.Invoke(kvp.Key, propVal.type, currVal),
+                        (fromVal, toVal) => ChangePropertyFromToValue?.Invoke(kvp.Key, fromVal, toVal),
+                        () => RemoveProperty?.Invoke(kvp.Key)
+                    );
                 }
                 else
                 {
-                    _propertiesContainer.Add(MakePropertyEntry(kvp.Key, propVal.type, propVal.value, (newVal) => ChangeProperty?.Invoke(kvp.Key, newVal), () => RemoveProperty?.Invoke(kvp.Key)));
+                    AddPropertyEntry(kvp.Key, propVal.type, propVal.currentValue, propVal.setToValue,
+                        (currVal) => ChangeCurrentProperty?.Invoke(kvp.Key, propVal.type, currVal),
+                        (newVal) => ChangeSetToProperty?.Invoke(kvp.Key, propVal.type, newVal),
+                        () => RemoveProperty?.Invoke(kvp.Key)
+                    );
                 }
             }
+            _propertiesTable.Repaint();
         }
 
         public override void Repaint()

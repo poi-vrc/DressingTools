@@ -47,7 +47,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.SearchResultModeChange += OnSearchResultModeChange;
             _view.SearchQueryChange += OnSearchQueryChange;
             _view.AddProperty += OnAddProperty;
-            _view.ChangeProperty += OnChangeProperty;
+            _view.ChangeCurrentProperty += OnChangeCurrentProperty;
+            _view.ChangeSetToProperty += OnChangeSetToProperty;
             _view.RemoveProperty += OnRemoveProperty;
             _view.PropertiesChanged += OnPropertiesChanged;
             _view.ControlTypeChanged += OnControlTypeChanged;
@@ -62,7 +63,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.SearchResultModeChange -= OnSearchResultModeChange;
             _view.SearchQueryChange -= OnSearchQueryChange;
             _view.AddProperty -= OnAddProperty;
-            _view.ChangeProperty -= OnChangeProperty;
+            _view.ChangeCurrentProperty -= OnChangeCurrentProperty;
+            _view.ChangeSetToProperty -= OnChangeSetToProperty;
             _view.RemoveProperty -= OnRemoveProperty;
             _view.PropertiesChanged -= OnPropertiesChanged;
             _view.ControlTypeChanged -= OnControlTypeChanged;
@@ -86,10 +88,43 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.RaisePropertiesChangedEvent();
         }
 
-        private void OnChangeProperty(string key, object val)
+        private void OnChangeCurrentProperty(string key, Type type, object val)
         {
-            SetOrAddTargetPropertyValue(key, val.GetType(), val);
-            _view.Properties[key].value = val;
+            if (key.StartsWith("blendShape.") && _view.TargetComponent is SkinnedMeshRenderer smr1)
+            {
+                Undo.RecordObject(smr1, "Change Blendshape Weight");
+                if (!SmartControlUtils.TrySetBlendshapeProperty(smr1, key, (float)val))
+                {
+                    Debug.LogWarning($"[DressingTools] Could not write blendshape property to \"{key}\"");
+                }
+            }
+            else if (key.StartsWith("material") && _view.TargetComponent is SkinnedMeshRenderer smr2)
+            {
+                Undo.RecordObject(smr2, "Change Shader Property");
+                if (!SmartControlUtils.TrySetShaderProperty(smr2.sharedMaterials, key, type, val))
+                {
+                    Debug.LogWarning($"[DressingTools] Could not write shader property to \"{key}\"");
+                }
+            }
+            else
+            {
+                var so = new SerializedObject(_view.TargetComponent);
+                var sp = so.FindProperty(key);
+                if (sp != null && SmartControlUtils.TryWriteSerializedPropertyValue(sp, type, val))
+                {
+                    so.ApplyModifiedProperties();
+                }
+                else
+                {
+                    Debug.LogWarning($"[DressingTools] Could not write serialized property to \"{key}\"");
+                }
+            }
+        }
+
+        private void OnChangeSetToProperty(string key, Type type, object val)
+        {
+            SetOrAddTargetPropertyValue(key, type, val);
+            _view.Properties[key].setToValue = val;
             _view.RaisePropertiesChangedEvent();
         }
 
@@ -117,7 +152,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     _view.Properties[shaderPath] = new SmartControlComponentViewPropertyValue()
                     {
                         type = type,
-                        value = propVal.ValueObjectReference
+                        currentValue = val,
+                        setToValue = propVal.ValueObjectReference
                     };
                 }
                 else if (type.IsPrimitive)
@@ -130,7 +166,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     _view.Properties[shaderPath] = new SmartControlComponentViewPropertyValue()
                     {
                         type = type,
-                        value = propVal.Value,
+                        currentValue = val,
+                        setToValue = propVal.Value,
                         fromValue = propVal.FromValue,
                         toValue = propVal.ToValue
                     };
@@ -163,7 +200,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                         _view.Properties[shaderPath] = new SmartControlComponentViewPropertyValue()
                         {
                             type = type,
-                            value = newObj
+                            currentValue = val,
+                            setToValue = newObj
                         };
                     }
                 }
@@ -199,12 +237,14 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 var name = smr.sharedMesh.GetBlendShapeName(i);
                 var path = $"blendShape.{name}";
                 var propVal = GetPropertyValue(path);
+                var currVal = smr.GetBlendShapeWeight(i);
                 if (propVal != null)
                 {
                     _view.Properties.Add(path, new SmartControlComponentViewPropertyValue()
                     {
                         type = typeof(float),
-                        value = propVal.Value,
+                        currentValue = currVal,
+                        setToValue = propVal.Value,
                         fromValue = propVal.FromValue,
                         toValue = propVal.ToValue
                     });
@@ -233,7 +273,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.Properties.Add(path, new SmartControlComponentViewPropertyValue()
                 {
                     type = type,
-                    value = obj
+                    currentValue = val,
+                    setToValue = obj
                 });
             });
         }
@@ -378,9 +419,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Repaint();
         }
 
-        private void OnAddProperty(string name, object value)
+        private void OnAddProperty(string name, Type type, object value)
         {
-            SetOrAddTargetPropertyValue(name, value.GetType(), value);
+            SetOrAddTargetPropertyValue(name, type, value);
             if (value is float)
             {
                 SetOrAddTargetPropertyFromToValue(name, 0, 100);

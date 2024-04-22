@@ -29,7 +29,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
     internal class SmartControlComponentViewPropertyValue
     {
         public Type type;
-        public object value;
+        public object currentValue;
+        public object setToValue;
         public float fromValue;
         public float toValue;
     }
@@ -40,9 +41,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
         event Action ControlTypeChanged;
         event Action SearchResultModeChange;
         event Action SearchQueryChange;
-        event Action<string, object> AddProperty;
+        event Action<string, Type, object> AddProperty;
         event Action<string> RemoveProperty;
-        event Action<string, object> ChangeProperty;
+        event Action<string, Type, object> ChangeCurrentProperty;
+        event Action<string, Type, object> ChangeSetToProperty;
         event Action<string, float, float> ChangePropertyFromToValue;
 
         Component TargetComponent { get; set; }

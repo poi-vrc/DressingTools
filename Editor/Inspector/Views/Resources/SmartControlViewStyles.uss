@@ -23,6 +23,32 @@
     flex-grow: 1;
 }
 
+TableView .table-view-header {
+    -unity-font-style: bold-and-italic;
+    margin-bottom: 4px;
+}
+
+TableView .obj-field-container {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+TableView .obj-field-container ObjectField {
+    flex-grow: 1;
+}
+
+TableView > .table-view-col-0 {
+    flex-grow: 1;
+}
+
+TableView > .table-view-col-1 {
+    align-items: center;
+}
+
+TableView > .table-view-col-2 {
+    align-items: center;
+}
+
 .object-field-entry {
     flex-direction: row;
 }
