@@ -30,7 +30,7 @@ using VRC.SDK3.Avatars.Components;
 
 namespace Chocopoi.DressingTools.Passes.Modifiers
 {
-    [ComponentPassFor(typeof(DTBlendshapeSync))]
+    [ComponentPassFor(typeof(ManipulateAnimatorPass))]
     internal class ManipulateAnimatorPass : ComponentPass
     {
         public class MessageCode
