@@ -83,10 +83,10 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
 
             Assert.True(wearableTrans.TryGetComponent<DTArmatureMapping>(out var comp));
             Assert.AreEqual(DTArmatureMapping.MappingMode.Auto, comp.Mode);
-            Assert.AreEqual(DTArmatureMapping.DresserTypes.Default, comp.DresserType);
+            Assert.AreEqual(DTArmatureMapping.DresserTypes.Standard, comp.DresserType);
             Assert.AreEqual("Armature", comp.TargetArmaturePath);
             Assert.AreEqual(wearableArmature, comp.SourceArmature);
-            Assert.AreEqual(DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserDefaultConfig.DynamicsOption);
+            Assert.AreEqual(DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserStandardConfig.DynamicsOption);
             Assert.AreEqual(0, comp.Mappings.Count);
             Assert.AreEqual(0, comp.Tags.Count);
         }
@@ -119,10 +119,10 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
 
             Assert.True(wearableTrans.TryGetComponent<DTArmatureMapping>(out var comp));
             Assert.AreEqual(DTArmatureMapping.MappingMode.Override, comp.Mode);
-            Assert.AreEqual(DTArmatureMapping.DresserTypes.Default, comp.DresserType);
+            Assert.AreEqual(DTArmatureMapping.DresserTypes.Standard, comp.DresserType);
             Assert.AreEqual("Armature", comp.TargetArmaturePath);
             Assert.AreEqual(wearableArmature, comp.SourceArmature);
-            Assert.AreEqual(DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserDefaultConfig.DynamicsOption);
+            Assert.AreEqual(DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserStandardConfig.DynamicsOption);
             PrintMappingsAndTags(comp.Mappings, comp.Tags);
             Assert.AreEqual(1, comp.Mappings.Count);
             Assert.AreEqual(1, comp.Tags.Count);
@@ -169,10 +169,10 @@ namespace Chocopoi.DressingTools.Tests.OneConf.Wearable.Modules
 
             Assert.True(wearableTrans.TryGetComponent<DTArmatureMapping>(out var comp));
             Assert.AreEqual(DTArmatureMapping.MappingMode.Manual, comp.Mode);
-            Assert.AreEqual(DTArmatureMapping.DresserTypes.Default, comp.DresserType);
+            Assert.AreEqual(DTArmatureMapping.DresserTypes.Standard, comp.DresserType);
             Assert.AreEqual("Armature", comp.TargetArmaturePath);
             Assert.AreEqual(wearableArmature, comp.SourceArmature);
-            Assert.AreEqual(DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserDefaultConfig.DynamicsOption);
+            Assert.AreEqual(DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint, comp.DresserStandardConfig.DynamicsOption);
             PrintMappingsAndTags(comp.Mappings, comp.Tags);
             Assert.AreEqual(4, comp.Mappings.Count);
             Assert.AreEqual(1, comp.Tags.Count);

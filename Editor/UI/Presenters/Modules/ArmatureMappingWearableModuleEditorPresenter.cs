@@ -20,7 +20,7 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Dresser.Standard;
 using Chocopoi.DressingTools.Dresser.Tags;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Serialization;
@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class ArmatureMappingWearableModuleEditorPresenter
     {
-        private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Default.DefaultDresser";
+        private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Standard.DefaultDresser";
 
         private IArmatureMappingWearableModuleEditorView _view;
         private IWearableModuleEditorViewParent _parentView;
@@ -169,31 +169,31 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return output;
         }
 
-        private static DefaultDresserSettings.DynamicsOptions ConvertToNewDynamicsOption(ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions dynamicsOptions)
+        private static StandardDresserSettings.DynamicsOptions ConvertToNewDynamicsOption(ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions dynamicsOptions)
         {
             if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint)
             {
-                return DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
+                return StandardDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
             }
             else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary)
             {
-                return DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
+                return StandardDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
             }
             else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.IgnoreTransform)
             {
-                return DefaultDresserSettings.DynamicsOptions.IgnoreTransform;
+                return StandardDresserSettings.DynamicsOptions.IgnoreTransform;
             }
             else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.CopyDynamics)
             {
-                return DefaultDresserSettings.DynamicsOptions.CopyDynamics;
+                return StandardDresserSettings.DynamicsOptions.CopyDynamics;
             }
             else if (dynamicsOptions == ArmatureMappingWearableModuleProvider.DefaultDresserSettings.DynamicsOptions.IgnoreAll)
             {
-                return DefaultDresserSettings.DynamicsOptions.IgnoreAll;
+                return StandardDresserSettings.DynamicsOptions.IgnoreAll;
             }
             else
             {
-                return DefaultDresserSettings.DynamicsOptions.Auto;
+                return StandardDresserSettings.DynamicsOptions.Auto;
             }
         }
 
@@ -207,8 +207,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             var wearableArmature = OneConfUtils.GuessArmature(_parentView.TargetWearable, _view.WearableArmatureName);
 
             // execute default dresser (dresser selection is ignored now)
-            var dresser = new DefaultDresser();
-            var settings = new DefaultDresserSettings()
+            var dresser = new StandardDresser();
+            var settings = new StandardDresserSettings()
             {
                 SourceArmature = wearableArmature,
                 TargetArmaturePath = _view.AvatarArmatureName,

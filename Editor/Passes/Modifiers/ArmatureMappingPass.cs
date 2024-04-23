@@ -17,12 +17,12 @@ using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components;
 using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Dresser.Standard;
 using Chocopoi.DressingTools.Dresser.Tags;
 using Chocopoi.DressingTools.Localization;
 using UnityEngine;
-using DefaultDresserAPIDynamicsOption = Chocopoi.DressingTools.Dresser.Default.DefaultDresserSettings.DynamicsOptions;
-using DefaultDresserComponentDynamicsOption = Chocopoi.DressingTools.Components.Modifiers.DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions;
+using StdDresserAPIDynamicsOption = Chocopoi.DressingTools.Dresser.Standard.StandardDresserSettings.DynamicsOptions;
+using StdDresserComponentDynamicsOption = Chocopoi.DressingTools.Components.Modifiers.DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions;
 
 namespace Chocopoi.DressingTools.Passes.Modifiers
 {
@@ -39,23 +39,23 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 .BeforePass<CopyDynamicsPass>()
                 .Build();
 
-        private static DefaultDresserAPIDynamicsOption DefaultDresserComponentToAPIDynamicsOption(DefaultDresserComponentDynamicsOption dynamicsOptions)
+        private static StdDresserAPIDynamicsOption StdDresserComponentToAPIDynamicsOption(StdDresserComponentDynamicsOption dynamicsOptions)
         {
             switch (dynamicsOptions)
             {
-                case DefaultDresserComponentDynamicsOption.RemoveDynamicsAndUseParentConstraint:
-                    return DefaultDresserAPIDynamicsOption.RemoveDynamicsAndUseParentConstraint;
-                case DefaultDresserComponentDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary:
-                    return DefaultDresserAPIDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
-                case DefaultDresserComponentDynamicsOption.IgnoreTransform:
-                    return DefaultDresserAPIDynamicsOption.IgnoreTransform;
-                case DefaultDresserComponentDynamicsOption.CopyDynamics:
-                    return DefaultDresserAPIDynamicsOption.CopyDynamics;
-                case DefaultDresserComponentDynamicsOption.IgnoreAll:
-                    return DefaultDresserAPIDynamicsOption.IgnoreAll;
+                case StdDresserComponentDynamicsOption.RemoveDynamicsAndUseParentConstraint:
+                    return StdDresserAPIDynamicsOption.RemoveDynamicsAndUseParentConstraint;
+                case StdDresserComponentDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary:
+                    return StdDresserAPIDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
+                case StdDresserComponentDynamicsOption.IgnoreTransform:
+                    return StdDresserAPIDynamicsOption.IgnoreTransform;
+                case StdDresserComponentDynamicsOption.CopyDynamics:
+                    return StdDresserAPIDynamicsOption.CopyDynamics;
+                case StdDresserComponentDynamicsOption.IgnoreAll:
+                    return StdDresserAPIDynamicsOption.IgnoreAll;
                 default:
-                case DefaultDresserComponentDynamicsOption.Auto:
-                    return DefaultDresserAPIDynamicsOption.Auto;
+                case StdDresserComponentDynamicsOption.Auto:
+                    return StdDresserAPIDynamicsOption.Auto;
             }
         }
 
@@ -121,16 +121,16 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
 
             IDresser dresser;
             IDresserSettings settings;
-            if (armMapComp.DresserType == DTArmatureMapping.DresserTypes.Default)
+            if (armMapComp.DresserType == DTArmatureMapping.DresserTypes.Standard)
             {
-                dresser = new DefaultDresser();
-                var defaultSettings = new DefaultDresserSettings()
+                dresser = new StandardDresser();
+                var ds = new StandardDresserSettings()
                 {
                     SourceArmature = armMapComp.SourceArmature,
                     TargetArmaturePath = armMapComp.TargetArmaturePath,
-                    DynamicsOption = DefaultDresserComponentToAPIDynamicsOption(armMapComp.DresserDefaultConfig.DynamicsOption)
+                    DynamicsOption = StdDresserComponentToAPIDynamicsOption(armMapComp.DresserStandardConfig.DynamicsOption)
                 };
-                settings = defaultSettings;
+                settings = ds;
             }
             else
             {
@@ -162,12 +162,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                     continue;
                 }
 
-                if (tag.Type == DTArmatureMapping.Tag.TagType.IgnoreTransform)
-                {
-                    var comp = tag.SourceTransform.gameObject.AddComponent<DTIgnoreDynamics>();
-                    generatedComponents.Add(comp);
-                }
-                else if (tag.Type == DTArmatureMapping.Tag.TagType.CopyDynamics)
+                if (tag.Type == DTArmatureMapping.Tag.TagType.CopyDynamics)
                 {
                     var comp = tag.SourceTransform.gameObject.AddComponent<DTCopyDynamics>();
                     comp.SourceSearchMode = DTCopyDynamics.DynamicsSearchMode.ControlRoot;

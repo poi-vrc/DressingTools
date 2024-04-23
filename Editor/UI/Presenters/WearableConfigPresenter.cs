@@ -39,7 +39,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class WearableConfigPresenter
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
-        private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Default.DefaultDresser";
+        private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Standard.DefaultDresser";
 
         private List<WearableModuleProvider> s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
