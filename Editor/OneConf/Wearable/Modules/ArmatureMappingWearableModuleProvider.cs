@@ -98,13 +98,13 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
                 var modified = false;
 
                 // Dynamics Option
-                var newDynamicsOption = UIToDynamicsOption(EditorGUILayout.Popup(t._("dressers.default.settings.dynamicsOptionPopup.label"), DynamicsOptionToUI(dynamicsOption), new string[] {
-                        t._("dressers.default.settings.dynamicsOptionPopup.auto"),
-                        t._("dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddParentConstraint"),
-                        t._("dressers.default.settings.dynamicsOptionPopup.keepDynamicsAndAddParentConstraintIfNeeded"),
-                        t._("dressers.default.settings.dynamicsOptionPopup.removeDynamicsAndAddIgnoreTransform"),
-                        t._("dressers.default.settings.dynamicsOptionPopup.copyAvatarDynamicsData"),
-                        t._("dressers.default.settings.dynamicsOptionPopup.ignoreAllDynamics")
+                var newDynamicsOption = UIToDynamicsOption(EditorGUILayout.Popup(t._("dressers.standard.settings.dynamicsOptionPopup.label"), DynamicsOptionToUI(dynamicsOption), new string[] {
+                        t._("dressers.standard.settings.dynamicsOptionPopup.auto"),
+                        t._("dressers.standard.settings.dynamicsOptionPopup.removeDynamicsAndAddParentConstraint"),
+                        t._("dressers.standard.settings.dynamicsOptionPopup.keepDynamicsAndAddParentConstraintIfNeeded"),
+                        t._("dressers.standard.settings.dynamicsOptionPopup.removeDynamicsAndAddIgnoreTransform"),
+                        t._("dressers.standard.settings.dynamicsOptionPopup.copyAvatarDynamicsData"),
+                        t._("dressers.standard.settings.dynamicsOptionPopup.ignoreAllDynamics")
                     }));
 
                 modified |= dynamicsOption != newDynamicsOption;
@@ -214,9 +214,9 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
                 }
                 else if (boneMapping.mappingType == BoneMappingType.IgnoreTransform)
                 {
-                    tags.Add(new DTArmatureMapping.Tag()
+                    objectMappings.Add(new DTObjectMapping.Mapping()
                     {
-                        Type = DTArmatureMapping.Tag.TagType.IgnoreTransform,
+                        Type = DTObjectMapping.Mapping.MappingType.IgnoreTransform,
                         SourceTransform = sourceTransform,
                         TargetPath = boneMapping.avatarBonePath
                     });
@@ -234,31 +234,31 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             }
         }
 
-        private static DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions ConvertToNewDynamicsOption(DefaultDresserSettings.DynamicsOptions dynamicsOptions)
+        private static DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions ConvertToNewDynamicsOption(DefaultDresserSettings.DynamicsOptions dynamicsOptions)
         {
             if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint)
             {
-                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
+                return DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
             }
             else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary)
             {
-                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
+                return DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
             }
             else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.IgnoreTransform)
             {
-                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.IgnoreTransform;
+                return DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.IgnoreTransform;
             }
             else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.CopyDynamics)
             {
-                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.CopyDynamics;
+                return DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.CopyDynamics;
             }
             else if (dynamicsOptions == DefaultDresserSettings.DynamicsOptions.IgnoreAll)
             {
-                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.IgnoreAll;
+                return DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.IgnoreAll;
             }
             else
             {
-                return DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.Auto;
+                return DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.Auto;
             }
         }
 
@@ -299,9 +299,9 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
             // removeExistingPrefixSuffix is ignored for now
 
             // TODO: for now we ignore dresserName and default all to default dresser
-            comp.DresserType = DTArmatureMapping.DresserTypes.Default;
+            comp.DresserType = DTArmatureMapping.DresserTypes.Standard;
             var defaultDresserSettings = DeserializeDefaultDresserSettings(armatureMappingConfig.serializedDresserConfig) ?? new DefaultDresserSettings();
-            comp.DresserDefaultConfig.DynamicsOption = ConvertToNewDynamicsOption(defaultDresserSettings.dynamicsOption);
+            comp.DresserStandardConfig.DynamicsOption = ConvertToNewDynamicsOption(defaultDresserSettings.dynamicsOption);
 
             return true;
         }

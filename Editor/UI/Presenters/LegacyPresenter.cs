@@ -21,7 +21,7 @@ using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Components.Generic;
 using Chocopoi.DressingTools.Components.Modifiers;
 using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Dresser.Standard;
 using Chocopoi.DressingTools.Passes;
 using Chocopoi.DressingTools.UI.Views;
 using Chocopoi.DressingTools.UI.Views.Modules;
@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class LegacyPresenter
     {
         private const string TestModeAnimationControllerPath = "Packages/com.chocopoi.vrc.dressingtools/Animations/TestModeAnimationController.controller";
-        private static readonly DefaultDresser DefaultDresser = new DefaultDresser();
+        private static readonly StandardDresser StandardDresser = new StandardDresser();
         private static AnimatorController s_testModeAnimationController;
 
         private ILegacyView _view;
@@ -136,13 +136,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _report = new DKReport();
             var sourceArmature = _view.TargetClothes.transform.Find(_view.ClothesArmatureObjectName);
-            var dresserSettings = new DefaultDresserSettings()
+            var dresserSettings = new StandardDresserSettings()
             {
-                DynamicsOption = (DefaultDresserSettings.DynamicsOptions)_view.DynamicsOption,
+                DynamicsOption = (StandardDresserSettings.DynamicsOptions)_view.DynamicsOption,
                 SourceArmature = sourceArmature,
                 TargetArmaturePath = _view.AvatarArmatureObjectName,
             };
-            DefaultDresser.Execute(_report, _view.TargetAvatar, dresserSettings, out objectMappings, out tags);
+            StandardDresser.Execute(_report, _view.TargetAvatar, dresserSettings, out objectMappings, out tags);
             UpdateReportViewData();
         }
 
@@ -293,8 +293,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             var armMapComp = targetClothes.AddComponent<DTArmatureMapping>();
-            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Default;
-            armMapComp.DresserDefaultConfig.DynamicsOption = (DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions)_view.DynamicsOption;
+            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Standard;
+            armMapComp.DresserStandardConfig.DynamicsOption = (DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions)_view.DynamicsOption;
             armMapComp.Mode = DTArmatureMapping.MappingMode.Auto;
             armMapComp.SourceArmature = sourceArmature;
             armMapComp.TargetArmaturePath = _view.AvatarArmatureObjectName;

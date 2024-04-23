@@ -148,11 +148,6 @@ namespace Chocopoi.DressingTools.Dresser
                     if (originalMapping.SourceTransform == tagOverride.SourceTransform)
                     {
                         originalMapping.Type = tagOverride.Type;
-                        if (tagOverride.Type == DTArmatureMapping.Tag.TagType.IgnoreTransform)
-                        {
-                            originalMapping.TargetPath = tagOverride.TargetPath;
-                        }
-                        else
                         if (tagOverride.Type == DTArmatureMapping.Tag.TagType.CopyDynamics)
                         {
                             originalMapping.TargetPath = tagOverride.TargetPath;

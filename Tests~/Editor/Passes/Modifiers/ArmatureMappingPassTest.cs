@@ -42,9 +42,9 @@ namespace Chocopoi.DressingTools.Tests.Passes.Modifiers
 
             var armMapComp = wearableArmature.gameObject.AddComponent<DTArmatureMapping>();
             armMapComp.Mode = DTArmatureMapping.MappingMode.Auto;
-            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Default;
+            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Standard;
             // dynamics option auto mode will change to IgnoreTransform, so we explicitly set here
-            armMapComp.DresserDefaultConfig.DynamicsOption = DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
+            armMapComp.DresserStandardConfig.DynamicsOption = DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
             armMapComp.GroupBones = true;
             armMapComp.SourceArmature = wearableArmature;
             armMapComp.TargetArmaturePath = "Armature";
@@ -95,8 +95,8 @@ namespace Chocopoi.DressingTools.Tests.Passes.Modifiers
 
             var armMapComp = wearableArmature.gameObject.AddComponent<DTArmatureMapping>();
             armMapComp.Mode = DTArmatureMapping.MappingMode.Override;
-            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Default;
-            armMapComp.DresserDefaultConfig.DynamicsOption = DTArmatureMapping.AMDresserDefaultConfig.DynamicsOptions.IgnoreTransform;
+            armMapComp.DresserType = DTArmatureMapping.DresserTypes.Standard;
+            armMapComp.DresserStandardConfig.DynamicsOption = DTArmatureMapping.AMDresserStandardConfig.DynamicsOptions.IgnoreTransform;
             armMapComp.GroupBones = true;
             armMapComp.SourceArmature = wearableArmature;
             armMapComp.TargetArmaturePath = "Armature";

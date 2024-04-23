@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Chocopoi.DressingTools.Dresser.Default
+namespace Chocopoi.DressingTools.Dresser.Standard
 {
-    internal class DefaultDresserSettings : DresserSettingsBase
+    internal class StandardDresserSettings : DresserSettingsBase
     {
         public enum DynamicsOptions
         {

@@ -20,29 +20,29 @@ using Chocopoi.DressingTools.Dresser.Tags;
 using Chocopoi.DressingTools.Dynamics;
 using Chocopoi.DressingTools.Localization;
 using UnityEngine;
-using static Chocopoi.DressingTools.Dresser.Default.DefaultDresserSettings;
+using static Chocopoi.DressingTools.Dresser.Standard.StandardDresserSettings;
 
-namespace Chocopoi.DressingTools.Dresser.Default
+namespace Chocopoi.DressingTools.Dresser.Standard
 {
-    internal class DefaultDresser : IDresser
+    internal class StandardDresser : IDresser
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
-        public const string LogLabel = "DefaultDresser";
+        public const string LogLabel = "StandardDresser";
         private const string BoneContainerSuffix = "_DT";
 
         public static class MessageCode
         {
             //Warnings
-            public const string BonesNotMatchingInArmatureFirstLevel = "dressers.default.msgCode.warn.bonesNotMatchingInArmatureFirstLevel";
+            public const string BonesNotMatchingInArmatureFirstLevel = "dressers.standard.msgCode.warn.bonesNotMatchingInArmatureFirstLevel";
 
             //Errors
-            public const string NoBonesInTargetArmatureFirstLevel = "dressers.default.msgCode.error.noBonesInTargetArmatureFirstLevel";
-            public const string NoBonesInSourceArmatureFirstLevel = "dressers.default.msgCode.error.noBonesInSourceArmatureFirstLevel";
-            public const string MissingScriptsDetectedInAvatar = "dressers.default.msgCode.error.missingScriptsDetectedInAvatar";
-            public const string MissingTargetArmaturePath = "dressers.default.msgCode.error.missingTargetArmaturePath";
-            public const string MissingSourceArmature = "dressers.default.msgCode.error.missingSourceArmature";
-            public const string CouldNotLocateTargetArmature = "dressers.default.msgCode.error.couldNotLocateTargetArmature";
-            public const string SourceArmatureNotInsideAvatar = "dressers.default.msgCode.error.sourceArmatureNotInsideAvatar";
+            public const string NoBonesInTargetArmatureFirstLevel = "dressers.standard.msgCode.error.noBonesInTargetArmatureFirstLevel";
+            public const string NoBonesInSourceArmatureFirstLevel = "dressers.standard.msgCode.error.noBonesInSourceArmatureFirstLevel";
+            public const string MissingScriptsDetectedInAvatar = "dressers.standard.msgCode.error.missingScriptsDetectedInAvatar";
+            public const string MissingTargetArmaturePath = "dressers.standard.msgCode.error.missingTargetArmaturePath";
+            public const string MissingSourceArmature = "dressers.standard.msgCode.error.missingSourceArmature";
+            public const string CouldNotLocateTargetArmature = "dressers.standard.msgCode.error.couldNotLocateTargetArmature";
+            public const string SourceArmatureNotInsideAvatar = "dressers.standard.msgCode.error.sourceArmatureNotInsideAvatar";
         }
 
         public bool CheckNoMissingScripts(Report report, string errorCode, GameObject gameObject)
@@ -213,37 +213,37 @@ namespace Chocopoi.DressingTools.Dresser.Default
         {
             objectMappings = null;
             tags = null;
-            if (!(dresserSettings is DefaultDresserSettings defaultDresserSettings)) throw new ArgumentException("dresserSettings is not subclass of DefaultDresserSettings");
+            if (!(dresserSettings is StandardDresserSettings stdDs)) throw new ArgumentException("dresserSettings is not subclass of StandardDresserSettings");
 
             if (!CheckNoMissingScripts(report, MessageCode.MissingScriptsDetectedInAvatar, avatarGameObject))
             {
                 return;
             }
 
-            if (string.IsNullOrEmpty(defaultDresserSettings.TargetArmaturePath))
+            if (string.IsNullOrEmpty(stdDs.TargetArmaturePath))
             {
                 report.LogErrorLocalized(t, LogLabel, MessageCode.MissingTargetArmaturePath);
                 return;
             }
 
-            if (defaultDresserSettings.SourceArmature == null)
+            if (stdDs.SourceArmature == null)
             {
                 report.LogErrorLocalized(t, LogLabel, MessageCode.MissingSourceArmature);
                 return;
             }
 
-            if (!DKEditorUtils.IsGrandParent(avatarGameObject.transform, defaultDresserSettings.SourceArmature))
+            if (!DKEditorUtils.IsGrandParent(avatarGameObject.transform, stdDs.SourceArmature))
             {
                 report.LogErrorLocalized(t, LogLabel, MessageCode.SourceArmatureNotInsideAvatar);
                 return;
             }
 
-            var targetArmature = avatarGameObject.transform.Find(defaultDresserSettings.TargetArmaturePath);
+            var targetArmature = avatarGameObject.transform.Find(stdDs.TargetArmaturePath);
 
             if (targetArmature == null)
             {
                 // TODO: try obtain and guess
-                report.LogErrorLocalized(t, LogLabel, MessageCode.CouldNotLocateTargetArmature, defaultDresserSettings.TargetArmaturePath);
+                report.LogErrorLocalized(t, LogLabel, MessageCode.CouldNotLocateTargetArmature, stdDs.TargetArmaturePath);
                 return;
             }
 
@@ -252,12 +252,12 @@ namespace Chocopoi.DressingTools.Dresser.Default
                 report.LogErrorLocalized(t, LogLabel, MessageCode.NoBonesInTargetArmatureFirstLevel);
             }
 
-            if (defaultDresserSettings.SourceArmature.childCount == 0)
+            if (stdDs.SourceArmature.childCount == 0)
             {
                 report.LogErrorLocalized(t, LogLabel, MessageCode.NoBonesInSourceArmatureFirstLevel);
             }
 
-            if (targetArmature.childCount == 0 || defaultDresserSettings.SourceArmature.childCount == 0)
+            if (targetArmature.childCount == 0 || stdDs.SourceArmature.childCount == 0)
             {
                 return;
             }
@@ -266,7 +266,7 @@ namespace Chocopoi.DressingTools.Dresser.Default
             tags = new List<ITag>();
 
             var allDynamics = DynamicsUtils.ScanDynamics(avatarGameObject);
-            ProcessBone(report, defaultDresserSettings.DynamicsOption, avatarGameObject.transform, defaultDresserSettings.SourceArmature, targetArmature, allDynamics, objectMappings, tags, 0);
+            ProcessBone(report, stdDs.DynamicsOption, avatarGameObject.transform, stdDs.SourceArmature, targetArmature, allDynamics, objectMappings, tags, 0);
         }
     }
 }

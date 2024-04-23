@@ -19,7 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingFramework.Localization;
 using Chocopoi.DressingTools.Components.OneConf;
-using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Dresser.Standard;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Cabinet;
@@ -116,12 +116,12 @@ namespace Chocopoi.DressingTools.UI
                     // TODO: show message
                 }
 
-                var dresser = new DefaultDresser();
-                var settings = new DefaultDresserSettings()
+                var dresser = new StandardDresser();
+                var settings = new StandardDresserSettings()
                 {
                     SourceArmature = armature,
                     TargetArmaturePath = armatureName,
-                    DynamicsOption = DefaultDresserSettings.DynamicsOptions.Auto
+                    DynamicsOption = StandardDresserSettings.DynamicsOptions.Auto
                 };
 
                 var report = new DKReport();
@@ -131,7 +131,7 @@ namespace Chocopoi.DressingTools.UI
                 {
                     ReportWindow.AddReport(cabinet.RootGameObject.name, report);
                     ReportWindow.ShowWindow();
-                    EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.defaultDresserHasErrors"), t._("common.dialog.btn.ok"));
+                    EditorUtility.DisplayDialog(t._("tool.name"), t._("menu.dialog.msg.standardDresserHasErrors"), t._("common.dialog.btn.ok"));
                     return;
                 }
 
@@ -142,7 +142,7 @@ namespace Chocopoi.DressingTools.UI
 
                 var armatureMappingModule = new ArmatureMappingWearableModuleConfig
                 {
-                    dresserName = typeof(DefaultDresser).FullName,
+                    dresserName = typeof(StandardDresser).FullName,
                     wearableArmatureName = armature.name,
                     boneMappingMode = BoneMappingMode.Auto,
                     boneMappings = null,

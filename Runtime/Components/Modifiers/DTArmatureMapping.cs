@@ -24,7 +24,7 @@ namespace Chocopoi.DressingTools.Components.Modifiers
     {
         public enum DresserTypes
         {
-            Default = 0
+            Standard = 0
         }
 
         public enum MappingMode
@@ -40,8 +40,7 @@ namespace Chocopoi.DressingTools.Components.Modifiers
             public enum TagType
             {
                 DoNothing = 0,
-                IgnoreTransform = 1,
-                CopyDynamics = 2,
+                CopyDynamics = 1,
             }
 
             public TagType Type { get => m_Type; set => m_Type = value; }
@@ -54,7 +53,7 @@ namespace Chocopoi.DressingTools.Components.Modifiers
 
             public Tag()
             {
-                m_Type = TagType.IgnoreTransform;
+                m_Type = TagType.DoNothing;
                 m_SourceTransform = null;
                 m_TargetPath = "";
             }
@@ -66,7 +65,7 @@ namespace Chocopoi.DressingTools.Components.Modifiers
         }
 
         [Serializable]
-        public class AMDresserDefaultConfig
+        public class AMDresserStandardConfig
         {
             public enum DynamicsOptions
             {
@@ -82,14 +81,14 @@ namespace Chocopoi.DressingTools.Components.Modifiers
 
             [SerializeField] private DynamicsOptions m_DynamicsOption;
 
-            public AMDresserDefaultConfig()
+            public AMDresserStandardConfig()
             {
                 m_DynamicsOption = DynamicsOptions.Auto;
             }
         }
 
         public DresserTypes DresserType { get => m_DresserType; set => m_DresserType = value; }
-        public AMDresserDefaultConfig DresserDefaultConfig { get => m_DresserDefaultConfig; set => m_DresserDefaultConfig = value; }
+        public AMDresserStandardConfig DresserStandardConfig { get => m_DresserDefaultConfig; set => m_DresserDefaultConfig = value; }
         public MappingMode Mode { get => m_Mode; set => m_Mode = value; }
         public List<DTObjectMapping.Mapping> Mappings { get => m_Mappings; set => m_Mappings = value; }
         public List<Tag> Tags { get => m_Tags; set => m_Tags = value; }
@@ -101,7 +100,7 @@ namespace Chocopoi.DressingTools.Components.Modifiers
         public bool PreventDuplicateNames { get => m_PreventDuplicateNames; set => m_PreventDuplicateNames = value; }
 
         [SerializeField] private DresserTypes m_DresserType;
-        [SerializeField] private AMDresserDefaultConfig m_DresserDefaultConfig;
+        [SerializeField] private AMDresserStandardConfig m_DresserDefaultConfig;
         [SerializeField] private MappingMode m_Mode;
         [SerializeField] private List<DTObjectMapping.Mapping> m_Mappings;
         [SerializeField] private List<Tag> m_Tags;
@@ -114,8 +113,8 @@ namespace Chocopoi.DressingTools.Components.Modifiers
 
         public DTArmatureMapping()
         {
-            m_DresserType = DresserTypes.Default;
-            m_DresserDefaultConfig = new AMDresserDefaultConfig();
+            m_DresserType = DresserTypes.Standard;
+            m_DresserDefaultConfig = new AMDresserStandardConfig();
             m_Mode = MappingMode.Auto;
             m_Mappings = new List<DTObjectMapping.Mapping>();
             m_Tags = new List<Tag>();

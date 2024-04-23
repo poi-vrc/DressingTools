@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework.Detail.DK.Logging;
 using Chocopoi.DressingTools.Dresser;
-using Chocopoi.DressingTools.Dresser.Default;
+using Chocopoi.DressingTools.Dresser.Standard;
 using Chocopoi.DressingTools.Dresser.Tags;
 using Chocopoi.DressingTools.OneConf;
 using NUnit.Framework;
@@ -24,20 +24,20 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 {
     internal class DefaultDresserTest : EditorTestBase
     {
-        private static bool EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out DKReport report, out List<ObjectMapping> objectMappings, out List<ITag> tags, DefaultDresserSettings.DynamicsOptions dynamicsOption = DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint)
+        private static bool EvaluateDresser(GameObject avatarRoot, GameObject wearableRoot, out DKReport report, out List<ObjectMapping> objectMappings, out List<ITag> tags, StandardDresserSettings.DynamicsOptions dynamicsOption = StandardDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint)
         {
             report = new DKReport();
 
             var sourceArmature = OneConfUtils.GuessArmature(wearableRoot, "Armature");
             Assert.NotNull(sourceArmature);
 
-            var settings = new DefaultDresserSettings()
+            var settings = new StandardDresserSettings()
             {
                 SourceArmature = sourceArmature,
                 TargetArmaturePath = "Armature",
                 DynamicsOption = dynamicsOption
             };
-            var dresser = new DefaultDresser();
+            var dresser = new StandardDresser();
             dresser.Execute(report, avatarRoot, settings, out objectMappings, out tags);
             return !report.HasLogType(DressingFramework.Logging.LogType.Error);
         }
@@ -68,7 +68,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
             var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out _, out _);
             Assert.False(result, "Hook should return false");
-            Assert.True(report.HasLogCode(DefaultDresser.MessageCode.SourceArmatureNotInsideAvatar));
+            Assert.True(report.HasLogCode(StandardDresser.MessageCode.SourceArmatureNotInsideAvatar));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
             var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out _, out _);
             Assert.False(result, "Hook should return false");
-            Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoBonesInTargetArmatureFirstLevel));
+            Assert.True(report.HasLogCode(StandardDresser.MessageCode.NoBonesInTargetArmatureFirstLevel));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
             var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out _, out _);
             Assert.False(result, "Hook should return false");
-            Assert.True(report.HasLogCode(DefaultDresser.MessageCode.NoBonesInSourceArmatureFirstLevel));
+            Assert.True(report.HasLogCode(StandardDresser.MessageCode.NoBonesInSourceArmatureFirstLevel));
         }
         #endregion Log Code Tests
 
@@ -189,7 +189,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
         #region Bone Mapping Tests
         private void AvatarDynamics_RemoveDynamicsAndUseParentConstraints_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
         {
-            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint);
+            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, StandardDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint);
             Assert.True(result, "Hook should return true");
 
             PrintMappings(wearableRoot, objectMappings, tags);
@@ -244,7 +244,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
         private void AvatarDynamics_RemoveDynamicsAndUseParentConstraintsWithSuffix_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
         {
-            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, DefaultDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint);
+            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, StandardDresserSettings.DynamicsOptions.RemoveDynamicsAndUseParentConstraint);
             Assert.True(result, "Hook should return true");
 
             PrintMappings(wearableRoot, objectMappings, tags);
@@ -299,7 +299,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
         private void AvatarDynamics_KeepDynamicsAndUseParentConstraintIfNecessary_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
         {
-            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, DefaultDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary);
+            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, StandardDresserSettings.DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary);
             Assert.True(result, "Hook should return true");
 
             PrintMappings(wearableRoot, objectMappings, tags);
@@ -354,7 +354,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
         private void AvatarDynamics_IgnoreTransform_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
         {
-            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, DefaultDresserSettings.DynamicsOptions.IgnoreTransform);
+            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, StandardDresserSettings.DynamicsOptions.IgnoreTransform);
             Assert.True(result, "Hook should return true");
 
             PrintMappings(wearableRoot, objectMappings, tags);
@@ -409,7 +409,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
         private void AvatarDynamics_CopyDynamics_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
         {
-            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, DefaultDresserSettings.DynamicsOptions.CopyDynamics);
+            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, StandardDresserSettings.DynamicsOptions.CopyDynamics);
             Assert.True(result, "Hook should return true");
 
             PrintMappings(wearableRoot, objectMappings, tags);
@@ -482,7 +482,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
         private void AvatarDynamics_IgnoreAll_ReturnsCorrectBoneMappingAndLogCodes(GameObject avatarRoot, GameObject wearableRoot)
         {
-            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, DefaultDresserSettings.DynamicsOptions.IgnoreAll);
+            var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out var objectMappings, out var tags, StandardDresserSettings.DynamicsOptions.IgnoreAll);
             Assert.True(result, "Hook should return true");
 
             PrintMappings(wearableRoot, objectMappings, tags);
@@ -545,7 +545,7 @@ namespace Chocopoi.DressingTools.Tests.Dresser
 
             var result = EvaluateDresser(avatarRoot, wearableRoot, out var report, out _, out _);
             Assert.False(result, "Hook should return false");
-            Assert.True(report.HasLogCode(DefaultDresser.MessageCode.MissingScriptsDetectedInAvatar));
+            Assert.True(report.HasLogCode(StandardDresser.MessageCode.MissingScriptsDetectedInAvatar));
         }
     }
 }
