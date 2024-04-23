@@ -20,6 +20,16 @@
             "name": "com.vrchat.avatars",
             "expression": "",
             "define": "DT_VRCSDK3A"
+        },
+        {
+            "name": "nadena.dev.modular-avatar",
+            "expression": "[1.8.0,2.0.0)",
+            "define": "DT_MA"
+        },
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "[1.3.0,2.0.0)",
+            "define": "DT_NDMF"
         }
     ],
     "noEngineReferences": false

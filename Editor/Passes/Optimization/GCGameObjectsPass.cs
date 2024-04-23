@@ -155,8 +155,12 @@ namespace Chocopoi.DressingTools.Passes.Optimization
 
         public override bool Invoke(Context ctx)
         {
+#if DT_MA
+            ctx.Report.LogInfo("GCGameObjectsPass", "ModularAvatar detected and skipping this optimization pass.");
+#else
             ScanReferences(ctx.AvatarGameObject);
             CleanGameObjects(ctx.Report, ctx.AvatarGameObject);
+#endif
             return true;
         }
     }
