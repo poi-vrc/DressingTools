@@ -34,6 +34,19 @@ Currently, it supports the following:
 
 ✅: Supported, ❌: Unsupported
 
+## Parameter slot driver
+
+*Since 2.5.0*
+
+SmartControls using the same parameter slot are assigned with a specific value, and controlled by a single `int` or `float` animator parameter.
+Only the SmartControl that the parameter value matches with will be enabled.
+
+![Parameter slot driver](/img/smartcontrol-basics-driver-parameterslot.png)
+
+The mechanism is similar to Unity animator's Any State but internally it is not used.
+
+For more details, please read the documentation for [Parameter Slot](/docs/components/parameter-slot).
+
 ## VRCPhysBone driver
 
 *Since 2.4.0*
