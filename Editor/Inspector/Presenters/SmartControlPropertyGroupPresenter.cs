@@ -122,7 +122,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void SuggestPickFromTransform(bool mustSet = false)
         {
-            if (_view.SelectionType == 0 && _view.SelectionGameObjects.Count > 0)
+            if (_view.SelectionType == 0 && _view.SelectionGameObjects.Count > 0 && _view.SelectionGameObjects[_view.SelectionGameObjects.Count - 1] != null)
             {
                 // only suggest if in normal mode, otherwise it's meaningless
                 _view.PickFromTransform = _view.SelectionGameObjects[_view.SelectionGameObjects.Count - 1].transform;
