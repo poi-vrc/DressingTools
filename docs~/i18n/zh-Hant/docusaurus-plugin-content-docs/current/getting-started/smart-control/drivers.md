@@ -34,6 +34,19 @@ sidebar_position: 3
 
 ✅: 支援, ❌: 不支援
 
+## 參數槽作為驅動
+
+*自 2.5.0*
+
+使用相同參數槽的 SmartControl 被指派一個特定的值，並由單一 `int` 或 `float` 動畫參數控制。
+只有與參數值相符的SmartControl 才會啟用。
+
+![Parameter slot driver](/img/smartcontrol-basics-driver-parameterslot.png)
+
+類似於 Unity 的 Any State，但內部並沒有使用它。
+
+有關更多詳細，請閱讀 [參數槽](/docs/components/parameter-slot) 的文檔。
+
 ## VRCPhysBone 驅動
 
 *自 2.4.0*

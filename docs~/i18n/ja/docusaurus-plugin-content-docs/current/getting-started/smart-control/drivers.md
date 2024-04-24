@@ -34,6 +34,19 @@ sidebar_position: 3
 
 ✅: 対応, ❌: 非対応
 
+## パラメータスロット
+
+*2.5.0 以降*
+
+同じパラメータスロットを使用するSmartControlは、それぞれ特定の値が割り当てられ、1つの `int` または `float` アニメーターパラメータで制御されます。
+パラメータ値が一致するSmartControlだけが有効になります。
+
+![Parameter slot driver](/img/smartcontrol-basics-driver-parameterslot.png)
+
+この仕組みはUnity animatorのAny Stateに似ていますが、内部的には使われていません。
+
+詳しくは [パラメータスロット](/docs/components/parameter-slot) のドキュメントをお読みください。
+
 ## VRCPhysBone
 
 *2.4.0 以降*
