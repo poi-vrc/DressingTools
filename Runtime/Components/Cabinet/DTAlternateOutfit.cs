@@ -28,6 +28,7 @@ namespace Chocopoi.DressingTools.Components.Cabinet
         public List<DTSmartControl.PropertyGroup> PropertyGroups { get => m_PropertyGroups; set => m_PropertyGroups = value; }
         public DTSmartControl.SCCrossControlActions CrossControlActions { get => m_CrossControlActions; set => m_CrossControlActions = value; }
         public DTGroupDynamics GroupDynamics { get => m_GroupDynamics; set => m_GroupDynamics = value; }
+        public Transform RootTransform => transform;
 
         [SerializeField] private Texture2D m_Icon;
         [SerializeField] private DTMenuGroup m_MenuGroup;
