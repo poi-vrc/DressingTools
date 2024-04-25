@@ -18,6 +18,7 @@ namespace Chocopoi.DressingTools.Components.Cabinet
 {
     internal interface IOutfit
     {
+        Transform RootTransform { get; }
         string Name { get; }
         Texture2D Icon { get; set; }
         DTMenuGroup MenuGroup { get; set; }

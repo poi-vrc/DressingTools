@@ -233,9 +233,44 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                     Icon = outfit.Icon,
                 }, menuItemInstallPath);
 
-                GetOrAddComponent<DTMenuGroup>(outfitTransform.gameObject);
-                var menuInstall = GetOrAddComponent<DTMenuInstall>(outfitTransform.gameObject);
+                var menuInstall = GetOrAddComponent<DTMenuInstall>(outfit.MenuGroup.gameObject);
                 menuInstall.InstallPath = $"{menuItemInstallPath}/{outfit.Name}";
+            }
+        }
+
+        private static void CreateOutfitEnableItem(Context ctx, DTWardrobe wardrobeComp, DTParameterSlot slot, Transform outfitTransform, IOutfit outfit, float mappedVal)
+        {
+            if (wardrobeComp.UseAsMenuGroup)
+            {
+                // let the step later to handle it
+                var outfitEnableComp = GetOrAddComponent<DTOutfitEnableMenuItem>(outfitTransform.gameObject);
+                outfitEnableComp.Icon = outfit.Icon;
+                outfitEnableComp.TargetOutfit = outfit is DTAlternateOutfit altOutfit ? altOutfit : null;
+            }
+            else
+            {
+                // need to explicitly write to menu store
+                var menuItemInstallPath = wardrobeComp.MenuItemName;
+                if (!string.IsNullOrEmpty(wardrobeComp.MenuInstallPath))
+                {
+                    menuItemInstallPath = $"{wardrobeComp.MenuInstallPath}/{menuItemInstallPath}";
+                }
+                if (outfit.MenuGroup != null)
+                {
+                    // if outfit has menu group, this needs to be installed under the outfit's menu group
+                    menuItemInstallPath += $"/{outfit.Name}";
+                }
+                var store = ctx.Feature<MenuStore>();
+                store.Append(new ToggleItem()
+                {
+                    Name = outfit.MenuGroup != null ? "Enable" : outfit.Name, // TODO
+                    Icon = outfit.Icon,
+                    Controller = new AnimatorParameterController()
+                    {
+                        ParameterName = slot.ParameterName,
+                        ParameterValue = mappedVal
+                    }
+                }, menuItemInstallPath);
             }
         }
 
@@ -259,9 +294,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             if (baseOutfitComp.MenuGroup == null)
             {
                 // if no menu group, just create a enable menu item
-                var outfitEnableComp = GetOrAddComponent<DTOutfitEnableMenuItem>(baseOutfitComp.gameObject);
-                outfitEnableComp.Icon = baseOutfitComp.Icon;
-                outfitEnableComp.TargetOutfit = null; // base
+                CreateOutfitEnableItem(ctx, wardrobeComp, slot, baseOutfitComp.transform, baseOutfitComp, BaseValue);
                 return;
             }
 
@@ -303,9 +336,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             if (altOutfitComp.MenuGroup == null)
             {
                 // if no menu group, just create a enable menu item
-                var outfitEnableComp = GetOrAddComponent<DTOutfitEnableMenuItem>(altOutfitComp.gameObject);
-                outfitEnableComp.Icon = altOutfitComp.Icon;
-                outfitEnableComp.TargetOutfit = altOutfitComp;
+                CreateOutfitEnableItem(ctx, wardrobeComp, slot, altOutfitComp.transform, altOutfitComp, mappedVal);
                 return;
             }
 
@@ -406,7 +437,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             return menuItemInstallPath;
         }
 
-        private static void ComposeOutfitEnableItems(Context ctx, DTParameterSlot slot, List<DTAlternateOutfit> altOutfits)
+        private static void ComposeOutfitEnableItems(Context ctx, DTParameterSlot slot, DTBaseOutfit baseOutfit, List<DTAlternateOutfit> altOutfits)
         {
             var outfitEnableItems = ctx.AvatarGameObject.GetComponentsInChildren<DTOutfitEnableMenuItem>(true);
             foreach (var outfitEnableItem in outfitEnableItems)
@@ -425,8 +456,34 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 if (LookUpForWardrobe(outfitEnableItem.transform, out var wardrobeComp) && !wardrobeComp.UseAsMenuGroup)
                 {
                     // look up for wardrobe. if found, check if not used as menu group
+                    IOutfit outfit;
+                    if (outfitEnableItem.TargetOutfit != null)
+                    {
+                        outfit = outfitEnableItem.TargetOutfit;
+                    }
+                    else
+                    {
+                        outfit = baseOutfit;
+                    }
+                    var menuGroupRoot = outfit.MenuGroup != null ? outfit.MenuGroup.transform : wardrobeComp.transform;
                     var store = ctx.Feature<MenuStore>();
-                    var menuItemInstallPath = GetMenuItemInstallPath(wardrobeComp, outfitEnableItem.transform);
+
+                    // prepare install path
+                    var menuItemInstallPath = wardrobeComp.MenuItemName;
+                    if (!string.IsNullOrEmpty(wardrobeComp.MenuInstallPath))
+                    {
+                        menuItemInstallPath = $"{wardrobeComp.MenuInstallPath}/{menuItemInstallPath}";
+                    }
+                    if (outfit.MenuGroup != null)
+                    {
+                        // if outfit has menu group, this needs to be installed under the outfit's menu group
+                        menuItemInstallPath += $"/{outfit.Name}";
+                    }
+                    if (outfitEnableItem.transform.parent != menuGroupRoot)
+                    {
+                        menuItemInstallPath += $"/{AnimationUtils.GetRelativePath(outfitEnableItem.transform, menuGroupRoot)}";
+                    }
+
                     store.Append(new ToggleItem()
                     {
                         Name = outfitEnableItem.Name,
@@ -559,7 +616,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 }
             }
 
-            ComposeOutfitEnableItems(ctx, slot, altOutfits);
+            ComposeOutfitEnableItems(ctx, slot, baseOutfit, altOutfits);
             ComposeExternalOutfitItems(ctx.AvatarGameObject.transform);
         }
 

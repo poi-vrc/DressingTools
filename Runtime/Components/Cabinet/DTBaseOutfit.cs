@@ -27,6 +27,7 @@ namespace Chocopoi.DressingTools.Components.Cabinet
         public Texture2D Icon { get => m_Icon; set => m_Icon = value; }
         public DTMenuGroup MenuGroup { get => m_MenuGroup; set => m_MenuGroup = value; }
         public DTGroupDynamics GroupDynamics { get => m_GroupDynamics; set => m_GroupDynamics = value; }
+        public Transform RootTransform => transform;
 
         [SerializeField] private Texture2D m_Icon;
         [SerializeField] private DTMenuGroup m_MenuGroup;

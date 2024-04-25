@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingTools.Components.Animations;
@@ -145,11 +146,14 @@ namespace Chocopoi.DressingTools.OneConf
             outfit.GroupDynamics = comp;
         }
 
-        private void MakeToggleCustomizable(GameObject wearableObject, GameObject menuGroupRoot, CabinetAnimWearableModuleConfig.Customizable cst)
+        private void MakeToggleCustomizable(GameObject wearableObject, Transform menuGroupRoot, CabinetAnimWearableModuleConfig.Customizable cst)
         {
-            var ctrl = menuGroupRoot.AddComponent<DTSmartControl>();
+            var ctrlContainer = new GameObject(cst.name);
+            ctrlContainer.transform.SetParent(menuGroupRoot.transform);
+
+            var ctrl = ctrlContainer.AddComponent<DTSmartControl>();
             ctrl.DriverType = DTSmartControl.SCDriverType.MenuItem;
-            ctrl.MenuItemDriverConfig.ItemType = Components.Menu.DTMenuItem.ItemType.Toggle;
+            ctrl.MenuItemDriverConfig.ItemType = DTMenuItem.ItemType.Toggle;
             ctrl.AnimatorConfig.NetworkSynced = cst.networkSynced;
             ctrl.AnimatorConfig.Saved = cst.saved;
 
@@ -185,11 +189,14 @@ namespace Chocopoi.DressingTools.OneConf
             return true;
         }
 
-        private void MakeBlendshapeCustomizable(GameObject wearableObject, GameObject menuGroupRoot, CabinetAnimWearableModuleConfig.Customizable cst)
+        private void MakeBlendshapeCustomizable(GameObject wearableObject, Transform menuGroupRoot, CabinetAnimWearableModuleConfig.Customizable cst)
         {
-            var ctrl = menuGroupRoot.AddComponent<DTSmartControl>();
+            var ctrlContainer = new GameObject(cst.name);
+            ctrlContainer.transform.SetParent(menuGroupRoot.transform);
+
+            var ctrl = ctrlContainer.AddComponent<DTSmartControl>();
             ctrl.DriverType = DTSmartControl.SCDriverType.MenuItem;
-            ctrl.MenuItemDriverConfig.ItemType = Components.Menu.DTMenuItem.ItemType.Radial;
+            ctrl.MenuItemDriverConfig.ItemType = DTMenuItem.ItemType.Radial;
             ctrl.AnimatorConfig.NetworkSynced = cst.networkSynced;
             ctrl.AnimatorConfig.Saved = cst.saved;
             var mtBuilder = ctrl.AsMotionTime();
@@ -223,7 +230,7 @@ namespace Chocopoi.DressingTools.OneConf
             }
         }
 
-        private void MakeCustomizableToggles(GameObject wearableObject, CabinetAnimWearableModuleConfig module, GameObject menuGroupRoot)
+        private void MakeCustomizableToggles(GameObject wearableObject, CabinetAnimWearableModuleConfig module, Transform menuGroupRoot)
         {
             foreach (var cst in module.wearableCustomizables)
             {
@@ -265,7 +272,7 @@ namespace Chocopoi.DressingTools.OneConf
 
             if (module.wearableCustomizables.Count > 0)
             {
-                var custContainer = new GameObject("Customizables");
+                var custContainer = new GameObject("DT_Menu");
                 custContainer.transform.SetParent(wearableObject.transform);
 
                 var menuGroup = custContainer.AddComponent<DTMenuGroup>();
@@ -275,15 +282,26 @@ namespace Chocopoi.DressingTools.OneConf
                 enableItemObj.transform.SetParent(menuGroup.transform);
                 var enableItem = enableItemObj.AddComponent<DTOutfitEnableMenuItem>();
                 enableItem.TargetOutfit = outfit;
+                enableItem.Icon = icon;
 
-                MakeCustomizableToggles(wearableObject, module, custContainer);
+                MakeCustomizableToggles(wearableObject, module, custContainer.transform);
             }
 
             MakeGroupDynamics(wearableObject, module, outfit);
         }
 
+        private bool IsGenerationNeeded()
+        {
+            return _wearConfs.Values.Any(v => v.FindModuleConfig<CabinetAnimWearableModuleConfig>() != null);
+        }
+
         public void Convert()
         {
+            if (!IsGenerationNeeded())
+            {
+                return;
+            }
+
             _cabAnimConf = _cabConf.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
             if (_cabAnimConf == null)
             {
