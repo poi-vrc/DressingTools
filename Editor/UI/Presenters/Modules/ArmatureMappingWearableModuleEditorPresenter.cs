@@ -204,6 +204,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
                 return;
             }
 
+            var avatarArmature = OneConfUtils.GuessArmature(_parentView.TargetAvatar, _view.AvatarArmatureName);
             var wearableArmature = OneConfUtils.GuessArmature(_parentView.TargetWearable, _view.WearableArmatureName);
 
             // execute default dresser (dresser selection is ignored now)
@@ -211,15 +212,22 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             var settings = new StandardDresserSettings()
             {
                 SourceArmature = wearableArmature,
-                TargetArmaturePath = _view.AvatarArmatureName,
+                TargetArmaturePath = avatarArmature != null ? avatarArmature.name : _view.AvatarArmatureName,
                 DynamicsOption = ConvertToNewDynamicsOption(_view.DresserSettings.dynamicsOption)
             };
             _dresserReport = new DKReport();
             dresser.Execute(_dresserReport, _parentView.TargetAvatar, settings, out var objectMappings, out var tags);
 
-            // TODO: this is temporary for later migration to Object Mappings + Tags
-            var oldObjectMappings = ConvertToOldMappings(_parentView.TargetWearable.transform, objectMappings, tags);
-            UpdateMappingEditorView(oldObjectMappings);
+            if (objectMappings != null && tags != null)
+            {
+                // TODO: this is temporary for later migration to Object Mappings + Tags
+                var oldObjectMappings = ConvertToOldMappings(_parentView.TargetWearable.transform, objectMappings, tags);
+                UpdateMappingEditorView(oldObjectMappings);
+            }
+            else
+            {
+                UpdateMappingEditorView(null);
+            }
 
             ApplySettings();
             UpdateDresserReport();
