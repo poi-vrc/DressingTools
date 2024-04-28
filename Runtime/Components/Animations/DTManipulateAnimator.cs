@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Components.Animations
@@ -59,7 +58,7 @@ namespace Chocopoi.DressingTools.Components.Animations
         public VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.AnimLayerType VRCTargetLayer { get => m_VRCTargetLayer; set => m_VRCTargetLayer = value; }
 #endif
         public Animator TargetAnimator { get => m_TargetAnimator; set => m_TargetAnimator = value; }
-        public AnimatorController TargetController { get => m_TargetController; set => m_TargetController = value; }
+        public RuntimeAnimatorController TargetController { get => m_TargetController; set => m_TargetController = value; }
         public PathModes PathMode { get => m_PathMode; set => m_PathMode = value; }
         public ManipulateModes ManipulateMode { get => m_ManipulateMode; set => m_ManipulateMode = value; }
         public SourceTypes SourceType { get => m_SourceType; set => m_SourceType = value; }
@@ -69,7 +68,7 @@ namespace Chocopoi.DressingTools.Components.Animations
         /// ignored and the animator root will be used.
         /// </summary>
         public Transform SourceRelativeRoot { get => m_SourceRelativeRoot; set => m_SourceRelativeRoot = value; }
-        public AnimatorController SourceController { get => m_SourceController; set => m_SourceController = value; }
+        public RuntimeAnimatorController SourceController { get => m_SourceController; set => m_SourceController = value; }
         public Animator SourceAnimator { get => m_SourceAnimator; set => m_SourceAnimator = value; }
         public bool RemoveSourceAnimator { get => m_RemoveSourceAnimator; set => m_RemoveSourceAnimator = value; }
         public bool MatchTargetWriteDefaults { get => m_MatchTargetWriteDefaults; set => m_MatchTargetWriteDefaults = value; }
@@ -81,12 +80,12 @@ namespace Chocopoi.DressingTools.Components.Animations
         [SerializeField] private int m_VRCTargetLayer;
 #endif
         [SerializeField] private Animator m_TargetAnimator;
-        [SerializeField] private AnimatorController m_TargetController;
+        [SerializeField] private RuntimeAnimatorController m_TargetController;
         [SerializeField] private PathModes m_PathMode;
         [SerializeField] private ManipulateModes m_ManipulateMode;
         [SerializeField] private SourceTypes m_SourceType;
         [SerializeField] private Transform m_SourceRelativeRoot;
-        [SerializeField] private AnimatorController m_SourceController;
+        [SerializeField] private RuntimeAnimatorController m_SourceController;
         [SerializeField] private Animator m_SourceAnimator;
         [SerializeField] private bool m_RemoveSourceAnimator;
         [SerializeField] private bool m_MatchTargetWriteDefaults;
