@@ -166,7 +166,11 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 {
                     relativeRoot = avatarRoot;
                 }
-                controller = comp.SourceController;
+                if (!(comp.SourceController is AnimatorController animCtrl))
+                {
+                    return false;
+                }
+                controller = animCtrl;
                 return true;
             }
             else if (comp.SourceType == DTManipulateAnimator.SourceTypes.Animator)
