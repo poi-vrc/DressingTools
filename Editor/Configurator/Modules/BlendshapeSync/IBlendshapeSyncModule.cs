@@ -12,13 +12,9 @@
 
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Modules
 {
-    internal class OneConfCabinetProvider : IWardrobeProvider
+    internal interface IBlendshapeSyncModule : IModule
     {
-        public IOutfit GetOutfitsInAvatars(GameObject avatar)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

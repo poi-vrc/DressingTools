@@ -14,7 +14,8 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Configurator
 {
-    internal class DTBlendshapeSyncModule : IBlendshapeSyncModule
+    internal interface IWardrobeProvider
     {
+        IConfigurableOutfit GetOutfitsInAvatars(GameObject avatar);
     }
 }

@@ -9,13 +9,16 @@
  * 
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
-#if DT_MA
+
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Configurator
 {
-    internal class MABlendshapeSyncModule : IBlendshapeSyncModule
+    internal class WardrobeProvider : IWardrobeProvider
     {
+        public IConfigurableOutfit GetOutfitsInAvatars(GameObject avatar)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
-#endif

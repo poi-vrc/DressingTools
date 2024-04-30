@@ -14,11 +14,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Configurator
 {
-    internal class WardrobeProvider : IWardrobeProvider
+    internal interface IConfigurableOutfit
     {
-        public IOutfit GetOutfitsInAvatars(GameObject avatar)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -10,11 +10,15 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingTools.Configurator.Modules;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.Configurator
 {
-    internal interface IBlendshapeSyncModule
+    internal interface IAlternateOutfitProvider
     {
+        IModule GetOutfitModules(IConfigurableOutfit outfit);
+        ElementView CreateView(IConfigurableOutfit outfit);
     }
 }

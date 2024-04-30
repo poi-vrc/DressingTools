@@ -12,11 +12,11 @@
 
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Modules
 {
-    internal class OneConfArmatureMappingModule : IArmatureMergingModule
+    internal interface IArmatureMergingModule : IModule
     {
-        public Transform TargetArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public Transform SourceArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        Transform TargetArmature { get; set; }
+        Transform SourceArmature { get; set; }
     }
 }

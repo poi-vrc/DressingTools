@@ -10,13 +10,16 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Modules
 {
-    internal class DTArmatureMappingModule : IArmatureMergingModule
+    internal class OneConfBlendshapeSyncModule : IBlendshapeSyncModule
     {
-        public Transform TargetArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public Transform SourceArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public ElementView CreateView()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
