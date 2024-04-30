@@ -7,21 +7,16 @@
  * 
  * DressingTools is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingTools.Components.Menu;
-using Chocopoi.DressingTools.Components.Modifiers;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Components.Cabinet
+namespace Chocopoi.DressingTools.Configurator
 {
-    internal interface IOutfit
+    internal class OneConfArmatureMappingModule : IArmatureMergingModule
     {
-        Transform RootTransform { get; }
-        string Name { get; }
-        Texture2D Icon { get; set; }
-        DTMenuGroup MenuGroup { get; set; }
-        DTGroupDynamics GroupDynamics { get; set; }
+        public Transform TargetArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public Transform SourceArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
     }
 }

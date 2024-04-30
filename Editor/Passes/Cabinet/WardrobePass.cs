@@ -76,7 +76,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             return false;
         }
 
-        private static bool LookUpForOutfit(Transform root, out IOutfit outfit)
+        private static bool LookUpForOutfit(Transform root, out IOutfitComponent outfit)
         {
             while (root != null)
             {
@@ -212,7 +212,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             }
         }
 
-        private static void CreateOutfitSubMenu(Context ctx, DTWardrobe wardrobeComp, Transform outfitTransform, IOutfit outfit)
+        private static void CreateOutfitSubMenu(Context ctx, DTWardrobe wardrobeComp, Transform outfitTransform, IOutfitComponent outfit)
         {
             if (wardrobeComp.UseAsMenuGroup)
             {
@@ -238,7 +238,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             }
         }
 
-        private static void CreateOutfitEnableItem(Context ctx, DTWardrobe wardrobeComp, DTParameterSlot slot, Transform outfitTransform, IOutfit outfit, float mappedVal)
+        private static void CreateOutfitEnableItem(Context ctx, DTWardrobe wardrobeComp, DTParameterSlot slot, Transform outfitTransform, IOutfitComponent outfit, float mappedVal)
         {
             if (wardrobeComp.UseAsMenuGroup)
             {
@@ -456,7 +456,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 if (LookUpForWardrobe(outfitEnableItem.transform, out var wardrobeComp) && !wardrobeComp.UseAsMenuGroup)
                 {
                     // look up for wardrobe. if found, check if not used as menu group
-                    IOutfit outfit;
+                    IOutfitComponent outfit;
                     if (outfitEnableItem.TargetOutfit != null)
                     {
                         outfit = outfitEnableItem.TargetOutfit;

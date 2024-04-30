@@ -21,7 +21,7 @@ namespace Chocopoi.DressingTools.Components.Cabinet
     /// It does not contain any toggles or property groups since they are supposingly applied beforehand.
     /// </summary>
     [AddComponentMenu("")]
-    internal class DTBaseOutfit : DTBaseComponent, IOutfit
+    internal class DTBaseOutfit : DTBaseComponent, IOutfitComponent
     {
         public string Name => "Base";
         public Texture2D Icon { get => m_Icon; set => m_Icon = value; }
