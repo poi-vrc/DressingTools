@@ -10,11 +10,20 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using Chocopoi.DressingTools.Configurator.Modules;
+using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
     internal interface IConfigurableOutfit
     {
+        Transform RootTransform { get; }
+        string Name { get; }
+        Texture2D Icon { get; }
+
+        List<IModule> GetModules();
+        ElementView CreateView();
     }
 }

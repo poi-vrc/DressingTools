@@ -10,15 +10,23 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using Chocopoi.DressingTools.Components.Cabinet;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
-    internal class WardrobeProvider : IWardrobeProvider
+    internal class DTWardrobeProvider : IWardrobeProvider
     {
-        public IConfigurableOutfit GetOutfitsInAvatars(GameObject avatar)
+        public List<IConfigurableOutfit> GetOutfitsInAvatars(GameObject avatar)
         {
-            throw new System.NotImplementedException();
+            var comps = avatar.GetComponentsInChildren<DTAlternateOutfit>(true);
+            var outfits = new List<IConfigurableOutfit>();
+            foreach (var comp in comps)
+            {
+                outfits.Add(new DTConfigurableOutfit(comp));
+            }
+            return outfits;
         }
     }
 }

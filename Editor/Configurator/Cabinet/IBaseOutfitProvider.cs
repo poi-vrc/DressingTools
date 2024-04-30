@@ -12,7 +12,7 @@
 
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
     internal interface IBaseOutfitProvider
     {

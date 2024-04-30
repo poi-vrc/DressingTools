@@ -10,20 +10,33 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using Chocopoi.DressingTools.Components.Cabinet;
 using Chocopoi.DressingTools.Configurator.Modules;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
 
-namespace Chocopoi.DressingTools.Configurator
+namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
-    internal class OneConfWearableProvider : IAlternateOutfitProvider
+    internal class DTConfigurableOutfit : IConfigurableOutfit
     {
-        public ElementView CreateView(IConfigurableOutfit outfit)
+        public Transform RootTransform { get => _outfitComp.RootTransform; }
+        public string Name => _outfitComp.Name;
+        public Texture2D Icon => _outfitComp.Icon;
+
+        private readonly DTAlternateOutfit _outfitComp;
+
+        public DTConfigurableOutfit(DTAlternateOutfit outfitComp)
+        {
+            _outfitComp = outfitComp;
+        }
+
+        public ElementView CreateView()
         {
             throw new System.NotImplementedException();
         }
 
-        public IModule GetOutfitModules(IConfigurableOutfit outfit)
+        public List<IModule> GetModules()
         {
             throw new System.NotImplementedException();
         }
