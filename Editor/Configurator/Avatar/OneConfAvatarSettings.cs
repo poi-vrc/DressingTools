@@ -18,7 +18,6 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Configurator.Avatar
 {
-
     internal class OneConfAvatarSettings : IAvatarSettings
     {
         public WriteDefaultsModes WriteDefaultsMode
