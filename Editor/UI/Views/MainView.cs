@@ -18,7 +18,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
 using UnityEngine;
@@ -60,7 +59,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowExitPrefabModeHelpbox { get; set; }
 
         private MainPresenter _presenter;
-        private CabinetSubView _cabinetSubView;
+        private AvatarSubView _avatarSubView;
         private DressingSubView _dressingSubView;
         private SettingsSubView _settingsSubView;
         private int _selectedTab;
@@ -73,7 +72,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public MainView()
         {
             _presenter = new MainPresenter(this);
-            _cabinetSubView = new CabinetSubView(this);
+            _avatarSubView = new AvatarSubView(this);
             _dressingSubView = new DressingSubView(this);
             _settingsSubView = new SettingsSubView(this);
 
@@ -89,11 +88,11 @@ namespace Chocopoi.DressingTools.UI.Views
             _dressingSubView.StartDressing(targetAvatar, targetWearable);
         }
 
-        public void SelectCabinet(DTCabinet cabinet) => _cabinetSubView.SelectCabinet(cabinet);
+        public void SelectAvatar(GameObject avatarGameObject) => _avatarSubView.SelectAvatar(avatarGameObject);
 
         public void ForceUpdateCabinetSubView()
         {
-            _cabinetSubView.RaiseForceUpdateViewEvent();
+            _avatarSubView.RaiseForceUpdateViewEvent();
         }
 
         public override void OnEnable()
@@ -105,7 +104,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             t.LocalizeElement(this);
 
-            _cabinetSubView.OnEnable();
+            _avatarSubView.OnEnable();
             _dressingSubView.OnEnable();
             _settingsSubView.OnEnable();
         }
@@ -120,7 +119,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 styleSheets.Add(styleSheet);
             }
 
-            _cabinetSubView.style.display = DisplayStyle.Flex;
+            _avatarSubView.style.display = DisplayStyle.Flex;
             // hide all
             _dressingSubView.style.display = DisplayStyle.None;
             _settingsSubView.style.display = DisplayStyle.None;
@@ -129,7 +128,7 @@ namespace Chocopoi.DressingTools.UI.Views
             _tabContainer = Q<VisualElement>("tab").First();
 
             _tabContentContainer = Q<VisualElement>("tab-content").First();
-            _tabContentContainer.Add(_cabinetSubView);
+            _tabContentContainer.Add(_avatarSubView);
             _tabContentContainer.Add(_dressingSubView);
             _tabContentContainer.Add(_settingsSubView);
 
@@ -169,13 +168,13 @@ namespace Chocopoi.DressingTools.UI.Views
             }
 
             // hide all
-            _cabinetSubView.style.display = DisplayStyle.None;
+            _avatarSubView.style.display = DisplayStyle.None;
             _dressingSubView.style.display = DisplayStyle.None;
             _settingsSubView.style.display = DisplayStyle.None;
 
             if (_selectedTab == 0)
             {
-                _cabinetSubView.style.display = DisplayStyle.Flex;
+                _avatarSubView.style.display = DisplayStyle.Flex;
             }
             else if (_selectedTab == 1)
             {
@@ -190,7 +189,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public override void OnDisable()
         {
             base.OnDisable();
-            _cabinetSubView.OnDisable();
+            _avatarSubView.OnDisable();
             _dressingSubView.OnDisable();
             _settingsSubView.OnDisable();
         }

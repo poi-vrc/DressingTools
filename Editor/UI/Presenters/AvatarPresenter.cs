@@ -16,26 +16,20 @@
  */
 
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
-using Chocopoi.DressingTools.OneConf;
-using Chocopoi.DressingTools.OneConf.Cabinet;
-using Chocopoi.DressingTools.OneConf.Cabinet.Modules.BuiltIn;
-using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
 using UnityEngine;
 
 namespace Chocopoi.DressingTools.UI.Presenters
 {
-    internal class CabinetPresenter
+    internal class AvatarPresenter
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private ICabinetSubView _view;
-        private CabinetConfig _cabinetConfig;
+        private IAvatarSubView _view;
 
-        public CabinetPresenter(ICabinetSubView view)
+        public AvatarPresenter(IAvatarSubView view)
         {
             _view = view;
 
@@ -47,13 +41,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
-            _view.AddWearableButtonClick += OnAddWearableButtonClick;
+            _view.AddOutfitButtonClick += OnAddOutfitButtonClick;
             _view.ForceUpdateView += OnForceUpdateView;
-            _view.SelectedCabinetChange += OnSelectedCabinetChange;
-            _view.CabinetSettingsChange += OnCabinetSettingsChange;
-            _view.ToolbarCreateCabinetButtonClick += OnToolbarCreateCabinetButtonClick;
-            _view.CreateCabinetStartButtonClick += OnCreateCabinetStartButtonClick;
-            _view.CreateCabinetBackButtonClick += OnCreateCabinetBackButtonClick;
+            _view.SelectedAvatarChange += OnSelectedCabinetChange;
+            _view.AvatarSettingsChange += OnAvatarSettingsChange;
 
             EditorApplication.hierarchyChanged += OnHierarchyChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
@@ -64,13 +55,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
-            _view.AddWearableButtonClick -= OnAddWearableButtonClick;
+            _view.AddOutfitButtonClick -= OnAddOutfitButtonClick;
             _view.ForceUpdateView -= OnForceUpdateView;
-            _view.SelectedCabinetChange -= OnSelectedCabinetChange;
-            _view.CabinetSettingsChange -= OnCabinetSettingsChange;
-            _view.ToolbarCreateCabinetButtonClick -= OnToolbarCreateCabinetButtonClick;
-            _view.CreateCabinetStartButtonClick -= OnCreateCabinetStartButtonClick;
-            _view.CreateCabinetBackButtonClick -= OnCreateCabinetBackButtonClick;
+            _view.SelectedAvatarChange -= OnSelectedCabinetChange;
+            _view.AvatarSettingsChange -= OnAvatarSettingsChange;
 
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
@@ -82,32 +70,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 UpdateView();
             }
-        }
-
-        private void OnCreateCabinetBackButtonClick()
-        {
-            _view.ShowCreateCabinetPanel = false;
-            UpdateView();
-        }
-
-        private void OnCreateCabinetStartButtonClick()
-        {
-            if (_view.CreateCabinetAvatarGameObject == null)
-            {
-                return;
-            }
-            OneConfUtils.GetAvatarCabinet(_view.CreateCabinetAvatarGameObject, true);
-            _view.ShowCreateCabinetPanel = false;
-            UpdateView();
-        }
-
-        private void OnToolbarCreateCabinetButtonClick()
-        {
-            _view.ShowCreateCabinetPanel = true;
-            _view.ShowCreateCabinetBackButton = true;
-            _view.CreateCabinetAvatarGameObject = null;
-
-            UpdateView();
         }
 
         private void OnHierarchyChanged()
@@ -122,7 +84,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UpdateView();
         }
 
-        private void OnCabinetSettingsChange()
+        private void OnAvatarSettingsChange()
         {
             var cabinets = OneConfUtils.GetAllCabinets();
 
@@ -134,7 +96,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
             _view.ShowCreateCabinetBackButton = true;
 
-            var cabinet = cabinets[_view.SelectedCabinetIndex];
+            var cabinet = cabinets[_view.SelectedAvatarIndex];
 
             cabinet.RootGameObject = _view.CabinetAvatarGameObject;
 
@@ -147,7 +109,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _cabinetConfig.avatarArmatureName = _view.CabinetAvatarArmatureName;
             _cabinetConfig.groupDynamics = _view.CabinetGroupDynamics;
             _cabinetConfig.groupDynamicsSeparateGameObjects = _view.CabinetGroupDynamicsSeparateGameObjects;
-            _cabinetConfig.animationWriteDefaultsMode = (CabinetConfig.WriteDefaultsMode)_view.CabinetAnimationWriteDefaultsMode;
+            _cabinetConfig.animationWriteDefaultsMode = (CabinetConfig.WriteDefaultsMode)_view.SettingsAnimationWriteDefaultsMode;
 
             var cabAnimConfig = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
             if (cabAnimConfig == null)
@@ -196,7 +158,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             {
                 if (cabinets[i] == cabinet)
                 {
-                    _view.SelectedCabinetIndex = i;
+                    _view.SelectedAvatarIndex = i;
                     break;
                 }
             }
@@ -208,10 +170,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void UpdateCabinetSelectionDropdown(DTCabinet[] cabinets)
         {
             // cabinet selection dropdown
-            _view.AvailableCabinetSelections.Clear();
+            _view.AvailableAvatarSelections.Clear();
             for (var i = 0; i < cabinets.Length; i++)
             {
-                _view.AvailableCabinetSelections.Add(cabinets[i].RootGameObject != null ? cabinets[i].RootGameObject.name : t._("cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
+                _view.AvailableAvatarSelections.Add(cabinets[i].RootGameObject != null ? cabinets[i].RootGameObject.name : t._("cabinet.editor.cabinetContent.popup.cabinetOptions.cabinetNameNoGameObjectAttached", i + 1));
             }
         }
 
@@ -229,17 +191,17 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             UpdateCabinetSelectionDropdown(cabinets);
 
-            if (_view.SelectedCabinetIndex < 0 || _view.SelectedCabinetIndex >= cabinets.Length)
+            if (_view.SelectedAvatarIndex < 0 || _view.SelectedAvatarIndex >= cabinets.Length)
             {
                 // invalid selected cabinet index, setting it back to 0
-                _view.SelectedCabinetIndex = 0;
+                _view.SelectedAvatarIndex = 0;
             }
 
             // clear views
-            _view.InstalledWearablePreviews.Clear();
+            _view.InstalledOutfitPreviews.Clear();
 
             // update selected cabinet view
-            var cabinet = cabinets[_view.SelectedCabinetIndex];
+            var cabinet = cabinets[_view.SelectedAvatarIndex];
 
             // cabinet json is broken, ask user whether to make a new one or not
             if (!CabinetConfigUtility.TryDeserialize(cabinet.ConfigJson, out _cabinetConfig) || !_cabinetConfig.IsValid())
@@ -253,7 +215,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _view.CabinetAvatarArmatureName = _cabinetConfig.avatarArmatureName;
             _view.CabinetGroupDynamics = _cabinetConfig.groupDynamics;
             _view.CabinetGroupDynamicsSeparateGameObjects = _cabinetConfig.groupDynamicsSeparateGameObjects;
-            _view.CabinetAnimationWriteDefaultsMode = (int)_cabinetConfig.animationWriteDefaultsMode;
+            _view.SettingsAnimationWriteDefaultsMode = (int)_cabinetConfig.animationWriteDefaultsMode;
             UpdateCabinetAnimationConfig();
 
             var wearables = OneConfUtils.GetCabinetWearables(cabinet.RootGameObject);
@@ -261,7 +223,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
             foreach (var wearable in wearables)
             {
                 var config = WearableConfigUtility.Deserialize(wearable.ConfigJson);
-                _view.InstalledWearablePreviews.Add(new WearablePreview()
+                _view.InstalledOutfitPreviews.Add(new OutfitPreview()
                 {
                     name = config != null ?
                         config.info.name :
@@ -289,17 +251,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
         }
 
-        private void UpdateCabinetAnimationConfig()
-        {
-            var cabAnimConfig = _cabinetConfig.FindModuleConfig<CabinetAnimCabinetModuleConfig>() ?? new CabinetAnimCabinetModuleConfig();
-            _view.CabinetUseThumbnailsAsMenuIcons = cabAnimConfig.thumbnails;
-            _view.CabinetMenuInstallPath = cabAnimConfig.menuInstallPath;
-            _view.CabinetMenuItemName = cabAnimConfig.menuItemName;
-            _view.CabinetNetworkSynced = cabAnimConfig.networkSynced;
-            _view.CabinetSaved = cabAnimConfig.saved;
-            _view.CabinetResetCustomizablesOnSwitch = cabAnimConfig.resetCustomizablesOnSwitch;
-        }
-
         private void UpdateView()
         {
             UpdateCabinetContentView();
@@ -316,17 +267,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
             UnsubscribeEvents();
         }
 
-        private void OnAddWearableButtonClick()
+        private void OnAddOutfitButtonClick()
         {
-            var cabinets = OneConfUtils.GetAllCabinets();
-
-            if (cabinets.Length == 0 || _view.SelectedCabinetIndex < 0 || _view.SelectedCabinetIndex >= cabinets.Length)
-            {
-                return;
-            }
-
-            var cabinet = cabinets[_view.SelectedCabinetIndex];
-            _view.StartDressing(cabinet.RootGameObject);
+            _view.StartDressing(_view.SelectedAvatarGameObject);
         }
     }
 }

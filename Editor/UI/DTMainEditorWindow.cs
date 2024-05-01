@@ -17,7 +17,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
@@ -46,7 +45,7 @@ namespace Chocopoi.DressingTools.UI
             window.Show();
         }
 
-        public void SelectCabinet(DTCabinet cabinet) => _view.SelectCabinet(cabinet);
+        public void SelectAvatar(GameObject avatarGameObject) => _view.SelectAvatar(avatarGameObject);
 
         public void StartDressing(GameObject avatarGameObject, GameObject wearableGameObject)
         {

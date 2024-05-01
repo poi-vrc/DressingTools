@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.OneConf;
@@ -71,7 +72,7 @@ namespace Chocopoi.DressingTools.Configurator.Modules
 
         public override VisualElement CreateView()
         {
-            return new ArmatureMappingWearableModuleEditor(null, null, null);
+            throw new NotImplementedException();
         }
     }
 }
