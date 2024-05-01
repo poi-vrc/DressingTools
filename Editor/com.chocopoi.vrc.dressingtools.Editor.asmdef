@@ -1,10 +1,12 @@
 {
     "name": "com.chocopoi.vrc.dressingtools.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:85e555d1cc87ace4d8e14fcfe9062453",
         "GUID:97650872dc498bb4597e0bbf23109900",
         "GUID:8eb5b149dedbba24490f0743a2ab1e61",
-        "GUID:dcaf16fd99f37914888e6e13bdf533ea"
+        "GUID:dcaf16fd99f37914888e6e13bdf533ea",
+        "GUID:fc900867c0f47cd49b6e2ae4ef907300"
     ],
     "includePlatforms": [
         "Editor"

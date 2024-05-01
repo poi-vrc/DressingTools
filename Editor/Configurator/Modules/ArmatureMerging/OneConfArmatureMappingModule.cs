@@ -14,8 +14,9 @@ using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.OneConf;
 using Chocopoi.DressingTools.OneConf.Wearable.Modules.BuiltIn;
-using Chocopoi.DressingTools.UI.Views;
+using Chocopoi.DressingTools.UI.Views.Modules;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
@@ -68,9 +69,9 @@ namespace Chocopoi.DressingTools.Configurator.Modules
         {
         }
 
-        public override ElementView CreateView()
+        public override VisualElement CreateView()
         {
-            throw new System.NotImplementedException();
+            return new ArmatureMappingWearableModuleEditor(null, null, null);
         }
     }
 }

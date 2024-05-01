@@ -11,16 +11,25 @@
  */
 #if DT_MA
 using Chocopoi.DressingTools.UI.Views;
+using nadena.dev.modular_avatar.core;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
     internal class MAMergeArmatureModule : IArmatureMergingModule
     {
-        public Transform TargetArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public Transform SourceArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public Transform TargetArmature { get => _comp.mergeTargetObject != null ? _comp.mergeTargetObject.transform : null; set => _comp.mergeTarget.Set(value != null ? value.gameObject : null); }
+        public Transform SourceArmature { get => _comp.transform; }
 
-        public ElementView CreateView()
+        private readonly ModularAvatarMergeArmature _comp;
+
+        public MAMergeArmatureModule(ModularAvatarMergeArmature comp)
+        {
+            _comp = comp;
+        }
+
+        public VisualElement CreateView()
         {
             throw new System.NotImplementedException();
         }

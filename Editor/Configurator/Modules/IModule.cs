@@ -10,13 +10,12 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingTools.UI.Views;
-using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
     internal interface IModule
     {
-        ElementView CreateView();
+        VisualElement CreateView();
     }
 }

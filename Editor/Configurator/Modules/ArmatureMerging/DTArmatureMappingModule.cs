@@ -10,17 +10,38 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Chocopoi.DressingTools.UI.Views;
+using Chocopoi.AvatarLib.Animations;
+using Chocopoi.DressingTools.Components.Modifiers;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
     internal class DTArmatureMappingModule : IArmatureMergingModule
     {
-        public Transform TargetArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public Transform SourceArmature { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public Transform TargetArmature
+        {
+            get => string.IsNullOrEmpty(_comp.TargetArmaturePath) ?
+                null :
+                _avatarGameObject.transform.Find(_comp.TargetArmaturePath);
+            set =>
+                _comp.TargetArmaturePath =
+                    (value == null || value == _avatarGameObject.transform) ?
+                    "" :
+                    AnimationUtils.GetRelativePath(value.transform, _avatarGameObject.transform);
+        }
+        public Transform SourceArmature { get => _comp.SourceArmature; set => _comp.SourceArmature = value; }
 
-        public ElementView CreateView()
+        private readonly GameObject _avatarGameObject;
+        private readonly DTArmatureMapping _comp;
+
+        public DTArmatureMappingModule(GameObject avatarGameObject, DTArmatureMapping comp)
+        {
+            _avatarGameObject = avatarGameObject;
+            _comp = comp;
+        }
+
+        public VisualElement CreateView()
         {
             throw new System.NotImplementedException();
         }

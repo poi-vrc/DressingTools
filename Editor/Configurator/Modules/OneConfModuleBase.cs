@@ -17,6 +17,7 @@ using Chocopoi.DressingTools.OneConf.Serialization;
 using Chocopoi.DressingTools.OneConf.Wearable;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
@@ -31,7 +32,7 @@ namespace Chocopoi.DressingTools.Configurator.Modules
             _wearableComp = wearableComp;
         }
 
-        public abstract ElementView CreateView();
+        public abstract VisualElement CreateView();
 
         protected void ReadCabinetConfig(out DTCabinet comp, out CabinetConfig config)
         {

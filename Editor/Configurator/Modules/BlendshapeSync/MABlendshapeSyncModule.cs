@@ -10,14 +10,13 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 #if DT_MA
-using Chocopoi.DressingTools.UI.Views;
-using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
     internal class MABlendshapeSyncModule : IBlendshapeSyncModule
     {
-        public ElementView CreateView()
+        public VisualElement CreateView()
         {
             throw new System.NotImplementedException();
         }

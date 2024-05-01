@@ -17,6 +17,6 @@ namespace Chocopoi.DressingTools.Configurator.Modules
     internal interface IArmatureMergingModule : IModule
     {
         Transform TargetArmature { get; set; }
-        Transform SourceArmature { get; set; }
+        Transform SourceArmature { get; }
     }
 }

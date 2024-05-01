@@ -11,13 +11,13 @@
  */
 
 using Chocopoi.DressingTools.UI.Views;
-using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Modules
 {
     internal class DTBlendshapeSyncModule : IBlendshapeSyncModule
     {
-        public ElementView CreateView()
+        public VisualElement CreateView()
         {
             throw new System.NotImplementedException();
         }
