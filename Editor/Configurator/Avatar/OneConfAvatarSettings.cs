@@ -14,26 +14,39 @@ using System;
 using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.OneConf.Cabinet;
 using Chocopoi.DressingTools.OneConf.Serialization;
-using Chocopoi.DressingTools.OneConf.Wearable;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-namespace Chocopoi.DressingTools.Configurator.Modules
+namespace Chocopoi.DressingTools.Configurator.Avatar
 {
-    internal abstract class OneConfModuleBase : IModule
-    {
-        protected readonly GameObject _avatarGameObject;
-        protected readonly DTWearable _wearableComp;
 
-        public OneConfModuleBase(GameObject avatarGameObject, DTWearable wearableComp)
+    internal class OneConfAvatarSettings : IAvatarSettings
+    {
+        public WriteDefaultsModes WriteDefaultsMode
         {
-            _avatarGameObject = avatarGameObject;
-            _wearableComp = wearableComp;
+            get
+            {
+                ReadCabinetConfig(out _, out var config);
+                // TODO: should explicit convert them one by one
+                return (WriteDefaultsModes)config.animationWriteDefaultsMode;
+            }
+            set
+            {
+                WriteCabinetConfig((comp, config) =>
+                {
+                    // TODO: should explicit convert them one by one
+                    config.animationWriteDefaultsMode = (CabinetConfig.WriteDefaultsMode)value;
+                });
+            }
         }
 
-        public abstract VisualElement CreateView();
+        private readonly GameObject _avatarGameObject;
 
-        protected void ReadCabinetConfig(out DTCabinet comp, out CabinetConfig config)
+        public OneConfAvatarSettings(GameObject avatarGameObject)
+        {
+            _avatarGameObject = avatarGameObject;
+        }
+
+        private void ReadCabinetConfig(out DTCabinet comp, out CabinetConfig config)
         {
             if (_avatarGameObject.TryGetComponent(out comp))
             {
@@ -49,7 +62,7 @@ namespace Chocopoi.DressingTools.Configurator.Modules
             }
         }
 
-        protected void WriteCabinetConfig(Action<DTCabinet, CabinetConfig> func)
+        private void WriteCabinetConfig(Action<DTCabinet, CabinetConfig> func)
         {
             CabinetConfig config;
             if (_avatarGameObject.TryGetComponent<DTCabinet>(out var cabinetComp))
@@ -66,48 +79,6 @@ namespace Chocopoi.DressingTools.Configurator.Modules
             }
             func?.Invoke(cabinetComp, config);
             cabinetComp.ConfigJson = CabinetConfigUtility.Serialize(config);
-        }
-
-        protected void ReadWearableConfig(out WearableConfig config)
-        {
-            if (!WearableConfigUtility.TryDeserialize(_wearableComp.ConfigJson, out config))
-            {
-                config = null;
-            }
-        }
-
-        protected void ReadWearableModule<T>(out T module) where T : IModuleConfig
-        {
-            ReadWearableConfig(out var config);
-            if (config == null)
-            {
-                module = default;
-                return;
-            }
-            module = config.FindModuleConfig<T>();
-        }
-
-        protected void WriteWearableConfig(Action<WearableConfig> func)
-        {
-            if (!WearableConfigUtility.TryDeserialize(_wearableComp.ConfigJson, out var config))
-            {
-                return;
-            }
-            func?.Invoke(config);
-            _wearableComp.ConfigJson = WearableConfigUtility.Serialize(config);
-        }
-
-        protected void WriteWearableModule<T>(Action<T> func) where T : IModuleConfig
-        {
-            WriteWearableConfig((config) =>
-            {
-                var module = config.FindModuleConfig<T>();
-                if (module == null)
-                {
-                    return;
-                }
-                func?.Invoke(module);
-            });
         }
     }
 }
