@@ -12,7 +12,9 @@
 
 using System.Collections.Generic;
 using Chocopoi.DressingFramework;
+using Chocopoi.DressingTools.Components.Cabinet;
 using Chocopoi.DressingTools.Components.OneConf;
+using Chocopoi.DressingTools.Configurator.Cabinet;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,8 +22,18 @@ namespace Chocopoi.DressingTools.Configurator.Avatar
 {
     internal static class AvatarUtils
     {
+        public static List<GameObject> FindSceneAvatars(Scene scene)
+        {
+            return DKRuntimeUtils.FindSceneAvatars(scene);
+        }
+
         public static IAvatarSettings GetAvatarSettings(GameObject avatarGameObject)
         {
+            if (avatarGameObject == null)
+            {
+                return null;
+            }
+
             if (avatarGameObject.TryGetComponent<DTCabinet>(out _))
             {
                 return new OneConfAvatarSettings(avatarGameObject);
@@ -30,9 +42,22 @@ namespace Chocopoi.DressingTools.Configurator.Avatar
             return null;
         }
 
-        public static List<GameObject> FindSceneAvatars(Scene scene)
+        public static IWardrobeProvider GetWardrobeProvider(GameObject avatarGameObject)
         {
-            return DKRuntimeUtils.FindSceneAvatars(scene);
+            if (avatarGameObject == null)
+            {
+                return null;
+            }
+
+            if (avatarGameObject.TryGetComponent<DTCabinet>(out _))
+            {
+                return new OneConfCabinetProvider(avatarGameObject);
+            }
+            if (avatarGameObject.TryGetComponent<DTWardrobe>(out _))
+            {
+                return new DTWardrobeProvider(avatarGameObject);
+            }
+            return null;
         }
     }
 }

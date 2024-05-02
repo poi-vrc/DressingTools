@@ -17,6 +17,7 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
     internal interface IWardrobeProvider
     {
-        List<IConfigurableOutfit> GetOutfitsInAvatars(GameObject avatar);
+        List<IConfigurableOutfit> GetOutfits();
+        void RemoveOutfit(IConfigurableOutfit outfit);
     }
 }

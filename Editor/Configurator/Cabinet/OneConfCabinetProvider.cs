@@ -18,15 +18,27 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
     internal class OneConfCabinetProvider : IWardrobeProvider
     {
-        public List<IConfigurableOutfit> GetOutfitsInAvatars(GameObject avatarGameObject)
+        private readonly GameObject _avatarGameObject;
+
+        public OneConfCabinetProvider(GameObject avatarGameObject)
         {
-            var wearables = OneConfUtils.GetCabinetWearables(avatarGameObject);
+            _avatarGameObject = avatarGameObject;
+        }
+
+        public List<IConfigurableOutfit> GetOutfits()
+        {
+            var wearables = OneConfUtils.GetCabinetWearables(_avatarGameObject);
             var outfits = new List<IConfigurableOutfit>();
             foreach (var wearable in wearables)
             {
-                outfits.Add(new OneConfConfigurableOutfit(avatarGameObject, wearable));
+                outfits.Add(new OneConfConfigurableOutfit(_avatarGameObject, wearable));
             }
             return outfits;
+        }
+
+        public void RemoveOutfit(IConfigurableOutfit outfit)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

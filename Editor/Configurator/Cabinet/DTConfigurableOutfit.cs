@@ -15,6 +15,7 @@ using Chocopoi.DressingTools.Components.Cabinet;
 using Chocopoi.DressingTools.Configurator.Modules;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
@@ -31,7 +32,7 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
             _outfitComp = outfitComp;
         }
 
-        public ElementView CreateView()
+        public VisualElement CreateView()
         {
             throw new System.NotImplementedException();
         }

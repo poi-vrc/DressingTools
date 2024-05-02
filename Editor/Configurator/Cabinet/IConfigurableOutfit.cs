@@ -12,8 +12,8 @@
 
 using System.Collections.Generic;
 using Chocopoi.DressingTools.Configurator.Modules;
-using Chocopoi.DressingTools.UI.Views;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
@@ -24,6 +24,6 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
         Texture2D Icon { get; }
 
         List<IModule> GetModules();
-        ElementView CreateView();
+        VisualElement CreateView();
     }
 }

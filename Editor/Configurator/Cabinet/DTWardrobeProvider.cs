@@ -18,9 +18,16 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
 {
     internal class DTWardrobeProvider : IWardrobeProvider
     {
-        public List<IConfigurableOutfit> GetOutfitsInAvatars(GameObject avatar)
+        private readonly GameObject _avatarGameObject;
+
+        public DTWardrobeProvider(GameObject avatarGameObject)
         {
-            var comps = avatar.GetComponentsInChildren<DTAlternateOutfit>(true);
+            _avatarGameObject = avatarGameObject;
+        }
+
+        public List<IConfigurableOutfit> GetOutfits()
+        {
+            var comps = _avatarGameObject.GetComponentsInChildren<DTAlternateOutfit>(true);
             var outfits = new List<IConfigurableOutfit>();
             foreach (var comp in comps)
             {
