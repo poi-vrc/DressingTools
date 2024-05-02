@@ -35,5 +35,10 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
             }
             return outfits;
         }
+
+        public void RemoveOutfit(IConfigurableOutfit outfit)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

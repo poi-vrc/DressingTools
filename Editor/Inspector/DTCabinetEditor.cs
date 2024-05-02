@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools
                 var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
                 window.titleContent = new GUIContent(t._("tool.name"));
                 window.Show();
-                window.SelectCabinet(cabinet);
+                window.SelectAvatar(cabinet.RootGameObject);
             }
         }
     }
