@@ -10,13 +10,29 @@
  * You should have received a copy of the GNU General Public License along with DressingFramework. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using Chocopoi.DressingFramework;
+using Chocopoi.DressingTools.Components.OneConf;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Chocopoi.DressingTools.Configurator.Avatar
 {
-    internal interface IAvatarProvider
+    internal static class AvatarUtils
     {
-        GameObject[] GetSceneAvatars();
-        IAvatarSettings GetAvatarSettings(GameObject avatarGameObject);
+        public static IAvatarSettings GetAvatarSettings(GameObject avatarGameObject)
+        {
+            if (avatarGameObject.TryGetComponent<DTCabinet>(out _))
+            {
+                return new OneConfAvatarSettings(avatarGameObject);
+            }
+            // TODO: standalone avatar settings component
+            return null;
+        }
+
+        public static List<GameObject> FindSceneAvatars(Scene scene)
+        {
+            return DKRuntimeUtils.FindSceneAvatars(scene);
+        }
     }
 }
