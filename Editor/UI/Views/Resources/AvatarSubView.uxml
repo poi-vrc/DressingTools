@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <ui:ScrollView style="flex-grow: 1;">
         <ui:VisualElement name="create-cabinet-container" style="display: none;">
             <ui:Label text="@cabinet.editor.createCabinet.label.welcome" class="create-cabinet-welcome-header mb-16" />
@@ -11,7 +11,6 @@
         </ui:VisualElement>
         <ui:VisualElement name="cabinet-content-container">
             <uie:Toolbar name="toolbar" style="flex-direction: row; flex-shrink: 1; justify-content: flex-end;">
-                <uie:ToolbarButton text="@cabinet.editor.cabinetContent.toolbar.btn.createCabinet" name="toolbar-create-cabinet-btn"/>
                 <ui:VisualElement style="flex-grow: 1;" />
                 <uie:ToolbarButton text="@cabinet.editor.cabinetContent.displayModes.icons" name="btn-display-mode-icons" />
                 <uie:ToolbarButton text="@cabinet.editor.cabinetContent.displayModes.list" name="btn-display-mode-list" />

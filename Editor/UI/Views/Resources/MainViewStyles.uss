@@ -20,3 +20,9 @@
     color: rgba(255, 0, 0, 255);
     -unity-font-style: bold;
 }
+
+#debug-info {
+    position: absolute;
+    top: 0;
+    right: 0;
+}

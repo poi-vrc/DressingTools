@@ -1,19 +1,16 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="background-image: resource(&apos;dt-banner&apos;); width: auto; -unity-background-scale-mode: scale-to-fit; height: 56px; margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px;">
-        <Style src="MainViewStyles.uss" />
-    </ui:VisualElement>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/Resources/MainViewStyles.uss?fileID=7433441132597879392&amp;guid=607271208986b9f49a7cd4ae0ac91ce5&amp;type=3#MainViewStyles" />
+    <Style src="project://database/Assets/Resources/ToolStyles.uss?fileID=7433441132597879392&amp;guid=c805353196cf7d8478ff13684c31cc47&amp;type=3#ToolStyles" />
+    <ui:VisualElement class="dt-configurator-icon" />
     <ui:Foldout text="Update available" name="update-available-foldout">
-        <Style src="MainViewStyles.uss" />
         <ui:Button text="@main.editor.updateAvailable.btn.update" name="update-available-update-btn" />
     </ui:Foldout>
     <ui:VisualElement name="helpbox-container" />
     <uie:Toolbar name="tab" style="flex-direction: row; width: 100%;">
-        <Style src="MainViewStyles.uss" />
-        <uie:ToolbarButton text="@main.editor.tabs.cabinet" name="tab-cabinet" />
-        <uie:ToolbarButton text="@main.editor.tabs.dressing" name="tab-dressing" />
-        <uie:ToolbarButton text="@main.editor.tabs.settings" name="tab-settings" />
+        <uie:ToolbarButton text="@main.editor.tabs.avatar" name="tab-cabinet" />
+        <uie:ToolbarButton text="@main.editor.tabs.dress" name="tab-dressing" />
+        <uie:ToolbarButton text="@main.editor.tabs.toolSettings" name="tab-tool-settings" />
     </uie:Toolbar>
-    <ui:VisualElement name="tab-content" style="flex-grow: 1;">
-        <Style src="MainViewStyles.uss" />
-    </ui:VisualElement>
+    <ui:VisualElement name="tab-content" style="flex-grow: 1;" />
+    <ui:VisualElement name="debug-info" style="flex-grow: 1; align-items: flex-end; color: rgb(73, 73, 73);" />
 </ui:UXML>

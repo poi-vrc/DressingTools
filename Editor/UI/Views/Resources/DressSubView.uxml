@@ -1,15 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:ScrollView style="flex-grow: 1;">
         <ui:Foldout text="@dressing.editor.foldout.setup" name="foldout-setup" class="foldout-header">
-            <Style src="DressingSubViewStyles.uss" />
+            <Style src="DressSubViewStyles.uss" />
         </ui:Foldout>
         <ui:VisualElement name="setup-container">
-            <Style src="DressingSubViewStyles.uss" />
+            <Style src="DressSubViewStyles.uss" />
             <uie:ObjectField label="@dressing.editor.gameObjectField.avatar" name="objectfield-avatar" />
             <uie:ObjectField label="@dressing.editor.gameObjectField.wearable" name="objectfield-wearable" />
         </ui:VisualElement>
         <ui:VisualElement class="dressing-container">
-            <Style src="DressingSubViewStyles.uss" />
+            <Style src="DressSubViewStyles.uss" />
             <ui:VisualElement name="config-view-container" />
         </ui:VisualElement>
     </ui:ScrollView>

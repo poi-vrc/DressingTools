@@ -1,6 +1,6 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/Resources/SettingsSubViewStyles.uss?fileID=7433441132597879392&amp;guid=9efceb54e5257fe47b439336dca6d150&amp;type=3#SettingsSubViewStyles" />
     <ui:ScrollView style="flex-grow: 1;">
-        <Style src="SettingsSubViewStyles.uss" />
         <ui:VisualElement name="language-popup-container" />
         <ui:VisualElement name="language-helpbox-container" />
         <ui:Foldout text="@settings.editor.updateChecker.foldout">
