@@ -105,7 +105,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             }
         }
 
-        private void AssertParameterSlotState(AnimatorController ac, AnimatorOptions options, DTParameterSlot slot, DTSmartControl sc)
+        private void AssertParameterSlotState(AnimatorController ac, AnimatorOptions options, DTParameterSlot slot, DTSmartControl sc, DTSmartControl another1, DTSmartControl another2)
         {
             var entryState = GetLayerState(0, ac, "Entry", options.writeDefaults);
             Assert.AreEqual(3, entryState.transitions.Length);
@@ -128,14 +128,34 @@ namespace Chocopoi.DressingTools.Tests.Animations
             ).Count() == 1);
 
             var prepareDisabledState = GetLayerState(0, ac, $"{sc.name} Prepare Disabled", options.writeDefaults);
-            Assert.AreEqual(1, prepareDisabledState.transitions.Length);
+            // expects to have 3 transitions: Entry, and the another two SC
+            Assert.AreEqual(3, prepareDisabledState.transitions.Length);
             Assert.True(prepareDisabledState.transitions.Where(t =>
+                t.conditions.Where(c =>
+                    c.parameter == slot.ParameterName &&
+                    c.mode == AnimatorConditionMode.Equals &&
+                    c.threshold == another1.ParameterSlotConfig.MappedValue
+                ).Count() == 1
+            ).Count() == 1);
+            Assert.True(prepareDisabledState.transitions.Where(t =>
+                t.conditions.Where(c =>
+                    c.parameter == slot.ParameterName &&
+                    c.mode == AnimatorConditionMode.Equals &&
+                    c.threshold == another2.ParameterSlotConfig.MappedValue
+                ).Count() == 1
+            ).Count() == 1);
+            var notEqualsTransitionQuery = prepareDisabledState.transitions.Where(t =>
                 t.conditions.Where(c =>
                     c.parameter == slot.ParameterName &&
                     c.mode == AnimatorConditionMode.NotEqual &&
                     c.threshold == sc.ParameterSlotConfig.MappedValue
                 ).Count() == 1
-            ).Count() == 1);
+            );
+            Assert.True(notEqualsTransitionQuery.Count() == 1);
+            // expects the NotEquals transitions to be the last one
+            var notEqualsTransition = notEqualsTransitionQuery.FirstOrDefault();
+            Assert.NotNull(notEqualsTransition);
+            Assert.AreEqual(notEqualsTransition, prepareDisabledState.transitions[prepareDisabledState.transitions.Length - 1]);
         }
 
         [Test]
@@ -171,14 +191,15 @@ namespace Chocopoi.DressingTools.Tests.Animations
             composer.Compose(sc1);
             composer.Compose(sc2);
             composer.Compose(sc3);
+            composer.Finish();
 
             Assert.False(sc1Go.TryGetComponent<DTMenuItem>(out _));
             Assert.True(sc2Go.TryGetComponent<DTMenuItem>(out _));
             Assert.False(sc3Go.TryGetComponent<DTMenuItem>(out _));
 
-            AssertParameterSlotState(ac, options, slot, sc1);
-            AssertParameterSlotState(ac, options, slot, sc2);
-            AssertParameterSlotState(ac, options, slot, sc3);
+            AssertParameterSlotState(ac, options, slot, sc1, sc2, sc3);
+            AssertParameterSlotState(ac, options, slot, sc2, sc1, sc3);
+            AssertParameterSlotState(ac, options, slot, sc3, sc1, sc2);
         }
 
 #if DT_VRCSDK3A
@@ -196,6 +217,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.None;
 
             composer.Compose(ctrl);
+            composer.Finish();
 
             Assert.True(string.IsNullOrEmpty(ctrl.AnimatorConfig.ParameterName));
             Assert.False(string.IsNullOrEmpty(ctrl.VRCPhysBoneDriverConfig.ParameterPrefix));
@@ -217,6 +239,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.None;
 
             composer.Compose(ctrl);
+            composer.Finish();
 
             var disabledState = GetLayerState(0, ac, "Disabled", options.writeDefaults);
             // two separate transitions with one condition
@@ -257,6 +280,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Angle;
 
             composer.Compose(ctrl);
+            composer.Finish();
 
             var motionTimeState = GetLayerState(0, ac, "Motion Time", options.writeDefaults);
             Assert.AreEqual(motionTimeState.timeParameter, $"{pb.parameter}_Angle");
@@ -278,6 +302,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             ctrl.VRCPhysBoneDriverConfig.Source = DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource.Angle;
 
             composer.Compose(ctrl);
+            composer.Finish();
 
             var disabledState = GetLayerState(0, ac, "Disabled", options.writeDefaults);
             // two separate transitions with one condition
@@ -311,6 +336,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             ctrl.AnimatorConfig.Saved = false;
 
             composer.Compose(ctrl);
+            composer.Finish();
 
             Assert.True(ctrl.TryGetComponent<DTAnimatorParameters>(out var animParams));
             var ap = animParams.Configs.Where(p => p.ParameterName == "MyParam").FirstOrDefault();
@@ -349,6 +375,12 @@ namespace Chocopoi.DressingTools.Tests.Animations
             return HasEditorCurve(clip, path, typeof(T), property, curve);
         }
 
+        private void AssertComposeBinaryTogglesEnabledClip(AnimationClip clip)
+        {
+            Assert.True(HasToggleComponentCurve<Transform>(clip, "B", false));
+            Assert.True(HasToggleComponentCurve<ParentConstraint>(clip, "C", true));
+        }
+
         private void ComposeBinaryTogglesTest(bool writeDefaults)
         {
             SetupEnv(out var root, out var options, out var ac);
@@ -369,6 +401,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             var composer = new SmartControlComposer(options, ac);
             composer.Compose(ctrl);
+            composer.Finish();
 
             var disabledClip = GetLayerStateClip(0, ac, "Disabled", writeDefaults);
             var enabledClip = GetLayerStateClip(0, ac, "Enabled", writeDefaults);
@@ -378,15 +411,15 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             if (writeDefaults)
             {
-                Assert.True(prepareDisabledClip.empty);
+                // expects the same as enabled clip
+                AssertComposeBinaryTogglesEnabledClip(prepareDisabledClip);
             }
             else
             {
                 Assert.True(HasToggleComponentCurve<Transform>(prepareDisabledClip, "B", true));
                 Assert.True(HasToggleComponentCurve<ParentConstraint>(prepareDisabledClip, "C", true));
             }
-            Assert.True(HasToggleComponentCurve<Transform>(enabledClip, "B", false));
-            Assert.True(HasToggleComponentCurve<ParentConstraint>(enabledClip, "C", true));
+            AssertComposeBinaryTogglesEnabledClip(enabledClip);
         }
 
         [Test]
@@ -399,6 +432,25 @@ namespace Chocopoi.DressingTools.Tests.Animations
         public void ComposeBinaryTogglesTest_WriteDefaultsOff()
         {
             ComposeBinaryTogglesTest(false);
+        }
+
+        private void AssertComposeBinaryPropertyEnabledClip(AnimationClip clip)
+        {
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "B/Cube", "blendShape.Key1", MagicBlendshapeFloat));
+
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "B/Cube", "blendShape.Key2", MagicBlendshapeFloat));
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "D/Cube", "blendShape.Key2", MagicBlendshapeFloat));
+            // ignored object
+            Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "C/Cube", "blendShape.Key2", MagicBlendshapeFloat));
+
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "B/Cube", "blendShape.Key3", MagicBlendshapeFloat));
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "C/Cube", "blendShape.Key3", MagicBlendshapeFloat));
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "D/Cube", "blendShape.Key3", MagicBlendshapeFloat));
+
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "B/Cube", "material._Metallic", MagicFloat));
+            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "C/Cube", "material._Metallic", MagicFloat));
+            // avatar-wide ignored
+            Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(clip, "D/Cube", "material._Metallic", MagicFloat));
         }
 
         private void ComposeBinaryPropertyTest(bool writeDefaults)
@@ -442,6 +494,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             var composer = new SmartControlComposer(options, ac);
             composer.Compose(ctrl);
+            composer.Finish();
 
             var disabledClip = GetLayerStateClip(0, ac, "Disabled", writeDefaults);
             var enabledClip = GetLayerStateClip(0, ac, "Enabled", writeDefaults);
@@ -451,7 +504,8 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             if (writeDefaults)
             {
-                Assert.True(prepareDisabledClip.empty);
+                // expects the same as enabled clip
+                AssertComposeBinaryPropertyEnabledClip(prepareDisabledClip);
             }
             else
             {
@@ -472,21 +526,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
                 // avatar-wide ignored
                 Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(prepareDisabledClip, "D/Cube", "material._Metallic", 0.65f));
             }
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "B/Cube", "blendShape.Key1", MagicBlendshapeFloat));
-
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "B/Cube", "blendShape.Key2", MagicBlendshapeFloat));
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "D/Cube", "blendShape.Key2", MagicBlendshapeFloat));
-            // ignored object
-            Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "C/Cube", "blendShape.Key2", MagicBlendshapeFloat));
-
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "B/Cube", "blendShape.Key3", MagicBlendshapeFloat));
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "C/Cube", "blendShape.Key3", MagicBlendshapeFloat));
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "D/Cube", "blendShape.Key3", MagicBlendshapeFloat));
-
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "B/Cube", "material._Metallic", MagicFloat));
-            Assert.True(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "C/Cube", "material._Metallic", MagicFloat));
-            // avatar-wide ignored
-            Assert.False(HasTogglePropertyCurve<SkinnedMeshRenderer>(enabledClip, "D/Cube", "material._Metallic", MagicFloat));
+            AssertComposeBinaryPropertyEnabledClip(enabledClip);
         }
 
         [Test]
@@ -531,6 +571,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
 
             var composer = new SmartControlComposer(options, ac);
             composer.Compose(ctrl);
+            composer.Finish();
 
             var state = GetLayerState(0, ac, "Motion Time", writeDefaults);
             Assert.IsInstanceOf(typeof(AnimationClip), state.motion);
@@ -575,6 +616,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             var composer = new SmartControlComposer(options, ac);
             composer.Compose(ctrl1);
             composer.Compose(ctrl2);
+            composer.Finish();
 
             Assert.True(options.context.Report.HasLogType(DressingFramework.Logging.LogType.Error));
         }
@@ -615,6 +657,7 @@ namespace Chocopoi.DressingTools.Tests.Animations
             var composer = new SmartControlComposer(options, ac);
             composer.Compose(ctrl1);
             composer.Compose(ctrl2);
+            composer.Finish();
 
             var enabledState1 = GetLayerState(0, ac, "Enabled", options.writeDefaults);
             Assert.True(ContainsVRCAvatarParameterDriver(enabledState1, ctrl2.AnimatorConfig.ParameterName, 0.0f));

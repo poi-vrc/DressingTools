@@ -98,6 +98,7 @@ namespace Chocopoi.DressingTools.Passes.Animations.VRChat
             {
                 composer.Compose(ctrl);
             }
+            composer.Finish();
 
             EditorUtility.SetDirty(fx);
 
