@@ -34,8 +34,24 @@ namespace Chocopoi.DressingTools.Animations
         private const string VRCPhysBoneStretchSuffix = "_Stretch";
         private const string VRCPhysBoneSquishSuffix = "_Squish";
 
+        private class ParameterSlotLayerInfo
+        {
+            public AnimatorLayerBuilder layer;
+            public AnimatorStateBuilder entryState;
+            public Dictionary<DTSmartControl, AnimatorStateBuilder> scEnabledStates;
+            public Dictionary<DTSmartControl, AnimatorStateBuilder> scPrepareDisabledStates;
+
+            public ParameterSlotLayerInfo()
+            {
+                layer = null;
+                entryState = null;
+                scEnabledStates = new Dictionary<DTSmartControl, AnimatorStateBuilder>();
+                scPrepareDisabledStates = new Dictionary<DTSmartControl, AnimatorStateBuilder>();
+            }
+        }
+
         private readonly HashSet<DTSmartControl> _controls;
-        private readonly Dictionary<DTParameterSlot, Tuple<AnimatorLayerBuilder, AnimatorStateBuilder>> _parameterSlotLayers;
+        private readonly Dictionary<DTParameterSlot, ParameterSlotLayerInfo> _parameterSlotLayerInfos;
         private readonly AnimatorOptions _options;
         private readonly AnimatorController _controller;
 
@@ -44,7 +60,7 @@ namespace Chocopoi.DressingTools.Animations
             _options = options;
             _controller = controller;
             _controls = new HashSet<DTSmartControl>();
-            _parameterSlotLayers = new Dictionary<DTParameterSlot, Tuple<AnimatorLayerBuilder, AnimatorStateBuilder>>();
+            _parameterSlotLayerInfos = new Dictionary<DTParameterSlot, ParameterSlotLayerInfo>();
         }
 
         private void AddParameterConfig(Transform transform, string parameterName, float defaultValue, bool networkSynced, bool saved)
@@ -105,11 +121,11 @@ namespace Chocopoi.DressingTools.Animations
             }
         }
 
-        private Tuple<AnimatorLayerBuilder, AnimatorStateBuilder> PrepareOrGetParameterSlotLayer(DTParameterSlot parameterSlot)
+        private ParameterSlotLayerInfo PrepareOrGetParameterSlotLayer(DTParameterSlot parameterSlot)
         {
-            if (_parameterSlotLayers.ContainsKey(parameterSlot))
+            if (_parameterSlotLayerInfos.ContainsKey(parameterSlot))
             {
-                return _parameterSlotLayers[parameterSlot];
+                return _parameterSlotLayerInfos[parameterSlot];
             }
 
             // generate parameter name
@@ -143,7 +159,11 @@ namespace Chocopoi.DressingTools.Animations
                 animator.FloatParameter(parameterSlot.ParameterName, parameterSlot.ParameterDefaultValue);
             }
 
-            return _parameterSlotLayers[parameterSlot] = new Tuple<AnimatorLayerBuilder, AnimatorStateBuilder>(layer, entryState);
+            return _parameterSlotLayerInfos[parameterSlot] = new ParameterSlotLayerInfo()
+            {
+                layer = layer,
+                entryState = entryState
+            };
         }
 
         private void HandleDriverParameterSlot(DTSmartControl ctrl)
@@ -156,9 +176,9 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             // prepare and get value slot anystate layer
-            var tuple = PrepareOrGetParameterSlotLayer(parameterSlot);
-            var layer = tuple.Item1;
-            var entryState = tuple.Item2;
+            var info = PrepareOrGetParameterSlotLayer(parameterSlot);
+            var layer = info.layer;
+            var entryState = info.entryState;
 
             // generate menu item
             if (ctrl.ParameterSlotConfig.GenerateMenuItem)
@@ -195,15 +215,49 @@ namespace Chocopoi.DressingTools.Animations
 
             var enabledState = layer.NewState($"{ctrl.name} Enabled");
             var prepareDisabledState = layer.NewState($"{ctrl.name} Prepare Disabled");
+            info.scEnabledStates[ctrl] = enabledState;
+            info.scPrepareDisabledStates[ctrl] = prepareDisabledState;
 
             entryState.AddTransition(enabledState)
                 .Equals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
             enabledState.AddTransition(prepareDisabledState)
                 .NotEquals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
-            prepareDisabledState.AddTransition(entryState)
-                .NotEquals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
+            // we add the condition to entry state in FillParameterSlotInterControlTransitions
+            // to prioritize switching between control states instead
 
             ComposeBinaryToggles(_controller, prepareDisabledState, enabledState, ctrl);
+        }
+
+        private void FillParameterSlotInterControlTransitions()
+        {
+            // this fills conditions in each controls' state to allow
+            // switching to each other directly without going to entry state
+            foreach (var psKvp in _parameterSlotLayerInfos)
+            {
+                var parameterSlot = psKvp.Key;
+                var info = psKvp.Value;
+                foreach (var prepareDisabledKvp in info.scPrepareDisabledStates)
+                {
+                    var ctrl = prepareDisabledKvp.Key;
+                    var prepareDisabledState = prepareDisabledKvp.Value;
+
+                    foreach (var enabledKvp in info.scEnabledStates)
+                    {
+                        var anotherCtrl = enabledKvp.Key;
+                        var enabledState = enabledKvp.Value;
+                        if (anotherCtrl == ctrl)
+                        {
+                            continue;
+                        }
+                        prepareDisabledState.AddTransition(enabledState)
+                            .Equals(parameterSlot.ParameterName, anotherCtrl.ParameterSlotConfig.MappedValue);
+                    }
+
+                    // only if no conditions match, it falls back to entry state
+                    prepareDisabledState.AddTransition(info.entryState)
+                        .NotEquals(parameterSlot.ParameterName, ctrl.ParameterSlotConfig.MappedValue);
+                }
+            }
         }
 
         private string VRCPhysBoneDataSourceToParam(string prefix, DTSmartControl.SCVRCPhysBoneDriverConfig.DataSource source)
@@ -340,6 +394,11 @@ namespace Chocopoi.DressingTools.Animations
             // EditorUtility.SetDirty(ctrl.Controller);
         }
 
+        public void Finish()
+        {
+            FillParameterSlotInterControlTransitions();
+        }
+
         private void ComposeBinary(DTSmartControl ctrl, List<string> conditionalParams)
         {
             if (HasCrossControlCycle(ctrl))
@@ -436,7 +495,7 @@ namespace Chocopoi.DressingTools.Animations
             if (propertyName.StartsWith(MaterialsArrayPrefix))
             {
                 // array
-                var closingBracketIndex = propertyName.IndexOf("]");
+                var closingBracketIndex = propertyName.IndexOf(']');
                 var index = -1;
                 try
                 {
@@ -507,7 +566,7 @@ namespace Chocopoi.DressingTools.Animations
             return true;
         }
 
-        private void ComposePropertyGroupToggles(AnimationClipBuilder disabledClip, AnimationClipBuilder enabledClip, DTSmartControl.PropertyGroup propGp)
+        private void ComposePropertyGroupToggles(AnimationClipBuilder prepareDisabledClip, AnimationClipBuilder enabledClip, DTSmartControl.PropertyGroup propGp)
         {
             // search through all objects and animate them
             var searchTrans = propGp.SelectionType == DTSmartControl.PropertyGroup.PropertySelectionType.AvatarWide ? _options.context.AvatarGameObject.transform : propGp.SearchTransform;
@@ -534,24 +593,20 @@ namespace Chocopoi.DressingTools.Animations
                                         time = 0.0f,
                                         value = propVal.ValueObjectReference
                                 }};
-                                enabledClip.SetCurve(comp.transform, compType, propVal.Name, enabledFrames);
-                                if (!_options.writeDefaults)
-                                {
-                                    var disabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {
+                                var disabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {
                                         time = 0.0f,
                                         value = obj
                                     }};
-                                    disabledClip.SetCurve(comp.transform, compType, propVal.Name, disabledFrames);
-                                }
+                                enabledClip.SetCurve(comp.transform, compType, propVal.Name, enabledFrames);
+                                // in write defaults mode, we want to keep the enabled frames in prepare disabled to prevent flickering in parameter slot
+                                prepareDisabledClip.SetCurve(comp.transform, compType, propVal.Name, _options.writeDefaults ? enabledFrames : disabledFrames);
                             }
                             else if (type == typeof(float))
                             {
                                 var f = (float)originalValue;
                                 enabledClip.SetCurve(comp.transform, compType, propVal.Name, AnimationCurve.Constant(0.0f, 0.0f, propVal.Value));
-                                if (!_options.writeDefaults)
-                                {
-                                    disabledClip.SetCurve(comp.transform, compType, propVal.Name, AnimationCurve.Constant(0.0f, 0.0f, f));
-                                }
+                                // in write defaults mode, we want to keep the enabled value in prepare disabled to prevent flickering in parameter slot
+                                prepareDisabledClip.SetCurve(comp.transform, compType, propVal.Name, AnimationCurve.Constant(0.0f, 0.0f, _options.writeDefaults ? propVal.Value : f));
                             }
                         }
                     }
@@ -632,9 +687,9 @@ namespace Chocopoi.DressingTools.Animations
         }
 #endif
 
-        private void ComposeBinaryToggles(AnimatorController controller, AnimatorStateBuilder disabledState, AnimatorStateBuilder enabledState, DTSmartControl ctrl)
+        private void ComposeBinaryToggles(AnimatorController controller, AnimatorStateBuilder prepareDisabledState, AnimatorStateBuilder enabledState, DTSmartControl ctrl)
         {
-            var disabledClip = disabledState.WithNewAnimation();
+            var prepareDisabledClip = prepareDisabledState.WithNewAnimation();
             var enabledClip = enabledState.WithNewAnimation();
 
             foreach (var toggle in ctrl.ObjectToggles)
@@ -645,20 +700,18 @@ namespace Chocopoi.DressingTools.Animations
                 }
 
                 ClipToggle(enabledClip, toggle.Target, toggle.Enabled);
-                if (!_options.writeDefaults)
-                {
-                    ClipToggle(disabledClip, toggle.Target, GetComponentOrGameObjectOriginalState(toggle.Target));
-                }
+                // in write defaults mode, we want to keep the enabled value in prepare disabled to prevent flickering in parameter slot
+                ClipToggle(prepareDisabledClip, toggle.Target, _options.writeDefaults ? toggle.Enabled : GetComponentOrGameObjectOriginalState(toggle.Target));
             }
 
             foreach (var propGp in ctrl.PropertyGroups)
             {
-                ComposePropertyGroupToggles(disabledClip, enabledClip, propGp);
+                ComposePropertyGroupToggles(prepareDisabledClip, enabledClip, propGp);
             }
 
 #if DT_VRCSDK3A
             // cross-controls are currently only available in VRC environments
-            ComposeCrossControlValueActions(controller, disabledState, ctrl.CrossControlActions.ValueActions.ValuesOnDisable);
+            ComposeCrossControlValueActions(controller, prepareDisabledState, ctrl.CrossControlActions.ValueActions.ValuesOnDisable);
             ComposeCrossControlValueActions(controller, enabledState, ctrl.CrossControlActions.ValueActions.ValuesOnEnable);
 #endif
         }
