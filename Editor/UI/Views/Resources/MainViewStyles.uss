@@ -1,13 +1,3 @@
-#tab ToolbarButton {
-    width: 100%;
-    -unity-text-align: upper-center;
-}
-
-#tab ToolbarButton.active {
-    background-color: rgb(115, 115, 115);
-    color: rgb(232, 232, 232);
-}
-
 #update-available-foldout {
     margin-left: 4px;
     margin-right: 4px;
@@ -25,4 +15,11 @@
     position: absolute;
     top: 0;
     right: 0;
+    flex-grow: 1;
+    align-items: flex-end;
+    color: rgb(73, 73, 73);
+}
+
+#tab-content {
+    flex-grow: 1;
 }

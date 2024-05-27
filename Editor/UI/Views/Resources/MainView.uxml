@@ -1,16 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="project://database/Assets/Resources/MainViewStyles.uss?fileID=7433441132597879392&amp;guid=607271208986b9f49a7cd4ae0ac91ce5&amp;type=3#MainViewStyles" />
-    <Style src="project://database/Assets/Resources/ToolStyles.uss?fileID=7433441132597879392&amp;guid=c805353196cf7d8478ff13684c31cc47&amp;type=3#ToolStyles" />
+    <Style src="MainViewStyles.uss" />
+    <Style src="ToolStyles.uss" />
     <ui:VisualElement class="dt-configurator-icon" />
     <ui:Foldout text="Update available" name="update-available-foldout">
-        <ui:Button text="@main.editor.updateAvailable.btn.update" name="update-available-update-btn" />
+        <ui:Button text="@editor.main.updateAvailable.btn.update" name="update-available-update-btn" />
     </ui:Foldout>
     <ui:VisualElement name="helpbox-container" />
-    <uie:Toolbar name="tab" style="flex-direction: row; width: 100%;">
-        <uie:ToolbarButton text="@main.editor.tabs.avatar" name="tab-cabinet" />
-        <uie:ToolbarButton text="@main.editor.tabs.dress" name="tab-dressing" />
-        <uie:ToolbarButton text="@main.editor.tabs.toolSettings" name="tab-tool-settings" />
+    <uie:Toolbar class="tab">
+        <uie:ToolbarButton text="@editor.main.tabs.avatar" name="tab-avatar" />
+        <uie:ToolbarButton text="@editor.main.tabs.dress" name="tab-dress" />
+        <uie:ToolbarButton text="@editor.main.tabs.toolSettings" name="tab-tool-settings" />
     </uie:Toolbar>
-    <ui:VisualElement name="tab-content" style="flex-grow: 1;" />
-    <ui:VisualElement name="debug-info" style="flex-grow: 1; align-items: flex-end; color: rgb(73, 73, 73);" />
+    <ui:VisualElement name="tab-content" />
+    <ui:VisualElement name="debug-info" />
+    <ui:VisualElement name="language-popup-container" />
 </ui:UXML>

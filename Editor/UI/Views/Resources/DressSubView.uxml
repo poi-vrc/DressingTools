@@ -1,17 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:ScrollView style="flex-grow: 1;">
-        <ui:Foldout text="@dressing.editor.foldout.setup" name="foldout-setup" class="foldout-header">
-            <Style src="DressSubViewStyles.uss" />
-        </ui:Foldout>
-        <ui:VisualElement name="setup-container">
-            <Style src="DressSubViewStyles.uss" />
-            <uie:ObjectField label="@dressing.editor.gameObjectField.avatar" name="objectfield-avatar" />
-            <uie:ObjectField label="@dressing.editor.gameObjectField.wearable" name="objectfield-wearable" />
-        </ui:VisualElement>
-        <ui:VisualElement class="dressing-container">
-            <Style src="DressSubViewStyles.uss" />
-            <ui:VisualElement name="config-view-container" />
-        </ui:VisualElement>
-    </ui:ScrollView>
-    <ui:Button name="btn-add-to-cabinet" text="@dressing.editor.btn.addToCabinet" />
+    <ui:Label text="@editor.main.dress.label.selectAvatarFirst" />
+    <ui:VisualElement name="start-dress-session-container">
+        <ui:Label text="@editor.main.dress.label.startADressSession" class="start-a-dress-session-text mb-16" />
+        <ui:Label text="@editor.main.dress.label.dragOutfitToBegin" class="mb-16" />
+        <ui:Label text="@editor.main.dress.label.selectDragOutfitHere" />
+        <uie:ObjectField name="outfit-objfield" class="mb-16" />
+        <ui:Button text="@editor.main.dress.btn.startDressSession" name="start-btn" class="mb-8" />
+    </ui:VisualElement>
 </ui:UXML>

@@ -19,3 +19,40 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+.tab {
+    flex-direction: row;
+    width: 100%;
+}
+
+.tab ToolbarButton {
+    width: 100%;
+    -unity-text-align: upper-center;
+}
+
+ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+.toolbar {
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-end;
+}
+
+.foldout-header {
+    background-color: rgba(65, 65, 65, 255);
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.mb-8 {
+    margin-bottom: 8px;
+}
