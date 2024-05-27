@@ -1,0 +1,38 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Foldout text="@editor.main.dressSession.foldout.outfitInfo" name="dress-session-outfit-info-foldout" class="foldout-header">
+    </ui:Foldout>
+    <ui:VisualElement name="dress-session-outfit-info-container">
+        <ui:VisualElement style="flex-direction: row;">
+            <ui:VisualElement name="dress-session-outfit-info-thumbnail" />
+            <ui:VisualElement name="dress-session-outfit-info-info-panel" class="dress-session-outfit-info-right-panel">
+                <ui:Label text="---" name="dress-session-outfit-info-name-label" />
+                <ui:TextField picking-mode="Ignore" label="@editor.main.dressSession.info.infoPanel.textField.wearableName" name="dress-session-outfit-info-custom-name-field" />
+                <ui:Button text="@editor.main.dressSession.info.infoPanel.btn.captureNewThumbnail" name="dress-session-outfit-info-capture-new-thumbnail-btn" />
+            </ui:VisualElement>
+            <ui:VisualElement name="dress-session-outfit-info-capture-panel" class="dress-session-outfit-info-right-panel">
+                <ui:Label text="@editor.main.dressSession.info.capturePanel.label.tooltip" />
+                <ui:Toggle label="@editor.main.dressSession.info.capturePanel.toggle.wearableOnly" name="dress-session-outfit-info-capture-wearable-only-toggle" />
+                <ui:Toggle label="@editor.main.dressSession.info.capturePanel.toggle.removeBackground" name="dress-session-outfit-info-capture-remove-background-toggle" />
+                <ui:VisualElement>
+                    <ui:Button text="@editor.main.dressSession.info.capturePanel.btn.capture" name="dress-session-outfit-info-thumbnail-capture-btn" />
+                    <ui:Button text="@editor.main.dressSession.info.capturePanel.btn.cancel" name="dress-session-outfit-info-thumbnail-cancel-btn" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="fake-foldout-header">
+        <ui:VisualElement />
+        <ui:Label text="@editor.main.dressSession.foldout.config" />
+    </ui:VisualElement>
+    <uie:Toolbar name="toolbar">
+        <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.autoSetup" name="toolbar-auto-setup-btn" />
+        <!-- <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.import" name="toolbar-import-btn" />
+        <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.export" name="toolbar-export-btn" /> -->
+    </uie:Toolbar>
+    <ui:Foldout text="@editor.main.dressSession.foldout.outfitInfo" name="dress-session-outfit-info-foldout" class="foldout-header" />
+    <ui:VisualElement name="dress-session-outfit-info-container" />
+    <ui:Foldout text="@editor.main.dressSession.foldout.config" name="dress-session-config-view-foldout" class="foldout-header" />
+    <ui:VisualElement name="dress-session-config-view-container" />
+    <ui:Foldout text="@editor.main.dressSession.foldout.modules" name="dress-session-modules-foldout" class="foldout-header" />
+    <ui:VisualElement name="dress-session-modules-container" />
+</ui:UXML>
