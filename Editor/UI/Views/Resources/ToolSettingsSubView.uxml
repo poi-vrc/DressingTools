@@ -1,6 +1,7 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="ToolSettingsSubViewStyles.uss" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:ScrollView style="flex-grow: 1;">
+        <Style src="ToolStyles.uss" />
+        <Style src="ToolSettingsSubViewStyles.uss" />
         <ui:Foldout text="@editor.main.toolSettings.updateChecker.foldout">
             <ui:VisualElement class="readonly-label-container">
                 <ui:Label text="@editor.main.toolSettings.updateChecker.label.currentVersion" class="readonly-label-left" />

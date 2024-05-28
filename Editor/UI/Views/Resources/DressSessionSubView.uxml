@@ -1,7 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:Foldout text="@editor.main.dressSession.foldout.outfitInfo" name="dress-session-outfit-info-foldout" class="foldout-header">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
     </ui:Foldout>
     <ui:VisualElement name="dress-session-outfit-info-container">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
         <ui:VisualElement style="flex-direction: row;">
             <ui:VisualElement name="dress-session-outfit-info-thumbnail" />
             <ui:VisualElement name="dress-session-outfit-info-info-panel" class="dress-session-outfit-info-right-panel">
@@ -21,18 +25,30 @@
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement class="fake-foldout-header">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
         <ui:VisualElement />
         <ui:Label text="@editor.main.dressSession.foldout.config" />
     </ui:VisualElement>
     <uie:Toolbar name="toolbar">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
         <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.autoSetup" name="toolbar-auto-setup-btn" />
-        <!-- <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.import" name="toolbar-import-btn" />
-        <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.export" name="toolbar-export-btn" /> -->
     </uie:Toolbar>
-    <ui:Foldout text="@editor.main.dressSession.foldout.outfitInfo" name="dress-session-outfit-info-foldout" class="foldout-header" />
-    <ui:VisualElement name="dress-session-outfit-info-container" />
-    <ui:Foldout text="@editor.main.dressSession.foldout.config" name="dress-session-config-view-foldout" class="foldout-header" />
-    <ui:VisualElement name="dress-session-config-view-container" />
-    <ui:Foldout text="@editor.main.dressSession.foldout.modules" name="dress-session-modules-foldout" class="foldout-header" />
-    <ui:VisualElement name="dress-session-modules-container" />
+    <ui:Foldout text="@editor.main.dressSession.foldout.config" name="dress-session-config-view-foldout" class="foldout-header">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="dress-session-config-view-container">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:Foldout text="@editor.main.dressSession.foldout.modules" name="dress-session-modules-foldout" class="foldout-header">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
+    </ui:Foldout>
+    <ui:VisualElement name="dress-session-modules-container">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
+    </ui:VisualElement>
 </ui:UXML>
