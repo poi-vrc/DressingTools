@@ -45,6 +45,10 @@ ToolbarButton.active {
     background-color: rgba(65, 65, 65, 255);
 }
 
+.foldout-container {
+    margin: 8px;
+}
+
 .mt-16 {
     margin-top: 16px;
 }
@@ -55,4 +59,14 @@ ToolbarButton.active {
 
 .mb-8 {
     margin-bottom: 8px;
+}
+
+.box-panel {
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.box-panel > Label {
+    margin-bottom: 8px;
+    -unity-font-style: bold;
 }

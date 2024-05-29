@@ -47,8 +47,20 @@
         <Style src="ToolStyles.uss" />
         <Style src="DressSessionSubViewStyles.uss" />
     </ui:Foldout>
-    <ui:VisualElement name="dress-session-modules-container">
+    <ui:VisualElement name="dress-session-modules-container" class="foldout-container">
         <Style src="ToolStyles.uss" />
         <Style src="DressSessionSubViewStyles.uss" />
+        <ui:Box name="add-modules-panel" class="box-panel">
+            <Style src="ToolStyles.uss" />
+            <Style src="DressSessionSubViewStyles.uss" />
+            <uie:ObjectField label="@editor.main.dressSession.addModulePanel.objField.rootTransform" />
+            <ui:VisualElement class="add-module-field-container">
+                <Style src="ToolStyles.uss" />
+                <Style src="DressSessionSubViewStyles.uss" />
+                <ui:VisualElement name="module-type-popup-container" />
+                <ui:VisualElement name="module-provider-popup-container" />
+            </ui:VisualElement>
+            <ui:Button text="@editor.main.dressSession.addModulePanel.btn.addNewModule" />
+        </ui:Box>
     </ui:VisualElement>
 </ui:UXML>

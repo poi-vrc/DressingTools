@@ -128,10 +128,6 @@
     display: none;
 }
 
-.foldout-container {
-    margin: 8px;
-}
-
 #helpbox-container {
     margin: 4px;
 }
@@ -153,14 +149,45 @@
     flex-direction: row;
 }
 
-.readonly-label-left{
+.readonly-label-left {
     padding-top: 2px;
     min-width: 150px;
     height: 15px;
 }
 
-.readonly-label-right{
+.readonly-label-right {
     flex-grow: 1;
     height: 15px;
 }
 
+#add-modules-panel > ObjectField > Label {
+    min-width: 75;
+}
+
+#add-modules-panel .add-module-field-container {
+    flex-direction: row;
+}
+
+#add-modules-panel .add-module-field-container > PopupField > Label {
+    min-width: 75;
+}
+
+.module-category-container {
+
+}
+
+.module-container {
+
+}
+
+.module-location-field-container {
+    flex-direction: row;
+}
+
+.module-location-field-container ObjectField {
+    flex-grow: 1;
+}
+
+#module-type-popup-container {
+    flex-grow: 1;
+}
