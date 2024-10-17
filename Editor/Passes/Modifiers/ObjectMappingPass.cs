@@ -36,6 +36,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 // need to let it group first, or the search will be wrong if we move something
                 .AfterPass<GroupDynamicsPass>()
                 .BeforePass<GroupDynamicsModifyAnimPass>()
+                .BeforePass<IgnoreDynamicsPass>()
                 .Build();
 
         private static void RemoveExistingPrefixSuffix(Transform trans)
