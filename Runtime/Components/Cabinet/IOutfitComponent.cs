@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Components.Cabinet
 {
-    internal interface IOutfit
+    internal interface IOutfitComponent
     {
         Transform RootTransform { get; }
         string Name { get; }

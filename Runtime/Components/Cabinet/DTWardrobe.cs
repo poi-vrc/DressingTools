@@ -17,6 +17,7 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Components.Cabinet
 {
+    [DisallowMultipleComponent]
     [AddComponentMenu("")]
     internal class DTWardrobe : DTBaseComponent
     {
