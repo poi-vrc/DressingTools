@@ -1,5 +1,6 @@
 {
     "name": "com.chocopoi.vrc.dressingtools.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:85e555d1cc87ace4d8e14fcfe9062453",
         "GUID:97650872dc498bb4597e0bbf23109900",
@@ -30,6 +31,11 @@
             "name": "nadena.dev.ndmf",
             "expression": "[1.3.0,2.0.0)",
             "define": "DT_NDMF"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.7.0",
+            "define": "DT_VRCSDK3A_3_7_0_OR_LATER"
         }
     ],
     "noEngineReferences": false
