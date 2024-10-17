@@ -1,0 +1,13 @@
+.start-a-dress-session-text {
+    -unity-text-align: middle-center;
+    font-size: 24px;
+}
+
+#start-dress-session-container {
+    -unity-text-align: middle-center;
+    margin: 32px;
+}
+
+#start-btn {
+    height: 36px;
+}

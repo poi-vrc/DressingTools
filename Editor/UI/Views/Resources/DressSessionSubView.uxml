@@ -1,0 +1,84 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="ToolStyles.uss" />
+    <Style src="DressSessionSubViewStyles.uss" />
+    <ui:Foldout text="@editor.main.dressSession.foldout.outfitInfo" name="dress-session-outfit-info-foldout" class="foldout-header" />
+    <ui:VisualElement name="dress-session-outfit-info-container">
+        <ui:VisualElement style="flex-direction: row;">
+            <ui:VisualElement name="dress-session-outfit-info-thumbnail" />
+            <ui:VisualElement name="dress-session-outfit-info-info-panel" class="dress-session-outfit-info-right-panel">
+                <ui:Label text="---" name="dress-session-outfit-info-name-label" />
+                <ui:TextField picking-mode="Ignore" label="@editor.main.dressSession.info.infoPanel.textField.outfitName" name="dress-session-outfit-info-outfit-name-field" />
+                <ui:Button text="@editor.main.dressSession.info.infoPanel.btn.captureNewThumbnail" name="dress-session-outfit-info-capture-new-thumbnail-btn" />
+            </ui:VisualElement>
+            <ui:VisualElement name="dress-session-outfit-info-capture-panel" class="dress-session-outfit-info-right-panel">
+                <ui:Label text="@editor.main.dressSession.info.capturePanel.label.tooltip" />
+                <ui:Toggle label="@editor.main.dressSession.info.capturePanel.toggle.wearableOnly" name="dress-session-outfit-info-capture-wearable-only-toggle" />
+                <ui:Toggle label="@editor.main.dressSession.info.capturePanel.toggle.removeBackground" name="dress-session-outfit-info-capture-remove-background-toggle" />
+                <ui:VisualElement>
+                    <ui:Button text="@editor.main.dressSession.info.capturePanel.btn.capture" name="dress-session-outfit-info-thumbnail-capture-btn" />
+                    <ui:Button text="@editor.main.dressSession.info.capturePanel.btn.cancel" name="dress-session-outfit-info-thumbnail-cancel-btn" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="fake-foldout-header">
+        <ui:VisualElement />
+        <ui:Label text="@editor.main.dressSession.foldout.config" />
+    </ui:VisualElement>
+    <uie:Toolbar name="toolbar">
+        <uie:ToolbarButton text="@editor.main.dressSession.toolbar.btn.autoSetup" name="toolbar-auto-setup-btn" />
+        <ui:VisualElement style="flex-grow: 1;" />
+        <!-- <uie:ToolbarButton text="Use New UI" name="toolbar-use-new-ui-btn" /> -->
+    </uie:Toolbar>
+    <ui:VisualElement name="dress-session-helpbox-container" />
+    <ui:Foldout text="@editor.main.dressSession.foldout.config" name="dress-session-config-view-foldout" class="foldout-header" />
+    <ui:VisualElement name="dress-session-config-view-container" />
+    <ui:Foldout text="@editor.main.dressSession.foldout.modules" name="dress-session-modules-foldout" class="foldout-header" />
+    <ui:VisualElement name="dress-session-modules-container" class="foldout-container">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSessionSubViewStyles.uss" />
+        <ui:VisualElement name="old-ui-container" style="display: flex;">
+            <uie:Toolbar name="old-ui-categories">
+                <uie:ToolbarButton text="@editor.main.dressSession.oldUi.category.mapping" name="old-ui-category-mapping-btn" />
+                <uie:ToolbarButton text="@editor.main.dressSession.oldUi.category.animate" name="old-ui-category-animate-btn" />
+            </uie:Toolbar>
+            <ui:VisualElement name="old-ui-category-mapping-container" class="old-ui-category-container">
+                <ui:VisualElement class="foldout-header">
+                    <ui:Foldout text="@editor.main.dressSession.oldUi.toggle.armatureMapping" name="old-ui-armature-mapping-foldout" />
+                    <ui:Toggle name="old-ui-armature-mapping-toggle" />
+                </ui:VisualElement>
+                <ui:VisualElement name="old-ui-armature-mapping-container" class="foldout-container" />
+                <ui:VisualElement class="foldout-header">
+                    <ui:Foldout text="@editor.main.dressSession.oldUi.toggle.moveRoot" name="old-ui-move-root-foldout" />
+                    <ui:Toggle name="old-ui-move-root-toggle" />
+                </ui:VisualElement>
+                <ui:VisualElement name="old-ui-move-root-container" class="foldout-container" />
+            </ui:VisualElement>
+            <ui:VisualElement name="old-ui-category-animate-container" class="old-ui-category-container" style="display: none;">
+                <ui:VisualElement class="foldout-header">
+                    <ui:Foldout text="@editor.main.dressSession.oldUi.toggle.cabinetAnim" name="old-ui-cabinet-anim-foldout" />
+                </ui:VisualElement>
+                <ui:VisualElement name="old-ui-cabinet-anim-container" class="foldout-container" />
+                <ui:VisualElement class="foldout-header">
+                    <ui:Foldout text="@editor.main.dressSession.oldUi.toggle.blendshapeSync" name="old-ui-blendshape-sync-foldout" />
+                    <ui:Toggle name="old-ui-blendshape-sync-toggle" />
+                </ui:VisualElement>
+                <ui:VisualElement name="old-ui-blendshape-sync-container" class="foldout-container" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <!-- <ui:VisualElement name="new-ui-container" style="display: none;">
+            <ui:Box name="add-modules-panel" class="box-panel">
+                <Style src="ToolStyles.uss" />
+                <Style src="DressSessionSubViewStyles.uss" />
+                <uie:ObjectField label="@editor.main.dressSession.addModulePanel.objField.rootTransform" />
+                <ui:VisualElement class="add-module-field-container">
+                    <Style src="ToolStyles.uss" />
+                    <Style src="DressSessionSubViewStyles.uss" />
+                    <ui:VisualElement name="module-type-popup-container" />
+                    <ui:VisualElement name="module-provider-popup-container" />
+                </ui:VisualElement>
+                <ui:Button text="@editor.main.dressSession.addModulePanel.btn.addNewModule" />
+            </ui:Box>
+        </ui:VisualElement> -->
+    </ui:VisualElement>
+</ui:UXML>

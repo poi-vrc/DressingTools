@@ -18,8 +18,9 @@ using UnityEngine;
 
 namespace Chocopoi.DressingTools.Components.Cabinet
 {
+    [DisallowMultipleComponent]
     [AddComponentMenu("")]
-    internal class DTAlternateOutfit : DTBaseComponent, IOutfit
+    internal class DTAlternateOutfit : DTBaseComponent, IOutfitComponent
     {
         public string Name { get => name; set => name = value; }
         public Texture2D Icon { get => m_Icon; set => m_Icon = value; }

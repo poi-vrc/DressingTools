@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:ScrollView style="flex-grow: 1;">
+        <Style src="ToolStyles.uss" />
+        <Style src="AvatarSubViewStyles.uss" />
+        <ui:VisualElement name="avatar-content-container">
+            <ui:Foldout name="foldout-settings" text="@editor.main.avatar.foldout.settings" class="foldout-header" />
+            <ui:VisualElement name="settings-container" class="foldout-container" />
+            <ui:Foldout name="foldout-outfits" text="@editor.main.avatar.foldout.outfits" class="foldout-header" />
+            <ui:VisualElement name="outfits-container" class="foldout-container" />
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>

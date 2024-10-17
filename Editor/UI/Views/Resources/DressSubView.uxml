@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="start-dress-session-container">
+        <Style src="ToolStyles.uss" />
+        <Style src="DressSubViewStyles.uss" />
+        <ui:Label text="@editor.main.dress.label.startADressSession" class="start-a-dress-session-text mb-16" />
+        <ui:Label text="@editor.main.dress.label.dragOutfitToBegin" class="mb-16" />
+        <ui:Label text="@editor.main.dress.label.selectDragOutfitHere" />
+        <uie:ObjectField name="outfit-objfield" class="mb-16" />
+        <ui:Button text="@editor.main.dress.btn.startDressSession" name="start-btn" class="mb-8" />
+    </ui:VisualElement>
+</ui:UXML>

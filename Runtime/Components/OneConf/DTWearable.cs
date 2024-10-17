@@ -19,6 +19,7 @@ namespace Chocopoi.DressingTools.Components.OneConf
     /// <summary>
     /// DressingTools wearable component. Used for storing wearable configuration.
     /// </summary>
+    [DisallowMultipleComponent]
     internal class DTWearable : DTBaseComponent
     {
         /// <summary>

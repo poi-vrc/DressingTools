@@ -1,0 +1,127 @@
+#dress-session-outfit-info-thumbnail {
+    min-width: 128px;
+    min-height: 128px;
+    background-image: resource('thumbnailPlaceholder');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.dress-session-outfit-info-right-panel {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    flex-shrink: 1;
+    margin-left: 8px;
+    margin-right: 8px;
+    flex-grow: 1;
+    display: flex;
+}
+
+#dress-session-outfit-info-name-label {
+    font-size: 18px;
+    white-space: normal;
+    flex-direction: row;
+    margin-bottom: 8px;
+}
+
+#dress-session-outfit-info-custom-name-field {
+    display: none;
+}
+
+#dress-session-outfit-info-capture-panel {
+    display: none;
+}
+
+#dress-session-outfit-info-capture-panel Label {
+    white-space: normal;
+    margin-bottom: 8px;
+}
+
+#dress-session-outfit-info-capture-panel VisualElement {
+    flex-direction: row;
+}
+
+#dress-session-outfit-info-capture-panel VisualElement Button {
+    flex-grow: 1;
+}
+
+#old-ui-categories {
+    height: auto;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+#old-ui-categories ToolbarButton {
+    width: 100%;
+    -unity-text-align: upper-center;
+}
+
+#old-ui-categories ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+#old-ui-categories ToolbarButton.invalid {
+    background-color: rgb(97, 0, 0);
+}
+
+#old-ui-categories ToolbarButton.invalid.active {
+    background-color: rgb(120, 75, 75);
+}
+
+.old-ui-category-container {
+    flex-grow: 1;
+}
+
+#helpbox-container {
+    margin: 4px;
+}
+
+.readonly-label-container {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    flex-direction: row;
+}
+
+.readonly-label-left {
+    padding-top: 2px;
+    min-width: 150px;
+    height: 15px;
+}
+
+.readonly-label-right {
+    flex-grow: 1;
+    height: 15px;
+}
+
+#add-modules-panel > ObjectField > Label {
+    min-width: 75;
+}
+
+#add-modules-panel .add-module-field-container {
+    flex-direction: row;
+}
+
+#add-modules-panel .add-module-field-container > PopupField > Label {
+    min-width: 75;
+}
+
+.module-category-container {
+
+}
+
+.module-container {
+
+}
+
+.module-location-field-container {
+    flex-direction: row;
+}
+
+.module-location-field-container ObjectField {
+    flex-grow: 1;
+}
+
+#module-type-popup-container {
+    flex-grow: 1;
+}
