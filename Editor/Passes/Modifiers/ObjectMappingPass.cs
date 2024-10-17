@@ -64,8 +64,72 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             }
         }
 
+        private static void ScanParentConstraints(Transform transform, Dictionary<Transform, HashSet<Component>> foundPc)
+        {
+            if (transform.TryGetComponent<ParentConstraint>(out var pcComp))
+            {
+                if (!foundPc.TryGetValue(transform, out var comps))
+                {
+                    comps = foundPc[transform] = new HashSet<Component>();
+                }
+                comps.Add(pcComp);
+            }
+
+#if DT_VRCSDK3A_3_7_0_OR_LATER
+            if (transform.TryGetComponent<VRC.SDK3.Dynamics.Constraint.Components.VRCParentConstraint>(out var vrcPcComp))
+            {
+                var targetTrans = vrcPcComp.TargetTransform == null ? vrcPcComp.transform : vrcPcComp.TargetTransform;
+                if (!foundPc.TryGetValue(targetTrans, out var comps))
+                {
+                    comps = foundPc[targetTrans] = new HashSet<Component>();
+                }
+                comps.Add(vrcPcComp);
+            }
+#endif
+
+            foreach (Transform child in transform)
+            {
+                ScanParentConstraints(child, foundPc);
+            }
+        }
+
+        private static void AddParentConstraint(Context ctx, Transform sourceTransform, Transform targetTransform, Dictionary<Transform, HashSet<Component>> foundPc)
+        {
+            if (foundPc.TryGetValue(sourceTransform, out var existingComps))
+            {
+                ctx.Report.LogWarn(LogLabel, $"Existing ParentConstraint (count {existingComps.Count}) in {sourceTransform.name} detected, destroying it to avoid issues.");
+                foreach (var existingComp in existingComps)
+                {
+                    Object.DestroyImmediate(existingComp);
+                }
+            }
+
+#if DT_VRCSDK3A_3_7_0_OR_LATER
+            var vrcPcComp = sourceTransform.gameObject.AddComponent<VRC.SDK3.Dynamics.Constraint.Components.VRCParentConstraint>();
+            vrcPcComp.IsActive = true;
+            vrcPcComp.TargetTransform = targetTransform;
+            vrcPcComp.Sources.Add(new VRC.Dynamics.VRCConstraintSource
+            {
+                SourceTransform = targetTransform,
+                Weight = 1
+            });
+#else
+            var pcComp = sourceTransform.gameObject.AddComponent<ParentConstraint>();
+            pcComp.constraintActive = true;
+            var source = new ConstraintSource
+            {
+                sourceTransform = targetTransform,
+                weight = 1
+            };
+            pcComp.AddSource(source);
+#endif
+        }
+
         private static void ApplyObjectMappings(Context ctx, DTObjectMapping objMappingComp)
         {
+            var foundPc = new Dictionary<Transform, HashSet<Component>>();
+            ScanParentConstraints(ctx.AvatarGameObject.transform, foundPc);
+
             var pathRemapper = ctx.Feature<PathRemapper>();
             foreach (var mapping in objMappingComp.Mappings)
             {
@@ -121,22 +185,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 }
                 else if (mapping.Type == DTObjectMapping.Mapping.MappingType.ParentConstraint)
                 {
-                    if (mapping.SourceTransform.TryGetComponent<ParentConstraint>(out var existingPcComp))
-                    {
-                        ctx.Report.LogWarn(LogLabel, $"Existing ParentConstraint in {mapping.SourceTransform.name} detected, destroying it to avoid issues.");
-                        Object.DestroyImmediate(existingPcComp);
-                    }
-
-                    var pcComp = mapping.SourceTransform.gameObject.AddComponent<ParentConstraint>();
-
-                    pcComp.constraintActive = true;
-
-                    var source = new ConstraintSource
-                    {
-                        sourceTransform = targetTransform,
-                        weight = 1
-                    };
-                    pcComp.AddSource(source);
+                    AddParentConstraint(ctx, mapping.SourceTransform, targetTransform, foundPc);
                 }
                 else if (mapping.Type == DTObjectMapping.Mapping.MappingType.IgnoreTransform)
                 {
