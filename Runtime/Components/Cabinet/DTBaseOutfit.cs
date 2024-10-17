@@ -20,8 +20,9 @@ namespace Chocopoi.DressingTools.Components.Cabinet
     /// Base outfit component. This component stores items related to the base outfit.
     /// It does not contain any toggles or property groups since they are supposingly applied beforehand.
     /// </summary>
+    [DisallowMultipleComponent]
     [AddComponentMenu("")]
-    internal class DTBaseOutfit : DTBaseComponent, IOutfit
+    internal class DTBaseOutfit : DTBaseComponent, IOutfitComponent
     {
         public string Name => "Base";
         public Texture2D Icon { get => m_Icon; set => m_Icon = value; }

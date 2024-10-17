@@ -19,6 +19,7 @@ namespace Chocopoi.DressingTools.Components.OneConf
     /// <summary>
     /// DressingTools cabinet component. Used for storing cabinet settings and apply trigger.
     /// </summary>
+    [DisallowMultipleComponent]
     [AddComponentMenu("DressingTools/DT Cabinet")]
     [DefaultExecutionOrder(-19999)]
     [ExecuteInEditMode]
