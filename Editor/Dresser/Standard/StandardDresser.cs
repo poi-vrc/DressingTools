@@ -68,6 +68,11 @@ namespace Chocopoi.DressingTools.Dresser.Standard
             return true;
         }
 
+        private static bool QuaternionApproximately(Quaternion a, Quaternion b, float threshold)
+        {
+            return 1 - Mathf.Abs(Quaternion.Dot(a, b)) < threshold;
+        }
+
         private static DynamicsOptions DetectDynamicsOption(Report report, Transform avatarRoot, Transform sourceTrans, Transform targetTrans)
         {
             // Some clothes creators copy body bones from other avatars for the breast bone parts.
@@ -76,20 +81,13 @@ namespace Chocopoi.DressingTools.Dresser.Standard
             // To workaround with this issue, we try to detect frankenstein bones and use IgnoreTransform
             // to let them move their own.
 
-            var sourceNormalizedRotation = sourceTrans.rotation.normalized;
-            var targetNormalizedRotation = targetTrans.rotation.normalized;
+            var posSimilar = Vector3.Distance(sourceTrans.position, targetTrans.position) < 0.01f;
+            var rotSimilar = QuaternionApproximately(sourceTrans.localRotation, targetTrans.localRotation, 0.01f);
 
             // use world position and rotation to determine if they are frankenstein bones
-            if (!Mathf.Approximately(sourceTrans.position.x, targetTrans.position.x) ||
-                !Mathf.Approximately(sourceTrans.position.y, targetTrans.position.y) ||
-                !Mathf.Approximately(sourceTrans.position.z, targetTrans.position.z) ||
-                !Mathf.Approximately(sourceNormalizedRotation.x, targetNormalizedRotation.x) ||
-                !Mathf.Approximately(sourceNormalizedRotation.y, targetNormalizedRotation.y) ||
-                !Mathf.Approximately(sourceNormalizedRotation.z, targetNormalizedRotation.z) ||
-                !Mathf.Approximately(sourceNormalizedRotation.w, targetNormalizedRotation.w)
-            )
+            if (!posSimilar || !rotSimilar)
             {
-                report.LogInfo(LogLabel, $"Using IgnoreTransform for frankenstein bone: {AnimationUtils.GetRelativePath(sourceTrans, avatarRoot)} -> {AnimationUtils.GetRelativePath(targetTrans, avatarRoot)}");
+                report.LogInfo(LogLabel, $"Using IgnoreTransform for frankenstein bone: {AnimationUtils.GetRelativePath(sourceTrans, avatarRoot)} ({sourceTrans.position}) ({sourceTrans.rotation}) -> {AnimationUtils.GetRelativePath(targetTrans, avatarRoot)} ({targetTrans.position}) ({targetTrans.rotation}): pos {posSimilar} rot {rotSimilar}");
                 // frankenstein bone, cannot use parentconstraint
                 return DynamicsOptions.IgnoreTransform;
             }
