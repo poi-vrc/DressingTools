@@ -50,7 +50,7 @@ namespace Chocopoi.DressingTools
                     var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
                     window.titleContent = new GUIContent(t._("tool.name"));
                     window.Show();
-                    window.StartDressing(cabinet.RootGameObject, wearable.RootGameObject);
+                    window.StartDressing(wearable.RootGameObject, cabinet.RootGameObject);
                 }
                 else
                 {

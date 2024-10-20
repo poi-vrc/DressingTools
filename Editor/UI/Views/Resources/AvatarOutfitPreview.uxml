@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="avatar-outfit-preview">
+        <Style src="ToolStyles.uss" />
+        <Style src="AvatarSubViewStyles.uss" />
+        <ui:VisualElement name="thumbnail" />
+        <ui:Button text="@editor.main.avatar.outfitPreview.btn.edit" name="edit-btn" />
+        <ui:Label text="My Outfit" name="name-label" />
+        <ui:Button text="X" name="remove-btn" />
+    </ui:VisualElement>
+</ui:UXML>

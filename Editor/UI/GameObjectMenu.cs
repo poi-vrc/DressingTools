@@ -169,10 +169,10 @@ namespace Chocopoi.DressingTools.UI
                 return;
             }
 
-            var wearable = (GameObject)menuCommand.context;
+            var outfitGameObject = (GameObject)menuCommand.context;
 
             // find the avatar
-            var cabinet = LookUpCabinet(wearable.transform);
+            var cabinet = LookUpCabinet(outfitGameObject.transform);
 
             if (cabinet == null)
             {
@@ -184,7 +184,7 @@ namespace Chocopoi.DressingTools.UI
             var window = (DTMainEditorWindow)EditorWindow.GetWindow(typeof(DTMainEditorWindow));
             window.titleContent = new GUIContent(t._("tool.name"));
             window.Show();
-            window.StartDressing(cabinet.gameObject, wearable);
+            window.StartDressing(outfitGameObject, cabinet.gameObject);
         }
     }
 }

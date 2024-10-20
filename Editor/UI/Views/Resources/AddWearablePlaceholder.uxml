@@ -1,6 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="width: 100%; height: 100%; flex-direction: column; align-items: stretch; justify-content: center; background-color: #3d3d3d;">
-        <ui:Label text="+" style="width: 100%; -unity-text-align: lower-center; font-size: 48px;" />
-        <ui:Label text="@cabinet.editor.cabinetContent.addPlaceholder.label.add" name="label-add" style="-unity-text-align: upper-center; font-size: 18px; justify-content: center; align-items: center;" />
-    </ui:VisualElement>
-</ui:UXML>

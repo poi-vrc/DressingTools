@@ -1,0 +1,52 @@
+#outfits-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+#settings-container {
+    margin-left: 15px;
+    margin-bottom: 8px;
+}
+
+.avatar-outfit-preview {
+    width: 100%;
+    height: 100%;
+}
+
+.avatar-outfit-preview #thumbnail {
+    width: 100%;
+    height: 100%;
+}
+
+.avatar-outfit-preview #edit-btn {
+    position: absolute;
+    top: 2px;
+    left: 0;
+}
+
+.avatar-outfit-preview #remove-btn {
+    position: absolute;
+    top: 2px;
+    right: 0;
+}
+
+.avatar-outfit-preview #name-label {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    -unity-text-align: upper-center;
+    white-space: normal;
+    background-color: rgba(77, 77, 77, 0.7);
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.hover {
+    border-width: 1px;
+    border-color: white; 
+}

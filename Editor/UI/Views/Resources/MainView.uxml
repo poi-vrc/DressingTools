@@ -1,19 +1,40 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="background-image: resource(&apos;dt-banner&apos;); width: auto; -unity-background-scale-mode: scale-to-fit; height: 56px; margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px;">
+    <ui:VisualElement class="dt-configurator-icon">
+        <Style src="ToolStyles.uss" />
         <Style src="MainViewStyles.uss" />
     </ui:VisualElement>
     <ui:Foldout text="Update available" name="update-available-foldout">
+        <Style src="ToolStyles.uss" />
         <Style src="MainViewStyles.uss" />
-        <ui:Button text="@main.editor.updateAvailable.btn.update" name="update-available-update-btn" />
+        <ui:Button text="@editor.main.updateAvailable.btn.update" name="update-available-update-btn" />
     </ui:Foldout>
-    <ui:VisualElement name="helpbox-container" />
-    <uie:Toolbar name="tab" style="flex-direction: row; width: 100%;">
+    <ui:VisualElement name="helpbox-container">
+        <Style src="ToolStyles.uss" />
         <Style src="MainViewStyles.uss" />
-        <uie:ToolbarButton text="@main.editor.tabs.cabinet" name="tab-cabinet" />
-        <uie:ToolbarButton text="@main.editor.tabs.dressing" name="tab-dressing" />
-        <uie:ToolbarButton text="@main.editor.tabs.settings" name="tab-settings" />
+    </ui:VisualElement>
+    <uie:Toolbar class="tab" name="tab">
+        <Style src="ToolStyles.uss" />
+        <Style src="MainViewStyles.uss" />
+        <uie:ToolbarButton text="@editor.main.tabs.avatar" name="tab-avatar" />
+        <uie:ToolbarButton text="@editor.main.tabs.dress" name="tab-dress" />
+        <uie:ToolbarButton text="@editor.main.tabs.toolSettings" name="tab-tool-settings" />
     </uie:Toolbar>
-    <ui:VisualElement name="tab-content" style="flex-grow: 1;">
+    <ui:VisualElement name="popup-avatar-selection" />
+    <ui:VisualElement name="tab-content">
+        <Style src="ToolStyles.uss" />
         <Style src="MainViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:VisualElement name="debug-info">
+        <Style src="ToolStyles.uss" />
+        <Style src="MainViewStyles.uss" />
+    </ui:VisualElement>
+    <ui:VisualElement style="flex-direction: row;">
+        <Style src="ToolStyles.uss" />
+        <Style src="MainViewStyles.uss" />
+        <ui:VisualElement style="flex-grow: 1;" />
+        <ui:VisualElement name="language-popup-container">
+            <Style src="ToolStyles.uss" />
+            <Style src="MainViewStyles.uss" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

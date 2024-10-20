@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <uie:ObjectField label="@dressing.editor.gameObjectField.wearable" name="objectfield-wearable" />
+    <ui:ScrollView style="flex-grow: 1;">
+        <ui:VisualElement class="dressing-container">
+            <Style src="OneConfDressSubViewStyles.uss" />
+            <ui:VisualElement name="config-view-container" />
+        </ui:VisualElement>
+    </ui:ScrollView>
+    <ui:Button name="btn-add-to-cabinet" text="@dressing.editor.btn.addToCabinet" />
+</ui:UXML>
