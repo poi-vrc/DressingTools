@@ -15,9 +15,14 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
 using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Configurator.Avatar;
 using Chocopoi.DressingTools.UI.Views;
 using UnityEditor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 #if UNITY_2021_2_OR_NEWER
 using PrefabStage = UnityEditor.SceneManagement.PrefabStage;
@@ -53,9 +58,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.MouseMove += OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick += OnUpdateAvailableUpdateButtonClick;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             _view.PrefabStageOpened += OnPrefabStageOpened;
             _view.PrefabStageClosing += OnPrefabStageClosing;
+            _view.AvatarSelectionPopupChange += OnAvatarSelectionPopupChange;
+
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            Selection.selectionChanged += OnGameObjectSelectionChanged;
         }
 
         private void UnsubscribeEvents()
@@ -65,9 +74,83 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
             _view.MouseMove -= OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick -= OnUpdateAvailableUpdateButtonClick;
+            _view.PrefabStageOpened -= OnPrefabStageOpened;
+            _view.PrefabStageClosing -= OnPrefabStageClosing;
+            _view.AvatarSelectionPopupChange -= OnAvatarSelectionPopupChange;
+
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-            PrefabStage.prefabStageOpened -= OnPrefabStageOpened;
-            PrefabStage.prefabStageClosing -= OnPrefabStageClosing;
+            EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+            Selection.selectionChanged -= OnGameObjectSelectionChanged;
+        }
+
+        private void OnHierarchyChanged()
+        {
+            if (Application.isPlaying) return;
+            UpdateView();
+        }
+
+        private void OnGameObjectSelectionChanged()
+        {
+            if (Selection.activeGameObject == null) return;
+            if (_view.SelectedTab != 0)
+            {
+                // do not switch if not in avatar tab
+                return;
+            }
+
+            var avatar = AvatarUtils.GetAvatarRoot(Selection.activeGameObject);
+            if (avatar != null)
+            {
+                SelectAvatar(avatar);
+            }
+        }
+
+        private void OnAvatarSelectionPopupChange()
+        {
+            UpdateView();
+        }
+
+        public void SelectAvatar(GameObject avatarGameObject)
+        {
+            // refresh the keys first
+            _view.AvailableAvatars = AvatarUtils.FindSceneAvatars(SceneManager.GetActiveScene());
+
+            // find matching index
+            for (var i = 0; i < _view.AvailableAvatars.Count; i++)
+            {
+                if (_view.AvailableAvatars[i] == avatarGameObject)
+                {
+                    _view.SelectedAvatarIndex = i;
+                    break;
+                }
+            }
+
+            // update
+            UpdateView();
+        }
+
+        private void UpdateView()
+        {
+            _view.AvailableAvatars = AvatarUtils.FindSceneAvatars(SceneManager.GetActiveScene());
+            var oldIndex = _view.SelectedAvatarIndex;
+            if (_view.AvailableAvatars.Count == 0)
+            {
+                _view.SelectedAvatarIndex = -1;
+            }
+            else if (_view.SelectedAvatarIndex < 0 || _view.SelectedAvatarIndex >= _view.AvailableAvatars.Count)
+            {
+                // invalid selected cabinet index, setting it back to 0
+                _view.SelectedAvatarIndex = 0;
+            }
+
+            if (oldIndex != _view.SelectedAvatarIndex)
+            {
+                _view.RaiseAvatarSelectionPopupChangeEvent();
+            }
+
+            _view.ToolVersionText = UpdateChecker.CurrentVersion?.fullString;
+
+            _view.Repaint();
         }
 
         private void OnPlayModeStateChanged(PlayModeStateChange change)
@@ -123,6 +206,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            UpdateView();
         }
 
         private void OnUnload()

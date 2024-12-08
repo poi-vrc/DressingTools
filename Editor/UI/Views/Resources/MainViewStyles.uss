@@ -1,13 +1,3 @@
-#tab ToolbarButton {
-    width: 100%;
-    -unity-text-align: upper-center;
-}
-
-#tab ToolbarButton.active {
-    background-color: rgb(115, 115, 115);
-    color: rgb(232, 232, 232);
-}
-
 #update-available-foldout {
     margin-left: 4px;
     margin-right: 4px;
@@ -19,4 +9,17 @@
 #update-available-foldout Toggle VisualElement Label {
     color: rgba(255, 0, 0, 255);
     -unity-font-style: bold;
+}
+
+#debug-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    flex-grow: 1;
+    align-items: flex-end;
+    color: rgb(127, 127, 127);
+}
+
+#tab-content {
+    flex-grow: 1;
 }

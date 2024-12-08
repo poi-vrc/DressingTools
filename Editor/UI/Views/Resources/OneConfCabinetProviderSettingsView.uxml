@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement>
+        <Style src="ToolStyles.uss" />
+        <Style src="AvatarSubViewStyles.uss" />
+        <ui:TextField picking-mode="Ignore" label="@editor.main.avatar.settings.oneConf.textField.avatarArmatureName" name="settings-avatar-armature-name" />
+        <ui:Toggle label="@editor.main.avatar.settings.oneConf.toggle.groupDynamics" name="settings-group-dynamics" value="true" />
+        <ui:Toggle label="@editor.main.avatar.settings.oneConf.toggle.groupDynamicsSeparate" name="settings-group-dynamics-separate" value="true" style="flex-direction: row; margin-left: 16px;" />
+        <ui:Toggle label="@editor.main.avatar.settings.oneConf.toggle.useThumbnailsAsMenuIcons" name="settings-use-thumbnails-toggle" />
+        <ui:Toggle label="@editor.main.avatar.settings.oneConf.toggle.resetCustomizablesOnSwitch" name="settings-reset-customizables-on-switch-toggle" />
+        <ui:VisualElement name="settings-install-path-helpbox-container" />
+        <ui:TextField picking-mode="Ignore" label="@editor.main.avatar.settings.oneConf.textField.menuInstallPath" name="settings-menu-install-path-field" />
+        <ui:TextField picking-mode="Ignore" label="@editor.main.avatar.settings.oneConf.textField.menuItemName" name="settings-menu-item-name-field" />
+        <ui:Toggle label="@editor.main.avatar.settings.oneConf.toggle.networkSynced" name="settings-network-synced-toggle" />
+        <ui:Toggle label="@editor.main.avatar.settings.oneConf.toggle.saved" name="settings-saved-toggle" />
+    </ui:ScrollView>
+</ui:UXML>

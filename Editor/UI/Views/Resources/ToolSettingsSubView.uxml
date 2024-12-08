@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:ScrollView style="flex-grow: 1;">
+        <Style src="ToolStyles.uss" />
+        <Style src="ToolSettingsSubViewStyles.uss" />
+        <ui:Foldout text="@editor.main.toolSettings.updateChecker.foldout">
+            <ui:VisualElement class="readonly-label-container">
+                <ui:Label text="@editor.main.toolSettings.updateChecker.label.currentVersion" class="readonly-label-left" />
+                <ui:Label name="updater-current-ver-label" class="readonly-label-right" />
+            </ui:VisualElement>
+            <ui:VisualElement name="updater-helpbox-container" />
+            <ui:Button text="@editor.main.toolSettings.updateChecker.btn.checkUpdate" name="updater-check-update-btn" />
+        </ui:Foldout>
+        <ui:Button text="@editor.main.toolSettings.btn.resetToDefaults" name="reset-defaults-btn" />
+    </ui:ScrollView>
+</ui:UXML>

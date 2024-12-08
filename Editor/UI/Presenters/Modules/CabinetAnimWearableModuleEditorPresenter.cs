@@ -688,7 +688,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateView()
         {
-            _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar, true);
             if (_cabinet != null)
             {
                 if (!CabinetConfigUtility.TryDeserialize(_cabinet.ConfigJson, out _cabinetConfig))

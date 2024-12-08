@@ -284,7 +284,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UpdateDresserSettings()
         {
-            _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar);
+            _cabinet = OneConfUtils.GetAvatarCabinet(_parentView.TargetAvatar, true);
             if (_cabinet != null)
             {
                 _view.IsAvatarAssociatedWithCabinet = true;

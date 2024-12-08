@@ -1,0 +1,43 @@
+#toolbar {
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-end;
+}
+
+#toolbar ToolbarButton {
+    white-space: nowrap;
+}
+
+#toolbar ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+#config-view-container {
+    flex-grow: 1;
+}
+
+#wizard-container {
+    display: flex;
+}
+
+#advanced-container {
+    display: none;
+}
+
+.foldout-header {
+    background-color: rgb(65, 65, 65);
+}
+
+#setup-container {
+    padding-left: 15px;
+}
+
+#btn-add-to-cabinet {
+    height: 48px;
+    margin: 8px;
+}
+
+#helpbox-container {
+    margin: 8px;
+}
