@@ -1,0 +1,93 @@
+.dt-inspector-icon {
+    background-image: resource("dt-banner");
+    width: auto;
+    -unity-background-scale-mode: scale-to-fit;
+    height: 36px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.dt-configurator-icon {
+    background-image: resource("dt-banner");
+    width: auto;
+    -unity-background-scale-mode: scale-to-fit;
+    height: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex-direction: row;
+    width: 100%;
+}
+
+.tab ToolbarButton {
+    width: 100%;
+    -unity-text-align: upper-center;
+}
+
+ToolbarButton.active {
+    background-color: rgb(115, 115, 115);
+    color: rgb(232, 232, 232);
+}
+
+.toolbar {
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-end;
+}
+
+.foldout-header {
+    background-color: rgba(65, 65, 65, 255);
+    flex-direction: row;
+}
+
+.foldout-container {
+    margin: 8px;
+}
+
+.fake-foldout-header {
+    background-color: rgb(65, 65, 65);
+    flex-direction: row;
+    height: 20px;
+}
+
+.fake-foldout-header VisualElement {
+    width: 13px;
+    height: 13px;
+    margin-left: 1px;
+    margin-right: 3px;
+}
+
+.fake-foldout-header Label {
+    margin-left: 0;
+    padding-left: 2px;
+    padding-right: 0;
+    padding-top: 1px;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.mb-8 {
+    margin-bottom: 8px;
+}
+
+.box-panel {
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.box-panel > Label {
+    margin-bottom: 8px;
+    -unity-font-style: bold;
+}

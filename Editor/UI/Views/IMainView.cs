@@ -16,6 +16,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 #if UNITY_2021_2_OR_NEWER
@@ -34,15 +35,21 @@ namespace Chocopoi.DressingTools.UI.Views
         event Action MouseMove;
         event Action<PrefabStage> PrefabStageClosing;
         event Action<PrefabStage> PrefabStageOpened;
+        event Action AvatarSelectionPopupChange;
 
         string UpdateAvailableFromVersion { get; set; }
         string UpdateAvailableToVersion { get; set; }
         bool ShowExitPlayModeHelpbox { get; set; }
         bool ShowExitPrefabModeHelpbox { get; set; }
         int SelectedTab { get; set; }
+        int SelectedAvatarIndex { get; set; }
+        List<GameObject> AvailableAvatars { get; set; }
+        GameObject SelectedAvatarGameObject { get; }
+        string ToolVersionText { get; set; }
 
         void ForceUpdateCabinetSubView();
-        void StartDressing(GameObject targetAvatar, GameObject targetWearable = null);
+        void StartDressing(GameObject outfitGameObject = null, GameObject avatarGameObject = null);
         void OpenUrl(string url);
+        void RaiseAvatarSelectionPopupChangeEvent();
     }
 }

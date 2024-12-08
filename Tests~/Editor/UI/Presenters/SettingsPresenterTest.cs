@@ -22,38 +22,27 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
 {
     internal class SettingsPresenterTest : EditorTestBase
     {
-        private static Mock<ISettingsSubView> SetupMock()
+        private static Mock<IToolSettingsSubView> SetupMock()
         {
-            var mock = new Mock<ISettingsSubView>();
+            var mock = new Mock<IToolSettingsSubView>();
 
             mock.SetupAllProperties();
-            mock.SetupProperty(m => m.AvailableLanguageKeys, new List<string>());
 
-            new SettingsPresenter(mock.Object);
+            new ToolSettingsPresenter(mock.Object);
 
             return mock;
         }
 
-        private static void AssertLanguagePopup(Preferences prefs, ISettingsSubView view)
-        {
-            var locales = I18n.ToolTranslator.GetAvailableLocales();
-            Assert.AreEqual(locales.Length, view.AvailableLanguageKeys.Count);
-            var selectedLangIndex = view.AvailableLanguageKeys.IndexOf(view.LanguageSelected);
-            var expectedlangIndex = Array.IndexOf(locales, prefs.app.selectedLanguage);
-            Assert.AreEqual(expectedlangIndex, selectedLangIndex);
-        }
-
-        private static void AssertUpdateChecker(ISettingsSubView view)
+        private static void AssertUpdateChecker(IToolSettingsSubView view)
         {
             Assert.NotNull(UpdateChecker.CurrentVersion);
             Assert.AreEqual(UpdateChecker.CurrentVersion.fullString, view.UpdaterCurrentVersion);
         }
 
-        private static void AssertUpdateView(Mock<ISettingsSubView> mock)
+        private static void AssertUpdateView(Mock<IToolSettingsSubView> mock)
         {
             var view = mock.Object;
             var prefs = PreferencesUtility.GetPreferences();
-            AssertLanguagePopup(prefs, view);
             AssertUpdateChecker(view);
             mock.Verify(m => m.Repaint(), Times.Once);
         }
@@ -73,15 +62,6 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var mock = SetupMock();
             mock.Raise(m => m.ForceUpdateView += null);
             AssertUpdateView(mock);
-        }
-
-        [Test]
-        public void LanguageChangedTest()
-        {
-            var mock = SetupMock();
-            mock.SetupProperty(m => m.LanguageSelected, "English");
-            mock.Raise(m => m.LanguageChanged += null);
-            mock.VerifySet(m => m.ShowLanguageReloadWindowHelpbox = true);
         }
 
         [Test]

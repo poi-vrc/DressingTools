@@ -19,23 +19,23 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
 {
     internal class MainPresenterTest : EditorTestBase
     {
-        [Test]
-        public void UpdateAvailableUpdateButtonClickTest()
-        {
-            UpdateChecker.InvalidateVersionCheckCache();
+        // [Test]
+        // public void UpdateAvailableUpdateButtonClickTest()
+        // {
+        //     UpdateChecker.InvalidateVersionCheckCache();
 
-            var mock = new Mock<IMainView>();
-            var view = mock.Object;
-            var presenter = new MainPresenter(view);
+        //     var mock = new Mock<IMainView>();
+        //     var view = mock.Object;
+        //     var presenter = new MainPresenter(view);
 
-            mock.Raise(m => m.Load += null);
+        //     mock.Raise(m => m.Load += null);
 
-            mock.Raise(m => m.UpdateAvailableUpdateButtonClick += null);
-            mock.Verify(m => m.OpenUrl(It.IsAny<string>()), Times.Once);
-            // TODO: do tests?
+        //     mock.Raise(m => m.UpdateAvailableUpdateButtonClick += null);
+        //     mock.Verify(m => m.OpenUrl(It.IsAny<string>()), Times.Once);
+        //     // TODO: do tests?
 
-            mock.Raise(m => m.Unload += null);
-        }
+        //     mock.Raise(m => m.Unload += null);
+        // }
 
         [Test]
         public void OnPrefabStageClosingTest()

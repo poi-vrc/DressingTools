@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <uie:ObjectField label="@editor.main.dressSession.modules.armatureMerging.objField.sourceArmature" />
+    <uie:ObjectField label="@editor.main.dressSession.modules.armatureMerging.objField.targetArmature" />
+</ui:UXML>

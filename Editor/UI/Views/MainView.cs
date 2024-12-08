@@ -16,11 +16,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chocopoi.DressingFramework.Localization;
-using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Presenters;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -43,6 +44,14 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action<PrefabStage> PrefabStageOpened { add { PrefabStage.prefabStageOpened += value; } remove { PrefabStage.prefabStageOpened -= value; } }
         public event Action UpdateAvailableUpdateButtonClick;
         public event Action MouseMove;
+        public event Action AvatarSelectionPopupChange;
+
+        public int SelectedAvatarIndex { get; set; }
+        public List<GameObject> AvailableAvatars { get; set; }
+        public GameObject SelectedAvatarGameObject
+        {
+            get => (AvailableAvatars.Count > 0 && SelectedAvatarIndex < AvailableAvatars.Count) ? AvailableAvatars[SelectedAvatarIndex] : null;
+        }
 
         public int SelectedTab
         {
@@ -58,56 +67,67 @@ namespace Chocopoi.DressingTools.UI.Views
         public string UpdateAvailableToVersion { get; set; }
         public bool ShowExitPlayModeHelpbox { get; set; }
         public bool ShowExitPrefabModeHelpbox { get; set; }
+        public string ToolVersionText { get; set; }
 
         private MainPresenter _presenter;
-        private CabinetSubView _cabinetSubView;
-        private DressingSubView _dressingSubView;
-        private SettingsSubView _settingsSubView;
+        private AvatarSubView _avatarSubView;
+        private OneConfDressSubView _dressSubView;
+        private ToolSettingsSubView _toolSettingsSubView;
         private int _selectedTab;
         private Button[] _tabBtns;
         private Foldout _updateAvailableFoldout;
         private VisualElement _helpboxContainer;
         private VisualElement _tabContainer;
         private VisualElement _tabContentContainer;
+        private VisualElement _avatarSelectionPopupContainer;
+        private VisualElement _debugInfoContainer;
+        private PopupField<string> _avatarSelectionPopup;
+        private int _lastSelectedAvatarIndex;
 
         public MainView()
         {
             _presenter = new MainPresenter(this);
-            _cabinetSubView = new CabinetSubView(this);
-            _dressingSubView = new DressingSubView(this);
-            _settingsSubView = new SettingsSubView(this);
+            _avatarSubView = new AvatarSubView(this);
+            _dressSubView = new OneConfDressSubView(this);
+            _toolSettingsSubView = new ToolSettingsSubView(this);
 
             UpdateAvailableFromVersion = null;
             UpdateAvailableToVersion = null;
             ShowExitPlayModeHelpbox = false;
+            SelectedAvatarIndex = 0;
+            _lastSelectedAvatarIndex = 0;
+            AvailableAvatars = new List<GameObject>();
         }
 
-        public void StartDressing(GameObject targetAvatar, GameObject targetWearable = null)
+        public void StartDressing(GameObject outfitGameObject = null, GameObject avatarGameObject = null)
         {
             _selectedTab = 1;
             UpdateTabs();
-            _dressingSubView.StartDressing(targetAvatar, targetWearable);
+            if (avatarGameObject != null)
+            {
+                SelectAvatar(avatarGameObject);
+            }
+            _dressSubView.StartDressing(outfitGameObject);
         }
 
-        public void SelectCabinet(DTCabinet cabinet) => _cabinetSubView.SelectCabinet(cabinet);
+        public void SelectAvatar(GameObject avatarGameObject) => _presenter.SelectAvatar(avatarGameObject);
 
         public void ForceUpdateCabinetSubView()
         {
-            _cabinetSubView.RaiseForceUpdateViewEvent();
+            _avatarSubView.RaiseForceUpdateViewEvent();
         }
 
         public override void OnEnable()
         {
-            base.OnEnable();
-
             InitVisualTree();
             BindTabs();
 
             t.LocalizeElement(this);
 
-            _cabinetSubView.OnEnable();
-            _dressingSubView.OnEnable();
-            _settingsSubView.OnEnable();
+            RaiseLoadEvent();
+            _avatarSubView.OnEnable();
+            _dressSubView.OnEnable();
+            _toolSettingsSubView.OnEnable();
         }
 
         private void InitVisualTree()
@@ -120,33 +140,36 @@ namespace Chocopoi.DressingTools.UI.Views
                 styleSheets.Add(styleSheet);
             }
 
-            _cabinetSubView.style.display = DisplayStyle.Flex;
+            _avatarSubView.style.display = DisplayStyle.Flex;
             // hide all
-            _dressingSubView.style.display = DisplayStyle.None;
-            _settingsSubView.style.display = DisplayStyle.None;
+            _dressSubView.style.display = DisplayStyle.None;
+            _toolSettingsSubView.style.display = DisplayStyle.None;
 
             _helpboxContainer = Q<VisualElement>("helpbox-container").First();
             _tabContainer = Q<VisualElement>("tab").First();
 
             _tabContentContainer = Q<VisualElement>("tab-content").First();
-            _tabContentContainer.Add(_cabinetSubView);
-            _tabContentContainer.Add(_dressingSubView);
-            _tabContentContainer.Add(_settingsSubView);
+            _tabContentContainer.Add(_avatarSubView);
+            _tabContentContainer.Add(_dressSubView);
+            _tabContentContainer.Add(_toolSettingsSubView);
 
             _updateAvailableFoldout = Q<Foldout>("update-available-foldout").First();
             var updateBtn = Q<Button>("update-available-update-btn").First();
             updateBtn.clicked += UpdateAvailableUpdateButtonClick;
+
+            _avatarSelectionPopupContainer = Q<VisualElement>("popup-avatar-selection").First();
+            _debugInfoContainer = Q<VisualElement>("debug-info").First();
 
             RegisterCallback((MouseMoveEvent evt) => MouseMove?.Invoke());
         }
 
         private void BindTabs()
         {
-            var cabinetBtn = Q<Button>("tab-cabinet");
-            var dressingBtn = Q<Button>("tab-dressing");
-            var settingsBtn = Q<Button>("tab-settings");
+            var avatarBtn = Q<Button>("tab-avatar");
+            var dressBtn = Q<Button>("tab-dress");
+            var settingsBtn = Q<Button>("tab-tool-settings");
 
-            _tabBtns = new Button[] { cabinetBtn, dressingBtn, settingsBtn };
+            _tabBtns = new Button[] { avatarBtn, dressBtn, settingsBtn };
 
             for (var i = 0; i < _tabBtns.Length; i++)
             {
@@ -169,56 +192,108 @@ namespace Chocopoi.DressingTools.UI.Views
             }
 
             // hide all
-            _cabinetSubView.style.display = DisplayStyle.None;
-            _dressingSubView.style.display = DisplayStyle.None;
-            _settingsSubView.style.display = DisplayStyle.None;
+            _avatarSubView.style.display = DisplayStyle.None;
+            _dressSubView.style.display = DisplayStyle.None;
+            _toolSettingsSubView.style.display = DisplayStyle.None;
 
             if (_selectedTab == 0)
             {
-                _cabinetSubView.style.display = DisplayStyle.Flex;
+                _avatarSubView.style.display = DisplayStyle.Flex;
+                _avatarSelectionPopupContainer.style.display = DisplayStyle.Flex;
             }
             else if (_selectedTab == 1)
             {
-                _dressingSubView.style.display = DisplayStyle.Flex;
+                _dressSubView.style.display = DisplayStyle.Flex;
+                _avatarSelectionPopupContainer.style.display = DisplayStyle.Flex;
             }
             else if (_selectedTab == 2)
             {
-                _settingsSubView.style.display = DisplayStyle.Flex;
+                _toolSettingsSubView.style.display = DisplayStyle.Flex;
+                _avatarSelectionPopupContainer.style.display = DisplayStyle.None;
             }
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            _cabinetSubView.OnDisable();
-            _dressingSubView.OnDisable();
-            _settingsSubView.OnDisable();
+            _avatarSubView.OnDisable();
+            _dressSubView.OnDisable();
+            _toolSettingsSubView.OnDisable();
         }
         public void OpenUrl(string url) => Application.OpenURL(url);
 
-        public override void Repaint()
+        private void RepaintHelpboxes()
         {
             _helpboxContainer.Clear();
             if (ShowExitPlayModeHelpbox)
             {
-                _helpboxContainer.Add(CreateHelpBox(t._("main.editor.helpbox.exitPlayMode"), UnityEditor.MessageType.Warning));
+                _helpboxContainer.Add(CreateHelpBox(t._("editor.main.helpbox.exitPlayMode"), UnityEditor.MessageType.Warning));
             }
             if (ShowExitPrefabModeHelpbox)
             {
-                _helpboxContainer.Add(CreateHelpBox(t._("main.editor.helpbox.exitPrefabMode"), UnityEditor.MessageType.Warning));
+                _helpboxContainer.Add(CreateHelpBox(t._("editor.main.helpbox.exitPrefabMode"), UnityEditor.MessageType.Warning));
             }
+        }
+
+        private void RepaintTabs()
+        {
             _tabContainer.style.display = ShowExitPlayModeHelpbox || ShowExitPrefabModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
             _tabContentContainer.style.display = ShowExitPlayModeHelpbox || ShowExitPrefabModeHelpbox ? DisplayStyle.None : DisplayStyle.Flex;
+        }
 
+        private void RepaintUpdateNotification()
+        {
             if (UpdateAvailableFromVersion != null && UpdateAvailableToVersion != null)
             {
                 _updateAvailableFoldout.style.display = DisplayStyle.Flex;
-                _updateAvailableFoldout.text = t._("main.editor.updateAvailable.foldout", UpdateAvailableFromVersion, UpdateAvailableToVersion);
+                _updateAvailableFoldout.text = t._("editor.main.updateAvailable.foldout", UpdateAvailableFromVersion, UpdateAvailableToVersion);
             }
             else
             {
                 _updateAvailableFoldout.style.display = DisplayStyle.None;
             }
         }
+
+        private void RepaintAvatarSelection()
+        {
+            var labels = new List<string>();
+            foreach (var avatar in AvailableAvatars)
+            {
+                labels.Add(avatar.name);
+            }
+
+            _avatarSelectionPopupContainer.Clear();
+            _avatarSelectionPopup = new PopupField<string>(t._("editor.main.popup.selectedAvatar"), labels, SelectedAvatarIndex);
+            _avatarSelectionPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
+            {
+                SelectedAvatarIndex = _avatarSelectionPopup.index;
+                AvatarSelectionPopupChange?.Invoke();
+            });
+            _avatarSelectionPopupContainer.Add(_avatarSelectionPopup);
+
+            // force update avatar subview if the selected index has changed
+            if (_lastSelectedAvatarIndex != SelectedAvatarIndex)
+            {
+                _lastSelectedAvatarIndex = SelectedAvatarIndex;
+                _avatarSubView.RaiseForceUpdateViewEvent();
+            }
+        }
+
+        private void RepaintDebugInfo()
+        {
+            _debugInfoContainer.Clear();
+            _debugInfoContainer.Add(new Label(ToolVersionText));
+        }
+
+        public override void Repaint()
+        {
+            RepaintHelpboxes();
+            RepaintTabs();
+            RepaintUpdateNotification();
+            RepaintAvatarSelection();
+            RepaintDebugInfo();
+        }
+
+        public void RaiseAvatarSelectionPopupChangeEvent() => AvatarSelectionPopupChange?.Invoke();
     }
 }
