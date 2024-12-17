@@ -33,6 +33,29 @@ It also makes updating DressingTools easier for users.
 
     [![Installation VCC Teaser](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
+### Via OpenUPM
+
+:::info
+[OpenUPM](https://openupm.com) is a package registry for open-source Unity packages. It can handle package updates and dependencies properly compared to UPM Git URL.
+
+It is recommended to use OpenUPM for installation if you are not using VCC. Especially for users who are not using DressingTools for VRChat.
+:::
+
+You can install DressingTools via OpenUPM by following the instructions below.
+
+#### A. Install via OpenUPM command-line interface (CLI)
+1. If you haven't already, install the OpenUPM CLI by following the instructions on the [OpenUPM website](https://openupm.com/docs/getting-started-cli.html).
+
+2. Run the following command in your project directory to install DressingTools, its dependencies will also be installed automatically:
+```shell
+openupm add com.chocopoi.vrc.dressingtools
+```
+
+#### B. Install manually via Unity Package Manager (UPM)
+Follow the instructions on the OpenUPM website to install the packages manually:
+- DressingTools
+    - [https://openupm.com/packages/com.chocopoi.vrc.dressingtools/](https://openupm.com/packages/com.chocopoi.vrc.dressingtools/)
+
 ### Via .unitypackage
 
 :::info
@@ -82,7 +105,7 @@ Unity does not handle updates and dependencies properly for UPM Git URLs. Make s
 
     [![Installation UPM Git Add from git URL](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
 
-3. Add the following packages and make sure the required versions match the version of DressingTools that you are installing. Change the version after the `#` to your desired one.
+3. Add the following packages from top to bottom, make sure the required versions match the version of DressingTools that you are installing. Change the version after the `#` to your desired one.
 
     - AvatarLib
         - `https://github.com/poi-vrc/AvatarLib.git#1.0.2`
