@@ -12,9 +12,11 @@
 
 using System.Collections.Generic;
 using Chocopoi.DressingFramework.Localization;
+using Chocopoi.DressingTools.Components.OneConf;
 using Chocopoi.DressingTools.Configurator.Views;
 using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.OneConf;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -51,7 +53,17 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
 
         public void RemoveOutfit(IConfigurableOutfit outfit)
         {
-            throw new System.NotImplementedException();
+            // if outfit is an object inside of a prefab, do not remove it
+            if (!PrefabUtility.IsAnyPrefabInstanceRoot(outfit.RootTransform.gameObject) && PrefabUtility.IsPartOfAnyPrefab(outfit.RootTransform.gameObject))
+            {
+                EditorUtility.DisplayDialog(t._("tool.name"), t._("configurator.cabinet.oneConf.dialog.outfitPartOfPrefabObjectNotRemoved"), t._("common.dialog.btn.ok"));
+                if (outfit.RootTransform.TryGetComponent<DTWearable>(out var comp))
+                {
+                    Undo.DestroyObjectImmediate(comp);
+                }
+                return;
+            }
+            Undo.DestroyObjectImmediate(outfit.RootTransform.gameObject);
         }
     }
 }

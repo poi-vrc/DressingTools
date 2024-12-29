@@ -251,6 +251,7 @@
     "editor.main.toolSettings.updateChecker.label.defaultBranch": "Default branch",
     "editor.main.toolSettings.updateChecker.popup.branch": "Branch",
     "editor.main.toolSettings.updaterChecker.helpbox.msg.updateNotChecked": "Update has not been checked yet. Check update to change the branch.",
+    "configurator.cabinet.oneConf.dialog.outfitPartOfPrefabObjectNotRemoved": "Outfit object is part of a prefab. Only the outfit component is removed.",
     "tool.name": "DressingTools",
     "wearable.inspector.dialog.msg.unableToLocateCabinetToStartDressing": "Unable to locate cabinet to start dressing.",
     "wearable.inspector.settings.wearable": "Wearable",
