@@ -143,9 +143,9 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.SelectedAvatarIndex = 0;
             }
 
-            if (oldIndex != _view.SelectedAvatarIndex)
+            if (oldIndex != -1 && oldIndex != _view.SelectedAvatarIndex)
             {
-                _view.RaiseAvatarSelectionPopupChangeEvent();
+                _view.RaiseAvatarSelectionChangeEvent();
             }
 
             _view.ToolVersionText = UpdateChecker.CurrentVersion?.fullString;

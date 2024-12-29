@@ -36,6 +36,7 @@ namespace Chocopoi.DressingTools.UI.Views
         event Action<PrefabStage> PrefabStageClosing;
         event Action<PrefabStage> PrefabStageOpened;
         event Action AvatarSelectionPopupChange;
+        event Action AvatarSelectionChange;
 
         string UpdateAvailableFromVersion { get; set; }
         string UpdateAvailableToVersion { get; set; }
@@ -50,6 +51,6 @@ namespace Chocopoi.DressingTools.UI.Views
         void ForceUpdateCabinetSubView();
         void StartDressing(GameObject outfitGameObject = null, GameObject avatarGameObject = null);
         void OpenUrl(string url);
-        void RaiseAvatarSelectionPopupChangeEvent();
+        void RaiseAvatarSelectionChangeEvent();
     }
 }
