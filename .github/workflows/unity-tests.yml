@@ -21,21 +21,21 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        unity-version: ['2019.4.31f1', '2022.3.6f1', '2023.2.2f1']
+        unity-version: ['2019.4.31f1', '2022.3.22f1', '6000.0.32f1']
         import-vrcsdk: [false, true]
         import-dynbone: [false, true]
         exclude:
-          - unity-version: "2023.2.2f1"
+          - unity-version: "6000.0.32f1"
             import-vrcsdk: true
     steps:
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: Setup .NET 6
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Prepare Unity Project
         run: |
