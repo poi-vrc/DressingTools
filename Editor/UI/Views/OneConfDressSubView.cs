@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        public event Action TargetAvatarChange { add => _mainView.AvatarSelectionPopupChange += value; remove => _mainView.AvatarSelectionPopupChange -= value; }
+        public event Action TargetAvatarChange { add => _mainView.AvatarSelectionChange += value; remove => _mainView.AvatarSelectionChange -= value; }
         public event Action TargetWearableChange;
         public event Action AddToCabinetButtonClick;
         public GameObject TargetAvatar { get => _mainView.SelectedAvatarGameObject; }

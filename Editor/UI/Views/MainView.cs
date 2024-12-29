@@ -45,6 +45,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action UpdateAvailableUpdateButtonClick;
         public event Action MouseMove;
         public event Action AvatarSelectionPopupChange;
+        public event Action AvatarSelectionChange;
 
         public int SelectedAvatarIndex { get; set; }
         public List<GameObject> AvailableAvatars { get; set; }
@@ -94,8 +95,8 @@ namespace Chocopoi.DressingTools.UI.Views
             UpdateAvailableFromVersion = null;
             UpdateAvailableToVersion = null;
             ShowExitPlayModeHelpbox = false;
-            SelectedAvatarIndex = 0;
-            _lastSelectedAvatarIndex = 0;
+            SelectedAvatarIndex = -1;
+            _lastSelectedAvatarIndex = -1;
             AvailableAvatars = new List<GameObject>();
         }
 
@@ -272,11 +273,11 @@ namespace Chocopoi.DressingTools.UI.Views
             _avatarSelectionPopupContainer.Add(_avatarSelectionPopup);
 
             // force update avatar subview if the selected index has changed
-            if (_lastSelectedAvatarIndex != SelectedAvatarIndex)
+            if (_lastSelectedAvatarIndex != -1 && _lastSelectedAvatarIndex != SelectedAvatarIndex)
             {
-                _lastSelectedAvatarIndex = SelectedAvatarIndex;
                 _avatarSubView.RaiseForceUpdateViewEvent();
             }
+            _lastSelectedAvatarIndex = SelectedAvatarIndex;
         }
 
         private void RepaintDebugInfo()
@@ -294,6 +295,6 @@ namespace Chocopoi.DressingTools.UI.Views
             RepaintDebugInfo();
         }
 
-        public void RaiseAvatarSelectionPopupChangeEvent() => AvatarSelectionPopupChange?.Invoke();
+        public void RaiseAvatarSelectionChangeEvent() => AvatarSelectionChange?.Invoke();
     }
 }
