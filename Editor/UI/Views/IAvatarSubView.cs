@@ -33,6 +33,7 @@ namespace Chocopoi.DressingTools.UI.Views
     {
         event Action AddOutfitButtonClick;
         event Action AvatarSettingsChange;
+        event Action AvatarSelectionChange;
 
         int SettingsAnimationWriteDefaultsMode { get; set; }
         List<OutfitPreview> InstalledOutfitPreviews { get; set; }

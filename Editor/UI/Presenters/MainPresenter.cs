@@ -39,10 +39,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private const string GithubReleasesTagUrlPrefix = "https://github.com/poi-vrc/DressingTools/releases/tag/";
 
         private IMainView _view;
+        private int _lastSelectedAvatarIndex;
 
         public MainPresenter(IMainView view)
         {
             _view = view;
+            _lastSelectedAvatarIndex = -1;
 
             // set locale before anything
             var prefs = PreferencesUtility.GetPreferences();
@@ -132,7 +134,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private void UpdateView()
         {
             _view.AvailableAvatars = AvatarUtils.FindSceneAvatars(SceneManager.GetActiveScene());
-            var oldIndex = _view.SelectedAvatarIndex;
             if (_view.AvailableAvatars.Count == 0)
             {
                 _view.SelectedAvatarIndex = -1;
@@ -143,10 +144,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 _view.SelectedAvatarIndex = 0;
             }
 
-            if (oldIndex != -1 && oldIndex != _view.SelectedAvatarIndex)
+            if (_lastSelectedAvatarIndex != -1 && _lastSelectedAvatarIndex != _view.SelectedAvatarIndex)
             {
                 _view.RaiseAvatarSelectionChangeEvent();
             }
+            _lastSelectedAvatarIndex = _view.SelectedAvatarIndex;
 
             _view.ToolVersionText = UpdateChecker.CurrentVersion?.fullString;
 

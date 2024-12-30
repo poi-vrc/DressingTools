@@ -83,7 +83,6 @@ namespace Chocopoi.DressingTools.UI.Views
         private VisualElement _avatarSelectionPopupContainer;
         private VisualElement _debugInfoContainer;
         private PopupField<string> _avatarSelectionPopup;
-        private int _lastSelectedAvatarIndex;
 
         public MainView()
         {
@@ -96,7 +95,6 @@ namespace Chocopoi.DressingTools.UI.Views
             UpdateAvailableToVersion = null;
             ShowExitPlayModeHelpbox = false;
             SelectedAvatarIndex = -1;
-            _lastSelectedAvatarIndex = -1;
             AvailableAvatars = new List<GameObject>();
         }
 
@@ -271,13 +269,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 AvatarSelectionPopupChange?.Invoke();
             });
             _avatarSelectionPopupContainer.Add(_avatarSelectionPopup);
-
-            // force update avatar subview if the selected index has changed
-            if (_lastSelectedAvatarIndex != -1 && _lastSelectedAvatarIndex != SelectedAvatarIndex)
-            {
-                _avatarSubView.RaiseForceUpdateViewEvent();
-            }
-            _lastSelectedAvatarIndex = SelectedAvatarIndex;
         }
 
         private void RepaintDebugInfo()
