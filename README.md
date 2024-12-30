@@ -14,7 +14,7 @@
   一個簡單但進階的、無損衣櫃系統
   </p>
 
-  [![Translation Badge](https://weblate.chocopoi.com/widgets/dressingtools/-/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/) 
+  [![Translation Badge](https://weblate.chocopoi.com/widget/dressingtools/unity-tool/svg-badge.svg)](https://weblate.chocopoi.com/projects/dressingtools/) 
   [![Unity Tests](https://github.com/poi-vrc/DressingTools/actions/workflows/unity-tests.yml/badge.svg)](https://github.com/poi-vrc/DressingTools/actions/workflows/unity-tests.yml)
   
   [Getting Started](https://dressingtools.chocopoi.com/) / [はじめに](https://dressingtools.chocopoi.com/ja/) / [入門](https://dressingtools.chocopoi.com/zh-Hant/)
