@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools.OneConf
     // it will probably removed after the API layer is created
     internal class ModuleManager
     {
-        public static ModuleManager Instance { get => s_instance ?? (s_instance = new ModuleManager()); }
+        public static ModuleManager Instance { get => s_instance ??= new ModuleManager(); }
         private static ModuleManager s_instance = null;
 
         private readonly Dictionary<string, CabinetModuleProvider> _cabMods;

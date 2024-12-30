@@ -25,8 +25,8 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class BlendshapeSyncWearableModuleEditorPresenter
     {
-        private IBlendshapeSyncWearableModuleEditorView _view;
-        private BlendshapeSyncWearableModuleConfig _module;
+        private readonly IBlendshapeSyncWearableModuleEditorView _view;
+        private readonly BlendshapeSyncWearableModuleConfig _module;
 
         public BlendshapeSyncWearableModuleEditorPresenter(IBlendshapeSyncWearableModuleEditorView view, BlendshapeSyncWearableModuleConfig module)
         {

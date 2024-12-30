@@ -26,7 +26,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class MappingEditorPresenter
     {
-        private IMappingEditorView _view;
+        private readonly IMappingEditorView _view;
 
         public MappingEditorPresenter(IMappingEditorView view)
         {

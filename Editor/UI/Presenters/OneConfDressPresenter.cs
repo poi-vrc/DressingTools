@@ -28,7 +28,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 {
     internal class OneConfDressPresenter
     {
-        private IOneConfDressSubView _view;
+        private readonly IOneConfDressSubView _view;
 
         public OneConfDressPresenter(IOneConfDressSubView view)
         {

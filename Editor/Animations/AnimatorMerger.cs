@@ -166,10 +166,7 @@ namespace Chocopoi.DressingTools.Animations
 
         private AnimatorStateMachine DeepCopyStateMachineWithRebasing(string rebasePath, AnimatorStateMachine stateMachine, Dictionary<Object, Object> copyCache = null)
         {
-            if (copyCache == null)
-            {
-                copyCache = new Dictionary<Object, Object>();
-            }
+            copyCache ??= new Dictionary<Object, Object>();
 
             // attempt to find cache to not copy again
             var key = new Tuple<string, AnimatorStateMachine>(rebasePath, stateMachine);
@@ -180,7 +177,7 @@ namespace Chocopoi.DressingTools.Animations
 
             var newStateMachine = GenericDeepCopy(stateMachine, obj =>
             {
-                if (!(obj is AnimationClip))
+                if (obj is not AnimationClip)
                 {
                     return null;
                 }
@@ -280,10 +277,7 @@ namespace Chocopoi.DressingTools.Animations
 
         private static IEnumerable<AnimatorState> WalkStateMachine(AnimatorStateMachine stateMachine, HashSet<AnimatorStateMachine> visitedStateMachines = null)
         {
-            if (visitedStateMachines == null)
-            {
-                visitedStateMachines = new HashSet<AnimatorStateMachine>();
-            }
+            visitedStateMachines ??= new HashSet<AnimatorStateMachine>();
 
             // do not walk visited state machines
             if (visitedStateMachines.Contains(stateMachine))
@@ -329,10 +323,7 @@ namespace Chocopoi.DressingTools.Animations
         // TODO: reuse from DK, probably move to avatarlib with a more generic implementation
         private T GenericDeepCopy<T>(T originalObject, Func<Object, Object> genericCopyFunc = null, Dictionary<Object, Object> copyCache = null) where T : Object
         {
-            if (copyCache == null)
-            {
-                copyCache = new Dictionary<Object, Object>();
-            }
+            copyCache ??= new Dictionary<Object, Object>();
 
             if (originalObject == null)
             {
@@ -381,7 +372,7 @@ namespace Chocopoi.DressingTools.Animations
 
             // initialize a new object in a generic way
             var constructor = originalObjectType.GetConstructor(System.Type.EmptyTypes);
-            if (constructor != null && !(originalObject is ScriptableObject))
+            if (constructor != null && originalObject is not ScriptableObject)
             {
                 newObj = (T)System.Activator.CreateInstance(originalObjectType);
                 // copy serialized properties

@@ -75,7 +75,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
             var store = ctx.Feature<AnimationStore>();
             foreach (var clipContainer in store.Clips)
             {
-                var oldClip = clipContainer.newClip == null ? clipContainer.originalClip : clipContainer.newClip;
+                var oldClip = clipContainer.newClip != null ? clipContainer.newClip : clipContainer.originalClip;
                 var newClip = DTEditorUtils.CopyClip(oldClip);
                 var modified = false;
 

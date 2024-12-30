@@ -211,7 +211,7 @@ namespace Chocopoi.DressingTools.Dresser.Standard
         {
             objectMappings = null;
             tags = null;
-            if (!(dresserSettings is StandardDresserSettings stdDs)) throw new ArgumentException("dresserSettings is not subclass of StandardDresserSettings");
+            if (dresserSettings is not StandardDresserSettings stdDs) throw new ArgumentException("dresserSettings is not subclass of StandardDresserSettings");
 
             if (!CheckNoMissingScripts(report, MessageCode.MissingScriptsDetectedInAvatar, avatarGameObject))
             {

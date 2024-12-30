@@ -33,11 +33,14 @@ namespace Chocopoi.DressingTools.UI.Elements
         public new class UxmlTraits : VisualElement.UxmlTraits
         {
             readonly UxmlStringAttributeDescription m_Value =
-                new UxmlStringAttributeDescription { name = "value", defaultValue = "" };
+                new()
+                { name = "value", defaultValue = "" };
             readonly UxmlStringAttributeDescription m_Text =
-                new UxmlStringAttributeDescription { name = "text", defaultValue = "" };
+                new()
+                { name = "text", defaultValue = "" };
             readonly UxmlStringAttributeDescription m_Label =
-                new UxmlStringAttributeDescription { name = "label", defaultValue = "" };
+                new()
+                { name = "label", defaultValue = "" };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
@@ -82,7 +85,7 @@ namespace Chocopoi.DressingTools.UI.Elements
         private Label _label;
         private PopupField<string> _popupField;
         private TextField _textField;
-        private List<string> _parameterChoices;
+        private readonly List<string> _parameterChoices;
         private bool _refreshed;
         private GameObject _avatarGameObject;
 

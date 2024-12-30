@@ -303,11 +303,8 @@ namespace Chocopoi.DressingTools.OneConf
             }
 
             _cabAnimConf = _cabConf.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
-            if (_cabAnimConf == null)
-            {
-                // use default if not exist
-                _cabAnimConf = new CabinetAnimCabinetModuleConfig();
-            }
+            // use default if not exist
+            _cabAnimConf ??= new CabinetAnimCabinetModuleConfig();
 
             // for compatibility reasons, we cannot use this as menu group
             // since if we add this component to avatar root, using this as menu

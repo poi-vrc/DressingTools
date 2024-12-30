@@ -24,9 +24,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 {
     internal class MoveRootWearableModuleEditorPresenter
     {
-        private IMoveRootWearableModuleEditorView _view;
-        private IWearableModuleEditorViewParent _parentView;
-        private MoveRootWearableModuleConfig _module;
+        private readonly IMoveRootWearableModuleEditorView _view;
+        private readonly IWearableModuleEditorViewParent _parentView;
+        private readonly MoveRootWearableModuleConfig _module;
 
         public MoveRootWearableModuleEditorPresenter(IMoveRootWearableModuleEditorView view, IWearableModuleEditorViewParent parentView, MoveRootWearableModuleConfig module)
         {

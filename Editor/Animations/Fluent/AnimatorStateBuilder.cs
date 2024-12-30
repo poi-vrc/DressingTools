@@ -57,7 +57,7 @@ namespace Chocopoi.DressingTools.Animations.Fluent
         {
             var array = new StateMachineBehaviour[_state.behaviours.Length + 1];
             _state.behaviours.CopyTo(array, 0);
-            array[array.Length - 1] = behaviour;
+            array[^1] = behaviour;
             _state.behaviours = array;
             return this;
         }

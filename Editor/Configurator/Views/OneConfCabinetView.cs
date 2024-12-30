@@ -46,7 +46,7 @@ namespace Chocopoi.DressingTools.Configurator.Views
         public bool NetworkSyncedToggle { get => _networkSyncedToggle.value; set => _networkSyncedToggle.value = value; }
         public bool SavedToggle { get => _savedToggle.value; set => _savedToggle.value = value; }
 
-        private OneConfCabinetPresenter _presenter;
+        private readonly OneConfCabinetPresenter _presenter;
         private TextField _armatureNameField;
         private Toggle _groupDynToggle;
         private Toggle _groupDynSepToggle;

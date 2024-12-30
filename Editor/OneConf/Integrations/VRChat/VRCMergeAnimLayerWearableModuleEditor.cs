@@ -54,8 +54,8 @@ namespace Chocopoi.DressingTools.OneConf.Integrations.VRChat
         private bool _matchLayerWriteDefaults;
         private GameObject _animatorObj;
 
-        private IWearableModuleEditorViewParent _parentView;
-        private VRCMergeAnimLayerWearableModuleEditorPresenter _presenter;
+        private readonly IWearableModuleEditorViewParent _parentView;
+        private readonly VRCMergeAnimLayerWearableModuleEditorPresenter _presenter;
 
         public VRCMergeAnimLayerWearableModuleEditor(IWearableModuleEditorViewParent parentView, VRCMergeAnimLayerWearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)
         {

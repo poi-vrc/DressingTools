@@ -70,10 +70,10 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowExitPrefabModeHelpbox { get; set; }
         public string ToolVersionText { get; set; }
 
-        private MainPresenter _presenter;
-        private AvatarSubView _avatarSubView;
-        private OneConfDressSubView _dressSubView;
-        private ToolSettingsSubView _toolSettingsSubView;
+        private readonly MainPresenter _presenter;
+        private readonly AvatarSubView _avatarSubView;
+        private readonly OneConfDressSubView _dressSubView;
+        private readonly ToolSettingsSubView _toolSettingsSubView;
         private int _selectedTab;
         private Button[] _tabBtns;
         private Foldout _updateAvailableFoldout;

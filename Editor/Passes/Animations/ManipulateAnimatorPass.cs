@@ -95,7 +95,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
 
             for (var i = 0; i < output.Length; i++)
             {
-                if (!(output[i].animatorController is AnimatorController animCtrl))
+                if (output[i].animatorController is not AnimatorController animCtrl)
                 {
                     continue;
                 }
@@ -166,7 +166,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 {
                     relativeRoot = avatarRoot;
                 }
-                if (!(comp.SourceController is AnimatorController animCtrl))
+                if (comp.SourceController is not AnimatorController animCtrl)
                 {
                     return false;
                 }
@@ -181,7 +181,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                     return false;
                 }
 
-                if (!(animator.runtimeAnimatorController is AnimatorController animCtrl))
+                if (animator.runtimeAnimatorController is not AnimatorController animCtrl)
                 {
                     return false;
                 }

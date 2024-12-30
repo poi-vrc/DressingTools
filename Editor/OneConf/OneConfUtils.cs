@@ -270,7 +270,7 @@ namespace Chocopoi.DressingTools.OneConf
                 var prefixBracketEnd = childBoneName.IndexOf(")");
                 if (prefixBracketEnd != -1 && prefixBracketEnd != childBoneName.Length - 1) //remove it if there is
                 {
-                    childBoneName = childBoneName.Substring(prefixBracketEnd + 1).Trim();
+                    childBoneName = childBoneName[(prefixBracketEnd + 1)..].Trim();
                 }
             }
 
@@ -281,7 +281,7 @@ namespace Chocopoi.DressingTools.OneConf
                 var suffixBracketStart = childBoneName.LastIndexOf("(");
                 if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
                 {
-                    childBoneName = childBoneName.Substring(0, suffixBracketStart).Trim();
+                    childBoneName = childBoneName[..suffixBracketStart].Trim();
                 }
             }
 
@@ -369,11 +369,9 @@ namespace Chocopoi.DressingTools.OneConf
             compressedMs.Position = 0;
             using (var gzipStream = new GZipStream(compressedMs, CompressionMode.Decompress, true))
             {
-                using (var readerMs = new MemoryStream())
-                {
-                    gzipStream.CopyTo(readerMs);
-                    decompressedBuffer = readerMs.ToArray();
-                }
+                using var readerMs = new MemoryStream();
+                gzipStream.CopyTo(readerMs);
+                decompressedBuffer = readerMs.ToArray();
             }
 
             var texture = new Texture2D(DTEditorUtils.ThumbnailWidth, DTEditorUtils.ThumbnailHeight);

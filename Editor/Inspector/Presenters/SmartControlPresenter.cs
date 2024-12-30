@@ -317,34 +317,24 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private int DriverTypeToIndex(DTSmartControl.SCDriverType type)
         {
-            switch (type)
+            return type switch
             {
-                case DTSmartControl.SCDriverType.MenuItem:
-                    return 1;
-                case DTSmartControl.SCDriverType.ParameterSlot:
-                    return 2;
-                case DTSmartControl.SCDriverType.VRCPhysBone:
-                    return 3;
-                default:
-                case DTSmartControl.SCDriverType.AnimatorParameter:
-                    return 0;
-            }
+                DTSmartControl.SCDriverType.MenuItem => 1,
+                DTSmartControl.SCDriverType.ParameterSlot => 2,
+                DTSmartControl.SCDriverType.VRCPhysBone => 3,
+                _ => 0,
+            };
         }
 
         private DTSmartControl.SCDriverType IndexToDriverType(int type)
         {
-            switch (type)
+            return type switch
             {
-                case 1:
-                    return DTSmartControl.SCDriverType.MenuItem;
-                case 2:
-                    return DTSmartControl.SCDriverType.ParameterSlot;
-                case 3:
-                    return DTSmartControl.SCDriverType.VRCPhysBone;
-                default:
-                case 0:
-                    return DTSmartControl.SCDriverType.AnimatorParameter;
-            }
+                1 => DTSmartControl.SCDriverType.MenuItem,
+                2 => DTSmartControl.SCDriverType.ParameterSlot,
+                3 => DTSmartControl.SCDriverType.VRCPhysBone,
+                _ => DTSmartControl.SCDriverType.AnimatorParameter,
+            };
         }
 
         private void OnDriverChanged()
@@ -460,19 +450,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view.MenuItemName = _view.Target.name;
             _view.MenuItemIcon = _view.Target.MenuItemDriverConfig.ItemIcon;
-            switch (_view.Target.MenuItemDriverConfig.ItemType)
+            _view.MenuItemType = _view.Target.MenuItemDriverConfig.ItemType switch
             {
-                case DTMenuItem.ItemType.Button:
-                    _view.MenuItemType = 0;
-                    break;
-                default:
-                case DTMenuItem.ItemType.Toggle:
-                    _view.MenuItemType = 1;
-                    break;
-                case DTMenuItem.ItemType.Radial:
-                    _view.MenuItemType = 2;
-                    break;
-            }
+                DTMenuItem.ItemType.Button => 0,
+                DTMenuItem.ItemType.Radial => 2,
+                _ => 1,
+            };
         }
 
         private void UpdateDriverParamSlot()

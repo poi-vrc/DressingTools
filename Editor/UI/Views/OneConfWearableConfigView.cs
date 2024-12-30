@@ -98,8 +98,8 @@ namespace Chocopoi.DressingTools.UI.Views
 
         public bool PreviewActive { get => DTEditorUtils.PreviewActive; }
 
-        private IOneConfDressSubView _dressSubView;
-        private OneConfWearableConfigPresenter _presenter;
+        private readonly IOneConfDressSubView _dressSubView;
+        private readonly OneConfWearableConfigPresenter _presenter;
         private VisualElement _capturePanel;
         private Toggle _captureWearableOnlyToggle;
         private Toggle _captureRmvBgToggle;
@@ -133,7 +133,6 @@ namespace Chocopoi.DressingTools.UI.Views
         private TextField _advancedAvatarConfigCustomNameField;
         private Label _advancedAvatarConfigArmatureNameLabel;
         private Label _advancedAvatarConfigDeltaWorldPosLabel;
-        private Label _advancedAvatarConfigAvatarDeltaWorldPosLabel;
         private Label _advancedAvatarConfigDeltaWorldRotLabel;
         private Label _advancedAvatarConfigAvatarLossyScaleLabel;
         private Label _advancedAvatarConfigWearableLossyScaleLabel;

@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(CabinetAnimWearableModuleProvider))]
     internal class CabinetAnimWearableModuleEditor : WearableModuleEditorIMGUI, ICabinetAnimWearableModuleEditorView
     {
-        private static I18nTranslator t = I18n.ToolTranslator;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public event Action ConfigChange;
         public event Action AvatarOnWearPresetChangeEvent;
@@ -58,8 +58,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public PresetViewData WearableOnWearPresetData { get; set; }
         public List<CustomizableViewData> Customizables { get; set; }
 
-        private CabinetAnimWearableModuleEditorPresenter _presenter;
-        private IWearableModuleEditorViewParent _parentView;
+        private readonly CabinetAnimWearableModuleEditorPresenter _presenter;
+        private readonly IWearableModuleEditorViewParent _parentView;
         private bool _invertAvatarToggleOriginalStates;
         private bool _invertWearableToggleOriginalStates;
         private bool _setWearableDynamicsInactive;

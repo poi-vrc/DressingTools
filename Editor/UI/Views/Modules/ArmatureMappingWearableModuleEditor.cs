@@ -28,7 +28,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(ArmatureMappingWearableModuleProvider))]
     internal class ArmatureMappingWearableModuleEditor : WearableModuleEditorIMGUI, IArmatureMappingWearableModuleEditorView
     {
-        private static I18nTranslator t = I18n.ToolTranslator;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public event Action MappingModeChange;
         public event Action DresserChange;
@@ -49,8 +49,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public ArmatureMappingWearableModuleProvider.DefaultDresserSettings DresserSettings { get; set; }
         public string WearableArmatureName { get => _wearableArmatureName; set => _wearableArmatureName = value; }
 
-        private ArmatureMappingWearableModuleEditorPresenter _presenter;
-        private IWearableModuleEditorViewParent _parentView;
+        private readonly ArmatureMappingWearableModuleEditorPresenter _presenter;
+        private readonly IWearableModuleEditorViewParent _parentView;
         private int _selectedMappingMode;
         private int _selectedDresserIndex;
         private string _avatarArmatureName;

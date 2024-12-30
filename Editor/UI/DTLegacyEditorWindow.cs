@@ -32,7 +32,7 @@ namespace Chocopoi.DressingTools.UI
         private LegacyView _view;
 
         [MenuItem("Tools/chocopoi/DT Legacy Editor", false, 0)]
-        static void ShowWindow()
+        public static void ShowWindow()
         {
             var window = (DTLegacyEditorWindow)GetWindow(typeof(DTLegacyEditorWindow));
             window.titleContent = new GUIContent(t._("legacy.editor.title"));

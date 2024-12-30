@@ -31,6 +31,10 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
     [InitializeOnLoad]
     internal class CabinetAnimWearableModuleProvider : WearableModuleProvider
     {
+        static CabinetAnimWearableModuleProvider()
+        {
+        }
+
         internal class EventAdapter : ToolEventAdapter
         {
             public override void OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)

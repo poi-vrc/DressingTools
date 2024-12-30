@@ -40,9 +40,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     {
         private const string OldDresserClassName = "Chocopoi.DressingTools.Dresser.Standard.DefaultDresser";
 
-        private IArmatureMappingWearableModuleEditorView _view;
-        private IWearableModuleEditorViewParent _parentView;
-        private ArmatureMappingWearableModuleConfig _module;
+        private readonly IArmatureMappingWearableModuleEditorView _view;
+        private readonly IWearableModuleEditorViewParent _parentView;
+        private readonly ArmatureMappingWearableModuleConfig _module;
 
         private DKReport _dresserReport = null;
         private DTCabinet _cabinet;
@@ -236,10 +236,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         private void InitializeDresserSettings()
         {
             _view.DresserSettings = JsonConvert.DeserializeObject<ArmatureMappingWearableModuleProvider.DefaultDresserSettings>(_module.serializedDresserConfig ?? "{}");
-            if (_view.DresserSettings == null)
-            {
-                _view.DresserSettings = new ArmatureMappingWearableModuleProvider.DefaultDresserSettings();
-            }
+            _view.DresserSettings ??= new ArmatureMappingWearableModuleProvider.DefaultDresserSettings();
         }
 
         private void UpdateDresserReport()

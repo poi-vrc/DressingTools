@@ -22,7 +22,7 @@ namespace Chocopoi.DressingTools
     {
         public class ParsedVersion
         {
-            public static readonly ParsedVersion Zero = new ParsedVersion("0.0.0");
+            public static readonly ParsedVersion Zero = new("0.0.0");
 
             public readonly string fullString;
             public readonly string version;
@@ -39,8 +39,8 @@ namespace Chocopoi.DressingTools
                 if (hyphenIndex != -1)
                 {
                     //split the version part
-                    version = str.Substring(0, hyphenIndex);
-                    extra = str.Substring(hyphenIndex + 1);
+                    version = str[..hyphenIndex];
+                    extra = str[(hyphenIndex + 1)..];
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Chocopoi.DressingTools
         private static ParsedVersion s_latestVersion = null;
         private static DateTime s_lastUpdateCheckTime = DateTime.MinValue;
 
-        public static ParsedVersion CurrentVersion => s_currentVersion ?? (s_currentVersion = GetLocalPackageJsonVersion());
+        public static ParsedVersion CurrentVersion => s_currentVersion ??= GetLocalPackageJsonVersion();
 
         public static ParsedVersion LatestVersion => (DateTime.Now - s_lastUpdateCheckTime).TotalMinutes > UpdateCheckPeriodMinutes ? (s_latestVersion = GetOnlineLatestVersion()) : s_latestVersion;
 
