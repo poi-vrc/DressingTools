@@ -24,7 +24,7 @@ namespace Chocopoi.DressingTools
     [Serializable]
     internal class Preferences
     {
-        public static readonly SerializationVersion CurrentConfigVersion = new SerializationVersion(1, 0, 0);
+        public static readonly SerializationVersion CurrentConfigVersion = new(1, 0, 0);
 
         public class App
         {

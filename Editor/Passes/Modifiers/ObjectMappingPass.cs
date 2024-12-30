@@ -48,7 +48,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 int prefixBracketEnd = trans.name.IndexOf(")");
                 if (prefixBracketEnd != -1 && prefixBracketEnd != trans.name.Length - 1) //remove it if there is
                 {
-                    trans.name = trans.name.Substring(prefixBracketEnd + 1).Trim();
+                    trans.name = trans.name[(prefixBracketEnd + 1)..].Trim();
                 }
             }
 
@@ -59,7 +59,7 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
                 int suffixBracketStart = trans.name.LastIndexOf("(");
                 if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
                 {
-                    trans.name = trans.name.Substring(0, suffixBracketStart).Trim();
+                    trans.name = trans.name[..suffixBracketStart].Trim();
                 }
             }
         }

@@ -45,7 +45,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public List<Component> FoundComponents { get; set; }
         public int ControlType { get => _parentView.ControlType; set => _parentView.ControlType = value; }
 
-        private ISmartControlPropertyGroupViewParent _parentView;
+        private readonly ISmartControlPropertyGroupViewParent _parentView;
         private readonly SmartControlPropertyGroupPresenter _presenter;
         private readonly string _title;
         private readonly Action _onRemove;

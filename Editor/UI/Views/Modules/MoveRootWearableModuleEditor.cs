@@ -32,15 +32,15 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(MoveRootWearableModuleProvider))]
     internal class MoveRootWearableModuleEditor : WearableModuleEditorIMGUI, IMoveRootWearableModuleEditorView
     {
-        private static I18nTranslator t = I18n.ToolTranslator;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public event Action MoveToGameObjectFieldChange;
         public bool ShowSelectAvatarFirstHelpBox { get; set; }
         public bool IsGameObjectInvalid { get; set; }
         public GameObject MoveToGameObject { get => _moveToGameObject; set => _moveToGameObject = value; }
 
-        private MoveRootWearableModuleEditorPresenter _presenter;
-        private IWearableModuleEditorViewParent _parentView;
+        private readonly MoveRootWearableModuleEditorPresenter _presenter;
+        private readonly IWearableModuleEditorViewParent _parentView;
         private GameObject _moveToGameObject;
 
         public MoveRootWearableModuleEditor(IWearableModuleEditorViewParent parentView, MoveRootWearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)

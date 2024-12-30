@@ -37,6 +37,10 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
     [InitializeOnLoad]
     internal class BlendshapeSyncWearableModuleProvider : WearableModuleProvider
     {
+        static BlendshapeSyncWearableModuleProvider()
+        {
+        }
+
         internal class EventAdapter : ToolEventAdapter
         {
             public override void OnAddWearableToCabinet(CabinetConfig cabinetConfig, GameObject avatarGameObject, WearableConfig wearableConfig, GameObject wearableGameObject)
@@ -109,8 +113,7 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
                     continue;
                 }
 
-                var wearableSmr = wearableSmrObj.GetComponent<SkinnedMeshRenderer>();
-                if (wearableSmr == null)
+                if (!wearableSmrObj.TryGetComponent<SkinnedMeshRenderer>(out var wearableSmr))
                 {
                     Debug.LogWarning("[DressingTools] [BlendshapeSyncProvider] Blendshape sync wearable GameObject at path does not have SkinnedMeshRenderer or Mesh attached: " + bs.avatarPath);
                     continue;

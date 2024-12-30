@@ -91,7 +91,7 @@ namespace Chocopoi.DressingTools.Animations
                 return false;
             }
 
-            var name = path.Substring("blendShape.".Length);
+            var name = path["blendShape.".Length..];
             var idx = smr.sharedMesh.GetBlendShapeIndex(name);
             if (idx < 0)
             {
@@ -114,7 +114,7 @@ namespace Chocopoi.DressingTools.Animations
                 {
                     return false;
                 }
-                if (!int.TryParse(path.Substring(start, end - start), out materialIdx))
+                if (!int.TryParse(path[start..end], out materialIdx))
                 {
                     return false;
                 }
@@ -131,7 +131,7 @@ namespace Chocopoi.DressingTools.Animations
             }
 
             var material = materials[materialIdx];
-            var name = path.Substring(propertyNameIdx);
+            var name = path[propertyNameIdx..];
 
             if (type == typeof(float))
             {

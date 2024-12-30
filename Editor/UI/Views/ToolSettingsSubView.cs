@@ -39,8 +39,8 @@ namespace Chocopoi.DressingTools.UI.Views
         public string UpdaterCurrentVersion { get; set; }
         public bool UpdaterShowHelpboxUpdateNotChecked { get; set; }
 
-        private IMainView _mainView;
-        private ToolSettingsPresenter _presenter;
+        private readonly IMainView _mainView;
+        private readonly ToolSettingsPresenter _presenter;
         private Label _updaterCurrentVerLabel;
         private VisualElement _updaterHelpboxContainer;
 

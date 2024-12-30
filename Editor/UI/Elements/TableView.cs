@@ -69,8 +69,8 @@ namespace Chocopoi.DressingTools.UI.Elements
             }
         }
 
-        private TableModel _model;
-        private int _rowHeight;
+        private readonly TableModel _model;
+        private readonly int _rowHeight;
 
         public TableView(TableModel model, int rowHeight = DefaultRowHeight)
         {

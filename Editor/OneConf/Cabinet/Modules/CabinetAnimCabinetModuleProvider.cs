@@ -28,6 +28,10 @@ namespace Chocopoi.DressingTools.OneConf.Cabinet.Modules
     [InitializeOnLoad]
     internal class CabinetAnimCabinetModuleProvider : CabinetModuleProvider
     {
+        static CabinetAnimCabinetModuleProvider()
+        {
+        }
+
         [ExcludeFromCodeCoverage] public override string Identifier => CabinetAnimCabinetModuleConfig.ModuleIdentifier;
         [ExcludeFromCodeCoverage] public override string FriendlyName => "Cabinet Animation";
         [ExcludeFromCodeCoverage] public override bool AllowMultiple => false;

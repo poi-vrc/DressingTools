@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Chocopoi.AvatarLib.Animations;
 using Chocopoi.DressingFramework;
 using Chocopoi.DressingFramework.Localization;
@@ -44,7 +45,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
         private List<WearableModuleProvider> s_moduleProviders = null;
         private static Dictionary<Type, Type> s_moduleEditorTypesCache = null;
 
-        private IOneConfWearableConfigView _view;
+        private readonly IOneConfWearableConfigView _view;
 
         public OneConfWearableConfigPresenter(IOneConfWearableConfigView view)
         {
@@ -351,7 +352,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var avatarPrefabGuid = OneConfUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
+            var avatarPrefabGuid = OneConfUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference != null ? _view.AdvancedAvatarConfigGuidReference : _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
             _view.Config.avatarConfig.guids.Clear();
@@ -398,7 +399,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 }
             }
 
-            _view.InfoUseCustomWearableName = _view.TargetWearable != null ? (_view.TargetWearable.name != _view.Config.info.name) : true;
+            _view.InfoUseCustomWearableName = _view.TargetWearable == null || (_view.TargetWearable.name != _view.Config.info.name);
             _view.InfoCustomWearableName = _view.Config.info.name;
 
             _view.InfoUuid = _view.Config.info.uuid;
@@ -460,7 +461,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                     foreach (var type in assembly.GetTypes())
                     {
                         var attributes = type.GetCustomAttributes(typeof(CustomWearableModuleEditor), true);
-                        foreach (CustomWearableModuleEditor attribute in attributes)
+                        foreach (CustomWearableModuleEditor attribute in attributes.Cast<CustomWearableModuleEditor>())
                         {
                             if (s_moduleEditorTypesCache.ContainsKey(attribute.ModuleProviderType))
                             {
@@ -485,10 +486,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UpdateAdvancedModulesView()
         {
-            if (s_moduleProviders == null)
-            {
-                s_moduleProviders = ModuleManager.Instance.GetAllWearableModuleProviders();
-            }
+            s_moduleProviders ??= ModuleManager.Instance.GetAllWearableModuleProviders();
 
             _view.AdvancedModuleNames.Clear();
             _view.AdvancedModuleNames.Add("---");
@@ -541,7 +539,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 return;
             }
 
-            var avatarPrefabGuid = OneConfUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference ?? _view.TargetAvatar);
+            var avatarPrefabGuid = OneConfUtils.GetGameObjectOriginalPrefabGuid(_view.AdvancedAvatarConfigGuidReference != null ? _view.AdvancedAvatarConfigGuidReference : _view.TargetAvatar);
             var invalidAvatarPrefabGuid = avatarPrefabGuid == null || avatarPrefabGuid == "";
 
             _view.AdvancedAvatarConfigGuid = invalidAvatarPrefabGuid ? null : avatarPrefabGuid;

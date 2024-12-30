@@ -28,7 +28,7 @@ namespace Chocopoi.DressingTools
 {
     internal class PreferencesUtility
     {
-        private static I18nTranslator t = I18n.ToolTranslator;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         private static readonly string EditorPrefsKey = "Chocopoi.DressingTools.Preferences";
 
@@ -38,10 +38,7 @@ namespace Chocopoi.DressingTools
 
         public static Preferences GetPreferences()
         {
-            if (s_prefs == null)
-            {
-                s_prefs = LoadPreferences();
-            }
+            s_prefs ??= LoadPreferences();
             return s_prefs;
         }
 

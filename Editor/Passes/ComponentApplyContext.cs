@@ -30,7 +30,7 @@ namespace Chocopoi.DressingTools.Passes
         public override Object AssetContainer => throw new System.NotImplementedException();
         internal override Report Report => _report;
 
-        private DKReport _report;
+        private readonly DKReport _report;
 
         public ComponentApplyContext(GameObject avatarGameObject) : base(avatarGameObject)
         {

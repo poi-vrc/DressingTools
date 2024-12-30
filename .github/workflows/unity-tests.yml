@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - upgrade-u22-cs8
     paths:
       - "**/*.cs"
       - ".github/unity-project/**/*"
@@ -21,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        unity-version: ['2019.4.31f1', '2022.3.22f1', '6000.0.32f1']
+        unity-version: ['2022.3.22f1', '6000.0.32f1']
         import-vrcsdk: [false, true]
         import-dynbone: [false, true]
         exclude:

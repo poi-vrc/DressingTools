@@ -41,22 +41,15 @@ namespace Chocopoi.DressingTools.Passes.Modifiers
 
         private static StdDresserAPIDynamicsOption StdDresserComponentToAPIDynamicsOption(StdDresserComponentDynamicsOption dynamicsOptions)
         {
-            switch (dynamicsOptions)
+            return dynamicsOptions switch
             {
-                case StdDresserComponentDynamicsOption.RemoveDynamicsAndUseParentConstraint:
-                    return StdDresserAPIDynamicsOption.RemoveDynamicsAndUseParentConstraint;
-                case StdDresserComponentDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary:
-                    return StdDresserAPIDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary;
-                case StdDresserComponentDynamicsOption.IgnoreTransform:
-                    return StdDresserAPIDynamicsOption.IgnoreTransform;
-                case StdDresserComponentDynamicsOption.CopyDynamics:
-                    return StdDresserAPIDynamicsOption.CopyDynamics;
-                case StdDresserComponentDynamicsOption.IgnoreAll:
-                    return StdDresserAPIDynamicsOption.IgnoreAll;
-                default:
-                case StdDresserComponentDynamicsOption.Auto:
-                    return StdDresserAPIDynamicsOption.Auto;
-            }
+                StdDresserComponentDynamicsOption.RemoveDynamicsAndUseParentConstraint => StdDresserAPIDynamicsOption.RemoveDynamicsAndUseParentConstraint,
+                StdDresserComponentDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary => StdDresserAPIDynamicsOption.KeepDynamicsAndUseParentConstraintIfNecessary,
+                StdDresserComponentDynamicsOption.IgnoreTransform => StdDresserAPIDynamicsOption.IgnoreTransform,
+                StdDresserComponentDynamicsOption.CopyDynamics => StdDresserAPIDynamicsOption.CopyDynamics,
+                StdDresserComponentDynamicsOption.IgnoreAll => StdDresserAPIDynamicsOption.IgnoreAll,
+                _ => StdDresserAPIDynamicsOption.Auto,
+            };
         }
 
         private static List<DTObjectMapping.Mapping> ConvertToComponentObjectMapping(List<ObjectMapping> dresserObjectMappings)

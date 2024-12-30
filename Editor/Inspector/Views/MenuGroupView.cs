@@ -40,7 +40,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private readonly MenuGroupPresenter _presenter;
         private VisualElement _itemsContainer;
         private Button _addItemBtn;
-        private List<MenuItemView> _subViews;
+        private readonly List<MenuItemView> _subViews;
         private Button _addSmartControlBtn;
 
         public MenuGroupView()

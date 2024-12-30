@@ -44,12 +44,10 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool DisableAddToCabinetButton { get; set; }
         public int SelectedDressingMode { get => _currentMode; set => _currentMode = value; }
 
-        private OneConfDressPresenter _presenter;
-        private IMainView _mainView;
-        private OneConfWearableConfigView _configView;
+        private readonly OneConfDressPresenter _presenter;
+        private readonly IMainView _mainView;
+        private readonly OneConfWearableConfigView _configView;
         private int _currentMode;
-        private Button[] _viewModeBtns;
-        private VisualElement _advancedContainer;
         private ObjectField _wearableObjectField;
         private Button _btnAddToCabinet;
         private VisualElement _helpboxContainer;

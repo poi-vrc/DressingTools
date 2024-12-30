@@ -28,8 +28,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private IToolSettingsSubView _view;
-        private Preferences _prefs;
+        private readonly IToolSettingsSubView _view;
+        private readonly Preferences _prefs;
 
         public ToolSettingsPresenter(IToolSettingsSubView view)
         {

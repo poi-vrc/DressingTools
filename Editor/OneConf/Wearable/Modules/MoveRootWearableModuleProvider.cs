@@ -30,12 +30,15 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
     [InitializeOnLoad]
     internal class MoveRootWearableModuleProvider : WearableModuleProvider
     {
+        static MoveRootWearableModuleProvider()
+        {
+        }
+
         public class MessageCode
         {
             public const string AvatarPathEmpty = "modules.wearable.moveRoot.msgCode.error.avatarPathEmpty";
             public const string AvatarPathNotFound = "modules.wearable.moveRoot.msgCode.error.avatarPathNotFound";
         }
-        private const string LogLabel = "MoveRootWearableModule";
 
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 

@@ -41,7 +41,6 @@ namespace Chocopoi.DressingTools
     internal class DTEditorUtils
     {
         private static RenderTexture s_thumbnailCameraRenderTexture = null;
-        private static readonly System.Random Random = new System.Random();
 
         public static bool PreviewActive { get; private set; }
 
@@ -69,18 +68,6 @@ namespace Chocopoi.DressingTools
                     Object.DestroyImmediate(obj);
                 }
             }
-        }
-
-        private static WearableModuleProvider GetWearableModuleProviderByIdentifier(List<WearableModuleProvider> providers, string identifier)
-        {
-            foreach (var provider in providers)
-            {
-                if (provider.Identifier == identifier)
-                {
-                    return provider;
-                }
-            }
-            return null;
         }
 
         public static void UpdatePreviewAvatar(GameObject targetAvatar, WearableConfig newWearableConfig, GameObject newWearable, bool forceRecreate = false)

@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.UI
         [MenuItem("GameObject/DressingTools/Quick setup clothes", false, MenuItemPriority)]
         public static void QuickAutoSetup(MenuCommand menuCommand)
         {
-            if (!(menuCommand.context is GameObject))
+            if (menuCommand.context is not GameObject)
             {
                 return;
             }
@@ -164,7 +164,7 @@ namespace Chocopoi.DressingTools.UI
         [MenuItem("GameObject/DressingTools/Setup wearable with editor", false, MenuItemPriority)]
         public static void StartSetupWizard(MenuCommand menuCommand)
         {
-            if (!(menuCommand.context is GameObject))
+            if (menuCommand.context is not GameObject)
             {
                 return;
             }

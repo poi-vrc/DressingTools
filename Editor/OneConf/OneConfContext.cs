@@ -77,7 +77,7 @@ namespace Chocopoi.DressingTools.OneConf
                 catch (System.Exception ex)
                 {
                     dkCtx.Report.LogExceptionLocalized(t, LogLabel, ex);
-                    dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.UnableToDeserializeCabinetConfig, dkCtx.AvatarGameObject.gameObject.name);
+                    dkCtx.Report.LogErrorLocalized(t, LogLabel, MessageCode.UnableToDeserializeCabinetConfig, dkCtx.AvatarGameObject.name);
                     return;
                 }
             }

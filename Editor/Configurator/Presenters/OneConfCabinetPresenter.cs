@@ -33,8 +33,8 @@ namespace Chocopoi.DressingTools.Configurator.Presenters
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private IOneConfCabinetView _view;
-        private GameObject _avatarGameObject;
+        private readonly IOneConfCabinetView _view;
+        private readonly GameObject _avatarGameObject;
 
         public OneConfCabinetPresenter(IOneConfCabinetView view, GameObject avatarGameObject)
         {
@@ -112,12 +112,7 @@ namespace Chocopoi.DressingTools.Configurator.Presenters
             _view.GroupDynamics = config.groupDynamics;
             _view.GroupDynamicsSeparate = config.groupDynamicsSeparateGameObjects;
 
-            var cabAnimConfig = config.FindModuleConfig<CabinetAnimCabinetModuleConfig>();
-            if (cabAnimConfig == null)
-            {
-                cabAnimConfig = new CabinetAnimCabinetModuleConfig();
-            }
-
+            var cabAnimConfig = config.FindModuleConfig<CabinetAnimCabinetModuleConfig>() ?? new CabinetAnimCabinetModuleConfig();
             _view.UseThumbnails = cabAnimConfig.thumbnails;
             _view.ResetCustomizablesOnSwitch = cabAnimConfig.resetCustomizablesOnSwitch;
             _view.MenuInstallPathField = cabAnimConfig.menuInstallPath;

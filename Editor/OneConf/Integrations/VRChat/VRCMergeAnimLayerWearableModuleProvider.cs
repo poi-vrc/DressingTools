@@ -34,6 +34,10 @@ namespace Chocopoi.DressingTools.OneConf.Integration.VRChat.Modules
     [InitializeOnLoad]
     internal class VRCMergeAnimLayerWearableModuleProvider : WearableModuleProvider
     {
+        static VRCMergeAnimLayerWearableModuleProvider()
+        {
+        }
+
         public class MessageCode
         {
         }

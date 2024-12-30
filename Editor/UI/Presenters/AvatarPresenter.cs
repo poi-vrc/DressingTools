@@ -31,7 +31,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private IAvatarSubView _view;
+        private readonly IAvatarSubView _view;
 
         public AvatarPresenter(IAvatarSubView view)
         {

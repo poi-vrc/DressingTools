@@ -108,7 +108,7 @@ namespace Chocopoi.DressingTools.Animations
             {
                 ctrl.ControlType = DTSmartControl.SCControlType.MotionTime;
                 menuItem.SubControllers = new DTMenuItem.ItemController[] {
-                        new DTMenuItem.ItemController() {
+                        new() {
                             Type = DTMenuItem.ItemController.ControllerType.AnimatorParameter,
                             AnimatorParameterName = ctrl.AnimatorConfig.ParameterName,
                             AnimatorParameterValue = 1.0f
@@ -466,7 +466,7 @@ namespace Chocopoi.DressingTools.Animations
         private static bool TryGetBlendshapeProperty(SkinnedMeshRenderer smr, string propertyName, out object value)
         {
             value = -1;
-            var name = propertyName.Substring(BlendshapePropertyPrefix.Length);
+            var name = propertyName[BlendshapePropertyPrefix.Length..];
 
             if (smr.sharedMesh == null)
             {
@@ -489,14 +489,14 @@ namespace Chocopoi.DressingTools.Animations
         {
             type = null;
             value = null;
-
-            var propertyNameStartIndex = -1;
             Material material;
+
+            int propertyNameStartIndex;
             if (propertyName.StartsWith(MaterialsArrayPrefix))
             {
                 // array
                 var closingBracketIndex = propertyName.IndexOf(']');
-                var index = -1;
+                int index;
                 try
                 {
                     index = int.Parse(propertyName.Substring(MaterialsArrayPrefix.Length, closingBracketIndex));
@@ -521,7 +521,7 @@ namespace Chocopoi.DressingTools.Animations
                 return false;
             }
 
-            var shaderPropertyName = propertyName.Substring(propertyNameStartIndex);
+            var shaderPropertyName = propertyName[propertyNameStartIndex..];
             var shaderPropertyIndex = material.shader.FindPropertyIndex(shaderPropertyName);
             if (shaderPropertyIndex == -1)
             {
@@ -589,14 +589,14 @@ namespace Chocopoi.DressingTools.Animations
                             if (propVal.ValueObjectReference != null && (type == typeof(Object) || type.IsSubclassOf(typeof(Object))))
                             {
                                 var obj = (Object)originalValue;
-                                var enabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {
-                                        time = 0.0f,
-                                        value = propVal.ValueObjectReference
+                                var enabledFrames = new ObjectReferenceKeyframe[] { new() {
+                                    time = 0.0f,
+                                    value = propVal.ValueObjectReference
                                 }};
-                                var disabledFrames = new ObjectReferenceKeyframe[] { new ObjectReferenceKeyframe() {
-                                        time = 0.0f,
-                                        value = obj
-                                    }};
+                                var disabledFrames = new ObjectReferenceKeyframe[] { new() {
+                                    time = 0.0f,
+                                    value = obj
+                                }};
                                 enabledClip.SetCurve(comp.transform, compType, propVal.Name, enabledFrames);
                                 // in write defaults mode, we want to keep the enabled frames in prepare disabled to prevent flickering in parameter slot
                                 prepareDisabledClip.SetCurve(comp.transform, compType, propVal.Name, _options.writeDefaults ? enabledFrames : disabledFrames);

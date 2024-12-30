@@ -42,7 +42,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public bool ShowNoAvatarOrWearableSelectedHelpbox { get; set; }
         public bool ShowGeneratedBoneMappingNotAvailableHelpbox { get; set; }
 
-        private MappingEditorPresenter _presenter;
+        private readonly MappingEditorPresenter _presenter;
         private GameObject _targetAvatar;
         private GameObject _targetWearable;
         private int _selectedBoneMappingMode;

@@ -34,9 +34,9 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
     {
         private const string SavedPresetUnselectedPlaceholder = "---";
 
-        private ICabinetAnimWearableModuleEditorView _view;
-        private IWearableModuleEditorViewParent _parentView;
-        private CabinetAnimWearableModuleConfig _module;
+        private readonly ICabinetAnimWearableModuleEditorView _view;
+        private readonly IWearableModuleEditorViewParent _parentView;
+        private readonly CabinetAnimWearableModuleConfig _module;
         private DTCabinet _cabinet;
         private CabinetConfig _cabinetConfig;
         private CabinetAnimCabinetModuleConfig _moduleConfig;
@@ -421,17 +421,17 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             return false;
         }
 
-        private bool IsGameObjectUsedInBlendshapes(GameObject go, List<BlendshapeData> blendshapeData)
-        {
-            foreach (var blendshape in blendshapeData)
-            {
-                if (blendshape.gameObject == go)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        // private bool IsGameObjectUsedInBlendshapes(GameObject go, List<BlendshapeData> blendshapeData)
+        // {
+        //     foreach (var blendshape in blendshapeData)
+        //     {
+        //         if (blendshape.gameObject == go)
+        //         {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // }
 
         private void UpdateToggleAndSmrSuggestions(Transform root, List<CabinetAnimWearableModuleConfig.Toggle> realToggles, List<ToggleData> toggles,
              List<ToggleSuggestionData> toggleSuggestions, List<CabinetAnimWearableModuleConfig.BlendshapeValue> realBlendshapes, List<BlendshapeData> blendshapes,

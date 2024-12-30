@@ -34,10 +34,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
     internal class LegacyPresenter
     {
         private const string TestModeAnimationControllerPath = "Packages/com.chocopoi.vrc.dressingtools/Animations/TestModeAnimationController.controller";
-        private static readonly StandardDresser StandardDresser = new StandardDresser();
+        private static readonly StandardDresser StandardDresser = new();
         private static AnimatorController s_testModeAnimationController;
 
-        private ILegacyView _view;
+        private readonly ILegacyView _view;
         private DKReport _report;
 
         public LegacyPresenter(ILegacyView view)

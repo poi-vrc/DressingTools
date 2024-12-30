@@ -53,7 +53,7 @@ namespace Chocopoi.DressingTools.UI.Views
         public int DynamicsOption { get => _dynamicsOption; set => _dynamicsOption = value; }
         public ReportData ReportData { get => _reportData; set => _reportData = value; }
 
-        private LegacyPresenter _presenter;
+        private readonly LegacyPresenter _presenter;
         private int _selectedMode;
         private Vector2 _scrollPos;
         private bool _foldoutReportLogEntries;

@@ -51,7 +51,7 @@ namespace Chocopoi.DressingTools.Dresser
                 var prefixBracketEnd = output.IndexOf(")");
                 if (prefixBracketEnd != -1 && prefixBracketEnd != output.Length - 1) //remove it if there is
                 {
-                    output = output.Substring(prefixBracketEnd + 1).Trim();
+                    output = output[(prefixBracketEnd + 1)..].Trim();
                 }
             }
 
@@ -62,7 +62,7 @@ namespace Chocopoi.DressingTools.Dresser
                 var suffixBracketStart = output.LastIndexOf("(");
                 if (suffixBracketStart != -1 && suffixBracketStart != 0) //remove it if there is
                 {
-                    output = output.Substring(0, suffixBracketStart).Trim();
+                    output = output[..suffixBracketStart].Trim();
                 }
             }
 

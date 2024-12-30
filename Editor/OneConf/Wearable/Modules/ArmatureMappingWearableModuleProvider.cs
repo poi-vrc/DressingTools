@@ -32,6 +32,10 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
     [InitializeOnLoad]
     internal class ArmatureMappingWearableModuleProvider : WearableModuleProvider
     {
+        static ArmatureMappingWearableModuleProvider()
+        {
+        }
+
         public class DefaultDresserSettings
         {
             public enum DynamicsOptions
@@ -54,42 +58,28 @@ namespace Chocopoi.DressingTools.OneConf.Wearable.Modules
 
             private static int DynamicsOptionToUI(DynamicsOptions dynamicsOptions)
             {
-                switch (dynamicsOptions)
+                return dynamicsOptions switch
                 {
-                    case DynamicsOptions.RemoveDynamicsAndUseParentConstraint:
-                        return 1;
-                    case DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary:
-                        return 2;
-                    case DynamicsOptions.IgnoreTransform:
-                        return 3;
-                    case DynamicsOptions.CopyDynamics:
-                        return 4;
-                    case DynamicsOptions.IgnoreAll:
-                        return 5;
-                    default:
-                    case DynamicsOptions.Auto:
-                        return 0;
-                }
+                    DynamicsOptions.RemoveDynamicsAndUseParentConstraint => 1,
+                    DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary => 2,
+                    DynamicsOptions.IgnoreTransform => 3,
+                    DynamicsOptions.CopyDynamics => 4,
+                    DynamicsOptions.IgnoreAll => 5,
+                    _ => 0,
+                };
             }
 
             private static DynamicsOptions UIToDynamicsOption(int index)
             {
-                switch (index)
+                return index switch
                 {
-                    case 1:
-                        return DynamicsOptions.RemoveDynamicsAndUseParentConstraint;
-                    case 2:
-                        return DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary;
-                    case 3:
-                        return DynamicsOptions.IgnoreTransform;
-                    case 4:
-                        return DynamicsOptions.CopyDynamics;
-                    case 5:
-                        return DynamicsOptions.IgnoreAll;
-                    default:
-                    case 0:
-                        return DynamicsOptions.Auto;
-                }
+                    1 => DynamicsOptions.RemoveDynamicsAndUseParentConstraint,
+                    2 => DynamicsOptions.KeepDynamicsAndUseParentConstraintIfNecessary,
+                    3 => DynamicsOptions.IgnoreTransform,
+                    4 => DynamicsOptions.CopyDynamics,
+                    5 => DynamicsOptions.IgnoreAll,
+                    _ => DynamicsOptions.Auto,
+                };
             }
 
             [ExcludeFromCodeCoverage]

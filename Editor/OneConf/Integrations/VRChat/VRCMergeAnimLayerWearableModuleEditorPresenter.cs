@@ -37,9 +37,9 @@ namespace Chocopoi.DressingTools.OneConf.Integrations.VRChat
             VRCMergeAnimLayerWearableModuleConfig.AnimLayer.TPose,
             VRCMergeAnimLayerWearableModuleConfig.AnimLayer.IKPose
         };
-        private IVRCMergeAnimLayerWearableModuleEditorView _view;
-        private IWearableModuleEditorViewParent _parentView;
-        private VRCMergeAnimLayerWearableModuleConfig _module;
+        private readonly IVRCMergeAnimLayerWearableModuleEditorView _view;
+        private readonly IWearableModuleEditorViewParent _parentView;
+        private readonly VRCMergeAnimLayerWearableModuleConfig _module;
 
         public VRCMergeAnimLayerWearableModuleEditorPresenter(IVRCMergeAnimLayerWearableModuleEditorView view, IWearableModuleEditorViewParent parentView, VRCMergeAnimLayerWearableModuleConfig module)
         {

@@ -214,10 +214,10 @@ namespace Chocopoi.DressingTools.UI.Presenters
             if (_view.Target.SubLabels.Length != SubParametersControllersLength)
             {
                 _view.Target.SubLabels = new DTMenuItem.Label[] {
-                    new DTMenuItem.Label(),
-                    new DTMenuItem.Label(),
-                    new DTMenuItem.Label(),
-                    new DTMenuItem.Label(),
+                    new(),
+                    new(),
+                    new(),
+                    new(),
                 };
             }
         }

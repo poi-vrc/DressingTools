@@ -38,7 +38,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
     {
         private const string GithubReleasesTagUrlPrefix = "https://github.com/poi-vrc/DressingTools/releases/tag/";
 
-        private IMainView _view;
+        private readonly IMainView _view;
         private int _lastSelectedAvatarIndex;
 
         public MainPresenter(IMainView view)

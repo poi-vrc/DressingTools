@@ -34,7 +34,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     [CustomWearableModuleEditor(typeof(BlendshapeSyncWearableModuleProvider))]
     internal class BlendshapeSyncWearableModuleEditor : WearableModuleEditorIMGUI, IBlendshapeSyncWearableModuleEditorView
     {
-        private static I18nTranslator t = I18n.ToolTranslator;
+        private static readonly I18nTranslator t = I18n.ToolTranslator;
 
         public event Action AddBlendshapeSyncButtonClick;
         public GameObject TargetAvatar { get => _parentView.TargetAvatar; }
@@ -42,8 +42,8 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
         public bool ShowCannotRenderWithoutTargetAvatarAndWearableHelpBox { get; set; }
         public List<BlendshapeSyncData> BlendshapeSyncs { get; set; }
 
-        private IWearableModuleEditorViewParent _parentView;
-        private BlendshapeSyncWearableModuleEditorPresenter _presenter;
+        private readonly IWearableModuleEditorViewParent _parentView;
+        private readonly BlendshapeSyncWearableModuleEditorPresenter _presenter;
 
         public BlendshapeSyncWearableModuleEditor(IWearableModuleEditorViewParent parentView, WearableModuleProvider provider, IModuleConfig target) : base(parentView, provider, target)
         {

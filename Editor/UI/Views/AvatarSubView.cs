@@ -46,8 +46,8 @@ namespace Chocopoi.DressingTools.UI.Views
         public List<OutfitPreview> InstalledOutfitPreviews { get; set; }
         public GameObject SelectedAvatarGameObject { get => _mainView.SelectedAvatarGameObject; }
 
-        private IMainView _mainView;
-        private AvatarPresenter _avatarPresenter;
+        private readonly IMainView _mainView;
+        private readonly AvatarPresenter _avatarPresenter;
         private VisualElement _conceptChangedHelpboxContainer;
         private VisualElement _createAvatarContainer;
         private VisualElement _avatarContentContainer;
