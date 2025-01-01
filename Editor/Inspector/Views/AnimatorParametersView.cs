@@ -52,6 +52,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
             Configs = new List<AnimatorParametersConfig>();
             _presenter = new AnimatorParametersPresenter(this);
             _animParamTextFields = new List<AnimatorParameterTextField>();
+
+            InitVisualTree();
+            RegisterCallback<MouseEnterEvent>(evt => MouseEnter?.Invoke());
+            RegisterCallback<MouseLeaveEvent>(evt => MouseLeave?.Invoke());
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -64,28 +69,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 styleSheets.Add(styleSheet);
             }
 
-            _helpBoxContainer = Q<VisualElement>("helpbox-container").First();
+            _helpBoxContainer = Q<VisualElement>("helpbox-container");
             _helpBoxContainer.Add(CreateHelpBox(t._("inspector.animParams.helpbox.description"), MessageType.Info));
-            _configsContainer = Q<VisualElement>("configs-container").First();
-            var addConfigBtn = Q<Button>("add-config-btn").First();
+            _configsContainer = Q<VisualElement>("configs-container");
+            var addConfigBtn = Q<Button>("add-config-btn");
             addConfigBtn.clicked += AddConfig;
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-
-            t.LocalizeElement(this);
-
-            RegisterCallback<MouseEnterEvent>(evt => MouseEnter?.Invoke());
-            RegisterCallback<MouseLeaveEvent>(evt => MouseLeave?.Invoke());
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         private Box MakeConfigBox(int idx, AnimatorParametersConfig config)

@@ -47,6 +47,9 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             _subViews = new List<MenuItemView>();
             _presenter = new MenuGroupPresenter(this);
+
+            InitVisualTree();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -59,27 +62,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 styleSheets.Add(styleSheet);
             }
 
-            _itemsContainer = Q<VisualElement>("items-container").First();
+            _itemsContainer = Q<VisualElement>("items-container");
 
-            _addItemBtn = Q<Button>("add-item-btn").First();
+            _addItemBtn = Q<Button>("add-item-btn");
             _addItemBtn.clicked += AddItem;
 
-            _addSmartControlBtn = Q<Button>("add-smart-control-btn").First();
+            _addSmartControlBtn = Q<Button>("add-smart-control-btn");
             _addSmartControlBtn.clicked += AddSmartControl;
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         private Box MakeMenuItemBox<T>(int i, T comp) where T : Component
@@ -112,12 +101,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
         private void UpdateItems()
         {
             _itemsContainer.Clear();
-
-            // disable existing views
-            foreach (var view in _subViews)
-            {
-                view.OnDisable();
-            }
             _subViews.Clear();
 
             var len = Target.transform.childCount;
@@ -153,7 +136,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 else
                 {
                     var view = new MenuItemView() { Target = menuItem };
-                    view.OnEnable();
                     _subViews.Add(view);
                     box.Add(view);
                 }

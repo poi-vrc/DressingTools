@@ -76,6 +76,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
             HasMaterialProperties = false;
             HasGenericProperties = false;
             _presenter = new SmartControlPropertyGroupComponentPresenter(this);
+            InitVisualTree();
+            InitComponentsObjFields();
+            InitPropertyTypeBtns();
+            InitSearch();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -91,7 +96,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitComponentsObjFields()
         {
-            var container = Q<VisualElement>("component-obj-fields-container").First();
+            var container = Q<VisualElement>("component-obj-fields-container");
 
             var objField = new ObjectField()
             {
@@ -112,10 +117,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitSearch()
         {
-            _searchField = Q<TextField>("search-field").First();
+            _searchField = Q<TextField>("search-field");
             _searchField.RegisterValueChangedCallback((evt) => SearchQueryChange?.Invoke());
-            _searchResultContainer = Q<VisualElement>("search-result-container").First();
-            var propertiesContainer = Q<VisualElement>("properties-container").First();
+            _searchResultContainer = Q<VisualElement>("search-result-container");
+            var propertiesContainer = Q<VisualElement>("properties-container");
             _propertiesTableModel = new TableView.TableModel(new string[] {
                 t._("inspector.smartcontrol.propertyGroups.column.property"),
                 t._("inspector.smartcontrol.propertyGroups.column.current"),
@@ -167,30 +172,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitPropertyTypeBtns()
         {
-            _blendshapeBtn = Q<ToolbarButton>("blendshapes-btn").First();
-            _materialBtn = Q<ToolbarButton>("material-btn").First();
-            _genericBtn = Q<ToolbarButton>("generic-btn").First();
+            _blendshapeBtn = Q<ToolbarButton>("blendshapes-btn");
+            _materialBtn = Q<ToolbarButton>("material-btn");
+            _genericBtn = Q<ToolbarButton>("generic-btn");
 
             _blendshapeBtn.clicked += () => SetResultModeOrNoMode(SmartControlComponentViewResultMode.Blendshapes);
             _materialBtn.clicked += () => SetResultModeOrNoMode(SmartControlComponentViewResultMode.Material);
             _genericBtn.clicked += () => SetResultModeOrNoMode(SmartControlComponentViewResultMode.Generic);
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitComponentsObjFields();
-            InitPropertyTypeBtns();
-            InitSearch();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         private VisualElement MakeAddEntry(string name, Type type, object value, Action onAdd)

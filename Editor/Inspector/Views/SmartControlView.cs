@@ -148,8 +148,14 @@ namespace Chocopoi.DressingTools.Inspector.Views
             CrossControlValuesOnDisabled = new List<SmartControlCrossControlValue>();
             PropertyGroups = new List<DTSmartControl.PropertyGroup>();
             _driverParamSlotView = null;
-
             _presenter = new SmartControlPresenter(this);
+            InitVisualTree();
+            InitDriverFoldout();
+            InitControlFoldout();
+            InitObjectTogglesFoldout();
+            InitPropertyGroupsFoldout();
+            InitCrossCtrlFoldout();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -179,14 +185,14 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitDriverMenuItem()
         {
-            _driverMenuItemContainer = Q<VisualElement>("menu-item-driver-container").First();
-            _driverMenuItemNameField = Q<TextField>("menu-item-name-field").First();
+            _driverMenuItemContainer = Q<VisualElement>("menu-item-driver-container");
+            _driverMenuItemNameField = Q<TextField>("menu-item-name-field");
             _driverMenuItemNameField.RegisterValueChangedCallback(evt =>
             {
                 MenuItemConfigChanged?.Invoke();
             });
 
-            var iconObjFieldContainer = Q<VisualElement>("menu-icon-obj-field-container").First();
+            var iconObjFieldContainer = Q<VisualElement>("menu-icon-obj-field-container");
             _driverMenuItemIconObjField = new ObjectField(t._("inspector.smartcontrol.driver.menuItem.objectField.icon"))
             {
                 objectType = typeof(Texture2D)
@@ -197,7 +203,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             iconObjFieldContainer.Add(_driverMenuItemIconObjField);
 
-            var popupContainer = Q<VisualElement>("menu-item-type-popup-container").First();
+            var popupContainer = Q<VisualElement>("menu-item-type-popup-container");
             var choices = new List<string>() {
                 t._("inspector.smartcontrol.driver.menuItem.itemType.button"),
                 t._("inspector.smartcontrol.driver.menuItem.itemType.toggle"),
@@ -214,12 +220,12 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitDriverAnimParam()
         {
-            _driverAnimParamContainer = Q<VisualElement>("anim-param-driver-container").First();
+            _driverAnimParamContainer = Q<VisualElement>("anim-param-driver-container");
 
-            _driverAnimParamDefaultValueBoolToggle = Q<Toggle>("anim-param-defval-bool-toggle").First();
-            _driverAnimParamDefaultValueFloatContainer = Q<VisualElement>("anim-param-defval-float-container").First();
-            _driverAnimParamDefaultValueFloatSlider = Q<Slider>("anim-param-defval-float-slider").First();
-            _driverAnimParamDefaultValueFloatField = Q<FloatField>("anim-param-defval-float-field").First();
+            _driverAnimParamDefaultValueBoolToggle = Q<Toggle>("anim-param-defval-bool-toggle");
+            _driverAnimParamDefaultValueFloatContainer = Q<VisualElement>("anim-param-defval-float-container");
+            _driverAnimParamDefaultValueFloatSlider = Q<Slider>("anim-param-defval-float-slider");
+            _driverAnimParamDefaultValueFloatField = Q<FloatField>("anim-param-defval-float-field");
 
             _driverAnimParamDefaultValueBoolToggle.RegisterValueChangedCallback((evt) =>
             {
@@ -242,15 +248,15 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitDriverParameterSlot()
         {
-            _driverParamSlotContainer = Q<VisualElement>("parameter-slot-driver-container").First();
+            _driverParamSlotContainer = Q<VisualElement>("parameter-slot-driver-container");
 
-            var descHelpboxContainer = Q<VisualElement>("parameter-slot-description-helpbox-container").First();
+            var descHelpboxContainer = Q<VisualElement>("parameter-slot-description-helpbox-container");
             descHelpboxContainer.Add(CreateHelpBox(t._("inspector.parameterSlot.helpbox.description"), MessageType.Info));
 
-            _driverParamSlotNotAssignedHelpboxContainer = Q<VisualElement>("parameter-slot-not-assigned-helpbox-container").First();
+            _driverParamSlotNotAssignedHelpboxContainer = Q<VisualElement>("parameter-slot-not-assigned-helpbox-container");
             _driverParamSlotNotAssignedHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.parameterSlot.helpbox.notAssigned"), MessageType.Error));
 
-            var objFieldContainer = Q<VisualElement>("parameter-slot-obj-field-container").First();
+            var objFieldContainer = Q<VisualElement>("parameter-slot-obj-field-container");
             _driverParamSlotObjField = new ObjectField(t._("inspector.smartcontrol.driver.parameterSlot.objField.parameterSlot"))
             {
                 objectType = typeof(DTParameterSlot)
@@ -261,22 +267,22 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             objFieldContainer.Add(_driverParamSlotObjField);
 
-            _driverParamSlotGenerateMenuItemToggle = Q<Toggle>("parameter-slot-generate-menu-item-toggle").First();
+            _driverParamSlotGenerateMenuItemToggle = Q<Toggle>("parameter-slot-generate-menu-item-toggle");
             _driverParamSlotGenerateMenuItemToggle.RegisterValueChangedCallback(evt =>
             {
                 UpdateParamSlot();
                 ParameterSlotConfigChanged?.Invoke();
             });
 
-            _driverParamSlotMenuItemBox = Q<Box>("parameter-slot-menu-item-box").First();
+            _driverParamSlotMenuItemBox = Q<Box>("parameter-slot-menu-item-box");
 
-            _driverParamSlotMenuItemNameField = Q<TextField>("parameter-slot-menu-item-name-field").First();
+            _driverParamSlotMenuItemNameField = Q<TextField>("parameter-slot-menu-item-name-field");
             _driverParamSlotMenuItemNameField.RegisterValueChangedCallback(evt =>
             {
                 ParameterSlotConfigChanged?.Invoke();
             });
 
-            var iconObjFieldContainer = Q<VisualElement>("parameter-slot-menu-icon-obj-field-container").First();
+            var iconObjFieldContainer = Q<VisualElement>("parameter-slot-menu-icon-obj-field-container");
             _driverParamSlotMenuItemIconObjField = new ObjectField(t._("inspector.smartcontrol.driver.parameterSlot.objectField.menuItemIcon"))
             {
                 objectType = typeof(Texture2D)
@@ -287,7 +293,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             iconObjFieldContainer.Add(_driverParamSlotMenuItemIconObjField);
 
-            var popupContainer = Q<VisualElement>("parameter-slot-menu-item-type-popup-container").First();
+            var popupContainer = Q<VisualElement>("parameter-slot-menu-item-type-popup-container");
             var choices = new List<string>() {
                 t._("inspector.smartcontrol.driver.parameterSlot.menuItemType.button"),
                 t._("inspector.smartcontrol.driver.parameterSlot.menuItemType.toggle")
@@ -299,7 +305,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             popupContainer.Add(_driverParamSlotMenuItemPopup);
 
-            _driverParamSlotViewContainer = Q<VisualElement>("parameter-slot-view-container").First();
+            _driverParamSlotViewContainer = Q<VisualElement>("parameter-slot-view-container");
         }
 
         private void UpdateDriverVRCPhysBoneDisplay()
@@ -333,13 +339,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitDriverVRCPhysBone()
         {
-            _driverVRCPhysBoneContainer = Q<VisualElement>("vrcphysbone-driver-container").First();
+            _driverVRCPhysBoneContainer = Q<VisualElement>("vrcphysbone-driver-container");
 
-            _objFieldHelpboxContainer = Q<VisualElement>("vrcphysbone-obj-field-helpbox-container").First();
+            _objFieldHelpboxContainer = Q<VisualElement>("vrcphysbone-obj-field-helpbox-container");
             _objFieldHelpboxContainer.style.display = DisplayStyle.None;
             _objFieldHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.emptyPhysbone"), MessageType.Error));
 
-            var objFieldContainer = Q<VisualElement>("vrcphysbone-obj-field-container").First();
+            var objFieldContainer = Q<VisualElement>("vrcphysbone-obj-field-container");
 #if DT_VRCSDK3A
             _driverVRCPhysBoneObjField = new ObjectField(t._("inspector.smartcontrol.driver.vrcPhysBone.objField.physBone"))
             {
@@ -355,10 +361,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
             objFieldContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.vrcsdkNotDetected"), MessageType.Error));
 #endif
 
-            var paramHelpboxContainer = Q<VisualElement>("vrcphysbone-parameter-prefix-helpbox-container").First();
+            var paramHelpboxContainer = Q<VisualElement>("vrcphysbone-parameter-prefix-helpbox-container");
             paramHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.emptyParameterPrefixAutoGenerated"), MessageType.Info));
 
-            _condSrcHelpboxContainer = Q<VisualElement>("vrcphysbone-condition-source-helpbox-container").First();
+            _condSrcHelpboxContainer = Q<VisualElement>("vrcphysbone-condition-source-helpbox-container");
             _condSrcHelpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.vrcPhysBone.helpbox.noneCondNoneSrc"), MessageType.Error));
 
             var conditionChoices = new List<string>()
@@ -368,7 +374,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition.posed"),
                 t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition.grabbedOrPosed")
             };
-            var conditionPopupContainer = Q<VisualElement>("vrcphysbone-condition-popup-container").First();
+            var conditionPopupContainer = Q<VisualElement>("vrcphysbone-condition-popup-container");
             _driverVRCPhysBoneConditionPopup = new PopupField<string>(t._("inspector.smartcontrol.driver.vrcPhysBone.popup.condition"), conditionChoices, 0);
             _driverVRCPhysBoneConditionPopup.RegisterValueChangedCallback(evt =>
             {
@@ -384,7 +390,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source.stretch"),
                 t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source.squish")
             };
-            var sourcePopupContainer = Q<VisualElement>("vrcphysbone-source-popup-container").First();
+            var sourcePopupContainer = Q<VisualElement>("vrcphysbone-source-popup-container");
             _driverVRCPhysBoneSourcePopup = new PopupField<string>(t._("inspector.smartcontrol.driver.vrcPhysBone.popup.source"), sourceChoices, 0);
             _driverVRCPhysBoneSourcePopup.RegisterValueChangedCallback(evt =>
             {
@@ -396,14 +402,14 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitDriverFoldout()
         {
-            _driverFoldout = Q<Foldout>("driver-foldout").First();
-            _driverContainer = Q<VisualElement>("driver-container").First();
+            _driverFoldout = Q<Foldout>("driver-foldout");
+            _driverContainer = Q<VisualElement>("driver-container");
             BindFoldoutHeaderAndContainerWithPrefix("driver");
 
-            var helpboxContainer = Q<VisualElement>("anim-param-helpbox-container").First();
+            var helpboxContainer = Q<VisualElement>("anim-param-helpbox-container");
             helpboxContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.driver.animatorParameter.helpbox.emptyParameterAutoGenerated"), MessageType.Info));
 
-            _driverTypePopupContainer = Q<VisualElement>("driver-type-popup-container").First();
+            _driverTypePopupContainer = Q<VisualElement>("driver-type-popup-container");
             var choices = new List<string>() {
                 t._("inspector.smartcontrol.driver.animatorParameter"),
                 t._("inspector.smartcontrol.driver.menuItem"),
@@ -426,14 +432,14 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitControlFoldout()
         {
-            _controlFoldout = Q<Foldout>("control-foldout").First();
-            _controlContainer = Q<VisualElement>("control-container").First();
+            _controlFoldout = Q<Foldout>("control-foldout");
+            _controlContainer = Q<VisualElement>("control-container");
             BindFoldoutHeaderAndContainerWithPrefix("control");
 
-            _controlBinaryContainer = Q<VisualElement>("control-binary-container").First();
-            _controlMotionTimeContainer = Q<VisualElement>("control-motion-time-container").First();
+            _controlBinaryContainer = Q<VisualElement>("control-binary-container");
+            _controlMotionTimeContainer = Q<VisualElement>("control-motion-time-container");
 
-            _controlTypePopupContainer = Q<VisualElement>("control-type-popup-container").First();
+            _controlTypePopupContainer = Q<VisualElement>("control-type-popup-container");
             var choices = new List<string>() { t._("inspector.smartcontrol.control.controlType.binary"), t._("inspector.smartcontrol.control.controlType.motionTime") };
             _controlTypePopupField = new PopupField<string>(t._("inspector.smartcontrol.control.popup.controlType"), choices, 0);
             _controlTypePopupContainer.Add(_controlTypePopupField);
@@ -466,11 +472,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitObjectTogglesFoldout()
         {
-            _objectTogglesFoldout = Q<Foldout>("object-toggles-foldout").First();
-            _objectTogglesContainer = Q<VisualElement>("object-toggles-container").First();
+            _objectTogglesFoldout = Q<Foldout>("object-toggles-foldout");
+            _objectTogglesContainer = Q<VisualElement>("object-toggles-container");
             BindFoldoutHeaderAndContainerWithPrefix("object-toggles");
 
-            var objectTogglesListContainer = Q<VisualElement>("object-toggles-list-container").First();
+            var objectTogglesListContainer = Q<VisualElement>("object-toggles-list-container");
             _objectTogglesTableModel = new TableView.TableModel(new string[] {
                 t._("inspector.smartcontrol.objectToggles.column.object"),
                 t._("inspector.smartcontrol.objectToggles.column.current"),
@@ -479,62 +485,43 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             _objectTogglesTable = new TableView(_objectTogglesTableModel);
             objectTogglesListContainer.Add(_objectTogglesTable);
-            _objectTogglesAddFieldContainer = Q<VisualElement>("object-toggles-add-field-container").First();
+            _objectTogglesAddFieldContainer = Q<VisualElement>("object-toggles-add-field-container");
             MakeAddField<Component>(_objectTogglesAddFieldContainer, (comp) => AddObjectToggle?.Invoke(comp));
         }
 
         private void InitPropertyGroupsFoldout()
         {
-            _propGpsFoldout = Q<Foldout>("prop-gps-foldout").First();
-            _propGpsContainer = Q<VisualElement>("prop-gps-container").First();
+            _propGpsFoldout = Q<Foldout>("prop-gps-foldout");
+            _propGpsContainer = Q<VisualElement>("prop-gps-container");
             BindFoldoutHeaderAndContainerWithPrefix("prop-gps");
 
-            _propGpsListContainer = Q<VisualElement>("prop-gps-list-container").First();
-            _propGpAddBtn = Q<Button>("prop-gp-add-btn").First();
+            _propGpsListContainer = Q<VisualElement>("prop-gps-list-container");
+            _propGpAddBtn = Q<Button>("prop-gp-add-btn");
             _propGpAddBtn.clicked += AddNewPropertyGroup;
         }
 
         private void InitCrossCtrlValuesFoldout()
         {
-            _crossCtrlValuesFoldout = Q<Foldout>("cross-ctrl-values-foldout").First();
-            _crossCtrlValuesContainer = Q<VisualElement>("cross-ctrl-values-container").First();
+            _crossCtrlValuesFoldout = Q<Foldout>("cross-ctrl-values-foldout");
+            _crossCtrlValuesContainer = Q<VisualElement>("cross-ctrl-values-container");
             BindFoldoutHeaderAndContainerWithPrefix("cross-ctrl-values");
 
-            _crossCtrlValuesOnEnabledContainer = Q<VisualElement>("cross-ctrl-values-on-enabled-container").First();
-            _crossCtrlValuesOnEnabledAddFieldContainer = Q<VisualElement>("cross-ctrl-values-on-enabled-add-field-container").First();
+            _crossCtrlValuesOnEnabledContainer = Q<VisualElement>("cross-ctrl-values-on-enabled-container");
+            _crossCtrlValuesOnEnabledAddFieldContainer = Q<VisualElement>("cross-ctrl-values-on-enabled-add-field-container");
             MakeAddField<DTSmartControl>(_crossCtrlValuesOnEnabledAddFieldContainer, (ctrl) => AddCrossControlValueOnEnabled?.Invoke(ctrl));
 
-            _crossCtrlValuesOnDisabledContainer = Q<VisualElement>("cross-ctrl-values-on-disabled-container").First();
-            _crossCtrlValuesOnDisabledAddFieldContainer = Q<VisualElement>("cross-ctrl-values-on-disabled-add-field-container").First();
+            _crossCtrlValuesOnDisabledContainer = Q<VisualElement>("cross-ctrl-values-on-disabled-container");
+            _crossCtrlValuesOnDisabledAddFieldContainer = Q<VisualElement>("cross-ctrl-values-on-disabled-add-field-container");
             MakeAddField<DTSmartControl>(_crossCtrlValuesOnDisabledAddFieldContainer, (ctrl) => AddCrossControlValueOnDisabled?.Invoke(ctrl));
         }
 
         private void InitCrossCtrlFoldout()
         {
-            _crossCtrlFoldout = Q<Foldout>("cross-ctrl-foldout").First();
-            _crossCtrlContainer = Q<VisualElement>("cross-ctrl-container").First();
+            _crossCtrlFoldout = Q<Foldout>("cross-ctrl-foldout");
+            _crossCtrlContainer = Q<VisualElement>("cross-ctrl-container");
             BindFoldoutHeaderAndContainerWithPrefix("cross-ctrl");
 
             InitCrossCtrlValuesFoldout();
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitDriverFoldout();
-            InitControlFoldout();
-            InitObjectTogglesFoldout();
-            InitPropertyGroupsFoldout();
-            InitCrossCtrlFoldout();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         private void UpdateDriverConfigDisplay()
@@ -581,7 +568,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
             if (_driverParamSlotView != null)
             {
                 _driverParamSlotView.Unbind();
-                _driverParamSlotView.OnDisable();
                 if (_driverParamSlotViewContainer.Contains(_driverParamSlotView))
                 {
                     _driverParamSlotViewContainer.Remove(_driverParamSlotView);
@@ -594,7 +580,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 _driverParamSlotView = new ParameterSlotView(Target) { Target = ParameterSlot };
                 _driverParamSlotView.Bind(new SerializedObject(ParameterSlot));
                 _driverParamSlotViewContainer.Add(_driverParamSlotView);
-                _driverParamSlotView.OnEnable();
             }
         }
 
@@ -791,15 +776,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             _propGpsFoldout.text = t._("inspector.smartcontrol.foldout.propertyGroups", PropertyGroups.Count);
 
-            // disable existing views
-            foreach (var elem in _propGpsListContainer.Children())
-            {
-                if (elem is SmartControlPropertyGroupView propGpView)
-                {
-                    propGpView.OnDisable();
-                }
-            }
-
             // TODO: selectively repaint
             _propGpsListContainer.Clear();
             var copy = new List<DTSmartControl.PropertyGroup>(PropertyGroups);
@@ -811,7 +787,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 {
                     RemovePropertyGroup?.Invoke(propGp);
                 });
-                view.OnEnable();
 
                 _propGpsListContainer.Add(view);
             }

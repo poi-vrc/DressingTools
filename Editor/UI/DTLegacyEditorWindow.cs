@@ -29,8 +29,6 @@ namespace Chocopoi.DressingTools.UI
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 
-        private LegacyView _view;
-
         [MenuItem("Tools/chocopoi/DT Legacy Editor", false, 0)]
         public static void ShowWindow()
         {
@@ -39,20 +37,9 @@ namespace Chocopoi.DressingTools.UI
             window.Show();
         }
 
-        public DTLegacyEditorWindow()
+        public void CreateGUI()
         {
-        }
-
-        public void OnEnable()
-        {
-            _view = new LegacyView();
-            rootVisualElement.Add(_view);
-            _view.OnEnable();
-        }
-
-        public void OnDisable()
-        {
-            _view.OnDisable();
+            rootVisualElement.Add(new LegacyView());
         }
     }
 }

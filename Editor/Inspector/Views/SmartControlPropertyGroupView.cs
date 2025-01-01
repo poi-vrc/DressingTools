@@ -68,6 +68,14 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _presenter = new SmartControlPropertyGroupPresenter(this);
             SelectionGameObjects = new List<GameObject>();
             FoundComponents = new List<Component>();
+            InitVisualTree();
+            InitTitleContainer();
+            InitSelectionTypePopup();
+            InitSearchFromObjField();
+            InitSelectionObjs();
+            InitObjAddField();
+            InitComponentsContainer();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -83,10 +91,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitTitleContainer()
         {
-            _titleLabel = Q<Label>("title-label").First();
+            _titleLabel = Q<Label>("title-label");
             _titleLabel.text = _title;
 
-            _removeBtn = Q<Button>("remove-btn").First();
+            _removeBtn = Q<Button>("remove-btn");
             _removeBtn.clicked += _onRemove;
         }
 
@@ -98,7 +106,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitSelectionTypePopup()
         {
-            var popupContainer = Q<VisualElement>("selection-type-popup-container").First();
+            var popupContainer = Q<VisualElement>("selection-type-popup-container");
             var choices = new List<string>() { t._("inspector.smartcontrol.propertyGroup.selectionType.normal"), t._("inspector.smartcontrol.propertyGroup.selectionType.inverted"), t._("inspector.smartcontrol.propertyGroup.selectionType.avatarWide") };
             _selectionTypePopup = new PopupField<string>(t._("inspector.smartcontrol.propertyGroup.popup.selectionType"), choices, 0);
             _selectionTypePopup.RegisterValueChangedCallback((evt) =>
@@ -111,7 +119,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitSearchFromObjField()
         {
-            var searchFromObjFieldContainer = Q<VisualElement>("search-from-objfield-container").First();
+            var searchFromObjFieldContainer = Q<VisualElement>("search-from-objfield-container");
             _searchFromObjField = new ObjectField(t._("inspector.smartcontrol.propertyGroup.objectField.searchObjectsFrom"))
             {
                 objectType = typeof(Transform)
@@ -125,13 +133,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitSelectionObjs()
         {
-            _includeExcludeLabel = Q<Label>("include-exclude-objs-label").First();
-            _selectionObjsContainer = Q<VisualElement>("selection-objs-container").First();
+            _includeExcludeLabel = Q<Label>("include-exclude-objs-label");
+            _selectionObjsContainer = Q<VisualElement>("selection-objs-container");
         }
 
         private void InitObjAddField()
         {
-            _selectionObjAddFieldContainer = Q<VisualElement>("selection-obj-add-field-container").First();
+            _selectionObjAddFieldContainer = Q<VisualElement>("selection-obj-add-field-container");
             _selectionObjAddFieldContainer.AddToClassList("add-field-container");
             var label = new Label("+");
             _selectionObjAddFieldContainer.Add(label);
@@ -152,7 +160,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitComponentsContainer()
         {
-            var pickFromObjFieldContainer = Q<VisualElement>("pick-from-objfield-container").First();
+            var pickFromObjFieldContainer = Q<VisualElement>("pick-from-objfield-container");
             _pickFromObjField = new ObjectField(t._("inspector.smartcontrol.propertyGroup.objectField.pickPropertiesFrom"))
             {
                 objectType = typeof(Transform),
@@ -163,7 +171,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             {
                 SettingsChanged?.Invoke();
             });
-            _compsContainer = Q<VisualElement>("components-container").First();
+            _compsContainer = Q<VisualElement>("components-container");
         }
 
         private void RepaintSelectionObjects()
@@ -199,15 +207,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
         {
             _compsContainer.Clear();
 
-            // disable existing views
-            foreach (var elem in _compsContainer.Children())
-            {
-                if (elem is SmartControlPropertyGroupComponentView propGpCompView)
-                {
-                    propGpCompView.OnDisable();
-                }
-            }
-
             if (FoundComponents.Count > 10)
             {
                 _compsContainer.Add(CreateHelpBox(t._("inspector.smartcontrol.propertyGroup.helpbox.tooManyComponentsFound", FoundComponents.Count), MessageType.Warning));
@@ -217,7 +216,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 foreach (var comp in FoundComponents)
                 {
                     var view = new SmartControlPropertyGroupComponentView(this, comp, Target.PropertyValues);
-                    view.OnEnable();
                     _compsContainer.Add(view);
                 }
             }
@@ -229,26 +227,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
             UpdateSelectionTypeUI();
             RepaintSelectionObjects();
             RepaintComponentsContainer();
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitTitleContainer();
-            InitSelectionTypePopup();
-            InitSearchFromObjField();
-            InitSelectionObjs();
-            InitObjAddField();
-            InitComponentsContainer();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         public void RaisePropertiesChangedEvent()

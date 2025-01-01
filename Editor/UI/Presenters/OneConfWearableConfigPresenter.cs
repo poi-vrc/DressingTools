@@ -496,10 +496,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
             }
 
             // call unload before we clear the list
-            foreach (var moduleData in _view.AdvancedModuleViewDataList)
-            {
-                moduleData.editor.OnDisable();
-            }
             _view.AdvancedModuleViewDataList.Clear();
 
             foreach (var module in _view.Config.modules)
@@ -519,16 +515,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
                 };
                 moduleData.removeButtonOnClick = () =>
                 {
-                    moduleData.editor.OnDisable();
                     _view.Config.modules.Remove(module);
                     _view.AdvancedModuleViewDataList.Remove(moduleData);
                     UpdateAdvancedModulesView();
                     _view.RepaintAdvancedModeModules();
                 };
                 _view.AdvancedModuleViewDataList.Add(moduleData);
-
-                // call enable
-                moduleData.editor.OnEnable();
             }
         }
 

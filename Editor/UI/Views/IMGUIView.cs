@@ -27,43 +27,28 @@ namespace Chocopoi.DressingTools.UI.Views
     /// Unity IMGUI view base
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public abstract class IMGUIViewBase : VisualElement, IEditorView
+    public abstract class IMGUIView : ElementView
     {
-        public event Action ForceUpdateView;
-        public event Action Load;
-        public event Action Unload;
-
-        public virtual void RaiseForceUpdateViewEvent()
+        public IMGUIView()
         {
-            ForceUpdateView?.Invoke();
+            Add(new IMGUIContainer(OnGUI));
         }
 
         /// <summary>
         /// This does nothing since we are using IMGUI
         /// </summary>
-        public void Repaint() { }
+        public sealed override void Repaint() { }
 
         /// <summary>
         /// Render IMGUI content
         /// </summary>
         public abstract void OnGUI();
 
-        public virtual void OnEnable()
-        {
-            Add(new IMGUIContainer(OnGUI));
-            Load?.Invoke();
-        }
-
-        public virtual void OnDisable()
-        {
-            Unload?.Invoke();
-        }
-
         /// <summary>
         /// Draw a horizontal line
         /// </summary>
         /// <param name="height">Height</param>
-        public void HorizontalLine(int height = 1)
+        public static void HorizontalLine(int height = 1)
         {
             //Reference: https://forum.unity.com/threads/horizontal-line-in-editor-window.520812/#post-3416790
             EditorGUILayout.Separator();
@@ -73,7 +58,7 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.Separator();
         }
 
-        public void ReadOnlyTextField(string label, string text)
+        public static void ReadOnlyTextField(string label, string text)
         {
             EditorGUILayout.BeginHorizontal();
             {
@@ -83,17 +68,17 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndHorizontal();
         }
 
-        public void Label(string text, params GUILayoutOption[] options)
+        public static void Label(string text, params GUILayoutOption[] options)
         {
             GUILayout.Label(text, options);
         }
 
-        public void Label(string text, GUIStyle style, params GUILayoutOption[] options)
+        public static void Label(string text, GUIStyle style, params GUILayoutOption[] options)
         {
             GUILayout.Label(text, style, options);
         }
 
-        public void Button(string text, Action onClickEvent = null, params GUILayoutOption[] options)
+        public static void Button(string text, Action onClickEvent = null, params GUILayoutOption[] options)
         {
             if (GUILayout.Button(text, options))
             {
@@ -101,7 +86,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Button(string text, GUIStyle style, Action onClickEvent = null, params GUILayoutOption[] options)
+        public static void Button(string text, GUIStyle style, Action onClickEvent = null, params GUILayoutOption[] options)
         {
             if (GUILayout.Button(text, style, options))
             {
@@ -109,7 +94,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void TextField(string label, ref string text, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void TextField(string label, ref string text, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.TextField(label, text, options);
             var modified = text != newValue;
@@ -120,7 +105,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void DelayedTextField(string label, ref string text, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void DelayedTextField(string label, ref string text, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.DelayedTextField(label, text, options);
             var modified = text != newValue;
@@ -131,7 +116,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public UnityEngine.Object ObjectField(string label, UnityEngine.Object obj, Type objType, bool allowSceneObjs, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static UnityEngine.Object ObjectField(string label, UnityEngine.Object obj, Type objType, bool allowSceneObjs, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newObj = EditorGUILayout.ObjectField(label, obj, objType, allowSceneObjs, options);
             if (newObj != obj)
@@ -141,7 +126,7 @@ namespace Chocopoi.DressingTools.UI.Views
             return newObj;
         }
 
-        public void GameObjectField(ref GameObject go, bool allowSceneObjs, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void GameObjectField(ref GameObject go, bool allowSceneObjs, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newObj = (GameObject)EditorGUILayout.ObjectField(go, typeof(GameObject), allowSceneObjs, options);
             var modified = newObj != go;
@@ -152,7 +137,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void GameObjectField(string label, ref GameObject go, bool allowSceneObjs, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void GameObjectField(string label, ref GameObject go, bool allowSceneObjs, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newObj = (GameObject)EditorGUILayout.ObjectField(label, go, typeof(GameObject), allowSceneObjs, options);
             var modified = newObj != go;
@@ -163,7 +148,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Toggle(string label, ref bool value, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Toggle(string label, ref bool value, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.Toggle(label, value);
             var modified = newValue != value;
@@ -174,7 +159,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Toggle(ref bool value, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Toggle(ref bool value, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.Toggle(value);
             var modified = newValue != value;
@@ -185,7 +170,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void ToggleLeft(string label, ref bool value, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void ToggleLeft(string label, ref bool value, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.ToggleLeft(label, value);
             var modified = newValue != value;
@@ -196,7 +181,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Slider(ref float value, float leftValue, float rightValue, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Slider(ref float value, float leftValue, float rightValue, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.Slider(value, leftValue, rightValue, options);
             var modified = newValue != value;
@@ -207,7 +192,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Slider(string label, ref float value, float leftValue, float rightValue, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Slider(string label, ref float value, float leftValue, float rightValue, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.Slider(label, value, leftValue, rightValue, options);
             var modified = newValue != value;
@@ -218,7 +203,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Popup(ref int selectedIndex, string[] keys, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Popup(ref int selectedIndex, string[] keys, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             int newSelectedIndex = EditorGUILayout.Popup(selectedIndex, keys, options);
             var modified = newSelectedIndex != selectedIndex;
@@ -229,7 +214,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void Popup(string label, ref int selectedIndex, string[] keys, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Popup(string label, ref int selectedIndex, string[] keys, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             int newSelectedIndex = EditorGUILayout.Popup(label, selectedIndex, keys, options);
             var modified = newSelectedIndex != selectedIndex;
@@ -240,24 +225,24 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void HelpBox(string message, MessageType type)
+        public static void HelpBox(string message, MessageType type)
         {
             EditorGUILayout.HelpBox(message, type);
         }
 
-        public void Foldout(ref bool foldout, string label)
+        public static void Foldout(ref bool foldout, string label)
         {
             foldout = EditorGUILayout.Foldout(foldout, label);
         }
 
-        public void BeginFoldoutBox(ref bool foldout, string label)
+        public static void BeginFoldoutBox(ref bool foldout, string label)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             foldout = EditorGUILayout.BeginFoldoutHeaderGroup(foldout, label);
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
-        public void BeginFoldoutBoxWithButtonRight(ref bool foldout, string foldoutLabel, string btnLabel, Action btnOnClickEvent = null)
+        public static void BeginFoldoutBoxWithButtonRight(ref bool foldout, string foldoutLabel, string btnLabel, Action btnOnClickEvent = null)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUILayout.BeginHorizontal();
@@ -267,57 +252,57 @@ namespace Chocopoi.DressingTools.UI.Views
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
-        public void EndFoldoutBox()
+        public static void EndFoldoutBox()
         {
             EditorGUILayout.EndVertical();
         }
 
-        public void BeginHorizontal()
+        public static void BeginHorizontal()
         {
             EditorGUILayout.BeginHorizontal();
         }
 
-        public void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
+        public static void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
         {
             EditorGUILayout.BeginHorizontal(style, options);
         }
 
-        public void EndHorizontal()
+        public static void EndHorizontal()
         {
             EditorGUILayout.EndHorizontal();
         }
 
-        public void BeginVertical()
+        public static void BeginVertical()
         {
             EditorGUILayout.BeginVertical();
         }
 
-        public void BeginVertical(GUIStyle style, params GUILayoutOption[] options)
+        public static void BeginVertical(GUIStyle style, params GUILayoutOption[] options)
         {
             EditorGUILayout.BeginVertical(style, options);
         }
 
-        public void EndVertical()
+        public static void EndVertical()
         {
             EditorGUILayout.EndVertical();
         }
 
-        public void BeginDisabled(bool disabled)
+        public static void BeginDisabled(bool disabled)
         {
             EditorGUI.BeginDisabledGroup(disabled);
         }
 
-        public void EndDisabled()
+        public static void EndDisabled()
         {
             EditorGUI.EndDisabledGroup();
         }
 
-        public void Separator()
+        public static void Separator()
         {
             EditorGUILayout.Separator();
         }
 
-        public void Toolbar(ref int selected, string[] keys, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void Toolbar(ref int selected, string[] keys, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newSelected = GUILayout.Toolbar(selected, keys, options);
             var modified = newSelected != selected;
@@ -328,7 +313,7 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public void TextArea(ref string text, Action onChangeEvent = null, params GUILayoutOption[] options)
+        public static void TextArea(ref string text, Action onChangeEvent = null, params GUILayoutOption[] options)
         {
             var newValue = EditorGUILayout.TextArea(text, options);
             var modified = newValue != text;

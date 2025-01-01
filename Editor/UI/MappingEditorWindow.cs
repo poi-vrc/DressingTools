@@ -77,12 +77,10 @@ namespace Chocopoi.DressingTools.UI
         {
             _view = new MappingEditorView();
             rootVisualElement.Add(_view);
-            _view.OnEnable();
         }
 
         public void OnDisable()
         {
-            _view.OnDisable();
         }
 
         public MappingEditorView GetView()

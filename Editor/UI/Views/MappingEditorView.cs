@@ -27,7 +27,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class MappingEditorView : IMGUIViewBase, IMappingEditorView
+    internal class MappingEditorView : IMGUIView, IMappingEditorView
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 

@@ -45,16 +45,6 @@ namespace Chocopoi.DressingTools.UI.Views
         void RaiseForceUpdateViewEvent();
 
         /// <summary>
-        /// On this view enable
-        /// </summary>
-        void OnEnable();
-
-        /// <summary>
-        /// On this view disable
-        /// </summary>
-        void OnDisable();
-
-        /// <summary>
         /// Request the view to repaint
         /// </summary>
         void Repaint();

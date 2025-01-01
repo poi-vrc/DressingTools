@@ -23,7 +23,7 @@ namespace Chocopoi.DressingTools.UI.Views.Modules
     /// <summary>
     /// Wearable module editor base class for IMGUI
     /// </summary>
-    internal abstract class WearableModuleEditorIMGUI : IMGUIViewBase, IWearableModuleEditor
+    internal abstract class WearableModuleEditorIMGUI : IMGUIView, IWearableModuleEditor
     {
         /// <summary>
         /// Human-readable friendly name of this module editor

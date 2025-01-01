@@ -96,6 +96,10 @@ namespace Chocopoi.DressingTools.UI.Views
             ShowExitPlayModeHelpbox = false;
             SelectedAvatarIndex = -1;
             AvailableAvatars = new List<GameObject>();
+
+            InitVisualTree();
+            BindTabs();
+            t.LocalizeElement(this);
         }
 
         public void StartDressing(GameObject outfitGameObject = null, GameObject avatarGameObject = null)
@@ -116,19 +120,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _avatarSubView.RaiseForceUpdateViewEvent();
         }
 
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            BindTabs();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-            _avatarSubView.OnEnable();
-            _dressSubView.OnEnable();
-            _toolSettingsSubView.OnEnable();
-        }
-
         private void InitVisualTree()
         {
             var tree = Resources.Load<VisualTreeAsset>("MainView");
@@ -144,20 +135,20 @@ namespace Chocopoi.DressingTools.UI.Views
             _dressSubView.style.display = DisplayStyle.None;
             _toolSettingsSubView.style.display = DisplayStyle.None;
 
-            _helpboxContainer = Q<VisualElement>("helpbox-container").First();
-            _tabContainer = Q<VisualElement>("tab").First();
+            _helpboxContainer = Q<VisualElement>("helpbox-container");
+            _tabContainer = Q<VisualElement>("tab");
 
-            _tabContentContainer = Q<VisualElement>("tab-content").First();
+            _tabContentContainer = Q<VisualElement>("tab-content");
             _tabContentContainer.Add(_avatarSubView);
             _tabContentContainer.Add(_dressSubView);
             _tabContentContainer.Add(_toolSettingsSubView);
 
-            _updateAvailableFoldout = Q<Foldout>("update-available-foldout").First();
-            var updateBtn = Q<Button>("update-available-update-btn").First();
+            _updateAvailableFoldout = Q<Foldout>("update-available-foldout");
+            var updateBtn = Q<Button>("update-available-update-btn");
             updateBtn.clicked += UpdateAvailableUpdateButtonClick;
 
-            _avatarSelectionPopupContainer = Q<VisualElement>("popup-avatar-selection").First();
-            _debugInfoContainer = Q<VisualElement>("debug-info").First();
+            _avatarSelectionPopupContainer = Q<VisualElement>("popup-avatar-selection");
+            _debugInfoContainer = Q<VisualElement>("debug-info");
 
             RegisterCallback((MouseMoveEvent evt) => MouseMove?.Invoke());
         }
@@ -212,13 +203,6 @@ namespace Chocopoi.DressingTools.UI.Views
             }
         }
 
-        public override void OnDisable()
-        {
-            base.OnDisable();
-            _avatarSubView.OnDisable();
-            _dressSubView.OnDisable();
-            _toolSettingsSubView.OnDisable();
-        }
         public void OpenUrl(string url) => Application.OpenURL(url);
 
         private void RepaintHelpboxes()

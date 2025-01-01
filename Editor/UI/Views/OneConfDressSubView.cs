@@ -66,6 +66,9 @@ namespace Chocopoi.DressingTools.UI.Views
             Config = new WearableConfig();
 
             _configView = new OneConfWearableConfigView(this);
+
+            InitVisualTree();
+            t.LocalizeElement(this);
         }
 
         public void ForceUpdateConfigView()
@@ -117,20 +120,6 @@ namespace Chocopoi.DressingTools.UI.Views
         // asks config view to apply the UI changes to the config instance
         public void ApplyToConfig() => _configView.ApplyToConfig();
 
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            t.LocalizeElement(this);
-            _configView.OnEnable();
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
-            _configView.OnDisable();
-        }
-
         private void InitVisualTree()
         {
             var tree = Resources.Load<VisualTreeAsset>("OneConfDressSubView");
@@ -141,7 +130,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 styleSheets.Add(styleSheet);
             }
 
-            _wearableObjectField = Q<ObjectField>("objectfield-wearable").First();
+            _wearableObjectField = Q<ObjectField>("objectfield-wearable");
             _wearableObjectField.objectType = typeof(GameObject);
             _wearableObjectField.value = TargetWearable;
             _wearableObjectField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> evt) =>
@@ -150,12 +139,12 @@ namespace Chocopoi.DressingTools.UI.Views
                 TargetWearableChange?.Invoke();
             });
 
-            _helpboxContainer = Q<VisualElement>("helpbox-container").First();
+            _helpboxContainer = Q<VisualElement>("helpbox-container");
 
-            _configViewContainer = Q<VisualElement>("config-view-container").First();
+            _configViewContainer = Q<VisualElement>("config-view-container");
             _configViewContainer.Add(_configView);
 
-            _btnAddToCabinet = Q<Button>("btn-add-to-cabinet").First();
+            _btnAddToCabinet = Q<Button>("btn-add-to-cabinet");
             _btnAddToCabinet.clicked += AddToCabinetButtonClick;
 
             BindFoldoutHeaderWithContainer("foldout-setup", "setup-container");

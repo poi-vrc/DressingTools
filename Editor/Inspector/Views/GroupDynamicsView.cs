@@ -54,6 +54,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
             SearchMode = 0;
             IncludeTransforms = new List<Transform>();
             ExcludeTransforms = new List<Transform>();
+
+            InitVisualTree();
+            InitSearchModePopup();
+            InitIncludes();
+            InitExcludes();
+
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -89,7 +96,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitSearchModePopup()
         {
-            var popupContainer = Q<VisualElement>("search-mode-popup-container").First();
+            var popupContainer = Q<VisualElement>("search-mode-popup-container");
             var choices = new List<string>() { t._("inspector.groupDynamics.searchMode.controlRoot"), t._("inspector.groupDynamics.searchMode.componentRoot") };
             _searchModePopup = new PopupField<string>(t._("inspector.groupDynamics.popup.searchMode"), choices, 0);
             _searchModePopup.RegisterValueChangedCallback(evt =>
@@ -102,33 +109,16 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitIncludes()
         {
-            _includesListContainer = Q<VisualElement>("includes-list-container").First();
-            var addFieldContainer = Q<VisualElement>("includes-add-field-container").First();
+            _includesListContainer = Q<VisualElement>("includes-list-container");
+            var addFieldContainer = Q<VisualElement>("includes-add-field-container");
             MakeAddField<Transform>(addFieldContainer, (t) => AddInclude?.Invoke(t));
         }
 
         private void InitExcludes()
         {
-            _excludesListContainer = Q<VisualElement>("excludes-list-container").First();
-            var addFieldContainer = Q<VisualElement>("excludes-add-field-container").First();
+            _excludesListContainer = Q<VisualElement>("excludes-list-container");
+            var addFieldContainer = Q<VisualElement>("excludes-add-field-container");
             MakeAddField<Transform>(addFieldContainer, (t) => AddExclude?.Invoke(t));
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitSearchModePopup();
-            InitIncludes();
-            InitExcludes();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         private void RepaintSearchModePopup()

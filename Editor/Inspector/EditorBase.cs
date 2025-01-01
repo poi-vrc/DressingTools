@@ -91,7 +91,6 @@ namespace Chocopoi.DressingTools.Inspector
         {
             if (_view != null)
             {
-                _view.OnDisable();
                 if (_viewContainer != null && _viewContainer.Contains(_view))
                 {
                     _viewContainer.Remove(_view);
@@ -123,7 +122,6 @@ namespace Chocopoi.DressingTools.Inspector
 
             _view = CreateView();
             _viewContainer.Add(_view);
-            _view.OnEnable();
             _view.Bind(new SerializedObject(target));
         }
 
@@ -132,7 +130,6 @@ namespace Chocopoi.DressingTools.Inspector
         public void OnDisable()
         {
             _view?.Unbind();
-            _view?.OnDisable();
             _view = null;
         }
     }
