@@ -52,6 +52,10 @@ namespace Chocopoi.DressingTools.UI.Views
             UpdaterShowHelpboxUpdateNotChecked = true;
 
             _presenter = new ToolSettingsPresenter(this);
+
+            InitVisualTree();
+            InitUpdateChecker();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -67,13 +71,13 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void InitUpdateChecker()
         {
-            _updaterCurrentVerLabel = Q<Label>("updater-current-ver-label").First();
-            _updaterHelpboxContainer = Q<VisualElement>("updater-helpbox-container").First();
+            _updaterCurrentVerLabel = Q<Label>("updater-current-ver-label");
+            _updaterHelpboxContainer = Q<VisualElement>("updater-helpbox-container");
 
-            var updaterCheckUpdateBtn = Q<Button>("updater-check-update-btn").First();
+            var updaterCheckUpdateBtn = Q<Button>("updater-check-update-btn");
             updaterCheckUpdateBtn.clicked += UpdaterCheckUpdateButtonClicked;
 
-            var resetToDefaultsBtn = Q<Button>("reset-defaults-btn").First();
+            var resetToDefaultsBtn = Q<Button>("reset-defaults-btn");
             resetToDefaultsBtn.clicked += ResetToDefaultsButtonClicked;
         }
 
@@ -91,21 +95,6 @@ namespace Chocopoi.DressingTools.UI.Views
         public override void Repaint()
         {
             RepaintUpdateChecker();
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitUpdateChecker();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
     }
 }

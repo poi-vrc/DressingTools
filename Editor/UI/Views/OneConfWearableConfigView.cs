@@ -195,17 +195,24 @@ namespace Chocopoi.DressingTools.UI.Views
 
             _dressSubView.TargetAvatarChange += () => TargetAvatarOrWearableChange?.Invoke();
             _dressSubView.TargetWearableChange += () => TargetAvatarOrWearableChange?.Invoke();
+
+            InitVisualTree();
+            InitWearableInfoFoldout();
+            InitSimpleMode();
+            InitAdvancedMode();
+            InitToolbar();
+            t.LocalizeElement(this);
         }
 
         private void InitWearableInfoInfoPanel()
         {
-            _infoThumbnail = Q<VisualElement>("wearable-info-thumbnail").First();
+            _infoThumbnail = Q<VisualElement>("wearable-info-thumbnail");
 
-            _infoPanel = Q<VisualElement>("wearable-info-info-panel").First();
+            _infoPanel = Q<VisualElement>("wearable-info-info-panel");
 
-            _infoWearableNameLabel = Q<Label>("wearable-info-name-label").First();
+            _infoWearableNameLabel = Q<Label>("wearable-info-name-label");
 
-            _infoCustomNameField = Q<TextField>("wearable-info-custom-name-field").First();
+            _infoCustomNameField = Q<TextField>("wearable-info-custom-name-field");
             _infoCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 var val = _infoCustomNameField.value;
@@ -218,7 +225,7 @@ namespace Chocopoi.DressingTools.UI.Views
                 InfoCustomWearableName = _infoCustomNameField.text;
             });
 
-            _infoUseCustomNameToggle = Q<Toggle>("wearable-info-custom-name-toggle").First();
+            _infoUseCustomNameToggle = Q<Toggle>("wearable-info-custom-name-toggle");
             _infoUseCustomNameToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
             {
                 if (!InfoUseCustomWearableName && TargetWearable != null)
@@ -229,20 +236,20 @@ namespace Chocopoi.DressingTools.UI.Views
                 InfoUseCustomWearableName = evt.newValue;
             });
 
-            _infoCaptureNewThumbBtn = Q<Button>("wearable-info-capture-new-thumbnail-btn").First();
+            _infoCaptureNewThumbBtn = Q<Button>("wearable-info-capture-new-thumbnail-btn");
             _infoCaptureNewThumbBtn.clicked += InfoNewThumbnailButtonClick;
         }
 
         private void InitWearableInfoCapturePanel()
         {
-            _capturePanel = Q<VisualElement>("wearable-info-capture-panel").First();
+            _capturePanel = Q<VisualElement>("wearable-info-capture-panel");
 
-            _captureWearableOnlyToggle = Q<Toggle>("wearable-info-capture-wearable-only-toggle").First();
-            _captureRmvBgToggle = Q<Toggle>("wearable-info-capture-remove-background-toggle").First();
+            _captureWearableOnlyToggle = Q<Toggle>("wearable-info-capture-wearable-only-toggle");
+            _captureRmvBgToggle = Q<Toggle>("wearable-info-capture-remove-background-toggle");
 
-            _captureThumbBtn = Q<Button>("wearable-info-thumbnail-capture-btn").First();
+            _captureThumbBtn = Q<Button>("wearable-info-thumbnail-capture-btn");
             _captureThumbBtn.clicked += CaptureThumbnailButtonClick;
-            _captureCancelBtn = Q<Button>("wearable-info-thumbnail-cancel-btn").First();
+            _captureCancelBtn = Q<Button>("wearable-info-thumbnail-cancel-btn");
             _captureCancelBtn.clicked += CaptureCancelButtonClick;
 
             _captureWearableOnlyToggle.value = CaptureWearableOnly;
@@ -263,17 +270,17 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             BindFoldoutHeaderWithContainer("wearable-info-others-foldout", "wearable-info-others-container");
 
-            _infoOthersUuidLabel = Q<Label>("wearable-info-uuid-label").First();
-            _infoOthersCreatedTimeLabel = Q<Label>("wearable-info-created-time-label").First();
-            _infoOthersUpdatedTimeLabel = Q<Label>("wearable-info-updated-time-label").First();
-            _infoOthersAuthorField = Q<TextField>("wearable-info-author-field").First();
+            _infoOthersUuidLabel = Q<Label>("wearable-info-uuid-label");
+            _infoOthersCreatedTimeLabel = Q<Label>("wearable-info-created-time-label");
+            _infoOthersUpdatedTimeLabel = Q<Label>("wearable-info-updated-time-label");
+            _infoOthersAuthorField = Q<TextField>("wearable-info-author-field");
             _infoOthersAuthorField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 var val = _infoOthersAuthorField.value;
                 if (string.IsNullOrEmpty(val)) return;
                 InfoAuthor = val;
             });
-            _infoOthersDescField = Q<TextField>("wearable-info-desc-field").First();
+            _infoOthersDescField = Q<TextField>("wearable-info-desc-field");
             _infoOthersDescField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 var val = _infoOthersDescField.value;
@@ -332,16 +339,16 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void InitToolbar()
         {
-            var autoSetupBtn = Q<Button>("toolbar-auto-setup-btn").First();
+            var autoSetupBtn = Q<Button>("toolbar-auto-setup-btn");
             autoSetupBtn.clicked += ToolbarAutoSetupButtonClick;
 
-            _toolbarPreviewBtn = Q<Button>("toolbar-preview-btn").First();
+            _toolbarPreviewBtn = Q<Button>("toolbar-preview-btn");
             _toolbarPreviewBtn.clicked += ToolbarPreviewButtonClick;
 
-            var importBtn = Q<Button>("toolbar-import-btn").First();
+            var importBtn = Q<Button>("toolbar-import-btn");
             importBtn.clicked += ToolbarImportButtonClick;
 
-            var exportBtn = Q<Button>("toolbar-export-btn").First();
+            var exportBtn = Q<Button>("toolbar-export-btn");
             exportBtn.clicked += ToolbarExportButtonClick;
 
             BindToolbarModes();
@@ -388,38 +395,38 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void InitSimpleCategoryMapping()
         {
-            _simpleCategoryMappingContainer = Q<VisualElement>("simple-category-mapping-container").First();
+            _simpleCategoryMappingContainer = Q<VisualElement>("simple-category-mapping-container");
 
             BindFoldoutHeaderWithContainer("simple-armature-mapping-foldout", "simple-armature-mapping-container");
-            _simpleArmatureMappingToggle = Q<Toggle>("simple-armature-mapping-toggle").First();
+            _simpleArmatureMappingToggle = Q<Toggle>("simple-armature-mapping-toggle");
             _simpleArmatureMappingToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => SimpleUseArmatureMapping = evt.newValue);
-            _simpleArmatureMappingContainer = Q<VisualElement>("simple-armature-mapping-container").First();
+            _simpleArmatureMappingContainer = Q<VisualElement>("simple-armature-mapping-container");
 
             BindFoldoutHeaderWithContainer("simple-move-root-foldout", "simple-move-root-container");
-            _simpleMoveRootToggle = Q<Toggle>("simple-move-root-toggle").First();
+            _simpleMoveRootToggle = Q<Toggle>("simple-move-root-toggle");
             _simpleMoveRootToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => SimpleUseMoveRoot = evt.newValue);
-            _simpleMoveRootContainer = Q<VisualElement>("simple-move-root-container").First();
+            _simpleMoveRootContainer = Q<VisualElement>("simple-move-root-container");
         }
 
         private void InitSimpleCategoryAnimate()
         {
-            _simpleCategoryAnimateContainer = Q<VisualElement>("simple-category-animate-container").First();
+            _simpleCategoryAnimateContainer = Q<VisualElement>("simple-category-animate-container");
 
             BindFoldoutHeaderWithContainer("simple-cabinet-anim-foldout", "simple-cabinet-anim-container");
-            _simpleAnimGenToggle = Q<Toggle>("simple-cabinet-anim-toggle").First();
+            _simpleAnimGenToggle = Q<Toggle>("simple-cabinet-anim-toggle");
             _simpleAnimGenToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => SimpleUseCabinetAnim = evt.newValue);
-            _simpleAnimGenContainer = Q<VisualElement>("simple-cabinet-anim-container").First();
+            _simpleAnimGenContainer = Q<VisualElement>("simple-cabinet-anim-container");
 
             BindFoldoutHeaderWithContainer("simple-blendshape-sync-foldout", "simple-blendshape-sync-container");
-            _simpleBlendshapeSyncToggle = Q<Toggle>("simple-blendshape-sync-toggle").First();
+            _simpleBlendshapeSyncToggle = Q<Toggle>("simple-blendshape-sync-toggle");
             _simpleBlendshapeSyncToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) => SimpleUseBlendshapeSync = evt.newValue);
-            _simpleBlendshapeSyncContainer = Q<VisualElement>("simple-blendshape-sync-container").First();
+            _simpleBlendshapeSyncContainer = Q<VisualElement>("simple-blendshape-sync-container");
         }
 
         private void InitSimpleMode()
         {
-            _simpleContainer = Q<VisualElement>("simple-container").First();
-            _simpleHelpBoxContainer = Q<VisualElement>("simple-helpbox-container").First();
+            _simpleContainer = Q<VisualElement>("simple-container");
+            _simpleHelpBoxContainer = Q<VisualElement>("simple-helpbox-container");
 
             InitSimpleCategoryMapping();
             InitSimpleCategoryAnimate();
@@ -430,7 +437,7 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             BindFoldoutHeaderWithContainer("advanced-modules-foldout", "advanced-modules-container");
 
-            var popupContainer = Q<VisualElement>("advanced-modules-popup-container").First();
+            var popupContainer = Q<VisualElement>("advanced-modules-popup-container");
             _modulesPopup = new PopupField<string>(AdvancedModuleNames, 0);
             _modulesPopup.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
@@ -438,17 +445,17 @@ namespace Chocopoi.DressingTools.UI.Views
             });
             popupContainer.Add(_modulesPopup);
 
-            var moduleAddBtn = Q<Button>("advanced-module-add-btn").First();
+            var moduleAddBtn = Q<Button>("advanced-module-add-btn");
             moduleAddBtn.clicked += AdvancedModuleAddButtonClick;
 
-            _advancedModuleEditorsContainer = Q<VisualElement>("advanced-modules-editors-container").First();
+            _advancedModuleEditorsContainer = Q<VisualElement>("advanced-modules-editors-container");
         }
 
         private void InitAdvancedAvatarConfig()
         {
             BindFoldoutHeaderWithContainer("advanced-avatar-config-foldout", "advanced-avatar-config-container");
 
-            _advancedAvatarConfigGuidRefObjField = Q<ObjectField>("advanced-avatar-config-guid-ref-objectfield").First();
+            _advancedAvatarConfigGuidRefObjField = Q<ObjectField>("advanced-avatar-config-guid-ref-objectfield");
             _advancedAvatarConfigGuidRefObjField.objectType = typeof(GameObject);
             _advancedAvatarConfigGuidRefObjField.allowSceneObjects = true;
             _advancedAvatarConfigGuidRefObjField.RegisterValueChangedCallback((ChangeEvent<UnityEngine.Object> evt) =>
@@ -457,14 +464,14 @@ namespace Chocopoi.DressingTools.UI.Views
                 AvatarConfigChange?.Invoke();
             });
 
-            _advancedAvatarConfigGuidLabel = Q<Label>("advanced-avatar-config-guid-label").First();
-            _advancedAvatarConfigUseAvatarObjNameToggle = Q<Toggle>("advanced-avatar-config-use-obj-name-toggle").First();
+            _advancedAvatarConfigGuidLabel = Q<Label>("advanced-avatar-config-guid-label");
+            _advancedAvatarConfigUseAvatarObjNameToggle = Q<Toggle>("advanced-avatar-config-use-obj-name-toggle");
             _advancedAvatarConfigUseAvatarObjNameToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
             {
                 AdvancedAvatarConfigUseAvatarObjName = evt.newValue;
                 AvatarConfigChange?.Invoke();
             });
-            _advancedAvatarConfigCustomNameField = Q<TextField>("advanced-avatar-config-custom-name-field").First();
+            _advancedAvatarConfigCustomNameField = Q<TextField>("advanced-avatar-config-custom-name-field");
             _advancedAvatarConfigCustomNameField.RegisterValueChangedCallback((ChangeEvent<string> evt) =>
             {
                 var val = _advancedAvatarConfigCustomNameField.value;
@@ -473,16 +480,16 @@ namespace Chocopoi.DressingTools.UI.Views
                 AdvancedAvatarConfigCustomName = val;
                 AvatarConfigChange?.Invoke();
             });
-            _advancedAvatarConfigArmatureNameLabel = Q<Label>("advanced-avatar-config-armature-name-label").First();
-            _advancedAvatarConfigDeltaWorldPosLabel = Q<Label>("advanced-avatar-config-delta-world-pos-label").First();
-            _advancedAvatarConfigDeltaWorldRotLabel = Q<Label>("advanced-avatar-config-delta-world-rot-label").First();
-            _advancedAvatarConfigAvatarLossyScaleLabel = Q<Label>("advanced-avatar-config-avatar-lossy-scale-label").First();
-            _advancedAvatarConfigWearableLossyScaleLabel = Q<Label>("advanced-avatar-config-wearable-lossy-scale-label").First();
+            _advancedAvatarConfigArmatureNameLabel = Q<Label>("advanced-avatar-config-armature-name-label");
+            _advancedAvatarConfigDeltaWorldPosLabel = Q<Label>("advanced-avatar-config-delta-world-pos-label");
+            _advancedAvatarConfigDeltaWorldRotLabel = Q<Label>("advanced-avatar-config-delta-world-rot-label");
+            _advancedAvatarConfigAvatarLossyScaleLabel = Q<Label>("advanced-avatar-config-avatar-lossy-scale-label");
+            _advancedAvatarConfigWearableLossyScaleLabel = Q<Label>("advanced-avatar-config-wearable-lossy-scale-label");
         }
 
         private void InitAdvancedMode()
         {
-            _advancedContainer = Q<VisualElement>("advanced-container").First();
+            _advancedContainer = Q<VisualElement>("advanced-container");
 
             InitAdvancedModules();
             InitAdvancedAvatarConfig();
@@ -504,28 +511,6 @@ namespace Chocopoi.DressingTools.UI.Views
                 if (_captureActive) RepaintCapturePreview();
                 _toolbarPreviewBtn.EnableInClassList("active", PreviewActive);
             });
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitWearableInfoFoldout();
-            InitSimpleMode();
-            InitAdvancedMode();
-            InitToolbar();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
-            _simpleArmatureMappingEditor.OnDisable();
-            _simpleMoveRootEditor.OnDisable();
-            _simpleAnimGenEditor.OnDisable();
-            _simpleBlendshapeSyncEditor.OnDisable();
         }
 
         private void RepaintWearableInfo()
@@ -585,11 +570,6 @@ namespace Chocopoi.DressingTools.UI.Views
             _simpleMoveRootEditor = new MoveRootWearableModuleEditor(this, null, SimpleMoveRootConfig);
             _simpleAnimGenEditor = new CabinetAnimWearableModuleEditor(this, null, SimpleCabinetAnimConfig);
             _simpleBlendshapeSyncEditor = new BlendshapeSyncWearableModuleEditor(this, null, SimpleBlendshapeSyncConfig);
-
-            _simpleArmatureMappingEditor.OnEnable();
-            _simpleMoveRootEditor.OnEnable();
-            _simpleAnimGenEditor.OnEnable();
-            _simpleBlendshapeSyncEditor.OnEnable();
 
             _simpleArmatureMappingContainer.Clear();
             _simpleMoveRootContainer.Clear();

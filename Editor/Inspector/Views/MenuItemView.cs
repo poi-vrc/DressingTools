@@ -117,6 +117,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
             AxisDownLabel = new AxisLabel();
             AxisLeftLabel = new AxisLabel();
             _presenter = new MenuItemPresenter(this);
+            InitVisualTree();
+            InitInfoPanel();
+            InitDetailsFoldout();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -132,8 +136,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitInfoPanel()
         {
-            _itemInfoIconContainer = Q<VisualElement>("item-icon").First();
-            var iconObjFieldContainer = Q<VisualElement>("item-icon-objfield-container").First();
+            _itemInfoIconContainer = Q<VisualElement>("item-icon");
+            var iconObjFieldContainer = Q<VisualElement>("item-icon-objfield-container");
             _itemInfoIconObjField = new ObjectField()
             {
                 objectType = typeof(Texture2D)
@@ -145,11 +149,11 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             iconObjFieldContainer.Add(_itemInfoIconObjField);
 
-            _itemInfoNameLabel = Q<Label>("item-info-name-label").First();
-            _itemInfoNameField = Q<TextField>("item-info-name-field").First();
+            _itemInfoNameLabel = Q<Label>("item-info-name-label");
+            _itemInfoNameField = Q<TextField>("item-info-name-field");
             _itemInfoNameField.RegisterValueChangedCallback((evt) => NameChanged?.Invoke());
 
-            var itemTypePopupContainer = Q<VisualElement>("item-info-item-type-popup-container").First();
+            var itemTypePopupContainer = Q<VisualElement>("item-info-item-type-popup-container");
             var itemTypeChoices = new List<string>() { t._("inspector.menu.item.info.itemType.button"), t._("inspector.menu.item.info.itemType.toggle"), t._("inspector.menu.item.info.itemType.subMenu"), t._("inspector.menu.item.info.itemType.twoAxis"), t._("inspector.menu.item.info.itemType.fourAxis"), t._("inspector.menu.item.info.itemType.radial") };
             _itemTypePopup = new PopupField<string>(t._("inspector.menu.item.info.popup.itemType"), itemTypeChoices, 0);
             _itemTypePopup.RegisterValueChangedCallback((evt) =>
@@ -159,8 +163,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             itemTypePopupContainer.Add(_itemTypePopup);
 
-            _itemInfoParameterNameField = Q<AnimatorParameterTextField>("item-info-parameter-name-field").First();
-            _itemInfoParameterValueField = Q<FloatField>("item-info-parameter-value-field").First();
+            _itemInfoParameterNameField = Q<AnimatorParameterTextField>("item-info-parameter-name-field");
+            _itemInfoParameterValueField = Q<FloatField>("item-info-parameter-value-field");
             _itemInfoParameterNameField.RegisterValueChangedCallback(evt =>
             {
                 ParameterName = evt.newValue;
@@ -172,7 +176,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 InfoParameterFieldsChanged?.Invoke();
             });
 
-            var subMenuTypePopupContainer = Q<VisualElement>("item-info-submenu-type-popup-container").First();
+            var subMenuTypePopupContainer = Q<VisualElement>("item-info-submenu-type-popup-container");
             var subMenuTypeChoices = new List<string>() { t._("inspector.menu.item.info.subMenuType.children"), t._("inspector.menu.item.info.subMenuType.dtMenuGroupComponent"), t._("inspector.menu.item.info.subMenuType.vrcMenuAsset") };
             _subMenuTypePopup = new PopupField<string>(t._("inspector.menu.item.info.popup.subMenuType"), subMenuTypeChoices, 0);
             _subMenuTypePopup.RegisterValueChangedCallback((evt) =>
@@ -182,7 +186,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             });
             subMenuTypePopupContainer.Add(_subMenuTypePopup);
 
-            var dtSubMenuObjFieldContainer = Q<VisualElement>("item-info-dtsubmenu-objfield-container").First();
+            var dtSubMenuObjFieldContainer = Q<VisualElement>("item-info-dtsubmenu-objfield-container");
             _dtSubMenuObjField = new ObjectField(t._("inspector.menu.item.info.objectField.subMenu"))
             {
                 objectType = typeof(DTMenuGroup)
@@ -195,7 +199,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             dtSubMenuObjFieldContainer.Add(_dtSubMenuObjField);
 
 #if DT_VRCSDK3A
-            var vrcSubMenuObjFieldContainer = Q<VisualElement>("item-info-vrcsubmenu-objfield-container").First();
+            var vrcSubMenuObjFieldContainer = Q<VisualElement>("item-info-vrcsubmenu-objfield-container");
             _vrcSubMenuObjField = new ObjectField(t._("inspector.menu.item.info.objectField.subMenu"))
             {
                 objectType = typeof(VRCExpressionsMenu)
@@ -214,12 +218,12 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemInfoParameterNameField.style.display = DisplayStyle.None;
             _itemInfoParameterValueField.style.display = DisplayStyle.None;
 
-            _itemDetailsFoldout = Q<Foldout>("details-foldout").First();
-            _itemDetailsContainer = Q<VisualElement>("details-container").First();
+            _itemDetailsFoldout = Q<Foldout>("details-foldout");
+            _itemDetailsContainer = Q<VisualElement>("details-container");
             BindFoldoutHeaderAndContainerWithPrefix("details");
 
-            _itemDetailsParameterNameField = Q<AnimatorParameterTextField>("details-parameter-name-field").First();
-            _itemDetailsParameterValueField = Q<FloatField>("details-parameter-value-field").First();
+            _itemDetailsParameterNameField = Q<AnimatorParameterTextField>("details-parameter-name-field");
+            _itemDetailsParameterValueField = Q<FloatField>("details-parameter-value-field");
             _itemDetailsParameterNameField.RegisterValueChangedCallback(evt =>
             {
                 ParameterName = evt.newValue;
@@ -231,24 +235,24 @@ namespace Chocopoi.DressingTools.Inspector.Views
                 DetailsParameterFieldsChanged?.Invoke();
             });
 
-            _itemDetailsHorizontalParameterField = Q<AnimatorParameterTextField>("details-horizontal-parameter-text-field").First();
-            _itemDetailsVerticalParameterField = Q<AnimatorParameterTextField>("details-vertical-parameter-text-field").First();
+            _itemDetailsHorizontalParameterField = Q<AnimatorParameterTextField>("details-horizontal-parameter-text-field");
+            _itemDetailsVerticalParameterField = Q<AnimatorParameterTextField>("details-vertical-parameter-text-field");
             _itemDetailsHorizontalParameterField.RegisterValueChangedCallback(evt => TwoAxisControllerChanged?.Invoke());
             _itemDetailsVerticalParameterField.RegisterValueChangedCallback(evt => TwoAxisControllerChanged?.Invoke());
 
-            _axisPanel = Q<VisualElement>("axis-panel").First();
-            _paramsPanel = Q<VisualElement>("params-panel").First();
+            _axisPanel = Q<VisualElement>("axis-panel");
+            _paramsPanel = Q<VisualElement>("params-panel");
 
-            _itemDetailsUpParameterField = Q<AnimatorParameterTextField>("details-up-parameter-text-field").First();
-            _itemDetailsRightParameterField = Q<AnimatorParameterTextField>("details-right-parameter-text-field").First();
-            _itemDetailsDownParameterField = Q<AnimatorParameterTextField>("details-down-parameter-text-field").First();
-            _itemDetailsLeftParameterField = Q<AnimatorParameterTextField>("details-left-parameter-text-field").First();
+            _itemDetailsUpParameterField = Q<AnimatorParameterTextField>("details-up-parameter-text-field");
+            _itemDetailsRightParameterField = Q<AnimatorParameterTextField>("details-right-parameter-text-field");
+            _itemDetailsDownParameterField = Q<AnimatorParameterTextField>("details-down-parameter-text-field");
+            _itemDetailsLeftParameterField = Q<AnimatorParameterTextField>("details-left-parameter-text-field");
             _itemDetailsUpParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
             _itemDetailsRightParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
             _itemDetailsDownParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
             _itemDetailsLeftParameterField.RegisterValueChangedCallback(evt => FourAxisControllerChanged?.Invoke());
 
-            _itemDetailsRadialParameterField = Q<AnimatorParameterTextField>("details-radial-parameter-text-field").First();
+            _itemDetailsRadialParameterField = Q<AnimatorParameterTextField>("details-radial-parameter-text-field");
             _itemDetailsRadialParameterField.RegisterValueChangedCallback(evt => RadialControllerChanged?.Invoke());
 
             InitAxisLabels();
@@ -271,10 +275,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitAxisLabels()
         {
-            var axisUpContainer = Q<VisualElement>("axis-up-container").First();
-            var axisLeftContainer = Q<VisualElement>("axis-left-container").First();
-            var axisRightContainer = Q<VisualElement>("axis-right-container").First();
-            var axisDownContainer = Q<VisualElement>("axis-down-container").First();
+            var axisUpContainer = Q<VisualElement>("axis-up-container");
+            var axisLeftContainer = Q<VisualElement>("axis-left-container");
+            var axisRightContainer = Q<VisualElement>("axis-right-container");
+            var axisDownContainer = Q<VisualElement>("axis-down-container");
 
             InitAxisLabel(ref axisUpContainer, ref _axisUpIcon, ref _axisUpIconObjField, ref _axisUpLabelField, () =>
             {
@@ -440,22 +444,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
             iconContainer.style.backgroundImage = new StyleBackground(data.icon != null ? data.icon : s_iconPlaceholderImage);
             objField.value = data.icon;
             textField.value = data.name;
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitInfoPanel();
-            InitDetailsFoldout();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         public void RepaintInfoParameterFields()

@@ -27,6 +27,12 @@ namespace Chocopoi.DressingTools.UI.Views
         public event Action Load;
         public event Action Unload;
 
+        public ElementView()
+        {
+            RegisterCallback<AttachToPanelEvent>(evt => Load?.Invoke());
+            RegisterCallback<DetachFromPanelEvent>(evt => Unload?.Invoke());
+        }
+
         public abstract void Repaint();
 
         public virtual void RaiseForceUpdateViewEvent()
@@ -34,39 +40,24 @@ namespace Chocopoi.DressingTools.UI.Views
             ForceUpdateView?.Invoke();
         }
 
-        public virtual void OnEnable()
+        public T Q<T>(string name = null, params string[] classes) where T : VisualElement
         {
-            RaiseLoadEvent();
+            return UQueryExtensions.Query<T>(this, name, classes).Build().First();
         }
 
-        public virtual void OnDisable()
+        public VisualElement Q(string name = null, params string[] classes)
         {
-            RaiseUnloadEvent();
+            return UQueryExtensions.Query<VisualElement>(this, name, classes).Build().First();
         }
 
-        protected void RaiseLoadEvent()
+        public T Q<T>(string name = null, string className = null) where T : VisualElement
         {
-            Load?.Invoke();
+            return UQueryExtensions.Query<T>(this, name, className).Build().First();
         }
 
-        protected void RaiseUnloadEvent()
+        public VisualElement Q(string name = null, string className = null)
         {
-            Unload?.Invoke();
-        }
-
-        public UQueryBuilder<T> Q<T>() where T : VisualElement
-        {
-            return UQueryExtensions.Query<T>(this);
-        }
-
-        public UQueryBuilder<T> Q<T>(string name, string className) where T : VisualElement
-        {
-            return UQueryExtensions.Query<T>(this, name, className);
-        }
-
-        public UQueryBuilder<T> Q<T>(string name, params string[] classes) where T : VisualElement
-        {
-            return UQueryExtensions.Query<T>(this, name, classes);
+            return UQueryExtensions.Query<VisualElement>(this, name, className).Build().First();
         }
 
         /// <summary>
@@ -76,8 +67,8 @@ namespace Chocopoi.DressingTools.UI.Views
         /// <param name="containerName">Container name</param>
         public void BindFoldoutHeaderWithContainer(string foldoutName, string containerName)
         {
-            var foldout = Q<Foldout>(foldoutName).First();
-            var container = Q<VisualElement>(containerName).First();
+            var foldout = Q<Foldout>(foldoutName);
+            var container = Q<VisualElement>(containerName);
             foldout.RegisterValueChangedCallback((ChangeEvent<bool> evt) => container.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
         }
 
@@ -87,15 +78,29 @@ namespace Chocopoi.DressingTools.UI.Views
         }
 
         /// <summary>
-        /// Creates a HelpBox element (Unity 2019.4 not yet have helpbox in UXML yet)
+        /// Creates a HelpBox element (Legacy code, please use Unity 2022 HelpBox instead)
         /// </summary>
         /// <param name="msg">Message</param>
         /// <param name="msgType">Message type</param>
         /// <returns>Element</returns>
-        public VisualElement CreateHelpBox(string msg, MessageType msgType)
+        public static VisualElement CreateHelpBox(string msg, MessageType msgType)
         {
-            // unity 2019.4 not yet have helpbox in uxml
-            return new IMGUIContainer(() => EditorGUILayout.HelpBox(msg, msgType));
+            // Unity 2019.4 not yet have helpbox in uxml, but now 2022 has it.
+            // return new IMGUIContainer(() => EditorGUILayout.HelpBox(msg, msgType));
+            // TODO: remove this legacy code and replace everywhere using this with the below snippet.
+            var helpBoxMsgType = msgType switch
+            {
+                MessageType.Info => HelpBoxMessageType.Info,
+                MessageType.Warning => HelpBoxMessageType.Warning,
+                MessageType.Error => HelpBoxMessageType.Error,
+                _ => HelpBoxMessageType.None,
+            };
+            var helpBox = new HelpBox
+            {
+                text = msg,
+                messageType = helpBoxMsgType
+            };
+            return helpBox;
         }
     }
 }

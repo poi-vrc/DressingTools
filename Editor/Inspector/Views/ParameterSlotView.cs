@@ -64,6 +64,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
             Mappings = new List<ParameterSlotMapping>();
             _currentCtrl = currentCtrl;
             _showDescriptionHelpbox = showDescriptionHelpbox;
+            InitVisualTree();
+            InitHelpboxes();
+            InitValueType();
+            InitDefValFields();
+            InitMappingsContainer();
+            InitMappingAddField();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -79,7 +86,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitHelpboxes()
         {
-            var helpboxContainer = Q<VisualElement>("description-helpbox-container").First();
+            var helpboxContainer = Q<VisualElement>("description-helpbox-container");
             if (_showDescriptionHelpbox)
             {
                 helpboxContainer.Add(CreateHelpBox(t._("inspector.parameterSlot.helpbox.description"), UnityEditor.MessageType.Info));
@@ -96,7 +103,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitValueType()
         {
-            var popupContainer = Q<VisualElement>("value-type-popup-container").First();
+            var popupContainer = Q<VisualElement>("value-type-popup-container");
             var choices = new List<string>() { "Int", "Float" };
             _valueTypePopupField = new PopupField<string>(t._("inspector.parameterSlot.popup.valueType"), choices, 0);
             _valueTypePopupField.RegisterValueChangedCallback(evt =>
@@ -109,13 +116,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitDefValFields()
         {
-            _defValFloatField = Q<FloatField>("parameter-defval-float-field").First();
+            _defValFloatField = Q<FloatField>("parameter-defval-float-field");
             _defValFloatField.RegisterValueChangedCallback(evt =>
             {
                 _defValIntField.value = (int)_defValFloatField.value;
                 ConfigChanged?.Invoke();
             });
-            _defValIntField = Q<IntegerField>("parameter-defval-int-field").First();
+            _defValIntField = Q<IntegerField>("parameter-defval-int-field");
             _defValIntField.RegisterValueChangedCallback(evt =>
             {
                 _defValFloatField.value = _defValIntField.value;
@@ -125,13 +132,13 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
         private void InitMappingsContainer()
         {
-            _mappingsHelpboxContainer = Q<VisualElement>("mappings-helpbox-container").First();
-            _mappingsContainer = Q<VisualElement>("mappings-container").First();
+            _mappingsHelpboxContainer = Q<VisualElement>("mappings-helpbox-container");
+            _mappingsContainer = Q<VisualElement>("mappings-container");
         }
 
         private void InitMappingAddField()
         {
-            _mappingsAddFieldContainer = Q<VisualElement>("mappings-add-field-container").First();
+            _mappingsAddFieldContainer = Q<VisualElement>("mappings-add-field-container");
             _mappingsAddFieldContainer.AddToClassList("add-field-container");
             var label = new Label("+");
             _mappingsAddFieldContainer.Add(label);
@@ -237,25 +244,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
             {
                 _mappingsContainer.Add(MakeMappingEntry(mapping.ctrl, mapping.onChange, mapping.onRemove));
             }
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitHelpboxes();
-            InitValueType();
-            InitDefValFields();
-            InitMappingsContainer();
-            InitMappingAddField();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         public override void Repaint()

@@ -59,10 +59,13 @@ namespace Chocopoi.DressingTools.UI.Views
         {
             _mainView = mainView;
             _avatarPresenter = new AvatarPresenter(this);
-
             InstalledOutfitPreviews = new List<OutfitPreview>();
 
             SettingsAnimationWriteDefaultsMode = 0;
+
+            InitVisualTree();
+            InitAvatarContent();
+            t.LocalizeElement(this);
         }
 
         public void SelectTab(int selectedTab)
@@ -78,7 +81,7 @@ namespace Chocopoi.DressingTools.UI.Views
         private void InitSettings()
         {
             // TODO: Create view from avatar settings directly?
-            var container = Q<VisualElement>("settings-container").First();
+            var container = Q<VisualElement>("settings-container");
             container.Clear();
 
             var choices = new List<string>() {
@@ -106,12 +109,12 @@ namespace Chocopoi.DressingTools.UI.Views
 
         private void InitAvatarContent()
         {
-            _conceptChangedHelpboxContainer = Q<VisualElement>("concept-changed-helpbox-container").First();
+            _conceptChangedHelpboxContainer = Q<VisualElement>("concept-changed-helpbox-container");
             _conceptChangedHelpboxContainer.Add(CreateHelpBox(t._("editor.main.avatar.settings.avatar.helpbox.conceptAndLocationChanged"), MessageType.Info));
 
-            _createAvatarContainer = Q<VisualElement>("create-avatar-container").First();
-            _avatarContentContainer = Q<VisualElement>("avatar-content-container").First();
-            _installedOutfitContainer = Q<VisualElement>("outfits-container").First();
+            _createAvatarContainer = Q<VisualElement>("create-avatar-container");
+            _avatarContentContainer = Q<VisualElement>("avatar-content-container");
+            _installedOutfitContainer = Q<VisualElement>("outfits-container");
 
             InitSettings();
             BindFoldouts();
@@ -126,16 +129,6 @@ namespace Chocopoi.DressingTools.UI.Views
             {
                 styleSheets.Add(styleSheet);
             }
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            InitAvatarContent();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
         }
 
         private VisualElement CreateAddPlaceholderElement()

@@ -35,9 +35,7 @@ namespace Chocopoi.DressingTools.Configurator.Cabinet
 
         public VisualElement CreateView()
         {
-            var view = new OneConfCabinetView(_avatarGameObject);
-            view.OnEnable();
-            return view;
+            return new OneConfCabinetView(_avatarGameObject);
         }
 
         public List<IConfigurableOutfit> GetOutfits()

@@ -27,7 +27,7 @@ using UnityEngine;
 namespace Chocopoi.DressingTools.UI.Views
 {
     [ExcludeFromCodeCoverage]
-    internal class LegacyView : IMGUIViewBase, ILegacyView
+    internal class LegacyView : IMGUIView, ILegacyView
     {
         private static readonly I18nTranslator t = I18n.ToolTranslator;
 

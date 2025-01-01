@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - upgrade-u22-cs8
     paths:
       - "**/*.cs"
       - ".github/unity-project/**/*"

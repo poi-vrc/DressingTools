@@ -99,7 +99,6 @@ namespace Chocopoi.DressingTools.UI
         {
             if (_view != null)
             {
-                _view.OnDisable();
                 if (rootVisualElement.Contains(_view))
                 {
                     rootVisualElement.Remove(_view);
@@ -113,18 +112,12 @@ namespace Chocopoi.DressingTools.UI
             CleanUp();
             _view = new MainView();
             rootVisualElement.Add(_view);
-            _view.OnEnable();
             AddLanguagePopup();
         }
 
-        public void OnEnable()
+        public void CreateGUI()
         {
             CreateNewView();
-        }
-
-        public void OnDisable()
-        {
-            _view.OnDisable();
         }
     }
 }

@@ -50,6 +50,8 @@ namespace Chocopoi.DressingTools.Inspector.Views
         public MenuInstallView()
         {
             _presenter = new MenuInstallPresenter(this);
+            InitVisualTree();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -69,20 +71,6 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _installPathField = new TextField(t._("inspector.menu.install.textField.installPath"));
             _installPathField.RegisterValueChangedCallback(evt => SettingsChanged?.Invoke());
             Add(_installPathField);
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-
-            t.LocalizeElement(this);
-
-            RaiseLoadEvent();
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
         }
 
         public override void Repaint()

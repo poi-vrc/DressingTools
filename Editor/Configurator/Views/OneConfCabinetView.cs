@@ -60,6 +60,8 @@ namespace Chocopoi.DressingTools.Configurator.Views
         public OneConfCabinetView(GameObject avatarGameObject)
         {
             _presenter = new OneConfCabinetPresenter(this, avatarGameObject);
+            InitVisualTree();
+            t.LocalizeElement(this);
         }
 
         private void InitVisualTree()
@@ -96,13 +98,6 @@ namespace Chocopoi.DressingTools.Configurator.Views
             _savedToggle = new Toggle(t._("editor.main.avatar.settings.oneConf.toggle.saved"));
             _savedToggle.RegisterValueChangedCallback(evt => SettingsChanged?.Invoke());
             Add(_savedToggle);
-        }
-
-        public override void OnEnable()
-        {
-            InitVisualTree();
-            t.LocalizeElement(this);
-            RaiseLoadEvent();
         }
 
         public override void Repaint()
