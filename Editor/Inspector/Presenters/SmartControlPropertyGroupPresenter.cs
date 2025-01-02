@@ -26,14 +26,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public SmartControlPropertyGroupPresenter(ISmartControlPropertyGroupView view)
         {
             _view = view;
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.SettingsChanged += OnSettingsChanged;
             _view.AddGameObject += OnAddGameObject;
             _view.RemoveGameObject += OnRemoveGameObject;
@@ -42,9 +40,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.SettingsChanged -= OnSettingsChanged;
             _view.AddGameObject -= OnAddGameObject;
             _view.RemoveGameObject -= OnRemoveGameObject;
@@ -136,6 +132,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
 
             SuggestPickFromTransform(true);

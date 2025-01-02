@@ -65,10 +65,10 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _itemsContainer = Q<VisualElement>("items-container");
 
             _addItemBtn = Q<Button>("add-item-btn");
-            _addItemBtn.clicked += AddItem;
+            _addItemBtn.clicked += () => AddItem?.Invoke();
 
             _addSmartControlBtn = Q<Button>("add-smart-control-btn");
-            _addSmartControlBtn.clicked += AddSmartControl;
+            _addSmartControlBtn.clicked += () => AddSmartControl?.Invoke();
         }
 
         private Box MakeMenuItemBox<T>(int i, T comp) where T : Component

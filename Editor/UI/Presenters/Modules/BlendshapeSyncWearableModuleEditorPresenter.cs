@@ -32,24 +32,19 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
         {
             _view = view;
             _module = module;
-
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.AddBlendshapeSyncButtonClick += OnAddBlendshapeSyncButtonClick;
         }
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.AddBlendshapeSyncButtonClick -= OnAddBlendshapeSyncButtonClick;
         }
@@ -221,6 +216,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

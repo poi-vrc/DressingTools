@@ -27,14 +27,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public MenuGroupPresenter(IMenuGroupView view)
         {
             _view = view;
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.AddItem += OnAddItem;
             _view.AddSmartControl += OnAddSmartControl;
             _view.RemoveItem += OnRemoveItem;
@@ -44,9 +42,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.AddItem -= OnAddItem;
             _view.AddSmartControl -= OnAddSmartControl;
             _view.RemoveItem -= OnRemoveItem;
@@ -100,6 +96,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

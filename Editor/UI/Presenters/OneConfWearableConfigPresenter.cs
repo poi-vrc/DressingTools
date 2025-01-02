@@ -50,16 +50,13 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public OneConfWearableConfigPresenter(IOneConfWearableConfigView view)
         {
             _view = view;
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
-
             _view.InfoNewThumbnailButtonClick += OnInfoNewThumbnailButtonClick;
             _view.CaptureThumbnailButtonClick += OnCaptureThumbnailButtonClick;
             _view.CaptureCancelButtonClick += OnCaptureCancelButtonClick;
@@ -75,11 +72,8 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
-
             _view.InfoNewThumbnailButtonClick -= OnInfoNewThumbnailButtonClick;
             _view.CaptureThumbnailButtonClick -= OnCaptureThumbnailButtonClick;
             _view.CaptureCancelButtonClick -= OnCaptureCancelButtonClick;
@@ -560,6 +554,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

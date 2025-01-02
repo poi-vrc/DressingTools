@@ -36,15 +36,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public AvatarPresenter(IAvatarSubView view)
         {
             _view = view;
-
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.AddOutfitButtonClick += OnAddOutfitButtonClick;
             _view.ForceUpdateView += OnForceUpdateView;
             _view.AvatarSettingsChange += OnAvatarSettingsChange;
@@ -56,9 +53,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.AddOutfitButtonClick -= OnAddOutfitButtonClick;
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.AvatarSettingsChange -= OnAvatarSettingsChange;
@@ -148,6 +143,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

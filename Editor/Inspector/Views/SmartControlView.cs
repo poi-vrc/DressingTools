@@ -497,7 +497,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
 
             _propGpsListContainer = Q<VisualElement>("prop-gps-list-container");
             _propGpAddBtn = Q<Button>("prop-gp-add-btn");
-            _propGpAddBtn.clicked += AddNewPropertyGroup;
+            _propGpAddBtn.clicked += () => AddNewPropertyGroup?.Invoke();
         }
 
         private void InitCrossCtrlValuesFoldout()

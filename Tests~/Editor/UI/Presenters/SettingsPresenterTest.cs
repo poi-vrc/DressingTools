@@ -44,7 +44,7 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
             var view = mock.Object;
             var prefs = PreferencesUtility.GetPreferences();
             AssertUpdateChecker(view);
-            mock.Verify(m => m.Repaint(), Times.Once);
+            mock.Verify(m => m.Repaint(), Times.AtLeastOnce());
         }
 
         [Test]
@@ -60,26 +60,32 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
         public void ForceUpdateViewTest()
         {
             var mock = SetupMock();
+            mock.Raise(m => m.Load += null);
             mock.Raise(m => m.ForceUpdateView += null);
             AssertUpdateView(mock);
+            mock.Raise(m => m.Unload += null);
         }
 
         [Test]
         public void UpdaterCheckUpdateButtonClickedTest()
         {
             var mock = SetupMock();
+            mock.Raise(m => m.Load += null);
             mock.Raise(m => m.UpdaterCheckUpdateButtonClicked += null);
             // TODO: assert called update checker?
             AssertUpdateView(mock);
+            mock.Raise(m => m.Unload += null);
         }
 
         [Test]
         public void ResetToDefaultsButtonClickedTest()
         {
             var mock = SetupMock();
+            mock.Raise(m => m.Load += null);
             mock.Raise(m => m.ResetToDefaultsButtonClicked += null);
             // TODO: assert reset to defaults?
             AssertUpdateView(mock);
+            mock.Raise(m => m.Unload += null);
         }
     }
 }

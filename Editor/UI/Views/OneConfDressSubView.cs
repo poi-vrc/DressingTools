@@ -145,7 +145,7 @@ namespace Chocopoi.DressingTools.UI.Views
             _configViewContainer.Add(_configView);
 
             _btnAddToCabinet = Q<Button>("btn-add-to-cabinet");
-            _btnAddToCabinet.clicked += AddToCabinetButtonClick;
+            _btnAddToCabinet.clicked += () => AddToCabinetButtonClick?.Invoke();
 
             BindFoldoutHeaderWithContainer("foldout-setup", "setup-container");
         }

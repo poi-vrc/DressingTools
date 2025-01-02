@@ -27,14 +27,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public MenuInstallPresenter(IMenuInstallView view)
         {
             _view = view;
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.SettingsChanged += OnSettingsChanged;
 
             EditorApplication.hierarchyChanged += OnHierarchyChange;
@@ -42,7 +40,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
             _view.SettingsChanged -= OnSettingsChanged;
 
@@ -78,6 +75,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 
