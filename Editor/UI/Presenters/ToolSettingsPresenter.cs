@@ -35,14 +35,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view = view;
             _prefs = PreferencesUtility.GetPreferences();
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.UpdaterCheckUpdateButtonClicked += OnUpdaterCheckUpdateButtonClicked;
             _view.ResetToDefaultsButtonClicked += OnResetToDefaultsButtonClicked;
@@ -50,9 +48,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.UpdaterCheckUpdateButtonClicked -= OnUpdaterCheckUpdateButtonClicked;
             _view.ResetToDefaultsButtonClicked -= OnResetToDefaultsButtonClicked;
@@ -91,6 +87,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

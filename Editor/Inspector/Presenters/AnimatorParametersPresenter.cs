@@ -33,14 +33,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         {
             _view = view;
             _parameters = new Dictionary<string, AnimatorControllerParameterType>();
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.AddConfig += OnAddConfig;
             _view.RemoveConfig += OnRemoveConfig;
             _view.ChangeConfig += OnChangeConfig;
@@ -52,9 +50,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.AddConfig -= OnAddConfig;
             _view.RemoveConfig -= OnRemoveConfig;
             _view.ChangeConfig -= OnChangeConfig;
@@ -194,6 +190,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

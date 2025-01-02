@@ -43,15 +43,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public LegacyPresenter(ILegacyView view)
         {
             _view = view;
-
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.TargetAvatarOrWearableChange += OnTargetAvatarOrWearableChange;
             _view.RenameClothesNameButtonClick += OnRenameClothesNameButtonClick;
@@ -62,9 +59,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.TargetAvatarOrWearableChange -= OnTargetAvatarOrWearableChange;
             _view.RenameClothesNameButtonClick -= OnRenameClothesNameButtonClick;
@@ -411,6 +406,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             if (s_testModeAnimationController == null)
             {
                 s_testModeAnimationController = AssetDatabase.LoadAssetAtPath<AnimatorController>(TestModeAnimationControllerPath);

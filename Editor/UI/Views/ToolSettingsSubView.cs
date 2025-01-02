@@ -75,10 +75,10 @@ namespace Chocopoi.DressingTools.UI.Views
             _updaterHelpboxContainer = Q<VisualElement>("updater-helpbox-container");
 
             var updaterCheckUpdateBtn = Q<Button>("updater-check-update-btn");
-            updaterCheckUpdateBtn.clicked += UpdaterCheckUpdateButtonClicked;
+            updaterCheckUpdateBtn.clicked += () => UpdaterCheckUpdateButtonClicked?.Invoke();
 
             var resetToDefaultsBtn = Q<Button>("reset-defaults-btn");
-            resetToDefaultsBtn.clicked += ResetToDefaultsButtonClicked;
+            resetToDefaultsBtn.clicked += () => ResetToDefaultsButtonClicked?.Invoke();
         }
 
         private void RepaintUpdateChecker()

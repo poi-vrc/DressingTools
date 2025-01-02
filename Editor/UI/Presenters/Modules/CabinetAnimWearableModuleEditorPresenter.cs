@@ -46,13 +46,11 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
             _view = view;
             _parentView = parentView;
             _module = module;
-
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
             _view.ForceUpdateView += OnForceUpdateView;
@@ -79,7 +77,6 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
             _view.ForceUpdateView -= OnForceUpdateView;
@@ -724,6 +721,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

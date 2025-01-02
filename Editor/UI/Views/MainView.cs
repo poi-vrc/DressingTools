@@ -145,7 +145,7 @@ namespace Chocopoi.DressingTools.UI.Views
 
             _updateAvailableFoldout = Q<Foldout>("update-available-foldout");
             var updateBtn = Q<Button>("update-available-update-btn");
-            updateBtn.clicked += UpdateAvailableUpdateButtonClick;
+            updateBtn.clicked += () => UpdateAvailableUpdateButtonClick?.Invoke();
 
             _avatarSelectionPopupContainer = Q<VisualElement>("popup-avatar-selection");
             _debugInfoContainer = Q<VisualElement>("debug-info");

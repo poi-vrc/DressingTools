@@ -46,24 +46,19 @@ namespace Chocopoi.DressingTools.OneConf.Integrations.VRChat
             _view = view;
             _parentView = parentView;
             _module = module;
-
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.ConfigChange += OnConfigChange;
         }
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.ConfigChange -= OnConfigChange;
         }
@@ -166,6 +161,7 @@ namespace Chocopoi.DressingTools.OneConf.Integrations.VRChat
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

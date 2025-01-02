@@ -50,14 +50,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             var prefs = PreferencesUtility.GetPreferences();
             I18nManager.Instance.SetLocale(prefs.app.selectedLanguage);
 
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.MouseMove += OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick += OnUpdateAvailableUpdateButtonClick;
             _view.PrefabStageOpened += OnPrefabStageOpened;
@@ -71,9 +69,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.MouseMove -= OnMouseMove;
             _view.UpdateAvailableUpdateButtonClick -= OnUpdateAvailableUpdateButtonClick;
             _view.PrefabStageOpened -= OnPrefabStageOpened;
@@ -208,6 +204,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

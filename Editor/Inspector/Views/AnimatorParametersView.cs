@@ -73,7 +73,7 @@ namespace Chocopoi.DressingTools.Inspector.Views
             _helpBoxContainer.Add(CreateHelpBox(t._("inspector.animParams.helpbox.description"), MessageType.Info));
             _configsContainer = Q<VisualElement>("configs-container");
             var addConfigBtn = Q<Button>("add-config-btn");
-            addConfigBtn.clicked += AddConfig;
+            addConfigBtn.clicked += () => AddConfig?.Invoke();
         }
 
         private Box MakeConfigBox(int idx, AnimatorParametersConfig config)

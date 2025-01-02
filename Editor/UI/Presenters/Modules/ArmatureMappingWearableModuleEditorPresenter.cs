@@ -55,14 +55,12 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
             ResetMappingEditorContainer();
 
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.DresserChange += OnDresserChange;
             _view.ModuleSettingsChange += OnModuleSettingsChange;
@@ -75,9 +73,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.DresserChange -= OnDresserChange;
             _view.ModuleSettingsChange -= OnModuleSettingsChange;
@@ -360,6 +356,7 @@ namespace Chocopoi.DressingTools.UI.Presenters.Modules
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

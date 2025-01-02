@@ -41,23 +41,19 @@ namespace Chocopoi.DressingTools.Configurator.Presenters
             _view = view;
             _avatarGameObject = avatarGameObject;
 
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.SettingsChanged += OnSettingsChanged;
             _view.ForceUpdateView += OnForceUpdateView;
         }
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.SettingsChanged -= OnSettingsChanged;
             _view.ForceUpdateView -= OnForceUpdateView;
         }
@@ -125,6 +121,7 @@ namespace Chocopoi.DressingTools.Configurator.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

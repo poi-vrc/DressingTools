@@ -36,14 +36,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
             _blendshapes = new Dictionary<string, Tuple<Type, object>>();
             _materialProperties = new Dictionary<string, Tuple<Type, object>>();
             _genericProperties = new Dictionary<string, Tuple<Type, object>>();
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.SearchResultModeChange += OnSearchResultModeChange;
             _view.SearchQueryChange += OnSearchQueryChange;
             _view.AddProperty += OnAddProperty;
@@ -57,9 +55,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.SearchResultModeChange -= OnSearchResultModeChange;
             _view.SearchQueryChange -= OnSearchQueryChange;
             _view.AddProperty -= OnAddProperty;
@@ -686,6 +682,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             SearchComponentProperties();
             UpdateView();
         }

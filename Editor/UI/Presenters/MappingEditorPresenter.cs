@@ -31,14 +31,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public MappingEditorPresenter(IMappingEditorView view)
         {
             _view = view;
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.BoneMappingModeChange += OnBoneMappingModeChange;
             _view.BoneMappingDisplayModeChange += OnBoneMappingDisplayModeChange;
@@ -46,9 +44,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.BoneMappingModeChange -= OnBoneMappingModeChange;
             _view.BoneMappingDisplayModeChange -= OnBoneMappingDisplayModeChange;
@@ -211,6 +207,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

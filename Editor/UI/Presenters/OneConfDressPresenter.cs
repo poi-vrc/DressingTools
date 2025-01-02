@@ -33,15 +33,12 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public OneConfDressPresenter(IOneConfDressSubView view)
         {
             _view = view;
-
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
-
             _view.ForceUpdateView += OnForceUpdateView;
             _view.TargetAvatarChange += OnTargetAvatarChange;
             _view.TargetWearableChange += OnTargetAvatarOrWearableChange;
@@ -52,9 +49,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
-
             _view.ForceUpdateView -= OnForceUpdateView;
             _view.TargetAvatarChange -= OnTargetAvatarChange;
             _view.TargetWearableChange -= OnTargetAvatarOrWearableChange;
@@ -81,6 +76,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

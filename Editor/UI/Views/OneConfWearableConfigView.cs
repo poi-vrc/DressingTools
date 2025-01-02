@@ -237,7 +237,7 @@ namespace Chocopoi.DressingTools.UI.Views
             });
 
             _infoCaptureNewThumbBtn = Q<Button>("wearable-info-capture-new-thumbnail-btn");
-            _infoCaptureNewThumbBtn.clicked += InfoNewThumbnailButtonClick;
+            _infoCaptureNewThumbBtn.clicked += () => InfoNewThumbnailButtonClick?.Invoke();
         }
 
         private void InitWearableInfoCapturePanel()
@@ -248,9 +248,9 @@ namespace Chocopoi.DressingTools.UI.Views
             _captureRmvBgToggle = Q<Toggle>("wearable-info-capture-remove-background-toggle");
 
             _captureThumbBtn = Q<Button>("wearable-info-thumbnail-capture-btn");
-            _captureThumbBtn.clicked += CaptureThumbnailButtonClick;
+            _captureThumbBtn.clicked += () => CaptureThumbnailButtonClick?.Invoke();
             _captureCancelBtn = Q<Button>("wearable-info-thumbnail-cancel-btn");
-            _captureCancelBtn.clicked += CaptureCancelButtonClick;
+            _captureCancelBtn.clicked += () => CaptureCancelButtonClick?.Invoke();
 
             _captureWearableOnlyToggle.value = CaptureWearableOnly;
             _captureWearableOnlyToggle.RegisterValueChangedCallback((ChangeEvent<bool> evt) =>
@@ -340,16 +340,16 @@ namespace Chocopoi.DressingTools.UI.Views
         private void InitToolbar()
         {
             var autoSetupBtn = Q<Button>("toolbar-auto-setup-btn");
-            autoSetupBtn.clicked += ToolbarAutoSetupButtonClick;
+            autoSetupBtn.clicked += () => ToolbarAutoSetupButtonClick?.Invoke();
 
             _toolbarPreviewBtn = Q<Button>("toolbar-preview-btn");
-            _toolbarPreviewBtn.clicked += ToolbarPreviewButtonClick;
+            _toolbarPreviewBtn.clicked += () => ToolbarPreviewButtonClick?.Invoke();
 
             var importBtn = Q<Button>("toolbar-import-btn");
-            importBtn.clicked += ToolbarImportButtonClick;
+            importBtn.clicked += () => ToolbarImportButtonClick?.Invoke();
 
             var exportBtn = Q<Button>("toolbar-export-btn");
-            exportBtn.clicked += ToolbarExportButtonClick;
+            exportBtn.clicked += () => ToolbarExportButtonClick?.Invoke();
 
             BindToolbarModes();
         }
@@ -446,7 +446,7 @@ namespace Chocopoi.DressingTools.UI.Views
             popupContainer.Add(_modulesPopup);
 
             var moduleAddBtn = Q<Button>("advanced-module-add-btn");
-            moduleAddBtn.clicked += AdvancedModuleAddButtonClick;
+            moduleAddBtn.clicked += () => AdvancedModuleAddButtonClick?.Invoke();
 
             _advancedModuleEditorsContainer = Q<VisualElement>("advanced-modules-editors-container");
         }

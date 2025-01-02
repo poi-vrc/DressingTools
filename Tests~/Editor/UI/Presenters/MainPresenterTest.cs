@@ -10,10 +10,12 @@
  * You should have received a copy of the GNU General Public License along with DressingTools. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
 using Moq;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Chocopoi.DressingTools.Tests.UI.Presenters
 {
@@ -41,24 +43,32 @@ namespace Chocopoi.DressingTools.Tests.UI.Presenters
         public void OnPrefabStageClosingTest()
         {
             var mock = new Mock<IMainView>();
+            mock.SetupAllProperties();
             var view = mock.Object;
             new MainPresenter(view);
+            view.AvailableAvatars = new List<GameObject>();
 
+            mock.Raise(m => m.Load += null);
             mock.Raise(m => m.PrefabStageClosing += null, (object)null);
             mock.VerifySet(m => m.ShowExitPrefabModeHelpbox = false);
-            mock.Verify(m => m.Repaint(), Times.Once);
+            mock.Verify(m => m.Repaint(), Times.AtLeastOnce());
+            mock.Raise(m => m.Unload += null);
         }
 
         [Test]
         public void OnPrefabStageOpenedTest()
         {
             var mock = new Mock<IMainView>();
+            mock.SetupAllProperties();
             var view = mock.Object;
             new MainPresenter(view);
+            view.AvailableAvatars = new List<GameObject>();
 
+            mock.Raise(m => m.Load += null);
             mock.Raise(m => m.PrefabStageOpened += null, (object)null);
             mock.VerifySet(m => m.ShowExitPrefabModeHelpbox = true);
-            mock.Verify(m => m.Repaint(), Times.Once);
+            mock.Verify(m => m.Repaint(), Times.AtLeastOnce());
+            mock.Raise(m => m.Unload += null);
         }
     }
 }

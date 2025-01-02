@@ -28,12 +28,11 @@ namespace Chocopoi.DressingTools.UI.Presenters
         public SmartControlPresenter(ISmartControlView view)
         {
             _view = view;
-            SubscribeEvents();
+            _view.Load += OnLoad;
         }
 
         private void SubscribeEvents()
         {
-            _view.Load += OnLoad;
             _view.Unload += OnUnload;
 
             _view.DriverChanged += OnDriverChanged;
@@ -64,7 +63,6 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void UnsubscribeEvents()
         {
-            _view.Load -= OnLoad;
             _view.Unload -= OnUnload;
 
             _view.DriverChanged -= OnDriverChanged;
@@ -499,6 +497,7 @@ namespace Chocopoi.DressingTools.UI.Presenters
 
         private void OnLoad()
         {
+            SubscribeEvents();
             UpdateView();
         }
 

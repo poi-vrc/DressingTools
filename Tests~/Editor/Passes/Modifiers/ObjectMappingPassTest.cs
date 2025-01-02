@@ -69,13 +69,23 @@ namespace Chocopoi.DressingTools.Tests.Passes.Modifiers
 
             // BB->AB via PC
             Assert.AreEqual(b.transform, bb.transform.parent);
+#if DT_VRCSDK3A
+            Assert.True(bb.TryGetComponent<VRC.SDK3.Dynamics.Constraint.Components.VRCParentConstraint>(out var vrcPc));
+            Assert.AreEqual(1, vrcPc.Sources.Count);
+            Assert.AreEqual(ab.transform, vrcPc.Sources[0].SourceTransform);
+#else
             Assert.True(bb.TryGetComponent<ParentConstraint>(out var pc));
             Assert.AreEqual(1, pc.sourceCount);
             Assert.AreEqual(ab.transform, pc.GetSource(0).sourceTransform);
+#endif
 
             // BC nothing
             Assert.AreEqual(b.transform, bc.transform.parent);
+#if DT_VRCSDK3A
+            Assert.False(bc.TryGetComponent<VRC.SDK3.Dynamics.Constraint.Components.VRCParentConstraint>(out _));
+#else
             Assert.False(bc.TryGetComponent<ParentConstraint>(out _));
+#endif
         }
 
         [Test]
