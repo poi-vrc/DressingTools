@@ -32,6 +32,41 @@ DressingTools 是一個 **獨立的 Unity UPM 套件** 和 **不需要安裝任�
 
    [![安裝 VCC 預告片](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
+### 透過 OpenUPM
+
+:::info
+[OpenUPM](https://openupm.com) 是一個供開源 Unity 套件的套件庫。相較於 UPM Git URL，它可以更加妥善的處理套件更新和相依性。
+
+如果您不使用 VCC，建議使用 OpenUPM 進行安裝。特別是對於不使用 DressingTools 用於 VRChat 的用戶。
+:::
+
+您可以按照以下說明透過 OpenUPM 安裝 DressingTools。
+
+#### A. 透過 OpenUPM 命令列介面 (CLI)
+1. 如果您尚未安裝，請按照 [OpenUPM 網站](https://openupm.com/docs/getting-started-cli.html) 上的說明安裝 OpenUPM CLI。
+
+2. 在您的專案目錄中執行以下命令以安裝 DressingTools，它的相依套件也將自動安裝：
+```shell
+openupm add com.chocopoi.vrc.dressingtools
+```
+
+#### B. 透過 Unity 套件管理器 (UPM) 手動安裝
+請按照以下指示：
+1. 開啟 **Edit/Project Settings/Package Manager**
+2. 新增以下 scoped registry:
+    - Name: `package.openupm.com`
+    - URL: `https://package.openupm.com`
+    - Scopes:
+        - `com.chocopoi.vrc.avatarlib`
+        - `com.chocopoi.vrc.dressingframework`
+        - `com.chocopoi.vrc.dressingtools`
+3. 點擊 `Save` 或是 `Apply`
+4. 開啟 **Window/Package Manager**
+5. 選擇 `Add package by name...` 或 `Add package from git URL...`
+6. 將 `com.chocopoi.vrc.dressingtools` 貼上到 `Name`
+7. 參考[版本清單](https://openupm.com/packages/com.chocopoi.vrc.dressingtools/?subPage=versions)，貼上您想要安裝的版本到 `Version`，或是留空以取得最新版本。
+8. 點擊 `Add`
+
 ### 透過 .unitypackage
 
 :::info
@@ -79,7 +114,7 @@ Unity 不會處理 UPM Git URL 的更新和依賴項。確保安裝正確版本�
 
    [![安裝 UPM Git](/img/installation-upmgit-install-from-git.PNG)](/img/installation-upmgit-install-from-git.PNG)
 
-3. 新增以下套件並確保所需版本與您正在安裝的 DressingTools 版本相符。將`#`後面的版本變更為您想要的版本。
+3. 從上到下新增以下套件，並確保所需版本與您正在安裝的 DressingTools 版本相符。將`#`後面的版本變更為您想要的版本。
 
     - AvatarLib
         - `https://github.com/poi-vrc/AvatarLib.git#1.0.2`
