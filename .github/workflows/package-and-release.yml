@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
@@ -89,7 +89,7 @@ jobs:
           include-files: withDepsMetaList
           
       # upload artifact
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: DT-${{ steps.version.outputs.prop }}
           path: |
@@ -99,7 +99,7 @@ jobs:
             
       # create release
       - name: Release prerelease
-        uses: poi-vrc/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: ${{ github.ref_type == 'tag' }}
         with:
           files: |
