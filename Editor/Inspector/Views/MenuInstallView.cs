@@ -19,7 +19,6 @@ using Chocopoi.DressingTools.Localization;
 using Chocopoi.DressingTools.UI.Elements;
 using Chocopoi.DressingTools.UI.Presenters;
 using Chocopoi.DressingTools.UI.Views;
-using NUnit.Framework;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
