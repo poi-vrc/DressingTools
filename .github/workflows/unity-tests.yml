@@ -30,7 +30,7 @@ jobs:
     steps:
       # Checkout
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
@@ -48,7 +48,7 @@ jobs:
           ls -l Packages/com.chocopoi.vrc.dressingtools
 
       # Cache
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: Library
           key: Library-${{ matrix.unity-version }}-${{ matrix.import-vrcsdk }}-${{ matrix.import-dynbone }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
@@ -94,14 +94,14 @@ jobs:
           customParameters: '-assemblyNames "com.chocopoi.vrc.dressingtools.Editor.Tests;com.chocopoi.vrc.dressingtools.Runtime.Tests" -nographics'
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.chocopoi.vrc.dressingtools.Editor,+com.chocopoi.vrc.dressingtools.Runtime'
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Test results (${{ matrix.unity-version }}${{ matrix.import-vrcsdk && ', VRC' || '' }}${{ matrix.import-dynbone && ', DynBone' || '' }})
           path: artifacts
       
       # Upload coverage report to GitHub
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Coverage results (${{ matrix.unity-version }}${{ matrix.import-vrcsdk && ', VRC' || '' }}${{ matrix.import-dynbone && ', DynBone' || '' }})
@@ -109,7 +109,7 @@ jobs:
           
       # Upload coverage report to Codecov
       - name: Upload XML report to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           flags: automated
           token: ${{ secrets.CODECOV_TOKEN }}
