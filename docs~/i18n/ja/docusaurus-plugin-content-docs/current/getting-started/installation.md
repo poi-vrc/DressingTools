@@ -31,6 +31,41 @@ DressingToolsは **スタンドアロンのUnity UPMパッケージ**であり�
 
    [![インストールVCCティーザー](/img/teaser-1.PNG)](/img/teaser-1.PNG)
 
+### OpenUPM
+
+:::info
+[OpenUPM](https://openupm.com) はオープンソースの Unity パッケージリポジトリです。UPMのGit URLよりもパッケージの更新や依存関係をうまく処理できます。
+
+VCCを使用しない場合は、OpenUPMを使用してインストールすることをお勧めします。特にVRChatのDressingToolsを使わないユーザーには。
+:::
+
+OpenUPM経由でDressingToolsをインストールするには、以下の手順に従ってください。
+
+#### A. OpenUPM CLI を使用する場合
+1.まだインストールしていない場合は、[OpenUPM サイト](https://openupm.com/docs/getting-started-cli.html) の指示に従って、OpenUPM CLI をインストールしてください。
+
+2. プロジェクトフォルダで以下のコマンドを実行すると、DressingTools がインストールされ、 依存関係も自動的にインストールされます:
+```shell
+openupm add com.chocopoi.vrc.dressingtools
+```
+
+#### B. Unity Package Manager (UPM) による手動インストール
+以下の手順に従ってください：
+1. **Edit/Project Settings/Package Manager** を開きます。
+2. 以下の scoped registry を追加します。
+    - Name: `package.openupm.com`。
+    - URL: `https://package.openupm.com`
+    - Scopes:
+        - `com.chocopoi.vrc.avatarlib`
+        - `com.chocopoi.vrc.dressingframework`
+        - `com.chocopoi.vrc.dressingtools`
+3. `Save` または `Apply` をクリックします。
+4. **Window/Package Manager** を開きます。
+5. `Add package by name...` または `Add package from git URL...` をクリックします。
+6. `com.chocopoi.vrc.dressingtools` を `Name` に貼り付けます。 
+7. [こちらのバージョンリスト](https://openupm.com/packages/com.chocopoi.vrc.dressingtools/?subPage=versions) を参照し、インストールしたいバージョンを `Version` に貼り付けるか、空欄のまま最新バージョンを取得する。
+8. `Add` をクリックして完成です。
+
 ### .unitypackage
 
 :::info
